@@ -467,4 +467,8 @@ if __name__ == "__main__":
 
     cophylo = Cophylogeny(
         wide, nextstrain_ts, pos=int(np.mean(sc2ts.core.get_gene_coordinates()["S"])))
-    cophylo.plot(prefix="figures/cophylogeny") 
+    cophylo.plot(prefix="figures/cophylogeny_wide") 
+
+    cophylo = Cophylogeny(
+        long, nextstrain_ts, pos=int(np.mean(sc2ts.core.get_gene_coordinates()["S"])))
+    cophylo.plot(prefix="figures/supp_cophylogeny_long") 
