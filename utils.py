@@ -6,7 +6,7 @@ import tszip
 
 @dataclass
 class ARG:
-    """Associate a tree sequence with a ."""
+    """Associate a tree sequence with a start date."""
     ts: tskit.TreeSequence
     day_0: datetime
 

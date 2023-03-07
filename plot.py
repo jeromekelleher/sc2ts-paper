@@ -408,13 +408,16 @@ class Cophylogeny:
         
         global_styles += nxstr_styles
         global_styles += sc2ts_styles
-        
+        if self.sc2ts.pos == 0:
+            pos_str = "first tree"
+        else:
+            pos_str = f"tree @ position {self.sc2ts.pos}"
         svg_string = (
             '<svg baseProfile="full" height="800" version="1.1" width="900" id="main"' +
             ' xmlns="http://www.w3.org/2000/svg" ' +
             'xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">' +
             f'<defs><style>{"".join(global_styles)}</style></defs>'
-            f'<text text-anchor="middle" transform="translate(200, 12)">SC2ts tree @ position {self.sc2ts.pos}</text>' +
+            f'<text text-anchor="middle" transform="translate(200, 12)">SC2ts {pos_str}</text>' +
             '<text text-anchor="middle" transform="translate(600, 12)">Nextstrain tree</text>' +
             '<g>' + ''.join([
                 f'<line x1="{v["lft"][0]}" y1="{v["lft"][1]}" x2="{v["rgt"][0]}" y2="{v["rgt"][1]}" stroke="#CCCCCC" />'
@@ -458,10 +461,8 @@ if __name__ == "__main__":
     # TODO use argparse to fire off different functions to create each plot
 
     # Cophylogeny plots
-    cophylo = Cophylogeny(
-        wide, nextstrain_ts, pos=int(np.mean(sc2ts.core.get_gene_coordinates()["S"])))
+    cophylo = Cophylogeny(wide, nextstrain_ts, pos=0)
     cophylo.plot(prefix="figures/cophylogeny_wide") 
 
-    cophylo = Cophylogeny(
-        long, nextstrain_ts, pos=int(np.mean(sc2ts.core.get_gene_coordinates()["S"])))
+    cophylo = Cophylogeny(long, nextstrain_ts, pos=0)
     cophylo.plot(prefix="figures/supp_cophylogeny_long") 
