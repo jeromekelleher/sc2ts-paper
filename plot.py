@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime, timedelta
 import hashlib
 import re
@@ -53,7 +54,7 @@ class FocalTreeTs:
 
         
     
-def load_nextstrain(filename, span):
+def load_nextstrain(filename, span, prefix="data"):
     """
     Load from a nextstrain nexus file.
     Note that NextClade also produces a tree with  more samples but no branch lengths
@@ -64,7 +65,7 @@ def load_nextstrain(filename, span):
         nextclade_json_ts = sc2ts.load_nextclade_json("../results/tree.json")
     """
     ts = sc2ts.newick_from_nextstrain_with_comments(
-        sc2ts.extract_newick_from_nextstrain_nexus(filename),
+        sc2ts.extract_newick_from_nextstrain_nexus(os.path.join(prefix, filename)),
         min_edge_length=0.0001 * 1/365,
         span=span,
     )
@@ -76,7 +77,27 @@ def pango_names(ts):
     return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
 
 
-class Cophylogeny:
+class Figure:
+    """
+    Superclass for creating figures. Each figure is a subclass
+    """
+    name = None
+    wide = load_tsz_file("2021-06-30", "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz")
+    long = load_tsz_file("2022-06-30", "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz")
+
+    def __init__(self, args):
+        raise NotImplementedError()
+
+    def plot(self):
+        raise NotImplementedError()
+
+
+class Cophylogeny(Figure):
+    name = None
+    pos = 0  # Position along tree seq to plot trees
+    day0 = None  # string, in iso format, e.g. "2021-06-30"
+    sc2ts_filename = None  # Assumed to contain {} which will be substituted for day0
+    nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
 
     # Utility functions
     @staticmethod
@@ -111,14 +132,20 @@ class Cophylogeny:
                     order.append([int(n[1:]) for n in re.findall(r'n\d+', line)])
         return order
 
-    def __init__(self, sc2ts_arg, nextstrain_ts, pos):
+    def __init__(self, args):
         """
-        Return two simplified trees, which use the timescale in arg.ts
+        Defines two simplified tree sequences, focussed on a specific tree. These are
+        stored in self.sc2ts and self.nxstr
         """
+        sc2ts_arg = load_tsz_file(self.day0, self.sc2ts_filename)
+        nextstrain_ts = load_nextstrain(
+            self.nextstrain_ts_fn, span=sc2ts_arg.ts.sequence_length,
+        )
+        
         sc2ts_its, nxstr_its = sc2ts.subset_to_intersection(
             sc2ts_arg.ts, nextstrain_ts, filter_sites=False, keep_unary=True)
             
-        print(
+        logging.info(
             f"Num samples in subsetted ARG={sc2ts_its.num_samples} vs "
             f"NextStrain={nxstr_its.num_samples}"
         )
@@ -145,7 +172,7 @@ class Cophylogeny:
     
         ## Filter from trees
         # Some samples in sc2ts_simp_its are internal. Remove those from both datasets
-        keep = np.array([u for u in sc2ts_simp_its.at(pos).leaves()])
+        keep = np.array([u for u in sc2ts_simp_its.at(self.pos).leaves()])
     
         # Change the random seed here to change the untangling start point
         #rng = np.random.default_rng(777)
@@ -161,7 +188,7 @@ class Cophylogeny:
         
         # Call the java untangling program
         sc2ts_order, nxstr_order = self.run_nnet_untangle(
-            [sc2ts_tip.at(pos), nxstr_tip.first()])
+            [sc2ts_tip.at(self.pos), nxstr_tip.first()])
     
         # Align the time in the nextstrain tree to the sc2ts tree
         ns_sc2_time_difference = []
@@ -177,14 +204,16 @@ class Cophylogeny:
     
         nxstr_order = list(reversed(nxstr_order))  # RH tree rotated so reverse the order
 
-        self.sc2ts = FocalTreeTs(sc2ts_tip.simplify(sc2ts_order), pos, sc2ts_arg.day_0)
-        self.nxstr = FocalTreeTs(nxstr_tip.simplify(nxstr_order), pos, sc2ts_arg.day_0 - dt)
+        self.sc2ts = FocalTreeTs(
+            sc2ts_tip.simplify(sc2ts_order), self.pos, sc2ts_arg.day_0)
+        self.nxstr = FocalTreeTs(
+            nxstr_tip.simplify(nxstr_order), self.pos, sc2ts_arg.day_0 - dt)
 
         print(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
 
-    def plot(self, prefix, use_colour = "Pango"):
+    def plot(self):
         # Slow step: find the samples in arg.ts also in nextstrain_ts, and subset
-    
+        prefix = os.path.join("figures", self.name)
         strain_id_map = {
             self.sc2ts.strain(n): n
             for n in self.sc2ts.samples
@@ -231,7 +260,7 @@ class Cophylogeny:
     
     
         # Assign colours
-        col = colours[use_colour]
+        col = colours[self.use_colour]
         nxstr_styles = []
         sc2ts_styles = []
         legend = {}
@@ -430,7 +459,7 @@ class Cophylogeny:
             svg2 +
             '</g>' + 
             '<g class="legend" transform="translate(800 30)">' +
-            f'<text>{use_colour} lineage</text>' +
+            f'<text>{self.use_colour} lineage</text>' +
             "".join(f'<line x1="0" y1="{25+i*15}" x2="15" y2="{25+i*15}" stroke-width="2" stroke="{legend[nm]}" /><text font-size="10pt" x="20" y="{30+i*15}">{nm}</text>' for i, nm in enumerate(sorted(legend))) +
             '</g>' + 
             '</svg>'
@@ -449,20 +478,53 @@ class Cophylogeny:
         ])
         
 
-if __name__ == "__main__":
-
-    wide = load_tsz_file("2021-06-30", "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz")
-    long = load_tsz_file("2022-06-30", "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz")
-    nextstrain_ts = load_nextstrain(
-        "data/nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex",
-        span=wide.ts.sequence_length,
-    )
+class CophylogenyWide(Cophylogeny):
+    name = "cophylogeny_wide"
+    day0 = "2021-06-30"
+    sc2ts_filename = "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz"
+    use_colour = "Pango"
     
-    # TODO use argparse to fire off different functions to create each plot
+class CophylogenyLong(Cophylogeny):
+    name = "supp_cophylogeny_long"
+    day0 = "2022-06-30"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz"
+    use_colour = "Pango"
 
-    # Cophylogeny plots
-    cophylo = Cophylogeny(wide, nextstrain_ts, pos=0)
-    cophylo.plot(prefix="figures/cophylogeny_wide") 
+def get_subclasses(cls):
+    for subclass in cls.__subclasses__():
+        yield from get_subclasses(subclass)
+        yield subclass
 
-    cophylo = Cophylogeny(long, nextstrain_ts, pos=0)
-    cophylo.plot(prefix="figures/supp_cophylogeny_long") 
+######################################
+#
+# Main
+#
+######################################
+
+
+def main():
+    figures = list(get_subclasses(Figure))
+
+    name_map = {fig.name: fig for fig in figures if fig.name is not None}
+
+    parser = argparse.ArgumentParser(description="Make the plots for specific figures.")
+    parser.add_argument(
+        "name",
+        type=str,
+        help="figure name",
+        choices=sorted(list(name_map.keys()) + ["all"]),
+    )
+    args = parser.parse_args()
+    
+
+    if args.name == "all":
+        for _, fig in name_map.items():
+            if fig in figures:
+                fig(args).plot()
+    else:
+        fig = name_map[args.name](args)
+        fig.plot()
+
+
+if __name__ == "__main__":
+    main()

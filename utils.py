@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+import os
 
 import tskit
 import tszip
@@ -13,7 +14,7 @@ class ARG:
 
 def load_tsz_file(date, filename):
     return ARG(
-        tszip.decompress("data/" + filename.format(date)),
+        tszip.decompress(os.path.join("data", filename.format(date))),
         datetime.fromisoformat(date),
     )
 
