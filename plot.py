@@ -54,27 +54,31 @@ class FocalTreeTs:
 
         
     
-def load_nextstrain(filename, span, prefix="data"):
-    """
-    Load from a nextstrain nexus file.
-    Note that NextClade also produces a tree with  more samples but no branch lengths
-    e.g. at 
-        https://github.com/nextstrain/nextclade_data/tree/
-        release/data/datasets/sars-cov-2/references/MN908947/versions
-    It is possible to load this using
-        nextclade_json_ts = sc2ts.load_nextclade_json("../results/tree.json")
-    """
-    ts = sc2ts.newick_from_nextstrain_with_comments(
-        sc2ts.extract_newick_from_nextstrain_nexus(os.path.join(prefix, filename)),
-        min_edge_length=0.0001 * 1/365,
-        span=span,
-    )
-    # Remove "samples" without names
-    keep = [n.id for n in ts.nodes() if n.is_sample() and "strain" in n.metadata]
-    return ts.simplify(keep)
+class Nextstrain:
 
-def pango_names(ts):
-    return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
+    def __init__(self, filename, span, prefix="data"):
+        """
+        Load from a nextstrain nexus file.
+        Note that NextClade also produces a tree with  more samples but no branch lengths
+        e.g. at 
+            https://github.com/nextstrain/nextclade_data/tree/
+            release/data/datasets/sars-cov-2/references/MN908947/versions
+        It is possible to load this using
+            nextclade_json_ts = sc2ts.load_nextclade_json("../results/tree.json")
+        """
+        ts = sc2ts.newick_from_nextstrain_with_comments(
+            sc2ts.extract_newick_from_nextstrain_nexus(os.path.join(prefix, filename)),
+            min_edge_length=0.0001 * 1/365,
+            span=span,
+        )
+        # Remove "samples" without names
+        keep = [n.id for n in ts.nodes() if n.is_sample() and "strain" in n.metadata]
+        self.ts = ts.simplify(keep)
+
+    @staticmethod
+    def pango_names(ts):
+        # This is relevant to any nextstrain tree seq, not just the stored one
+        return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
 
 
 class Figure:
@@ -138,12 +142,11 @@ class Cophylogeny(Figure):
         stored in self.sc2ts and self.nxstr
         """
         sc2ts_arg = load_tsz_file(self.day0, self.sc2ts_filename)
-        nextstrain_ts = load_nextstrain(
-            self.nextstrain_ts_fn, span=sc2ts_arg.ts.sequence_length,
-        )
+        nextstrain = Nextstrain(self.nextstrain_ts_fn, span=sc2ts_arg.ts.sequence_length)
         
+        # Slow step: find the samples in sc2ts_arg.ts also in nextstrain.ts, and subset
         sc2ts_its, nxstr_its = sc2ts.subset_to_intersection(
-            sc2ts_arg.ts, nextstrain_ts, filter_sites=False, keep_unary=True)
+            sc2ts_arg.ts, nextstrain.ts, filter_sites=False, keep_unary=True)
             
         logging.info(
             f"Num samples in subsetted ARG={sc2ts_its.num_samples} vs "
@@ -212,7 +215,6 @@ class Cophylogeny(Figure):
         print(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
 
     def plot(self):
-        # Slow step: find the samples in arg.ts also in nextstrain_ts, and subset
         prefix = os.path.join("figures", self.name)
         strain_id_map = {
             self.sc2ts.strain(n): n
@@ -222,7 +224,7 @@ class Cophylogeny(Figure):
     
         # A few color schemes to try
         cmap = get_cmap("tab20b", 50)
-        pango = pango_names(self.nxstr.ts)
+        pango = Nextstrain.pango_names(self.nxstr.ts)
         colours = {
             # Name in ns comment metadata, colour scheme
             "Pango": {"md_key": "pango_lineage", "scheme": sc2ts.pango_colours},
@@ -476,31 +478,40 @@ class Cophylogeny(Figure):
             f"--print-to-pdf={prefix}.pdf",
             f"{prefix}.svg",
         ])
-        
+
 
 class CophylogenyWide(Cophylogeny):
     name = "cophylogeny_wide"
     day0 = "2021-06-30"
     sc2ts_filename = "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz"
     use_colour = "Pango"
-    
+
+
 class CophylogenyLong(Cophylogeny):
     name = "supp_cophylogeny_long"
     day0 = "2022-06-30"
     sc2ts_filename = "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz"
     use_colour = "Pango"
 
+
+######################################
+#
+# Utility functions
+#
+######################################
+
+
 def get_subclasses(cls):
     for subclass in cls.__subclasses__():
         yield from get_subclasses(subclass)
         yield subclass
+
 
 ######################################
 #
 # Main
 #
 ######################################
-
 
 def main():
     figures = list(get_subclasses(Figure))
