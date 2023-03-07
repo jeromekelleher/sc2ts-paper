@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 import hashlib
 import re
 import sys
-from dataclasses import dataclass
 import os
 import tempfile
 import subprocess
-
+import logging
 
 from IPython.display import SVG, HTML
 from matplotlib.colors import rgb2hex
@@ -18,15 +17,11 @@ import tskit
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
 import sc2ts  # install with python -m pip install git+https://github.com/jeromekelleher/sc2ts
 
+from utils import load_tsz_file
+
 # Redefine the path to your local dendroscope Java app & chromium app here
 dendroscope_binary = "/Applications/Dendroscope/Dendroscope.app/Contents/MacOS/JavaApplicationStub"
 chromium_binary = "/usr/local/bin/chromium"
-
-@dataclass
-class ARG:
-    """Associate a tree sequence with a ."""
-    ts: tskit.TreeSequence
-    day_0: datetime
 
 class FocalTreeTs:
     """Convenience class to access a single focal tree in a tree sequence"""
@@ -58,12 +53,6 @@ class FocalTreeTs:
 
         
     
-def load_tsz_file(date, filename):
-    return ARG(
-        tszip.decompress("data/" + filename.format(date)),
-        datetime.fromisoformat(date),
-    )
-
 def load_nextstrain(filename, span):
     """
     Load from a nextstrain nexus file.
@@ -190,6 +179,8 @@ class Cophylogeny:
 
         self.sc2ts = FocalTreeTs(sc2ts_tip.simplify(sc2ts_order), pos, sc2ts_arg.day_0)
         self.nxstr = FocalTreeTs(nxstr_tip.simplify(nxstr_order), pos, sc2ts_arg.day_0 - dt)
+
+        print(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
 
     def plot(self, prefix, use_colour = "Pango"):
         # Slow step: find the samples in arg.ts also in nextstrain_ts, and subset
@@ -454,6 +445,7 @@ class Cophylogeny:
             f"{prefix}.svg",
         ])
         
+
 if __name__ == "__main__":
 
     wide = load_tsz_file("2021-06-30", "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz")
@@ -465,6 +457,7 @@ if __name__ == "__main__":
     
     # TODO use argparse to fire off different functions to create each plot
 
+    # Cophylogeny plots
     cophylo = Cophylogeny(
         wide, nextstrain_ts, pos=int(np.mean(sc2ts.core.get_gene_coordinates()["S"])))
     cophylo.plot(prefix="figures/cophylogeny_wide") 
