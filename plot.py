@@ -1,4 +1,5 @@
 import argparse
+import collections
 from datetime import datetime, timedelta
 import hashlib
 import re
@@ -11,14 +12,16 @@ import logging
 from IPython.display import SVG, HTML
 from matplotlib.colors import rgb2hex
 from matplotlib.cm import get_cmap
+from matplotlib import pyplot as plt
 import numpy as np
 import tszip
 import tskit
+import pandas as pd
 
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
 import sc2ts  # install with python -m pip install git+https://github.com/jeromekelleher/sc2ts
 
-from utils import load_tsz_file
+from utils import load_tsz_file, node_arities
 
 # Redefine the path to your local dendroscope Java app & chromium app here
 dendroscope_binary = "/Applications/Dendroscope/Dendroscope.app/Contents/MacOS/JavaApplicationStub"
@@ -26,10 +29,10 @@ chromium_binary = "/usr/local/bin/chromium"
 
 class FocalTreeTs:
     """Convenience class to access a single focal tree in a tree sequence"""
-    def __init__(self, ts, pos, day_0=None):
+    def __init__(self, ts, pos, day0=None):
         self.tree = ts.at(pos, sample_lists=True)
         self.pos = pos
-        self.day_0 = day_0
+        self.day0 = day0
 
     @property
     def ts(self):
@@ -40,7 +43,7 @@ class FocalTreeTs:
         return self.tree.tree_sequence.samples()
         
     def timediff(self, isodate):
-        return getattr(self.day_0 - datetime.fromisoformat(isodate), self.ts.time_units)
+        return getattr(self.day0 - datetime.fromisoformat(isodate), self.ts.time_units)
 
     def strain(self, u):
         return self.tree.tree_sequence.node(u).metadata.get("strain", "")
@@ -52,7 +55,6 @@ class FocalTreeTs:
         )
         return b2b.digest()
 
-        
     
 class Nextstrain:
 
@@ -79,6 +81,8 @@ class Nextstrain:
     def pango_names(ts):
         # This is relevant to any nextstrain tree seq, not just the stored one
         return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
+
+
 
 
 class Figure:
@@ -142,11 +146,11 @@ class Cophylogeny(Figure):
         stored in self.sc2ts and self.nxstr
         """
         sc2ts_arg = load_tsz_file(self.day0, self.sc2ts_filename)
-        nextstrain = Nextstrain(self.nextstrain_ts_fn, span=sc2ts_arg.ts.sequence_length)
+        nextstrain = Nextstrain(self.nextstrain_ts_fn, span=sc2ts_arg.sequence_length)
         
         # Slow step: find the samples in sc2ts_arg.ts also in nextstrain.ts, and subset
         sc2ts_its, nxstr_its = sc2ts.subset_to_intersection(
-            sc2ts_arg.ts, nextstrain.ts, filter_sites=False, keep_unary=True)
+            sc2ts_arg, nextstrain.ts, filter_sites=False, keep_unary=True)
             
         logging.info(
             f"Num samples in subsetted ARG={sc2ts_its.num_samples} vs "
@@ -167,7 +171,7 @@ class Cophylogeny(Figure):
         for u, v in zip(sc2ts_simp_its.samples(), nxstr_its.samples()):
             assert sc2ts_simp_its.node(u).metadata["strain"] == nxstr_its.node(v).metadata["strain"]
     
-        print(
+        logging.info(
             "Removed",
             sc2ts_its.num_samples-sc2ts_simp_its.num_samples,
             "samples in sc2 not in nextstrain",
@@ -183,7 +187,7 @@ class Cophylogeny(Figure):
         sc2ts_tip = sc2ts_simp_its.simplify(keep)
         assert nxstr_its.num_trees == 1
         nxstr_tip = nxstr_its.simplify(keep)
-        print(
+        logging.info(
             "Removed internal samples in first tree. Trees now have",
             sc2ts_tip.num_samples,
             "leaf samples"
@@ -208,11 +212,11 @@ class Cophylogeny(Figure):
         nxstr_order = list(reversed(nxstr_order))  # RH tree rotated so reverse the order
 
         self.sc2ts = FocalTreeTs(
-            sc2ts_tip.simplify(sc2ts_order), self.pos, sc2ts_arg.day_0)
+            sc2ts_tip.simplify(sc2ts_order), self.pos, sc2ts_arg.day0)
         self.nxstr = FocalTreeTs(
-            nxstr_tip.simplify(nxstr_order), self.pos, sc2ts_arg.day_0 - dt)
+            nxstr_tip.simplify(nxstr_order), self.pos, sc2ts_arg.day0 - dt)
 
-        print(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
+        logging.info(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
 
     def plot(self):
         prefix = os.path.join("figures", self.name)
@@ -494,6 +498,76 @@ class CophylogenyLong(Cophylogeny):
     use_colour = "Pango"
 
 
+class RecombinantMrcas(Figure):
+    name = "recombinant_mrcas"
+    day0 = "2022-06-30"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz"
+    csv_fn = "breakpoints_long_{}.csv"
+    data_dir = "data"
+    
+    
+    def __init__(self, args):
+        self.df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(self.day0)))
+        self.ts = load_tsz_file(self.day0, self.sc2ts_filename)
+
+    def plot(self):
+        end = datetime.fromisoformat(self.day0)
+        dates = [
+            datetime(y, m, 1) 
+            for y in (2020, 2021, 2022)
+            for m in range(1, 13, 3)
+            if (end-datetime(y, m, 1)).days > -2
+        ]
+        prefix = os.path.join("figures", self.name)
+        # shortcuts
+        df = self.df
+        ts = self.ts
+
+        logging.info("Calculating node arities")
+        arities = node_arities(ts)
+
+        mrca_ids = collections.Counter(df.parents_mrca)
+        fig, axes = plt.subplots(
+            2, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [4, 1]})
+        axes[0].scatter(df.tmrca_delta, df.tmrca, alpha=0.1)
+        for i, (u, c) in enumerate(mrca_ids.most_common(5)):
+            pango = ts.node(u).metadata.get("Imputed_lineage", "")
+            
+            n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
+            logging.info(
+                f"{ordinal(i+1)} most common parent MRCA has id {u} (imputed: {pango}) "
+                f"@ time={ts.node(u).time}; "
+                f"num_children={n_children}, av. arity={arities[u]}"
+            )
+            # Find all samples of lineage ""
+            axes[0].axhline(ts.node(u).time, ls=":", c="grey", lw=1)
+            axes[0].text(800, ts.node(u).time, f"Node {u}, {n_children}, XXX % of ")
+        axes[1].set_xlabel("Divergence between parents of a recombinant (days)")
+        axes[0].set_ylabel(f"Date of parental MRCA")
+        axes[0].set_title("Parental lineages of recombinants in the “Long” ARG")
+        axes[0].set_yticks(
+            ticks=[(end-d).days for d in dates],
+            labels=[str(d)[:7] for d in dates],
+        )
+        axes[1].spines['top'].set_visible(False)
+        axes[1].spines['right'].set_visible(False)
+        axes[1].spines['left'].set_visible(False)
+        axes[1].get_yaxis().set_visible(False)
+        axes[1].hist(df.tmrca_delta, bins=60)
+
+        x = []
+        y = []
+        for row in df.itertuples():
+            if row.origin_nextclade_pango.startswith("X"):
+                x.append(row.tmrca_delta)
+                y.append(row.tmrca)
+                axes[0].text(x[-1], y[-1], row.origin_nextclade_pango, size=6)
+        axes[0].scatter(x, y, c="orange")
+
+        plt.savefig(prefix + ".pdf")
+
+
+
 ######################################
 #
 # Utility functions
@@ -506,6 +580,8 @@ def get_subclasses(cls):
         yield from get_subclasses(subclass)
         yield subclass
 
+def ordinal(n):
+    return ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"][n - 1]
 
 ######################################
 #
@@ -519,6 +595,7 @@ def main():
     name_map = {fig.name: fig for fig in figures if fig.name is not None}
 
     parser = argparse.ArgumentParser(description="Make the plots for specific figures.")
+    parser.add_argument('-v', '--verbosity', action='count', default=0) 
     parser.add_argument(
         "name",
         type=str,
@@ -527,6 +604,9 @@ def main():
     )
     args = parser.parse_args()
     
+    levels = [logging.WARNING, logging.INFO, logging.DEBUG]
+    level = levels[min(args.verbosity, len(levels) - 1)]  # cap to last level index
+    logging.basicConfig(level=level)
 
     if args.name == "all":
         for _, fig in name_map.items():

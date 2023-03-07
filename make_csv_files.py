@@ -10,5 +10,5 @@ if __name__ == "__main__":
     logging.info("Collecting tree information, may take a while")
     long_treeinfo = sc2ts.TreeInfo(long.ts)
     df = long_treeinfo.export_recombination_node_breakpoints()
-    date = datetime.fromisoformat(long.day_0).date().isoformat()
-    df.to_csv(f"data/breakpoints_{date}.csv")
+    date_str = long.day_0.date().isoformat()
+    df.to_csv(f"data/breakpoints_long_{date_str}.csv")
