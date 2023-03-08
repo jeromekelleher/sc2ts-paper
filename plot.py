@@ -22,7 +22,7 @@ import pandas as pd
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
 import sc2ts  # install with python -m pip install git+https://github.com/jeromekelleher/sc2ts
 
-from utils import load_tsz_file, node_arities
+import utils
 
 # Redefine the path to your local dendroscope Java app & chromium app here
 dendroscope_binary = "/Applications/Dendroscope/Dendroscope.app/Contents/MacOS/JavaApplicationStub"
@@ -30,10 +30,10 @@ chromium_binary = "/usr/local/bin/chromium"
 
 class FocalTreeTs:
     """Convenience class to access a single focal tree in a tree sequence"""
-    def __init__(self, ts, pos, day0=None):
+    def __init__(self, ts, pos, basetime=None):
         self.tree = ts.at(pos, sample_lists=True)
         self.pos = pos
-        self.day0 = day0
+        self.basetime = basetime
 
     @property
     def ts(self):
@@ -44,7 +44,7 @@ class FocalTreeTs:
         return self.tree.tree_sequence.samples()
         
     def timediff(self, isodate):
-        return getattr(self.day0 - datetime.fromisoformat(isodate), self.ts.time_units)
+        return getattr(self.basetime - datetime.fromisoformat(isodate), self.ts.time_units)
 
     def strain(self, u):
         return self.tree.tree_sequence.node(u).metadata.get("strain", "")
@@ -129,11 +129,9 @@ class Figure:
     Superclass for creating figures. Each figure is a subclass
     """
     name = None
-    wide = load_tsz_file("2021-06-30", "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz")
-    long = load_tsz_file("2022-06-30", "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz")
-
-    def __init__(self, args):
-        raise NotImplementedError()
+    ts_dir = "data"
+    wide_fn = "upgma-full-md-30-mm-3-2021-06-30-recinfo-il.ts.tsz"
+    long_fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
 
     def plot(self):
         raise NotImplementedError()
@@ -142,8 +140,7 @@ class Figure:
 class Cophylogeny(Figure):
     name = None
     pos = 0  # Position along tree seq to plot trees
-    day0 = None  # string, in iso format, e.g. "2021-06-30"
-    sc2ts_filename = None  # Assumed to contain {} which will be substituted for day0
+    sc2ts_filename = None
     nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
 
     # Utility functions
@@ -184,7 +181,7 @@ class Cophylogeny(Figure):
         Defines two simplified tree sequences, focussed on a specific tree. These are
         stored in self.sc2ts and self.nxstr
         """
-        sc2ts_arg = load_tsz_file(self.day0, self.sc2ts_filename)
+        sc2ts_arg, basetime = utils.load_tsz(self.ts_dir, self.sc2ts_filename)
         nextstrain = Nextstrain(self.nextstrain_ts_fn, span=sc2ts_arg.sequence_length)
         
         # Slow step: find the samples in sc2ts_arg.ts also in nextstrain.ts, and subset
@@ -211,9 +208,8 @@ class Cophylogeny(Figure):
             assert sc2ts_simp_its.node(u).metadata["strain"] == nxstr_its.node(v).metadata["strain"]
     
         logging.info(
-            "Removed",
-            sc2ts_its.num_samples-sc2ts_simp_its.num_samples,
-            "samples in sc2 not in nextstrain",
+            f"Removed {sc2ts_its.num_samples-sc2ts_simp_its.num_samples} samples "
+            "in sc2 not in nextstrain"
         )
     
         ## Filter from trees
@@ -227,9 +223,8 @@ class Cophylogeny(Figure):
         assert nxstr_its.num_trees == 1
         nxstr_tip = nxstr_its.simplify(keep)
         logging.info(
-            "Removed internal samples in first tree. Trees now have",
-            sc2ts_tip.num_samples,
-            "leaf samples"
+            "Removed internal samples in first tree. Trees now have "
+            f"{sc2ts_tip.num_samples} leaf samples"
         )
         
         # Call the java untangling program
@@ -251,11 +246,11 @@ class Cophylogeny(Figure):
         nxstr_order = list(reversed(nxstr_order))  # RH tree rotated so reverse the order
 
         self.sc2ts = FocalTreeTs(
-            sc2ts_tip.simplify(sc2ts_order), self.pos, sc2ts_arg.day0)
+            sc2ts_tip.simplify(sc2ts_order), self.pos, basetime)
         self.nxstr = FocalTreeTs(
-            nxstr_tip.simplify(nxstr_order), self.pos, sc2ts_arg.day0 - dt)
+            nxstr_tip.simplify(nxstr_order), self.pos, basetime - dt)
 
-        logging.info(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
+        logging.info(f"{self.sc2ts.ts.num_trees} trees in the simplified 'backbone' ARG")
 
     def plot(self):
         prefix = os.path.join("figures", self.name)
@@ -525,45 +520,37 @@ class Cophylogeny(Figure):
 
 class CophylogenyWide(Cophylogeny):
     name = "cophylogeny_wide"
-    day0 = "2021-06-30"
-    sc2ts_filename = "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz"
+    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo-il.ts.tsz"
     use_colour = "Pango"
 
 
 class CophylogenyLong(Cophylogeny):
     name = "supp_cophylogeny_long"
-    day0 = "2022-06-30"
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
     use_colour = "Pango"
 
 
 class RecombinationNodeMrcas(Figure):
     name = None
-    day0 = "2022-06-30"
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz"
-    csv_fn = "breakpoints_long_{}.csv"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    csv_fn = "breakpoints_{}.csv"
     data_dir = "data"
     
     
     def __init__(self, args):
-        self.df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(self.day0)))
-        self.ts = load_tsz_file(self.day0, self.sc2ts_filename)
+        prefix = utils.snip_tsz_suffix(self.sc2ts_filename)
+        self.df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(prefix)))
+        self.ts, self.basetime = utils.load_tsz(self.data_dir, self.sc2ts_filename)
 
     @staticmethod
-    def add_common_lines(ax, arities, num, ts, common_proportions):
-        v_pos = {k: v for v, k in enumerate(sorted(common_proportions.keys()))}
-        for i, (u, prop) in enumerate(common_proportions.items()):
-            if u==5868:
-                # This is a common MRCA but at almost exactly the same time as the most
-                # common
-                continue
-            pango = ts.node(u).metadata.get("Imputed_lineage", "")
-            
+    def add_common_lines(ax, num, ts, common_proportions):
+        v_pos = {k: v for v, k in enumerate(common_proportions.keys())}
+        for i, (u, (pango, prop)) in enumerate(common_proportions.items()):
             n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
             logging.info(
                 f"{ordinal(i+1)} most common parent MRCA has id {u} (imputed: {pango}) "
                 f"@ time={ts.node(u).time}; "
-                f"num_children={n_children}, av. arity={arities[u]}"
+                f"num_children={n_children}"
             )
             # Find all samples of the focal lineage
             t = ts.node(u).time
@@ -573,18 +560,17 @@ class RecombinationNodeMrcas(Figure):
                 t/1.3 + 210,
                 ts.node(u).time,
                 f"Node {u},{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
+                fontsize=8,
                 va="center",
                 bbox=dict(facecolor='white', edgecolor='none', pad=0)
             )
 
-    @staticmethod
-    def do_plot(day0, main_ax, hist_ax, df, title, xlab=True, ylab=True):
-        end = datetime.fromisoformat(day0)
+    def do_plot(self, main_ax, hist_ax, df, title, xlab=True, ylab=True):
         dates = [
             datetime(y, m, 1) 
             for y in (2020, 2021, 2022)
             for m in range(1, 13, 3)
-            if (end-datetime(y, m, 1)).days > -2
+            if (self.basetime-datetime(y, m, 1)).days > -2
         ]
         main_ax.scatter(
             df.tmrca_delta,
@@ -598,9 +584,10 @@ class RecombinationNodeMrcas(Figure):
             main_ax.set_ylabel(f"Date of parental MRCA")
         main_ax.set_title(title)
         main_ax.set_yticks(
-            ticks=[(end-d).days for d in dates],
+            ticks=[(self.basetime-d).days for d in dates],
             labels=[str(d)[:7] for d in dates],
         )
+        main_ax.invert_yaxis()
         hist_ax.spines['top'].set_visible(False)
         hist_ax.spines['right'].set_visible(False)
         hist_ax.spines['left'].set_visible(False)
@@ -623,9 +610,6 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
     def plot(self):
         prefix = os.path.join("figures", self.name)
 
-        logging.info("Calculating node arities")
-        arities = node_arities(self.ts)
-
         fig, axes = plt.subplots(
             2, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [4, 1]})
 
@@ -634,10 +618,13 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
         logging.info(
             "Calculating proportions of descendants for "
             f"{['mrca: {} ({} counts)'.format(id, c) for id, c in common_mrcas]}")
-        proportions = descendant_proportion(self.ts, [c[0] for c in common_mrcas])
-        self.add_common_lines(axes[0], arities, 5, self.ts, proportions)
+        focal_node_map = {c[0]: None for c in common_mrcas}
+        focal_node_map[519829] = "BA.1"
+        # 5868 is a common MRCA almost exactly contemporary with the most common node
+        del focal_node_map[5868]
+        proportions = descendant_proportion(self.ts, focal_node_map)
+        self.add_common_lines(axes[0], 5, self.ts, proportions)
         self.do_plot(
-            self.day0,
             axes[0],
             axes[1],
             self.df,
@@ -649,9 +636,6 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
 
     def plot(self):
         prefix = os.path.join("figures", self.name)
-
-        #logging.info("Calculating node arities")
-        #arities = node_arities(self.ts)
 
         fig, axes = plt.subplots(
             nrows=4,
@@ -668,9 +652,8 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         ]
 
         #mrca_counts = collections.Counter(self.df.parents_mrca)
-        #self.add_common_lines(axes[0], mrca_counts, arities, 5, self.ts)
+        #self.add_common_lines(axes[0], mrca_counts, 5, self.ts)
         self.do_plot(
-            self.day0,
             axes[0][0],
             axes[1][0],
             self.df[[v=={'alpha', 'alpha'} for v in parent_variants]],
@@ -678,7 +661,6 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             xlab=False)
 
         self.do_plot(
-            self.day0,
             axes[0][1],
             axes[1][1],
             self.df[[v=={'delta', 'delta'} for v in parent_variants]],
@@ -688,7 +670,6 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         )
 
         self.do_plot(
-            self.day0,
             axes[0][2],
             axes[1][2],
             self.df[[v=={'omicron', 'omicron'} for v in parent_variants]],
@@ -698,14 +679,12 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         )
 
         self.do_plot(
-            self.day0,
             axes[2][0],
             axes[3][0],
             self.df[[v=={'alpha', 'delta'} for v in parent_variants]],
             "alpha + delta rec nodes in the “Long” ARG")
 
         self.do_plot(
-            self.day0,
             axes[2][1],
             axes[3][1],
             self.df[[v=={'alpha', 'omicron'} for v in parent_variants]],
@@ -714,7 +693,6 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         )
 
         self.do_plot(
-            self.day0,
             axes[2][2],
             axes[3][2],
             self.df[[v=={'delta', 'omicron'} for v in parent_variants]],
@@ -739,13 +717,16 @@ def get_subclasses(cls):
 def ordinal(n):
     return ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"][n - 1]
 
-def descendant_proportion(ts, focal_nodes):
+def descendant_proportion(ts, focal_nodes_map):
     """
-    Take the Imputed lineage of each focal node and work out how many samples of that
-    lineage type have the focal node in their ancestry
+    Take each focal node which maps to an imputed lineage, and work out how many
+    samples of that lineage type have the focal node in their ancestry. If
+    it maps to None, use the ts to get the imputed lineage of that node
     """
-    focal_lineages = {u: ts.node(u).metadata['Imputed_lineage'] for u in focal_nodes}
-    sample_lists = {u: [] for u in focal_nodes}
+    focal_lineages = {
+        u: ts.node(u).metadata['Imputed_lineage'] if lin is None else lin
+        for u, lin in focal_nodes_map.items()}
+    sample_lists = {u: [] for u in focal_nodes_map}
     # The time consuming step is finding the samples of each lineage type
     # this would probably be quicker is we could be bothered to do it via TreeInfo
     # but we don't have that calculated in the plotting code
@@ -763,7 +744,7 @@ def descendant_proportion(ts, focal_nodes):
         for tree in sts.trees():
             for u in tree.samples(node_map[focal_node]):
                 ok[u] = True
-        ret[focal_node] = np.sum(ok) / len(ok)
+        ret[focal_node] = focal_lineages[focal_node], np.sum(ok) / len(ok)
     return ret
 ######################################
 #

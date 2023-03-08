@@ -3,12 +3,15 @@ import sc2ts
 import logging
 from datetime import datetime
 
-from utils import load_tsz_file
+import utils
 
 if __name__ == "__main__":
-    long = load_tsz_file("2022-06-30", "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz")
+
+    # Make a breakpoints file for the long ARG
+    fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    prefix = utils.snip_tsz_suffix(fn)
+    long, basetime = utils.load_tsz("data", fn)
     logging.info("Collecting tree information, may take a while")
     long_treeinfo = sc2ts.TreeInfo(long)
     df = long_treeinfo.export_recombination_node_breakpoints()
-    date_str = long.day0.date().isoformat()
-    df.to_csv(f"data/breakpoints_long_{date_str}.csv")
+    df.to_csv(f"data/breakpoints_{prefix}.csv")
