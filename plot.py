@@ -14,6 +14,7 @@ from matplotlib.colors import rgb2hex
 from matplotlib.cm import get_cmap
 from matplotlib import pyplot as plt
 import numpy as np
+import tqdm
 import tszip
 import tskit
 import pandas as pd
@@ -82,7 +83,45 @@ class Nextstrain:
         # This is relevant to any nextstrain tree seq, not just the stored one
         return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
 
-
+def variant_name(pango):
+    """
+    Classification from the following site
+    https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html
+    Alpha (B.1.1.7 and Q lineages)
+    Beta (B.1.351 and descendent lineages)
+    Gamma (P.1 and descendent lineages)
+    Delta (B.1.617.2 and AY lineages)
+    Epsilon (B.1.427 and B.1.429)
+    Eta (B.1.525)
+    Iota (B.1.526)
+    Kappa (B.1.617.1)
+    Mu (B.1.621, B.1.621.1)
+    Zeta (P.2)
+    Omicron (B.1.1.529, BA.1, BA.1.1, BA.2, BA.3, BA.4 and BA.5 lineages)
+    """
+    if pango == "B.1.1.7" or pango.startswith("Q"):
+        return("alpha")
+    if pango.startswith("B.1.351"):
+        return "beta"
+    if pango.startswith("P.1"):
+        return "gamma"
+    if pango.startswith("AY") or pango == "B.1.617.2":
+        return("delta")
+    if pango == "B.1.427" or pango == "B.1.429":
+        return "epsilon"
+    if pango == "B.1.526":
+        return "iota"
+    if pango == "B.1.617.1":
+        return "kappa"
+    if pango == "B.1.526":
+        return "iota"
+    if pango == "B.1.621" or pango == "B.1.621.1":
+        return "mu"
+    if pango.startswith("P.2"):
+        return "zeta"
+    if pango == "B.1.1.529" or pango.startswith("BA."):
+        return "omicron"
+    return("")
 
 
 class Figure:
@@ -498,8 +537,8 @@ class CophylogenyLong(Cophylogeny):
     use_colour = "Pango"
 
 
-class RecombinantMrcas(Figure):
-    name = "recombinant_mrcas"
+class RecombinationNodeMrcas(Figure):
+    name = None
     day0 = "2022-06-30"
     sc2ts_filename = "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz"
     csv_fn = "breakpoints_long_{}.csv"
@@ -510,27 +549,14 @@ class RecombinantMrcas(Figure):
         self.df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(self.day0)))
         self.ts = load_tsz_file(self.day0, self.sc2ts_filename)
 
-    def plot(self):
-        end = datetime.fromisoformat(self.day0)
-        dates = [
-            datetime(y, m, 1) 
-            for y in (2020, 2021, 2022)
-            for m in range(1, 13, 3)
-            if (end-datetime(y, m, 1)).days > -2
-        ]
-        prefix = os.path.join("figures", self.name)
-        # shortcuts
-        df = self.df
-        ts = self.ts
-
-        logging.info("Calculating node arities")
-        arities = node_arities(ts)
-
-        mrca_ids = collections.Counter(df.parents_mrca)
-        fig, axes = plt.subplots(
-            2, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [4, 1]})
-        axes[0].scatter(df.tmrca_delta, df.tmrca, alpha=0.1)
-        for i, (u, c) in enumerate(mrca_ids.most_common(5)):
+    @staticmethod
+    def add_common_lines(ax, arities, num, ts, common_proportions):
+        v_pos = {k: v for v, k in enumerate(sorted(common_proportions.keys()))}
+        for i, (u, prop) in enumerate(common_proportions.items()):
+            if u==5868:
+                # This is a common MRCA but at almost exactly the same time as the most
+                # common
+                continue
             pango = ts.node(u).metadata.get("Imputed_lineage", "")
             
             n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
@@ -539,21 +565,47 @@ class RecombinantMrcas(Figure):
                 f"@ time={ts.node(u).time}; "
                 f"num_children={n_children}, av. arity={arities[u]}"
             )
-            # Find all samples of lineage ""
-            axes[0].axhline(ts.node(u).time, ls=":", c="grey", lw=1)
-            axes[0].text(800, ts.node(u).time, f"Node {u}, {n_children}, XXX % of ")
-        axes[1].set_xlabel("Divergence between parents of a recombinant (days)")
-        axes[0].set_ylabel(f"Date of parental MRCA")
-        axes[0].set_title("Parental lineages of recombinants in the “Long” ARG")
-        axes[0].set_yticks(
+            # Find all samples of the focal lineage
+            t = ts.node(u).time
+            ax.axhline(t, ls=":", c="grey", lw=1)
+            sep = "\n" if v_pos[u] == 0 else " "
+            ax.text(
+                t/1.3 + 210,
+                ts.node(u).time,
+                f"Node {u},{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
+                va="center",
+                bbox=dict(facecolor='white', edgecolor='none', pad=0)
+            )
+
+    @staticmethod
+    def do_plot(day0, main_ax, hist_ax, df, title, xlab=True, ylab=True):
+        end = datetime.fromisoformat(day0)
+        dates = [
+            datetime(y, m, 1) 
+            for y in (2020, 2021, 2022)
+            for m in range(1, 13, 3)
+            if (end-datetime(y, m, 1)).days > -2
+        ]
+        main_ax.scatter(
+            df.tmrca_delta,
+            df.tmrca,
+            alpha=0.1,
+            c=np.array(["blue", "green"])[df.hmm_consistent.astype(int)],
+        )
+        if xlab:
+            hist_ax.set_xlabel("Divergence between parents of a recombinant (days)")
+        if ylab:
+            main_ax.set_ylabel(f"Date of parental MRCA")
+        main_ax.set_title(title)
+        main_ax.set_yticks(
             ticks=[(end-d).days for d in dates],
             labels=[str(d)[:7] for d in dates],
         )
-        axes[1].spines['top'].set_visible(False)
-        axes[1].spines['right'].set_visible(False)
-        axes[1].spines['left'].set_visible(False)
-        axes[1].get_yaxis().set_visible(False)
-        axes[1].hist(df.tmrca_delta, bins=60)
+        hist_ax.spines['top'].set_visible(False)
+        hist_ax.spines['right'].set_visible(False)
+        hist_ax.spines['left'].set_visible(False)
+        hist_ax.get_yaxis().set_visible(False)
+        hist_ax.hist(df.tmrca_delta, bins=60, density=True)
 
         x = []
         y = []
@@ -561,11 +613,115 @@ class RecombinantMrcas(Figure):
             if row.origin_nextclade_pango.startswith("X"):
                 x.append(row.tmrca_delta)
                 y.append(row.tmrca)
-                axes[0].text(x[-1], y[-1], row.origin_nextclade_pango, size=6)
-        axes[0].scatter(x, y, c="orange")
+                main_ax.text(x[-1], y[-1], row.origin_nextclade_pango, size=6)
+        main_ax.scatter(x, y, c="orange", s=8)
 
-        plt.savefig(prefix + ".pdf")
 
+class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
+    name = "recombination_node_mrcas"
+    num_common_lines = 5
+    def plot(self):
+        prefix = os.path.join("figures", self.name)
+
+        logging.info("Calculating node arities")
+        arities = node_arities(self.ts)
+
+        fig, axes = plt.subplots(
+            2, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [4, 1]})
+
+        mrca_counts = collections.Counter(self.df.parents_mrca)
+        common_mrcas = mrca_counts.most_common(self.num_common_lines)
+        logging.info(
+            "Calculating proportions of descendants for "
+            f"{['mrca: {} ({} counts)'.format(id, c) for id, c in common_mrcas]}")
+        proportions = descendant_proportion(self.ts, [c[0] for c in common_mrcas])
+        self.add_common_lines(axes[0], arities, 5, self.ts, proportions)
+        self.do_plot(
+            self.day0,
+            axes[0],
+            axes[1],
+            self.df,
+            "Parental lineages of recombination nodes in the “Long” ARG")
+        plt.savefig(prefix + ".pdf", bbox_inches='tight')
+
+class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
+    name = "supp_recombination_node_mrcas"
+
+    def plot(self):
+        prefix = os.path.join("figures", self.name)
+
+        #logging.info("Calculating node arities")
+        #arities = node_arities(self.ts)
+
+        fig, axes = plt.subplots(
+            nrows=4,
+            ncols=3,
+            figsize=(18, 12),
+            sharex=True,
+            sharey='row',
+            gridspec_kw={'height_ratios': [4, 1, 4, 1]},
+        )
+
+        parent_variants = [
+            {variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)}
+            for row in self.df.itertuples()
+        ]
+
+        #mrca_counts = collections.Counter(self.df.parents_mrca)
+        #self.add_common_lines(axes[0], mrca_counts, arities, 5, self.ts)
+        self.do_plot(
+            self.day0,
+            axes[0][0],
+            axes[1][0],
+            self.df[[v=={'alpha', 'alpha'} for v in parent_variants]],
+            "alpha + alpha rec nodes in the “Long” ARG",
+            xlab=False)
+
+        self.do_plot(
+            self.day0,
+            axes[0][1],
+            axes[1][1],
+            self.df[[v=={'delta', 'delta'} for v in parent_variants]],
+            "delta + delta rec nodes in the “Long” ARG",
+            xlab=False,
+            ylab=False,
+        )
+
+        self.do_plot(
+            self.day0,
+            axes[0][2],
+            axes[1][2],
+            self.df[[v=={'omicron', 'omicron'} for v in parent_variants]],
+            "omicron + omicron rec nodes in the “Long” ARG",
+            xlab=False,
+            ylab=False,
+        )
+
+        self.do_plot(
+            self.day0,
+            axes[2][0],
+            axes[3][0],
+            self.df[[v=={'alpha', 'delta'} for v in parent_variants]],
+            "alpha + delta rec nodes in the “Long” ARG")
+
+        self.do_plot(
+            self.day0,
+            axes[2][1],
+            axes[3][1],
+            self.df[[v=={'alpha', 'omicron'} for v in parent_variants]],
+            "alpha + omicron rec nodes in the “Long” ARG",
+            ylab=False,
+        )
+
+        self.do_plot(
+            self.day0,
+            axes[2][2],
+            axes[3][2],
+            self.df[[v=={'delta', 'omicron'} for v in parent_variants]],
+            "delta + omicron rec nodes in the “Long” ARG",
+            ylab=False,
+        )
+        plt.savefig(prefix + ".pdf", bbox_inches='tight')
 
 
 ######################################
@@ -583,6 +739,32 @@ def get_subclasses(cls):
 def ordinal(n):
     return ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"][n - 1]
 
+def descendant_proportion(ts, focal_nodes):
+    """
+    Take the Imputed lineage of each focal node and work out how many samples of that
+    lineage type have the focal node in their ancestry
+    """
+    focal_lineages = {u: ts.node(u).metadata['Imputed_lineage'] for u in focal_nodes}
+    sample_lists = {u: [] for u in focal_nodes}
+    # The time consuming step is finding the samples of each lineage type
+    # this would probably be quicker is we could be bothered to do it via TreeInfo
+    # but we don't have that calculated in the plotting code
+    ret = {}
+    for nd in tqdm.tqdm(ts.nodes(), desc="Finding sample lists"):
+        if nd.is_sample():
+            lineage = nd.metadata.get('Nextclade_pango', "")
+            for k, v in focal_lineages.items():
+                if lineage == v:
+                    sample_lists[k].append(nd.id)
+    for focal_node, samples in sample_lists.items():
+        sts, node_map = ts.simplify(samples, map_nodes=True, keep_unary=True)
+        ok = np.zeros(sts.num_samples, dtype=bool)
+        assert sts.samples().max() == sts.num_samples - 1
+        for tree in sts.trees():
+            for u in tree.samples(node_map[focal_node]):
+                ok[u] = True
+        ret[focal_node] = np.sum(ok) / len(ok)
+    return ret
 ######################################
 #
 # Main
