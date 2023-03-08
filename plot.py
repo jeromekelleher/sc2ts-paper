@@ -600,7 +600,13 @@ class RecombinationNodeMrcas(Figure):
             if row.origin_nextclade_pango.startswith("X"):
                 x.append(row.tmrca_delta)
                 y.append(row.tmrca)
-                main_ax.text(x[-1], y[-1], row.origin_nextclade_pango, size=6)
+                main_ax.text(
+                    x[-1],
+                    y[-1] - 10,  # Tweak so it is above the point
+                    row.origin_nextclade_pango,
+                    size=6,
+                    ha='center'
+                )
         main_ax.scatter(x, y, c="orange", s=8)
 
 
