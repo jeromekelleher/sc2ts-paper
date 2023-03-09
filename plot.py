@@ -636,7 +636,7 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
             axes[0],
             axes[1],
             self.df,
-            "Parental lineages of recombination breakpoints in the “Long” ARG",
+            "Parental lineages of recombination breakpoints in the “long” ARG",
             label_tweak=[6, -8],
         )
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
@@ -670,7 +670,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[0][0],
             axes[1][0],
             self.df[[v=={'alpha', 'alpha'} for v in parent_variants]],
-            "alpha|alpha breakpoints in the “Long” ARG",
+            "alpha|alpha breakpoints in the “long” ARG",
             label_tweak=label_tweak,
             xlab=False)
 
@@ -678,7 +678,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[0][1],
             axes[1][1],
             self.df[[v=={'delta', 'delta'} for v in parent_variants]],
-            "delta|delta breakpoints in the “Long” ARG",
+            "delta|delta breakpoints in the “long” ARG",
             label_tweak=label_tweak,
             xlab=False,
             ylab=False,
@@ -688,7 +688,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[0][2],
             axes[1][2],
             self.df[[v=={'omicron', 'omicron'} for v in parent_variants]],
-            "omicron|omicron breakpoints in the “Long” ARG",
+            "omicron|omicron breakpoints in the “long” ARG",
             label_tweak=label_tweak,
             xlab=False,
             ylab=False,
@@ -698,7 +698,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[2][0],
             axes[3][0],
             self.df[[v=={'alpha', 'delta'} for v in parent_variants]],
-            "alpha|delta breakpoints in the “Long” ARG",
+            "alpha|delta breakpoints in the “long” ARG",
             label_tweak=label_tweak,
         )
 
@@ -706,7 +706,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[2][1],
             axes[3][1],
             self.df[[v=={'alpha', 'omicron'} for v in parent_variants]],
-            "alpha|omicron breakpoints in the “Long” ARG",
+            "alpha|omicron breakpoints in the “long” ARG",
             label_tweak=label_tweak,
             ylab=False,
         )
@@ -715,7 +715,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[2][2],
             axes[3][2],
             self.df[[v=={'delta', 'omicron'} for v in parent_variants]],
-            "delta|omicron breakpoints in the “Long” ARG",
+            "delta|omicron breakpoints in the “long” ARG",
             label_tweak=label_tweak,
             ylab=False,
         )
