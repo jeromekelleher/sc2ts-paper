@@ -565,7 +565,7 @@ class RecombinationNodeMrcas(Figure):
                 bbox=dict(facecolor='white', edgecolor='none', pad=0)
             )
 
-    def do_plot(self, main_ax, hist_ax, df, title, xlab=True, ylab=True):
+    def do_plot(self, main_ax, hist_ax, df, title, label_tweak, xlab=True, ylab=True):
         dates = [
             datetime(y, m, 1) 
             for y in (2020, 2021, 2022)
@@ -587,13 +587,13 @@ class RecombinationNodeMrcas(Figure):
             ticks=[(self.basetime-d).days for d in dates],
             labels=[str(d)[:7] for d in dates],
         )
-        main_ax.invert_yaxis()
         hist_ax.spines['top'].set_visible(False)
         hist_ax.spines['right'].set_visible(False)
         hist_ax.spines['left'].set_visible(False)
         hist_ax.get_yaxis().set_visible(False)
         hist_ax.hist(df.tmrca_delta, bins=60, density=True)
 
+        
         x = []
         y = []
         for row in df.itertuples():
@@ -601,13 +601,15 @@ class RecombinationNodeMrcas(Figure):
                 x.append(row.tmrca_delta)
                 y.append(row.tmrca)
                 main_ax.text(
-                    x[-1],
-                    y[-1] - 10,  # Tweak so it is above the point
+                    x[-1] + label_tweak[0],
+                    y[-1] + label_tweak[1],  # Tweak so it is above the point
                     row.origin_nextclade_pango,
                     size=6,
-                    ha='center'
+                    ha='center',
+                    rotation=70,
                 )
         main_ax.scatter(x, y, c="orange", s=8)
+        main_ax.invert_yaxis()
 
 
 class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
@@ -634,7 +636,9 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
             axes[0],
             axes[1],
             self.df,
-            "Parental lineages of recombination nodes in the “Long” ARG")
+            "Parental lineages of recombination nodes in the “Long” ARG",
+            label_tweak=[6, -8],
+        )
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
 
 class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
@@ -648,14 +652,17 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             ncols=3,
             figsize=(18, 12),
             sharex=True,
-            sharey='row',
             gridspec_kw={'height_ratios': [4, 1, 4, 1]},
         )
+        for row_idx in range(0, axes.shape[0], 2):
+            for col_idx in range(axes.shape[1]):
+                axes[row_idx, col_idx].set_ylim(self.df.tmrca.min(), self.df.tmrca.max())
 
         parent_variants = [
             {variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)}
             for row in self.df.itertuples()
         ]
+        label_tweak=[10, -13]
 
         #mrca_counts = collections.Counter(self.df.parents_mrca)
         #self.add_common_lines(axes[0], mrca_counts, 5, self.ts)
@@ -664,6 +671,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[1][0],
             self.df[[v=={'alpha', 'alpha'} for v in parent_variants]],
             "alpha + alpha rec nodes in the “Long” ARG",
+            label_tweak=label_tweak,
             xlab=False)
 
         self.do_plot(
@@ -671,6 +679,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[1][1],
             self.df[[v=={'delta', 'delta'} for v in parent_variants]],
             "delta + delta rec nodes in the “Long” ARG",
+            label_tweak=label_tweak,
             xlab=False,
             ylab=False,
         )
@@ -680,6 +689,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[1][2],
             self.df[[v=={'omicron', 'omicron'} for v in parent_variants]],
             "omicron + omicron rec nodes in the “Long” ARG",
+            label_tweak=label_tweak,
             xlab=False,
             ylab=False,
         )
@@ -688,13 +698,16 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[2][0],
             axes[3][0],
             self.df[[v=={'alpha', 'delta'} for v in parent_variants]],
-            "alpha + delta rec nodes in the “Long” ARG")
+            "alpha + delta rec nodes in the “Long” ARG",
+            label_tweak=label_tweak,
+        )
 
         self.do_plot(
             axes[2][1],
             axes[3][1],
             self.df[[v=={'alpha', 'omicron'} for v in parent_variants]],
             "alpha + omicron rec nodes in the “Long” ARG",
+            label_tweak=label_tweak,
             ylab=False,
         )
 
@@ -703,6 +716,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[3][2],
             self.df[[v=={'delta', 'omicron'} for v in parent_variants]],
             "delta + omicron rec nodes in the “Long” ARG",
+            label_tweak=label_tweak,
             ylab=False,
         )
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
