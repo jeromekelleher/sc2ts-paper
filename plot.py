@@ -1,3 +1,5 @@
+import argparse
+import collections
 from datetime import datetime, timedelta
 import hashlib
 import re
@@ -10,14 +12,17 @@ import logging
 from IPython.display import SVG, HTML
 from matplotlib.colors import rgb2hex
 from matplotlib.cm import get_cmap
+from matplotlib import pyplot as plt
 import numpy as np
+import tqdm
 import tszip
 import tskit
+import pandas as pd
 
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
 import sc2ts  # install with python -m pip install git+https://github.com/jeromekelleher/sc2ts
 
-from utils import load_tsz_file
+import utils
 
 # Redefine the path to your local dendroscope Java app & chromium app here
 dendroscope_binary = "/Applications/Dendroscope/Dendroscope.app/Contents/MacOS/JavaApplicationStub"
@@ -25,10 +30,10 @@ chromium_binary = "/usr/local/bin/chromium"
 
 class FocalTreeTs:
     """Convenience class to access a single focal tree in a tree sequence"""
-    def __init__(self, ts, pos, day_0=None):
+    def __init__(self, ts, pos, basetime=None):
         self.tree = ts.at(pos, sample_lists=True)
         self.pos = pos
-        self.day_0 = day_0
+        self.basetime = basetime
 
     @property
     def ts(self):
@@ -39,7 +44,7 @@ class FocalTreeTs:
         return self.tree.tree_sequence.samples()
         
     def timediff(self, isodate):
-        return getattr(self.day_0 - datetime.fromisoformat(isodate), self.ts.time_units)
+        return getattr(self.basetime - datetime.fromisoformat(isodate), self.ts.time_units)
 
     def strain(self, u):
         return self.tree.tree_sequence.node(u).metadata.get("strain", "")
@@ -51,32 +56,90 @@ class FocalTreeTs:
         )
         return b2b.digest()
 
-        
     
-def load_nextstrain(filename, span):
+class Nextstrain:
+
+    def __init__(self, filename, span, prefix="data"):
+        """
+        Load from a nextstrain nexus file.
+        Note that NextClade also produces a tree with  more samples but no branch lengths
+        e.g. at 
+            https://github.com/nextstrain/nextclade_data/tree/
+            release/data/datasets/sars-cov-2/references/MN908947/versions
+        It is possible to load this using
+            nextclade_json_ts = sc2ts.load_nextclade_json("../results/tree.json")
+        """
+        ts = sc2ts.newick_from_nextstrain_with_comments(
+            sc2ts.extract_newick_from_nextstrain_nexus(os.path.join(prefix, filename)),
+            min_edge_length=0.0001 * 1/365,
+            span=span,
+        )
+        # Remove "samples" without names
+        keep = [n.id for n in ts.nodes() if n.is_sample() and "strain" in n.metadata]
+        self.ts = ts.simplify(keep)
+
+    @staticmethod
+    def pango_names(ts):
+        # This is relevant to any nextstrain tree seq, not just the stored one
+        return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
+
+def variant_name(pango):
     """
-    Load from a nextstrain nexus file.
-    Note that NextClade also produces a tree with  more samples but no branch lengths
-    e.g. at 
-        https://github.com/nextstrain/nextclade_data/tree/
-        release/data/datasets/sars-cov-2/references/MN908947/versions
-    It is possible to load this using
-        nextclade_json_ts = sc2ts.load_nextclade_json("../results/tree.json")
+    Classification from the following site
+    https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html
+    Alpha (B.1.1.7 and Q lineages)
+    Beta (B.1.351 and descendent lineages)
+    Gamma (P.1 and descendent lineages)
+    Delta (B.1.617.2 and AY lineages)
+    Epsilon (B.1.427 and B.1.429)
+    Eta (B.1.525)
+    Iota (B.1.526)
+    Kappa (B.1.617.1)
+    Mu (B.1.621, B.1.621.1)
+    Zeta (P.2)
+    Omicron (B.1.1.529, BA.1, BA.1.1, BA.2, BA.3, BA.4 and BA.5 lineages)
     """
-    ts = sc2ts.newick_from_nextstrain_with_comments(
-        sc2ts.extract_newick_from_nextstrain_nexus(filename),
-        min_edge_length=0.0001 * 1/365,
-        span=span,
-    )
-    # Remove "samples" without names
-    keep = [n.id for n in ts.nodes() if n.is_sample() and "strain" in n.metadata]
-    return ts.simplify(keep)
+    if pango == "B.1.1.7" or pango.startswith("Q"):
+        return("Alpha")
+    if pango.startswith("B.1.351"):
+        return "Beta"
+    if pango.startswith("P.1"):
+        return "Gamma"
+    if pango.startswith("AY") or pango == "B.1.617.2":
+        return("Delta")
+    if pango == "B.1.427" or pango == "B.1.429":
+        return "Epsilon"
+    if pango == "B.1.526":
+        return "Iota"
+    if pango == "B.1.617.1":
+        return "Kappa"
+    if pango == "B.1.621" or pango == "B.1.621.1":
+        return "Mu"
+    if pango.startswith("P.2"):
+        return "Zeta"
+    if pango == "B.1.1.529" or pango.startswith("BA."):
+        return "Omicron"
+    return("")
 
-def pango_names(ts):
-    return {n.metadata.get("comment", {}).get("pango_lineage", "") for n in ts.nodes()}    
+
+class Figure:
+    """
+    Superclass for creating figures. Each figure is a subclass
+    """
+    name = None
+    ts_dir = "data"
+    wide_fn = "upgma-full-md-30-mm-3-2021-06-30-recinfo-il.ts.tsz"
+    long_fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+
+    def plot(self):
+        raise NotImplementedError()
 
 
-class Cophylogeny:
+class Cophylogeny(Figure):
+    name = None
+    pos = 0  # Position along tree seq to plot trees
+    sc2ts_filename = None
+    nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
 
     # Utility functions
     @staticmethod
@@ -111,14 +174,19 @@ class Cophylogeny:
                     order.append([int(n[1:]) for n in re.findall(r'n\d+', line)])
         return order
 
-    def __init__(self, sc2ts_arg, nextstrain_ts, pos):
+    def __init__(self, args):
         """
-        Return two simplified trees, which use the timescale in arg.ts
+        Defines two simplified tree sequences, focussed on a specific tree. These are
+        stored in self.sc2ts and self.nxstr
         """
+        sc2ts_arg, basetime = utils.load_tsz(self.ts_dir, self.sc2ts_filename)
+        nextstrain = Nextstrain(self.nextstrain_ts_fn, span=sc2ts_arg.sequence_length)
+        
+        # Slow step: find the samples in sc2ts_arg.ts also in nextstrain.ts, and subset
         sc2ts_its, nxstr_its = sc2ts.subset_to_intersection(
-            sc2ts_arg.ts, nextstrain_ts, filter_sites=False, keep_unary=True)
+            sc2ts_arg, nextstrain.ts, filter_sites=False, keep_unary=True)
             
-        print(
+        logging.info(
             f"Num samples in subsetted ARG={sc2ts_its.num_samples} vs "
             f"NextStrain={nxstr_its.num_samples}"
         )
@@ -137,15 +205,14 @@ class Cophylogeny:
         for u, v in zip(sc2ts_simp_its.samples(), nxstr_its.samples()):
             assert sc2ts_simp_its.node(u).metadata["strain"] == nxstr_its.node(v).metadata["strain"]
     
-        print(
-            "Removed",
-            sc2ts_its.num_samples-sc2ts_simp_its.num_samples,
-            "samples in sc2 not in nextstrain",
+        logging.info(
+            f"Removed {sc2ts_its.num_samples-sc2ts_simp_its.num_samples} samples "
+            "in sc2 not in nextstrain"
         )
     
         ## Filter from trees
         # Some samples in sc2ts_simp_its are internal. Remove those from both datasets
-        keep = np.array([u for u in sc2ts_simp_its.at(pos).leaves()])
+        keep = np.array([u for u in sc2ts_simp_its.at(self.pos).leaves()])
     
         # Change the random seed here to change the untangling start point
         #rng = np.random.default_rng(777)
@@ -153,15 +220,14 @@ class Cophylogeny:
         sc2ts_tip = sc2ts_simp_its.simplify(keep)
         assert nxstr_its.num_trees == 1
         nxstr_tip = nxstr_its.simplify(keep)
-        print(
-            "Removed internal samples in first tree. Trees now have",
-            sc2ts_tip.num_samples,
-            "leaf samples"
+        logging.info(
+            "Removed internal samples in first tree. Trees now have "
+            f"{sc2ts_tip.num_samples} leaf samples"
         )
         
         # Call the java untangling program
         sc2ts_order, nxstr_order = self.run_nnet_untangle(
-            [sc2ts_tip.at(pos), nxstr_tip.first()])
+            [sc2ts_tip.at(self.pos), nxstr_tip.first()])
     
         # Align the time in the nextstrain tree to the sc2ts tree
         ns_sc2_time_difference = []
@@ -177,14 +243,15 @@ class Cophylogeny:
     
         nxstr_order = list(reversed(nxstr_order))  # RH tree rotated so reverse the order
 
-        self.sc2ts = FocalTreeTs(sc2ts_tip.simplify(sc2ts_order), pos, sc2ts_arg.day_0)
-        self.nxstr = FocalTreeTs(nxstr_tip.simplify(nxstr_order), pos, sc2ts_arg.day_0 - dt)
+        self.sc2ts = FocalTreeTs(
+            sc2ts_tip.simplify(sc2ts_order), self.pos, basetime)
+        self.nxstr = FocalTreeTs(
+            nxstr_tip.simplify(nxstr_order), self.pos, basetime - dt)
 
-        print(self.sc2ts.ts.num_trees, 'trees in the simplified "backbone" ARG')
+        logging.info(f"{self.sc2ts.ts.num_trees} trees in the simplified 'backbone' ARG")
 
-    def plot(self, prefix, use_colour = "Pango"):
-        # Slow step: find the samples in arg.ts also in nextstrain_ts, and subset
-    
+    def plot(self):
+        prefix = os.path.join("figures", self.name)
         strain_id_map = {
             self.sc2ts.strain(n): n
             for n in self.sc2ts.samples
@@ -193,7 +260,7 @@ class Cophylogeny:
     
         # A few color schemes to try
         cmap = get_cmap("tab20b", 50)
-        pango = pango_names(self.nxstr.ts)
+        pango = Nextstrain.pango_names(self.nxstr.ts)
         colours = {
             # Name in ns comment metadata, colour scheme
             "Pango": {"md_key": "pango_lineage", "scheme": sc2ts.pango_colours},
@@ -231,7 +298,7 @@ class Cophylogeny:
     
     
         # Assign colours
-        col = colours[use_colour]
+        col = colours[self.use_colour]
         nxstr_styles = []
         sc2ts_styles = []
         legend = {}
@@ -430,7 +497,7 @@ class Cophylogeny:
             svg2 +
             '</g>' + 
             '<g class="legend" transform="translate(800 30)">' +
-            f'<text>{use_colour} lineage</text>' +
+            f'<text>{self.use_colour} lineage</text>' +
             "".join(f'<line x1="0" y1="{25+i*15}" x2="15" y2="{25+i*15}" stroke-width="2" stroke="{legend[nm]}" /><text font-size="10pt" x="20" y="{30+i*15}">{nm}</text>' for i, nm in enumerate(sorted(legend))) +
             '</g>' + 
             '</svg>'
@@ -447,22 +514,261 @@ class Cophylogeny:
             f"--print-to-pdf={prefix}.pdf",
             f"{prefix}.svg",
         ])
+
+
+class CophylogenyWide(Cophylogeny):
+    name = "cophylogeny_wide"
+    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo-il.ts.tsz"
+    use_colour = "Pango"
+
+
+class CophylogenyLong(Cophylogeny):
+    name = "supp_cophylogeny_long"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    use_colour = "Pango"
+
+
+class RecombinationNodeMrcas(Figure):
+    name = None
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    csv_fn = "breakpoints_{}.csv"
+    data_dir = "data"
+    
+    
+    def __init__(self, args):
+        prefix = utils.snip_tsz_suffix(self.sc2ts_filename)
+        self.df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(prefix)))
+        self.ts, self.basetime = utils.load_tsz(self.data_dir, self.sc2ts_filename)
+
+    @staticmethod
+    def add_common_lines(ax, num, ts, common_proportions):
+        v_pos = {k: v for v, k in enumerate(common_proportions.keys())}
+        for i, (u, (pango, prop)) in enumerate(common_proportions.items()):
+            n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
+            logging.info(
+                f"{ordinal(i+1)} most frequent parent MRCA has id {u} (imputed: {pango}) "
+                f"@ time={ts.node(u).time}; "
+                f"num_children={n_children}"
+            )
+            # Find all samples of the focal lineage
+            t = ts.node(u).time
+            ax.axhline(t, ls=":", c="grey", lw=1)
+            sep = "\n" if v_pos[u] == 0 else " "
+            most = "Most" if v_pos[u] == 0 else ordinal(i+1) + " most"
+            ax.text(
+                (t/1.15 + 100)/7,  # Hand tweaked to get nice label positions
+                ts.node(u).time,
+                f"{most} frequent MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
+                fontsize=8,
+                va="center",
+                bbox=dict(facecolor='white', edgecolor='none', pad=0)
+            )
+
+    def do_plot(self, main_ax, hist_ax, df, title, label_tweak, xlab=True, ylab=True):
+        dates = [
+            datetime(y, m, 1) 
+            for y in (2020, 2021, 2022)
+            for m in range(1, 13, 3)
+            if (self.basetime-datetime(y, m, 1)).days > -2
+        ]
+        main_ax.scatter(
+            df.tmrca_delta/7,
+            df.tmrca,
+            alpha=0.1,
+            c=np.array(["blue", "green"])[df.hmm_consistent.astype(int)],
+        )
+        if xlab:
+            hist_ax.set_xlabel("Estimated divergence between lineage pairs (weeks)")
+        if ylab:
+            main_ax.set_ylabel(f"Estimated MRCA date")
+        main_ax.set_title(title)
+        main_ax.set_yticks(
+            ticks=[(self.basetime-d).days for d in dates],
+            labels=[str(d)[:7] for d in dates],
+        )
+        hist_ax.spines['top'].set_visible(False)
+        hist_ax.spines['right'].set_visible(False)
+        hist_ax.spines['left'].set_visible(False)
+        hist_ax.get_yaxis().set_visible(False)
+        hist_ax.hist(df.tmrca_delta/7, bins=60, density=True)
+
         
+        x = []
+        y = []
+        for row in df.itertuples():
+            if row.origin_nextclade_pango.startswith("X"):
+                x.append(row.tmrca_delta/7)
+                y.append(row.tmrca)
+                main_ax.text(
+                    x[-1] + label_tweak[0],
+                    y[-1] + label_tweak[1],  # Tweak so it is above the point
+                    row.origin_nextclade_pango,
+                    size=6,
+                    ha='center',
+                    rotation=70,
+                )
+        main_ax.scatter(x, y, c="orange", s=8)
+        main_ax.invert_yaxis()
+
+
+class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
+    name = "recombination_node_mrcas"
+    num_common_lines = 5
+    def plot(self):
+        prefix = os.path.join("figures", self.name)
+
+        fig, axes = plt.subplots(
+            2, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [4, 1]})
+
+        mrca_counts = collections.Counter(self.df.parents_mrca)
+        common_mrcas = mrca_counts.most_common(self.num_common_lines)
+        logging.info(
+            "Calculating proportions of descendants for "
+            f"{['mrca: {} ({} counts)'.format(id, c) for id, c in common_mrcas]}")
+        focal_node_map = {c[0]: None for c in common_mrcas}
+        focal_node_map[519829] = "BA.1"
+        # 5868 is a common MRCA almost exactly contemporary with the most common node
+        del focal_node_map[5868]
+        proportions = descendant_proportion(self.ts, focal_node_map)
+        self.add_common_lines(axes[0], 5, self.ts, proportions)
+        self.do_plot(
+            axes[0],
+            axes[1],
+            self.df,
+            "MRCAs of lineage pairs at each recombination breakpoint in the “long” ARG",
+            label_tweak=[0.7, -8],
+        )
+        plt.savefig(prefix + ".pdf", bbox_inches='tight')
+
+class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
+    name = "supp_recombination_node_mrcas"
+
+    def subplot(self, ax_main, ax_hist, restrict, parent_variants, labs=None, **kwargs):
+        if labs is not None:
+            kwargs["xlab"] = kwargs["ylab"] = labs
+        self.do_plot(
+            ax_main,
+            ax_hist,
+            self.df[[v==set(restrict) for v in parent_variants]],
+            f"{'|'.join(restrict)} breakpoints in the “long” ARG",
+            label_tweak=[1.3, -13],
+            **kwargs,
+        )
+
+    def plot(self):
+        prefix = os.path.join("figures", self.name)
+
+        fig, axes = plt.subplots(
+            nrows=4,
+            ncols=3,
+            figsize=(18, 12),
+            sharex=True,
+            gridspec_kw={'height_ratios': [4, 1, 4, 1]},
+        )
+        for row_idx in range(0, axes.shape[0], 2):
+            for col_idx in range(axes.shape[1]):
+                axes[row_idx, col_idx].set_ylim(self.df.tmrca.min(), self.df.tmrca.max())
+
+        parent_variants = [
+            {variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)}
+            for row in self.df.itertuples()
+        ]
+
+        #mrca_counts = collections.Counter(self.df.parents_mrca)
+        #self.add_common_lines(axes[0], mrca_counts, 5, self.ts)
+        self.subplot(
+            axes[0][0], axes[1][0], ['Alpha', 'Alpha'], parent_variants, xlab=False)
+        self.subplot(
+            axes[0][1], axes[1][1], ['Delta', 'Delta'], parent_variants, labs=False)
+        self.subplot(
+            axes[0][2], axes[1][2], ['Omicron', 'Omicron'], parent_variants, labs=False)
+        self.subplot(
+            axes[2][0], axes[3][0], ['Alpha', 'Delta'], parent_variants)
+        self.subplot(
+            axes[2][1], axes[3][1], ['Alpha', 'Omicron'], parent_variants, ylab=False)
+        self.subplot(
+            axes[2][2], axes[3][2], ['Delta', 'Omicron'], parent_variants, ylab=False)
+
+        plt.savefig(prefix + ".pdf", bbox_inches='tight')
+
+
+######################################
+#
+# Utility functions
+#
+######################################
+
+
+def get_subclasses(cls):
+    for subclass in cls.__subclasses__():
+        yield from get_subclasses(subclass)
+        yield subclass
+
+def ordinal(n):
+    return ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh"][n - 1]
+
+def descendant_proportion(ts, focal_nodes_map):
+    """
+    Take each focal node which maps to an imputed lineage, and work out how many
+    samples of that lineage type have the focal node in their ancestry. If
+    it maps to None, use the ts to get the imputed lineage of that node
+    """
+    focal_lineages = {
+        u: ts.node(u).metadata['Imputed_lineage'] if lin is None else lin
+        for u, lin in focal_nodes_map.items()}
+    sample_lists = {u: [] for u in focal_nodes_map}
+    # The time consuming step is finding the samples of each lineage type
+    # this would probably be quicker is we could be bothered to do it via TreeInfo
+    # but we don't have that calculated in the plotting code
+    ret = {}
+    for nd in tqdm.tqdm(ts.nodes(), desc="Finding sample lists"):
+        if nd.is_sample():
+            lineage = nd.metadata.get('Nextclade_pango', "")
+            for k, v in focal_lineages.items():
+                if lineage == v:
+                    sample_lists[k].append(nd.id)
+    for focal_node, samples in sample_lists.items():
+        sts, node_map = ts.simplify(samples, map_nodes=True, keep_unary=True)
+        ok = np.zeros(sts.num_samples, dtype=bool)
+        assert sts.samples().max() == sts.num_samples - 1
+        for tree in sts.trees():
+            for u in tree.samples(node_map[focal_node]):
+                ok[u] = True
+        ret[focal_node] = focal_lineages[focal_node], np.sum(ok) / len(ok)
+    return ret
+######################################
+#
+# Main
+#
+######################################
+
+def main():
+    figures = list(get_subclasses(Figure))
+
+    name_map = {fig.name: fig for fig in figures if fig.name is not None}
+
+    parser = argparse.ArgumentParser(description="Make the plots for specific figures.")
+    parser.add_argument('-v', '--verbosity', action='count', default=0) 
+    parser.add_argument(
+        "name",
+        type=str,
+        help="figure name",
+        choices=sorted(list(name_map.keys()) + ["all"]),
+    )
+    args = parser.parse_args()
+    
+    levels = [logging.WARNING, logging.INFO, logging.DEBUG]
+    level = levels[min(args.verbosity, len(levels) - 1)]  # cap to last level index
+    logging.basicConfig(level=level)
+
+    if args.name == "all":
+        for _, fig in name_map.items():
+            if fig in figures:
+                fig(args).plot()
+    else:
+        fig = name_map[args.name](args)
+        fig.plot()
+
 
 if __name__ == "__main__":
-
-    wide = load_tsz_file("2021-06-30", "upgma-full-md-30-mm-3-{}-recinfo-il.ts.tsz")
-    long = load_tsz_file("2022-06-30", "upgma-mds-1000-md-30-mm-3-{}-recinfo-il.ts.tsz")
-    nextstrain_ts = load_nextstrain(
-        "data/nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex",
-        span=wide.ts.sequence_length,
-    )
-    
-    # TODO use argparse to fire off different functions to create each plot
-
-    # Cophylogeny plots
-    cophylo = Cophylogeny(wide, nextstrain_ts, pos=0)
-    cophylo.plot(prefix="figures/cophylogeny_wide") 
-
-    cophylo = Cophylogeny(long, nextstrain_ts, pos=0)
-    cophylo.plot(prefix="figures/supp_cophylogeny_long") 
+    main()
