@@ -100,27 +100,25 @@ def variant_name(pango):
     Omicron (B.1.1.529, BA.1, BA.1.1, BA.2, BA.3, BA.4 and BA.5 lineages)
     """
     if pango == "B.1.1.7" or pango.startswith("Q"):
-        return("alpha")
+        return("Alpha")
     if pango.startswith("B.1.351"):
-        return "beta"
+        return "Beta"
     if pango.startswith("P.1"):
-        return "gamma"
+        return "Gamma"
     if pango.startswith("AY") or pango == "B.1.617.2":
-        return("delta")
+        return("Delta")
     if pango == "B.1.427" or pango == "B.1.429":
-        return "epsilon"
+        return "Epsilon"
     if pango == "B.1.526":
-        return "iota"
+        return "Iota"
     if pango == "B.1.617.1":
-        return "kappa"
-    if pango == "B.1.526":
-        return "iota"
+        return "Kappa"
     if pango == "B.1.621" or pango == "B.1.621.1":
-        return "mu"
+        return "Mu"
     if pango.startswith("P.2"):
-        return "zeta"
+        return "Zeta"
     if pango == "B.1.1.529" or pango.startswith("BA."):
-        return "omicron"
+        return "Omicron"
     return("")
 
 
@@ -548,7 +546,7 @@ class RecombinationNodeMrcas(Figure):
         for i, (u, (pango, prop)) in enumerate(common_proportions.items()):
             n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
             logging.info(
-                f"{ordinal(i+1)} most common parent MRCA has id {u} (imputed: {pango}) "
+                f"{ordinal(i+1)} most frequent parent MRCA has id {u} (imputed: {pango}) "
                 f"@ time={ts.node(u).time}; "
                 f"num_children={n_children}"
             )
@@ -556,10 +554,11 @@ class RecombinationNodeMrcas(Figure):
             t = ts.node(u).time
             ax.axhline(t, ls=":", c="grey", lw=1)
             sep = "\n" if v_pos[u] == 0 else " "
+            most = "Most" if v_pos[u] == 0 else ordinal(i+1) + " most"
             ax.text(
-                t/1.3 + 210,
+                (t/1.15 + 100)/7,  # Hand tweaked to get nice label positions
                 ts.node(u).time,
-                f"Node {u},{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
+                f"{most} frequent MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
                 fontsize=8,
                 va="center",
                 bbox=dict(facecolor='white', edgecolor='none', pad=0)
@@ -573,15 +572,15 @@ class RecombinationNodeMrcas(Figure):
             if (self.basetime-datetime(y, m, 1)).days > -2
         ]
         main_ax.scatter(
-            df.tmrca_delta,
+            df.tmrca_delta/7,
             df.tmrca,
             alpha=0.1,
             c=np.array(["blue", "green"])[df.hmm_consistent.astype(int)],
         )
         if xlab:
-            hist_ax.set_xlabel("Divergence between parents of a recombinant (days)")
+            hist_ax.set_xlabel("Estimated divergence between lineage pairs (weeks)")
         if ylab:
-            main_ax.set_ylabel(f"Date of parental MRCA")
+            main_ax.set_ylabel(f"Estimated MRCA date")
         main_ax.set_title(title)
         main_ax.set_yticks(
             ticks=[(self.basetime-d).days for d in dates],
@@ -591,14 +590,14 @@ class RecombinationNodeMrcas(Figure):
         hist_ax.spines['right'].set_visible(False)
         hist_ax.spines['left'].set_visible(False)
         hist_ax.get_yaxis().set_visible(False)
-        hist_ax.hist(df.tmrca_delta, bins=60, density=True)
+        hist_ax.hist(df.tmrca_delta/7, bins=60, density=True)
 
         
         x = []
         y = []
         for row in df.itertuples():
             if row.origin_nextclade_pango.startswith("X"):
-                x.append(row.tmrca_delta)
+                x.append(row.tmrca_delta/7)
                 y.append(row.tmrca)
                 main_ax.text(
                     x[-1] + label_tweak[0],
@@ -636,13 +635,25 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
             axes[0],
             axes[1],
             self.df,
-            "Parental lineages of recombination breakpoints in the “long” ARG",
-            label_tweak=[6, -8],
+            "MRCAs of lineage pairs at each recombination breakpoint in the “long” ARG",
+            label_tweak=[0.7, -8],
         )
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
 
 class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
     name = "supp_recombination_node_mrcas"
+
+    def subplot(self, ax_main, ax_hist, restrict, parent_variants, labs=None, **kwargs):
+        if labs is not None:
+            kwargs["xlab"] = kwargs["ylab"] = labs
+        self.do_plot(
+            ax_main,
+            ax_hist,
+            self.df[[v==set(restrict) for v in parent_variants]],
+            f"{'|'.join(restrict)} breakpoints in the “long” ARG",
+            label_tweak=[1.3, -13],
+            **kwargs,
+        )
 
     def plot(self):
         prefix = os.path.join("figures", self.name)
@@ -662,63 +673,22 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             {variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)}
             for row in self.df.itertuples()
         ]
-        label_tweak=[10, -13]
 
         #mrca_counts = collections.Counter(self.df.parents_mrca)
         #self.add_common_lines(axes[0], mrca_counts, 5, self.ts)
-        self.do_plot(
-            axes[0][0],
-            axes[1][0],
-            self.df[[v=={'alpha', 'alpha'} for v in parent_variants]],
-            "alpha|alpha breakpoints in the “long” ARG",
-            label_tweak=label_tweak,
-            xlab=False)
+        self.subplot(
+            axes[0][0], axes[1][0], ['Alpha', 'Alpha'], parent_variants, xlab=False)
+        self.subplot(
+            axes[0][1], axes[1][1], ['Delta', 'Delta'], parent_variants, labs=False)
+        self.subplot(
+            axes[0][2], axes[1][2], ['Omicron', 'Omicron'], parent_variants, labs=False)
+        self.subplot(
+            axes[2][0], axes[3][0], ['Alpha', 'Delta'], parent_variants)
+        self.subplot(
+            axes[2][1], axes[3][1], ['Alpha', 'Omicron'], parent_variants, ylab=False)
+        self.subplot(
+            axes[2][2], axes[3][2], ['Delta', 'Omicron'], parent_variants, ylab=False)
 
-        self.do_plot(
-            axes[0][1],
-            axes[1][1],
-            self.df[[v=={'delta', 'delta'} for v in parent_variants]],
-            "delta|delta breakpoints in the “long” ARG",
-            label_tweak=label_tweak,
-            xlab=False,
-            ylab=False,
-        )
-
-        self.do_plot(
-            axes[0][2],
-            axes[1][2],
-            self.df[[v=={'omicron', 'omicron'} for v in parent_variants]],
-            "omicron|omicron breakpoints in the “long” ARG",
-            label_tweak=label_tweak,
-            xlab=False,
-            ylab=False,
-        )
-
-        self.do_plot(
-            axes[2][0],
-            axes[3][0],
-            self.df[[v=={'alpha', 'delta'} for v in parent_variants]],
-            "alpha|delta breakpoints in the “long” ARG",
-            label_tweak=label_tweak,
-        )
-
-        self.do_plot(
-            axes[2][1],
-            axes[3][1],
-            self.df[[v=={'alpha', 'omicron'} for v in parent_variants]],
-            "alpha|omicron breakpoints in the “long” ARG",
-            label_tweak=label_tweak,
-            ylab=False,
-        )
-
-        self.do_plot(
-            axes[2][2],
-            axes[3][2],
-            self.df[[v=={'delta', 'omicron'} for v in parent_variants]],
-            "delta|omicron breakpoints in the “long” ARG",
-            label_tweak=label_tweak,
-            ylab=False,
-        )
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
 
 
@@ -735,7 +705,7 @@ def get_subclasses(cls):
         yield subclass
 
 def ordinal(n):
-    return ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"][n - 1]
+    return ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh"][n - 1]
 
 def descendant_proportion(ts, focal_nodes_map):
     """
