@@ -13,5 +13,5 @@ if __name__ == "__main__":
     long, basetime = utils.load_tsz("data", fn)
     logging.info("Collecting tree information, may take a while")
     long_treeinfo = sc2ts.TreeInfo(long)
-    df = long_treeinfo.export_recombination_node_breakpoints()
+    df = long_treeinfo.export_recombinant_breakpoints()
     df.to_csv(f"data/breakpoints_{prefix}.csv")
