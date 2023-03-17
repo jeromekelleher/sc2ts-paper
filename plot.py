@@ -103,7 +103,7 @@ def variant_name(pango):
         return("Alpha")
     if pango.startswith("B.1.351"):
         return "Beta"
-    if pango.startswith("P.1"):
+    if pango == "P.1" or pango.startswith("P.1."):
         return "Gamma"
     if pango.startswith("AY") or pango == "B.1.617.2":
         return("Delta")
@@ -115,11 +115,11 @@ def variant_name(pango):
         return "Kappa"
     if pango == "B.1.621" or pango == "B.1.621.1":
         return "Mu"
-    if pango.startswith("P.2"):
+    if pango == "P.2" or pango.startswith("P.2."):
         return "Zeta"
     if pango == "B.1.1.529" or pango.startswith("BA."):
         return "Omicron"
-    return("")
+    return("__other__")
 
 
 class Figure:
@@ -137,7 +137,7 @@ class Figure:
 
 class Cophylogeny(Figure):
     name = None
-    pos = 0  # Position along tree seq to plot trees
+    pos = 22000  # Position along tree seq to plot trees
     sc2ts_filename = None
     nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
 
@@ -475,16 +475,17 @@ class Cophylogeny(Figure):
         
         global_styles += nxstr_styles
         global_styles += sc2ts_styles
+        sc2ts_str = f"Sc2ts {self.name[-4:]} ARG: "
         if self.sc2ts.pos == 0:
-            pos_str = "first tree"
+            sc2ts_str += "first tree"
         else:
-            pos_str = f"tree @ position {self.sc2ts.pos}"
+            sc2ts_str += f"tree @ position {self.sc2ts.pos}"
         svg_string = (
             '<svg baseProfile="full" height="800" version="1.1" width="900" id="main"' +
             ' xmlns="http://www.w3.org/2000/svg" ' +
             'xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">' +
             f'<defs><style>{"".join(global_styles)}</style></defs>'
-            f'<text text-anchor="middle" transform="translate(200, 12)">SC2ts {pos_str}</text>' +
+            f'<text text-anchor="middle" transform="translate(200, 12)">{sc2ts_str}</text>' +
             '<text text-anchor="middle" transform="translate(600, 12)">Nextstrain tree</text>' +
             '<g>' + ''.join([
                 f'<line x1="{v["lft"][0]}" y1="{v["lft"][1]}" x2="{v["rgt"][0]}" y2="{v["rgt"][1]}" stroke="#CCCCCC" />'
@@ -536,9 +537,27 @@ class RecombinationNodeMrcas(Figure):
     
     
     def __init__(self, args):
-        prefix = utils.snip_tsz_suffix(self.sc2ts_filename)
-        self.df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(prefix)))
         self.ts, self.basetime = utils.load_tsz(self.data_dir, self.sc2ts_filename)
+
+        prefix = utils.snip_tsz_suffix(self.sc2ts_filename)
+        df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(prefix)))
+        df['tmrca'] = self.ts.nodes_time[df.mrca.values]
+        df['tmrca_delta'] = df.tmrca - self.ts.nodes_time[df.node.values]
+        logging.info(f"{len(df)} breakpoints | {len(np.unique(df.node))} re nodes read")
+        # Remove potential contaminents
+        df = df[df.max_descendant_samples > 1]
+        # For all plots, omit the breakpoints which are not in the tree seq but listed
+        # in the HMM metadata, see https://github.com/jeromekelleher/sc2ts/issues/121
+        self.df = df[df.is_arg_hmm_path_length_consistent == True]
+        logging.info(
+            f"{len(self.df)} breakpoints | {len(np.unique(self.df.node))} "
+            "re nodes initially retained")
+        
+        
+
+    @staticmethod
+    def filter(df):
+        return df[df.parent_lineage_consistency == True]
 
     @staticmethod
     def add_common_lines(ax, num, ts, common_proportions):
@@ -546,7 +565,7 @@ class RecombinationNodeMrcas(Figure):
         for i, (u, (pango, prop)) in enumerate(common_proportions.items()):
             n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
             logging.info(
-                f"{ordinal(i+1)} most frequent parent MRCA has id {u} (imputed: {pango}) "
+                f"{ordinal(i+1)} most freq. parent MRCA has id {u} (imputed: {pango}) "
                 f"@ time={ts.node(u).time}; "
                 f"num_children={n_children}"
             )
@@ -556,15 +575,18 @@ class RecombinationNodeMrcas(Figure):
             sep = "\n" if v_pos[u] == 0 else " "
             most = "Most" if v_pos[u] == 0 else ordinal(i+1) + " most"
             ax.text(
-                (t/1.15 + 100)/7,  # Hand tweaked to get nice label positions
+                (t+5)/7,  # Hand tweaked to get nice label positions
                 ts.node(u).time,
-                f"{most} frequent MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
+                f"{most} freq. MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
                 fontsize=8,
                 va="center",
                 bbox=dict(facecolor='white', edgecolor='none', pad=0)
             )
 
     def do_plot(self, main_ax, hist_ax, df, title, label_tweak, xlab=True, ylab=True):
+        logging.info(f"Plotting {title}")
+        logging.info(f" {len(df)} points, {len(np.unique(df.node))} rec nodes")
+        logging.info(f" time diff: min={df.tmrca_delta.min()}, max={df.tmrca_delta.max()}")
         dates = [
             datetime(y, m, 1) 
             for y in (2020, 2021, 2022)
@@ -608,7 +630,6 @@ class RecombinationNodeMrcas(Figure):
                     rotation=70,
                 )
         main_ax.scatter(x, y, c="orange", s=8)
-        main_ax.invert_yaxis()
 
 
 class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
@@ -618,9 +639,8 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
         prefix = os.path.join("figures", self.name)
 
         fig, axes = plt.subplots(
-            2, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [4, 1]})
-
-        mrca_counts = collections.Counter(self.df.parents_mrca)
+            2, 2, figsize=(14, 8), sharex=True, sharey="row", gridspec_kw={'height_ratios': [4, 1]})
+        mrca_counts = collections.Counter(self.df.mrca)
         common_mrcas = mrca_counts.most_common(self.num_common_lines)
         logging.info(
             "Calculating proportions of descendants for "
@@ -628,16 +648,25 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
         focal_node_map = {c[0]: None for c in common_mrcas}
         focal_node_map[519829] = "BA.1"
         # 5868 is a common MRCA almost exactly contemporary with the most common node
-        del focal_node_map[5868]
+        focal_node_map.pop(5868, None)
         proportions = descendant_proportion(self.ts, focal_node_map)
-        self.add_common_lines(axes[0], 5, self.ts, proportions)
+        self.add_common_lines(axes[0][0], 5, self.ts, proportions)
         self.do_plot(
-            axes[0],
-            axes[1],
+            axes[0][0],
+            axes[1][0],
             self.df,
-            "MRCAs of lineage pairs at each recombination breakpoint in the “long” ARG",
-            label_tweak=[0.7, -8],
+            "A. Unfiltered",
+            label_tweak=[1, -8],
         )
+        self.do_plot(
+            axes[0][1],
+            axes[1][1],
+            self.filter(self.df),
+            "B. After filtering",
+            label_tweak=[1, -8],
+            ylab=False,
+        )
+        axes[0][1].invert_yaxis()
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
 
 class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
@@ -670,9 +699,13 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
                 axes[row_idx, col_idx].set_ylim(self.df.tmrca.min(), self.df.tmrca.max())
 
         parent_variants = [
-            {variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)}
+            frozenset((
+                variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)
+            ))
             for row in self.df.itertuples()
         ]
+        
+        logging.info(collections.Counter(parent_variants))
 
         #mrca_counts = collections.Counter(self.df.parents_mrca)
         #self.add_common_lines(axes[0], mrca_counts, 5, self.ts)
@@ -688,10 +721,19 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             axes[2][1], axes[3][1], ['Alpha', 'Omicron'], parent_variants, ylab=False)
         self.subplot(
             axes[2][2], axes[3][2], ['Delta', 'Omicron'], parent_variants, ylab=False)
+        axes[0][-1].invert_yaxis()
+        axes[2][-1].invert_yaxis()
 
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
 
 
+class RecombinationNodeMrcas_filtered_subset(RecombinationNodeMrcas_subset):
+    name = "supp_recombination_node_mrcas_filtered"
+    # Only used to get information out really.
+
+    def __init__(self, args):
+        super().__init__(args)
+        self.df = self.filter(self.df)
 ######################################
 #
 # Utility functions
