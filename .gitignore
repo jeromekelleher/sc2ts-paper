@@ -1,3 +1,16 @@
 *.pyc
 *-checkpoint.ipynb
 .DS_Store
+
+# Pre-Alignment Nextclade data
+data/sars-cov-2_*
+
+# Pre-Alignment GISAID data
+data/metadata.tsv
+data/sequences.fasta
+
+# Pre-Alignment Notebook Output
+bin/
+logs/
+results/
+
