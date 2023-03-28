@@ -128,8 +128,8 @@ class Figure:
     """
     name = None
     ts_dir = "data"
-    wide_fn = "upgma-full-md-30-mm-3-2021-06-30-recinfo-il.ts.tsz"
-    long_fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    wide_fn = "upgma-full-md-30-mm-3-2021-06-30-recinfo-gisaid-il.ts.tsz"
+    long_fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
 
     def plot(self):
         raise NotImplementedError()
@@ -519,19 +519,19 @@ class Cophylogeny(Figure):
 
 class CophylogenyWide(Cophylogeny):
     name = "cophylogeny_wide"
-    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo-il.ts.tsz"
+    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo-gisaid-il.ts.tsz"
     use_colour = "Pango"
 
 
 class CophylogenyLong(Cophylogeny):
     name = "supp_cophylogeny_long"
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
     use_colour = "Pango"
 
 
 class RecombinationNodeMrcas(Figure):
     name = None
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
     csv_fn = "breakpoints_{}.csv"
     data_dir = "data"
     
@@ -557,7 +557,7 @@ class RecombinationNodeMrcas(Figure):
 
     @staticmethod
     def filter(df):
-        return df[df.parent_lineage_consistency == True]
+        return df[np.logical_and(df.is_hmm_parent_close, df.is_hmm_mutation_consistent)]
 
     @staticmethod
     def add_common_lines(ax, num, ts, common_proportions):
@@ -593,11 +593,17 @@ class RecombinationNodeMrcas(Figure):
             for m in range(1, 13, 3)
             if (self.basetime-datetime(y, m, 1)).days > -2
         ]
+        consistent = np.logical_and(
+            np.logical_and(
+                df.is_hmm_mutation_consistent,
+                df.is_path_length_consistent),
+            df.num_parents == 2
+        )
         main_ax.scatter(
             df.tmrca_delta/7,
             df.tmrca,
             alpha=0.1,
-            c=np.array(["blue", "green"])[df.hmm_consistent.astype(int)],
+            c=np.array(["blue", "green"])[consistent.astype(int)],
         )
         if xlab:
             hist_ax.set_xlabel("Estimated divergence between lineage pairs (weeks)")
@@ -618,13 +624,13 @@ class RecombinationNodeMrcas(Figure):
         x = []
         y = []
         for row in df.itertuples():
-            if row.origin_nextclade_pango.startswith("X"):
+            if row.causal_lineage.startswith("X"):
                 x.append(row.tmrca_delta/7)
                 y.append(row.tmrca)
                 main_ax.text(
                     x[-1] + label_tweak[0],
                     y[-1] + label_tweak[1],  # Tweak so it is above the point
-                    row.origin_nextclade_pango,
+                    row.causal_lineage,
                     size=6,
                     ha='center',
                     rotation=70,
@@ -756,7 +762,7 @@ def descendant_proportion(ts, focal_nodes_map):
     it maps to None, use the ts to get the imputed lineage of that node
     """
     focal_lineages = {
-        u: ts.node(u).metadata['Imputed_lineage'] if lin is None else lin
+        u: ts.node(u).metadata['Imputed_Nextclade_pango'] if lin is None else lin
         for u, lin in focal_nodes_map.items()}
     sample_lists = {u: [] for u in focal_nodes_map}
     # The time consuming step is finding the samples of each lineage type
