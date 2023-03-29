@@ -9,7 +9,8 @@ import tempfile
 import subprocess
 import logging
 
-from IPython.display import SVG, HTML
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib.colors import rgb2hex
 from matplotlib.cm import get_cmap
 from matplotlib import pyplot as plt
@@ -706,7 +707,8 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
 
         parent_variants = [
             frozenset((
-                variant_name(row.left_parent_pango), variant_name(row.right_parent_pango)
+                variant_name(row.left_parent_imputed_lineage),
+                variant_name(row.right_parent_imputed_lineage)
             ))
             for row in self.df.itertuples()
         ]
@@ -740,6 +742,75 @@ class RecombinationNodeMrcas_filtered_subset(RecombinationNodeMrcas_subset):
     def __init__(self, args):
         super().__init__(args)
         self.df = self.filter(self.df)
+
+
+
+class XAG_graph(Figure):
+
+    name = "XAG_graph"
+    imputed_lineage = "Nextclade_pango"
+    target_node = 712029  # Previously identified as the XAG recombination node
+    sample_metadata_labels = ""  # Don't show the strain name
+    label_replace = {"Unknown":"", "Unknown ":"", " samples": "", }
+    figsize = (18, 12)
+    node_size = 400
+
+    def __init__(self, args):
+        self.ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
+        self.tree_info = sc2ts.TreeInfo(self.ts)
+        self.mutations_fn = os.path.join(self.ts_dir, "consensus_mutations.json")
+
+    def plot(self):
+        prefix = os.path.join("figures", self.name)
+        fig, ax = plt.subplots(1, 1, figsize=self.figsize)
+        
+        sc2ts.sample_subgraph(
+            self.target_node, 
+            self.ts, 
+            self.tree_info, 
+            mutations_json_filepath=self.mutations_fn,
+            ax=ax,
+            ts_id_labels=False,
+            node_metadata_labels="Imputed_" + self.imputed_lineage,
+            sample_metadata_labels=self.sample_metadata_labels,
+            node_size=self.node_size,
+            node_label_replace=self.label_replace,
+            node_colours={
+                "XAG": "#66CCEE",
+                "Unknown (R)": "red",
+                "Unknown": "None",
+                "XAB": "#CC66EE",
+                "BA.2": "#CCEE66",
+                "XAA": "#EECC66",
+                None: "lightgray", # Default
+            },
+            colour_metadata_key="Imputed_" + self.imputed_lineage
+        )
+
+        plt.savefig(prefix + ".pdf", bbox_inches='tight')
+
+
+class XAG_GISAID_graph(XAG_graph):
+    name = "XAG_GISAID_graph"
+    imputed_lineage = "GISAID_lineage"
+    sample_metadata_labels="strain"
+    label_replace = {
+        "Unknown (R)":"Recombination\nnode",
+        "Unknown": "$\\bf Inferred$\n$\\bf Pango$\n$\\bf status$\n$\\bf unknown$",
+        "/": "/\n",  # Break up long names
+        # Make all the Pango lineages bold
+        "XAG": r"$\bf XAG$",
+        "XAA": r"$\bf XAA$",
+        "XAB": r"$\bf XAB$",
+        "BA.2": r"$\bf BA.2$",
+        r"$\bf BA.2$.9": r"$\bf BA.2.9$", # hack, because BA.2.9 already replaced above
+        "BA.1": r"$\bf BA.1$",
+    }
+    figsize = (50, 30)
+    node_size = 3500
+    
+    
+
 ######################################
 #
 # Utility functions
