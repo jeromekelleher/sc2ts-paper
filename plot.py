@@ -751,40 +751,130 @@ class XAG_graph(Figure):
     imputed_lineage = "Nextclade_pango"
     target_node = 712029  # Previously identified as the XAG recombination node
     sample_metadata_labels = ""  # Don't show the strain name
-    label_replace = {"Unknown":"", "Unknown ":"", " samples": "", }
+    label_replace = {"Unknown":"", "Unknown ":"", " samples": "", " sample": "",}
     figsize = (18, 12)
     node_size = 400
+    show_ids = False
 
     def __init__(self, args):
         self.ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
-        self.tree_info = sc2ts.TreeInfo(self.ts)
         self.mutations_fn = os.path.join(self.ts_dir, "consensus_mutations.json")
 
     def plot(self):
+        ts = self.ts
+        tree_info = sc2ts.TreeInfo(self.ts)
+        node_metadata_label_key = "Imputed_" + self.imputed_lineage
         prefix = os.path.join("figures", self.name)
+        node_colours={
+            "XAG": "#66CCEE",
+            "Unknown (R)": "k",
+            "Unknown": "None",
+            "XAB": "#CC66EE",
+            "BA.2": "#CCEE66",
+            "XAA": "#EECC66",
+            None: "lightgray", # Default
+        }
         fig, ax = plt.subplots(1, 1, figsize=self.figsize)
-        
-        sc2ts.sample_subgraph(
-            self.target_node, 
-            self.ts, 
-            self.tree_info, 
-            mutations_json_filepath=self.mutations_fn,
+        # First get the positions for tweaking
+        _, pos = sc2ts.sample_subgraph(self.target_node, ts, tree_info, ax=ax)
+        ax.clear()
+
+        # For this particular ARG we have a single recombination node, and
+        # we want to add stuff above it and tweak a little
+        nodes = np.array(list(pos.keys()), dtype=int)
+        recomb_nodes = nodes[ts.nodes_flags[nodes] & sc2ts.NODE_IS_RECOMBINANT > 0]
+        assert len(recomb_nodes) == 1
+        re_node_id = recomb_nodes[0]
+        rec_edges = (ts.edges_child == re_node_id)
+        breakpoint = ts.edges_left[rec_edges].max()
+        assert breakpoint == ts.edges_right[rec_edges].min()
+        parents = ts.edges_parent[rec_edges]
+        # Make sure the left parent comes first
+        left_parent = parents[ts.edges_right[rec_edges] == breakpoint]
+        right_parent = parents[ts.edges_left[rec_edges] == breakpoint]
+        assert len(left_parent) == len(right_parent) == 1
+        left_parent = left_parent[0]
+        right_parent = right_parent[0]
+        if ts.node(left_parent).time > ts.node(right_parent).time:
+            older_parent = left_parent
+        else:
+            older_parent = right_parent
+        # Tweak the position of the parent nodes, so that we don't imply they are
+        # contemporaneous, and we can fit in the node labels
+        pos[left_parent] = (
+            pos[left_parent][0] - 30,
+            pos[left_parent][1] + (10 if left_parent == older_parent else -10)
+        )
+        pos[right_parent] = (
+            pos[right_parent][0] + 30,
+            pos[right_parent][1] + (10 if right_parent == older_parent else -10)
+        )
+        G, pos = sc2ts.sample_subgraph(
+            self.target_node,
+            ts,
+            tree_info,
+            mutations_json_filepath=None, #self.mutations_fn,
             ax=ax,
-            ts_id_labels=False,
-            node_metadata_labels="Imputed_" + self.imputed_lineage,
+            ts_id_labels=self.show_ids,
+            node_colours=node_colours,
+            node_metadata_labels=node_metadata_label_key,
             sample_metadata_labels=self.sample_metadata_labels,
             node_size=self.node_size,
             node_label_replace=self.label_replace,
-            node_colours={
-                "XAG": "#66CCEE",
-                "Unknown (R)": "red",
-                "Unknown": "None",
-                "XAB": "#CC66EE",
-                "BA.2": "#CCEE66",
-                "XAA": "#EECC66",
-                None: "lightgray", # Default
-            },
-            colour_metadata_key="Imputed_" + self.imputed_lineage
+            colour_metadata_key="Imputed_" + self.imputed_lineage,
+            node_positions=pos,
+        )
+                
+        # Find the MRCA node
+        tree = ts.at(breakpoint)
+        right_path = sc2ts.get_root_path(tree, parents[1])
+        tree.prev()
+        left_path = sc2ts.get_root_path(tree, parents[0])
+        mrca = sc2ts.get_path_mrca(left_path, right_path, ts.nodes_time)
+
+        rec_count = [None, None]
+        left_ancestors = np.array(left_path)
+        rec_count[0] = np.sum(
+            (ts.nodes_flags[left_ancestors] & sc2ts.NODE_IS_RECOMBINANT) > 0)
+        right_ancestors = np.array(right_path)
+        rec_count[1] = np.sum(
+            (ts.nodes_flags[right_ancestors] & sc2ts.NODE_IS_RECOMBINANT) > 0)
+
+        mrca_x = sum([pos[parent][0] for parent in parents])/2
+        mrca_y = sum([pos[parent][1] for parent in parents]) - pos[re_node_id][1]
+        ax.scatter([mrca_x], [mrca_y], s=self.node_size)
+        ax.text(
+            mrca_x,
+            mrca_y,
+            ts.node(mrca).metadata.get(node_metadata_label_key, ""),
+            va="center",
+            ha="center",
+            size=6,
+        )
+        for p, num_re in zip(parents, rec_count):
+            x = [pos[p][0], mrca_x]
+            y = [pos[p][1], mrca_y]
+            ax.plot(x, y, color='k', linestyle=':', zorder=-1)
+            ax.text(
+                np.mean(x),
+                np.mean(y),
+                f"Path\nincludes\n{num_re} extra (R)\nnodes",
+                va="center",
+                ha="center",
+                size=5,
+                bbox=dict(facecolor='white', edgecolor='none', pad=1),
+            )
+        x = pos[parents[0]][0] - (pos[parents[1]][0] - pos[parents[0]][0])
+        re_y = pos[re_node_id][1]
+        ax.annotate("", (x, re_y), (x, mrca_y), arrowprops=dict(arrowstyle='<->'))
+        ax.text(
+            x,
+            np.mean([re_y, mrca_y]),
+            f"{ts.node(mrca).time - ts.node(re_node_id).time:.0f}\n{ts.time_units}",
+            va="center",
+            ha="center",
+            size=5,
+            bbox=dict(facecolor='white', edgecolor='none', pad=1),
         )
 
         plt.savefig(prefix + ".pdf", bbox_inches='tight')
@@ -793,11 +883,9 @@ class XAG_graph(Figure):
 class XAG_GISAID_graph(XAG_graph):
     name = "XAG_GISAID_graph"
     imputed_lineage = "GISAID_lineage"
-    sample_metadata_labels="strain"
     label_replace = {
-        "Unknown (R)":"Recombination\nnode",
+        "Unknown (R)":"Recom-\nbination\nnode",
         "Unknown": "$\\bf Inferred$\n$\\bf Pango$\n$\\bf status$\n$\\bf unknown$",
-        "/": "/\n",  # Break up long names
         # Make all the Pango lineages bold
         "XAG": r"$\bf XAG$",
         "XAA": r"$\bf XAA$",
@@ -806,8 +894,9 @@ class XAG_GISAID_graph(XAG_graph):
         r"$\bf BA.2$.9": r"$\bf BA.2.9$", # hack, because BA.2.9 already replaced above
         "BA.1": r"$\bf BA.1$",
     }
-    figsize = (50, 30)
-    node_size = 3500
+    figsize = (30, 20)
+    node_size = 2000
+    show_ids = None  # Only show for sample nodes
     
     
 
@@ -881,11 +970,13 @@ def main():
     logging.basicConfig(level=level)
 
     if args.name == "all":
-        for _, fig in name_map.items():
+        for name, fig in name_map.items():
             if fig in figures:
+                logging.info(f"plotting {name}")
                 fig(args).plot()
     else:
         fig = name_map[args.name](args)
+        logging.info(f"plotting {args.name}")
         fig.plot()
 
 
