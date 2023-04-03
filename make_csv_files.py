@@ -8,7 +8,7 @@ import utils
 if __name__ == "__main__":
 
     # Make a breakpoints file for the long ARG
-    fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-il.ts.tsz"
+    fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
     prefix = utils.snip_tsz_suffix(fn)
     long, basetime = utils.load_tsz("data", fn)
     logging.info("Collecting tree information, may take a while")
