@@ -8,6 +8,8 @@ import os
 import tempfile
 import subprocess
 import logging
+import gzip
+import shutil
 
 import matplotlib as mpl
 
@@ -148,7 +150,7 @@ class Figure:
 
 class Cophylogeny(Figure):
     name = None
-    pos = 22000  # Position along tree seq to plot trees
+    pos = 0  # Position along tree seq to plot trees
     sc2ts_filename = None
     nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
 
@@ -193,7 +195,17 @@ class Cophylogeny(Figure):
         stored in self.sc2ts and self.nxstr
         """
         sc2ts_arg, basetime = utils.load_tsz(self.ts_dir, self.sc2ts_filename)
-        nextstrain = Nextstrain(self.nextstrain_ts_fn, span=sc2ts_arg.sequence_length)
+        fn = os.path.join(self.ts_dir, self.nextstrain_ts_fn)
+        try:
+            nextstrain = Nextstrain(fn, span=sc2ts_arg.sequence_length)
+        except FileNotFoundError:
+            logging.info("Attempting to extract gz compressed file")
+            with tempfile.TemporaryDirectory() as tmpdir:
+                with gzip.open(fn + ".gz") as f_in:
+                    fn = os.path.join(tmpdir, self.nextstrain_ts_fn)
+                    with open(fn, "wb") as f_out:
+                        shutil.copyfileobj(f_in, f_out)
+                    nextstrain = Nextstrain(fn, span=sc2ts_arg.sequence_length)
 
         # Slow step: find the samples in sc2ts_arg.ts also in nextstrain.ts, and subset
         sc2ts_its, nxstr_its = sc2ts.subset_to_intersection(
