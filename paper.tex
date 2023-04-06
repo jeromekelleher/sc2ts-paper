@@ -843,10 +843,16 @@ In this section we examine the Long ARG to determine how well it reflects
 the structure of previously identified recombinant lineages.
 There are [high level summary of the pango recombinant lineages and samples
 in the Long ARG].
-long ARG (subsampled to mid-2022) contains samples
+long ARG (subsampled to mid-2022) contains 749 samples
 from 33 Pango-designated recombinant lineages (XA to XAK; Supplementary Table)
 [Probably could have a table here to summarise?]
 
+% \item Total of 2078 recombinants.
+% \item 749 samples from 33 Pango X lineage (recombinant) designations
+% \item \alert{All but} 2 XP samples inferred to have recombinant ancestry
+% (Almost certainly missing XP because of our alignment masking approach)
+
+All but 2 XP samples inferred to have recombinant ancestry.
 
 The sequences of 28 Pango recombinants trace back
 to some recombinant node(s); however, the sequences of the five Pango
@@ -919,6 +925,26 @@ the numbers of samples, etc for each of these 14 lineages] and
 show the lineage subgraph for X?, which makes this simple structure
 clear. [Explain the lineage subgraph format a bit]
 
+[TODO need to be clear if we're looking at single monophyletic origins
+here, or whether we include complicated things like XAG etc or not.
+Probably not?]
+
+% \item 14 out of 33 of the Pango X lineage inferred to have a single
+% recombinant origin. (XA, XAA, XAC, XAE, XAG, XAK, XF, XG, XH, XL,
+%  XR, XT, XW, XY)
+% \item Total of 148 samples (max 32, average of 10 per group)
+% \item XAA and XAG share the same origin, all others are distinct
+%     \begin{itemize}
+%         \item Ours: BA.1 \& BA.2.9 (6472 -- 8393)
+%         \item XAA: BA.1* \& BA.2* (8393 -- 9343)
+%         \item XAG: BA.2* \& BA.1* (6516 -- 8392)
+%         \item At least one XAB lineage (50 samples, with 10 origins)
+%         also descends from this recombinant---unclear what's happening
+%     \end{itemize}
+% \end{itemize}
+% \end{block}
+% \end{frame}
+
 \subsubsection{Multiple origin}
 The ARG inference has no pre-defined knowledge of Pango X lineage assignments,
 and there is therefore no particular requirement that all the samples
@@ -928,6 +954,70 @@ are inferred to have multiple recombinant origins (i.e., trace
 back to different recombination nodes in the ARG), but are still
 form monophyletic clades % is this the right term?
 descending from these nodes .
+
+% \begin{frame}
+% \begin{block}{Multiple origin Pango X lineages}
+% \begin{itemize}
+% \item For the remaining 18, the story is more complicated.
+% \item XJ, XU and XV each have 3 samples and 3 recombinants
+% \item One recombinant shared among 5 lineages (XAA, XAB, XAG, XQ, XU)
+% \item XE has 170 samples and 12 recombinants; some are very similar
+% (Official: BA.1* \& BA.2, 10448--11287):
+% \\
+% \vspace{1em}
+% \begin{tabular}{llll}
+% \toprule
+% Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
+% \midrule
+% BA.1.15 & BA.2  &9867  &10198\\
+% BA.1.15 & BA.2  &9867  &10198\\
+% BA.1.1  &BA.2  &10451  &11537\\
+% BA.1.1.5 & BA.2 &10448 & 11537\\
+% BA.1.15 & BA.2  &10448  &12880\\
+% BA.1.17 & BA.2  &10448 & 11537\\
+% BA.1  &BA.2.9  &10448 & 11537\\
+% BA.1  &BA.2  &12764  &13195\\
+% \bottomrule
+% \end{tabular}
+% % BA.3  &BA.1.17  &22674  &22674\\
+% % BA.1.1.15 Recombinant 10448 11537
+% % BA.1.1 Recombinant 10030 10447
+% % Recombinant BA.2 17411 19955
+% \end{itemize}
+% \end{block}
+% \end{frame}
+
+
+\begin{figure}
+\begin{tabular}{cc}
+
+Example lineage subgraph
+ &
+
+\begin{tabular}{llll}
+\toprule
+Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
+\midrule
+BA.1.15 & BA.2  &9867  &10198\\
+BA.1.15 & BA.2  &9867  &10198\\
+BA.1.1  &BA.2  &10451  &11537\\
+BA.1.1.5 & BA.2 &10448 & 11537\\
+BA.1.15 & BA.2  &10448  &12880\\
+BA.1.17 & BA.2  &10448 & 11537\\
+BA.1  &BA.2.9  &10448 & 11537\\
+BA.1  &BA.2  &12764  &13195\\
+\bottomrule
+\end{tabular}
+% BA.3  &BA.1.17  &22674  &22674\\
+% BA.1.1.15 Recombinant 10448 11537
+% BA.1.1 Recombinant 10030 10447
+% Recombinant BA.2 17411 19955
+\end{tabular}
+\caption{A. Example subgraph for a multi origin example. B. details
+of inferred breakpoints for different recombination events inferred
+for XE samples (170 samples and 12 inferred recombination nodes; some are very
+similar (Official: BA.1* \& BA.2, 10448–11287)}
+\end{figure}
 
 In Figure XXX we give the details of these multiple pango lineages,
 along with an example lineage subgraph.
