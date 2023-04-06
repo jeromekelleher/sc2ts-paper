@@ -7,13 +7,13 @@
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{makecell}
 \usepackage{url}
 % JK: turning this off for the moment as I keep clicking through on links
 % to the bibliography while reading the text and it's intensely annoying.
 % Can reinstate when we're ready to preprint
 % \usepackage[hidelinks]{hyperref}
 
-\usepackage{makecell}
 
 \title{Towards a Pandemic-Scale Ancestral Recombination Graph of SARS-CoV-2}
 \author[1]{Shing H. Zhan}
@@ -273,9 +273,9 @@ potential sources of error in genotyping and sequencing data. The LS model is
 used in a wide variety of applications in genomics. For example, it is the
 engine that drives statistical genotype phasing and imputation
 \citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa}, and it
-can be used to estimate mutation rates (e.g., REF), recombination rates (e.g.,
-\citep{Hinch2011-tz}), and selection within and across hosts in viral sequence
-data (e.g., \citep{Palmer2019-wa}).
+can be used to estimate mutation rates (e.g., REF), recombination rates
+\citep[e.g.][]{Hinch2011-tz}, and selection within and across hosts in viral sequence
+data \citep[e.g.][]{Palmer2019-wa}.
 
 The generative process of the LS model is summarised in Figure 2. Here, a
 transition matrix, Q, governs the process of switching (recombining) between
@@ -460,7 +460,7 @@ single descendant sample in each local tree; these could have arisen from
 sequencing of mixed samples (e.g., from co-infection or contamination), or were
 simply not transmitted onwards and so were excluded from subsequent analyses
 (leaving X and Y recombinants in the wide and long ARGs, respectively). In
-their analysis using RIPPLES, Turakhia et al. (2022) detected 589 recombinants,
+their analysis using RIPPLES, \cite{Turakhia2022-it} detected 589 recombinants,
 also excluding singletons.
 
 For simplicity, we focus primarily on ``non-complex'' recombination nodes. To do
@@ -606,8 +606,9 @@ location of a breakpoint often could not be precisely determined given the
 observed genetic variation.
 
 There is a preponderance of breakpoint intervals spanning the 3’ end of the
-genome (Figure 4A), as noted previously by Turakhia et al.
-\citep{Turakhia2022-it}. Inspecting more closely, we find an enrichment in the
+genome (Figure 4A), as noted previously by
+\cite{Turakhia2022-it}.
+Inspecting more closely, we find an enrichment in the
 number of intersecting intervals in the E gene, ORF8, ORF8-N intergenic region,
 and 3’ untranslated region (Figure 4B). Markedly, there is an abrupt drop in
 the number of intersecting intervals in the N gene following the peak in ORF8
@@ -638,7 +639,7 @@ the breakpoint sequences.
 \subsection{Mutational spectrum}
 
 In addition to recombination events, the ARGs record mutation events along the
-SARS-CoV-2 phylogeny. Yi et al. \citep{Yi2021-sc} reconstructed a SARS-CoV-2
+SARS-CoV-2 phylogeny. \cite{Yi2021-sc} reconstructed a SARS-CoV-2
 phylogeny of over 350,000 genomes sampled globally from December 24, 2019, to
 January 12, 2021, and systematically catalogued all the mutations occurring
 along the phylogeny. Notably, in the mutational spectrum described by Yi et
@@ -711,7 +712,7 @@ collection dates (i.e., time travellers that have passed the maximum submission
 delay of 30 days) and to modify the topology of daily trees.
 
 Our results show that sc2ts identifies the early recombinants (pre-2022)
-previously identified by Jackson et al. (2021). Sc2ts also identifies many
+previously identified by \cite{Jackson2021-ik}. Sc2ts also identifies many
 Pango recombinants, which are designated after community perusal of supporting
 genomic evidence. We have found several previously unreported and overlooked
 recombinant sequences in the wide ARG. After further improvements and
@@ -730,16 +731,19 @@ Currently, sc2ts is in development. Below, we propose several ways to
 potentially improve or enhance sc2ts. We welcome suggestions and ideas from
 experts.
 
-\begin{itemize} \item A potential source of error in sc2ts ARGs comes from
+\begin{itemize}
+\item A potential source of error in sc2ts ARGs comes from
 incorrectly reported collection dates of the samples, which can cause sample
 genomes to be attached to the wrong parts of the ARGs. Thus far, we have
 attempted to correct the most offending errors in the ARGs by filtering out
 "time travellers", but the sampling time can still be wrong by days or tens of
-days. ***describe possible approaches to correct this?*** \item To avoid time
+days. ***describe possible approaches to correct this?***
+\item To avoid time
 travellers, we used a maximum submission delay, but this will systematically
 bias against submissions from countries with greater submission delays (Kalia
 et al.). An area of future work is to add back the excluded sequences to a
-built ARG to assess which ones are likely true time travellers. \item To avoid
+built ARG to assess which ones are likely true time travellers.
+\item To avoid
 time travellers, we used a maximum submission delay, but this will
 systematically bias against submissions from countries with greater submission
 delays (Kalia et al.). An area of future work is to add back the excluded
@@ -750,34 +754,41 @@ parameter choice is arbitrary, and higher values may reduce the number of
 origins for those Pango lineages that were inferred to descend from more than
 one recombinant ancestor. In addition, because both the mutation rate and
 recombination rate varies across the SARS-CoV-2 genome, it may be helpful to
-allow the mismatch value to vary along the genome. \item By treating mutations
+allow the mismatch value to vary along the genome.
+\item By treating mutations
 equally in the current HMM implementation, we implicitly assume that the rates
 of different types of mutations are identical. However, as reported previously
 (Yi et al. 2021), there is a high degree of mutational asymmetry in SARS-CoV-2.
 To account for mutational biases, more sophisticated nucleotide substitution
 models (e.g., allowing for different rates of transition and transversion) can
-be incorporated into HMM likelihood calculations. \item Our current masking
+be incorporated into HMM likelihood calculations.
+\item Our current masking
 strategy handles indels as missing data. Doing this can remove information
 helpful to detect recombinants. For example, sequences of the Pango recombinant
 XP were not identified as recombinants, because XP’s characteristic multibase
-deletion was masked. \item This "lack of memory" in the HMM can create
+deletion was masked.
+\item This "lack of memory" in the HMM can create
 recombinants with three or more parents when it would be equally parsimonious
 to have just two. The copying process in the HMM currently does not limit the
-number of parents to two, but doing so would be a valuable addition. \item Some
+number of parents to two, but doing so would be a valuable addition.
+\item Some
 recombinants may reasonably have three or more parents, indicating multiple
 "stacked" recombination events. We have largely ignored these in the current
 analysis, but with further sc2ts development, there is potential to analyse
 these putative recombinants and trace their evolutionary origins through the
-ARG. \item In the present implementation, HMM traceback is performed once,
+ARG.
+\item In the present implementation, HMM traceback is performed once,
 yielding a single maximum-likelihood genome copying path. A stochastic
 traceback algorithm (e.g., (Rasmussen et al. 2014)) can be implemented in order
 to quantify uncertainty about putative parent node(s) and switch positions.
 These estimates of uncertainty may be used as support values for branches
-analogous to bootstrap values produced by standard phylogenetic methods. \item
+analogous to bootstrap values produced by standard phylogenetic methods.
+\item
 Daily trees are built using the UPGMA algorithm. This entails an extra step to
 ``un-resolve'' daily trees in parts of the trees with no phylogenetic resolution.
 To avoid this step, a better approach is to use a maximum-parsimony algorithm
-to build daily trees instead. \end{itemize}
+to build daily trees instead.
+\end{itemize}
 
 \section{Conclusions}
 
