@@ -1,12 +1,12 @@
 \documentclass{article}
 
+\usepackage[round]{natbib}
 \usepackage[english]{babel}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage{natbib}
 \usepackage{url}
 % JK: turning this off for the moment as I keep clicking through on links
 % to the bibliography while reading the text and it's intensely annoying.
@@ -42,12 +42,12 @@ XX
 \section{Introduction}
 
 Recombination via template switching is a common feature in the evolution of
-coronaviruses (CoV) \citep{Graham2010-xe,De_Klerk2022-tt}), including SARS-CoV-2
+coronaviruses~\citep{Graham2010-xe,De_Klerk2022-tt}), including SARS-CoV-2
 \citep{VanInsberghe2021-eu,Jackson2021-ik,Ignatieva2021-rg}. By bringing
 together mutations carried by different lineages, recombination plays an
 important role in generating genomic diversity, with recombinant lineages
-associated with CoV adaptation to new host species and with the production of
-more immune evasive variants \citep{Graham2010-xe,De_Klerk2022-tt}.
+associated with adaptation to new host species and with the production of
+more immune evasive variants~\citep{Graham2010-xe,De_Klerk2022-tt}.
 
 Recombination was challenging to detect in SARS-CoV-2 early in the pandemic due
 to gradual accumulation of genetic variation. In late 2020, the appearance and
@@ -56,26 +56,28 @@ mutations increased the detectability of recombination. By searching for
 genomes containing segments from different VoC, multiple recombinant lineages
 have been detected, for example, between Alpha and pre-VoC
 \citep{Jackson2021-ik}, Alpha and Epsilon \citep{Wertheim2022-hj}, and Alpha and
-Delta \citep{Sekizuka2022-xz}). More recently, the high prevalence of Omicron,
+Delta~\citep{Sekizuka2022-xz}. More recently, the high prevalence of Omicron,
 with multiple co-circulating deeply divergent lineages (BA.1 to BA.5), has
 accelerated the rate of coinfection and the potential for recombination
 \citep{Bal2022-hq}. Recombinant lineages that have sufficient evidence of onward
-transmission (more than five descendants) and monophyly (> 70\% bootstrap
-support) are eligible for a Pango lineage designation \citep{Rambaut2020-dw},
-starting with the letter X (“Pango Lineage Nomenclature: Provisional Rules for
-Naming Recombinant Lineages” 2021).
+transmission (more than five descendants) and monophyly
+($>70\%$ bootstrap support) are eligible for a Pango lineage
+designation~\citep{Rambaut2020-dw},
+starting with the letter X
+% FIXME: should this be a citation?
+(``Pango Lineage Nomenclature: Provisional Rules for Naming Recombinant Lineages'' 2021).
 
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
-combine specific subsets of mutations from different lineages (e.g.,
-\citep{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}).
+combine specific subsets of mutations from different lineages
+\citep[e.g.][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}.
 This approach only identifies those inter-lineage recombination events
 resulting in the patterns investigated. Others have inferred recombinant
 genealogies to disentangle recombination from recurrent mutation, without
 having to pre-specify characteristic mutations for each lineage
-\citep{Ignatieva2021-rg}. More recently, Turakhia et al. \citep{Turakhia2022-it}
-has presented a phylogeny-based approach ("RIPPLES") to identify putative
-recombinants among over ten million SARS-CoV-2 genomes, without pre-specifying
-motifs. To find candidate recombinants, RIPPLES first builds a phylogeny
+\citep{Ignatieva2021-rg}. More recently, \cite{Turakhia2022-it}
+presented a phylogeny-based approach (``RIPPLES'') to identify putative
+recombinants among over ten million SARS-CoV-2 genomes, without pre-specifying motifs.
+To find candidate recombinants, RIPPLES first builds a phylogeny
 without assuming recombination and then scans for long branches (i.e., carrying
 many mutations) and then determines if these candidates would be better
 explained by recombination. Specifically, RIPPLES exhaustively breaks each
@@ -83,32 +85,33 @@ candidate sequence into segments and attempts to find more parsimonious
 placements for each segment on the phylogeny. If such placements are found, the
 sequence is identified as a putative recombinant. Although it enables rapid
 searches for genomic evidence of recombinants, RIPPLES relies on a SARS-CoV-2
-phylogeny that accounts for only mutations, treats recombinants \textit{post
-hoc}, and is an incomplete representation of the reticulate evolutionary
+phylogeny that accounts for only mutations, treats recombinants
+\textit{post hoc}, and is an incomplete representation of the reticulate evolutionary
 history of SARS-CoV-2. As noted by the authors, a \textit{post hoc} treatment
 of recombination is possible when recombinant lineages are rare and leave few
-descendants, but this is becoming increasingly untenable with the proliferation
-of recombinant lineages (e.g., more than half of the sequences sampled in
-February, 2023 are from XBB and its descendants; \citep{Chen2022-pz}.
+descendants. However, this is becoming increasingly untenable with the proliferation
+of recombinant lineages; for example, more than half of the sequences sampled in
+February 2023 are from XBB and its descendants~\citep{Chen2022-pz}.
 
 Inferring evolutionary trees while accounting for both mutation and
 recombination is a long-standing challenge. This challenge is particularly
 acute for SARS-CoV-2, given the large amount of data that has been shared, with
 over 15 million sequences in the GISAID database \citep{Shu2017-hp}. It is well
 known that recombination distorts phylogenies \citep{Schierup2000-fg} and
-affects the results of downstream analysis (e.g., inference of selection;
-\citep{Anisimova2003-vr}). However, standard phylogenetic methods do not account
-for recombination (e.g., \citep{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}).
+affects the results of downstream analysis, e.g., inference of
+selection~\citep{Anisimova2003-vr}.
+However, standard phylogenetic methods do not account
+for recombination \citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}.
 Alternatively, genetic ancestries of recombining lineages can be represented by
-ancestral recombination graphs (ARG; \citep{Griffiths1981-lw,Hudson1983-if},
+ancestral recombination graphs (ARGs)~\citep{Griffiths1981-lw,Hudson1983-if},
 which  capture network-like phylogenetic relationships \citep{Gusfield2014-qw}.
 
 Approaches to infer ARGs now exist that can scale to tens of thousands of human
 genomes and beyond
 \citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}. Recently,
-Wohns et al. \citep{Wohns2022-th} reconstructed a unified whole-genome genealogy
+\cite{Wohns2022-th} reconstructed a unified whole-genome genealogy
 of thousands of modern and ancient human genomes, based on over 90 million
-variable sites. To achieve this, Wohns et al. \citep{Wohns2022-th} utilised
+variable sites. To achieve this, \cite{Wohns2022-th} utilised
 several computational advances in ARG inference: (1) the "succinct tree
 sequence" data structure that can compactly store large ARGs
 \citep{Kelleher2018-xc}; (2) a highly efficient Hidden Markov Model (HMM)
@@ -118,7 +121,7 @@ open-source software tools
 \citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
 
 Here, we present a preliminary version of a novel scalable methodology
-(“sc2ts”, pronounced “scoots”) that builds on the advances above and
+(``sc2ts'', optionally pronounced ``scoots'') that builds on the advances above and
 additionally takes advantage of known collection dates to infer ARGs from
 millions of full-length SARS-CoV-2 genomes. Using publicly available SARS-CoV-2
 genome sequences, we demonstrate that sc2ts can be used to simultaneously (1)
