@@ -416,6 +416,7 @@ available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
 
 \section{Results}
 
+
 \subsection{Inferred ARGs}
 
 To illustrate the use of sc2ts, we employed two different sampling strategies.
@@ -456,8 +457,9 @@ intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
 HMM runs for recombination nodes) & ~57 Mb & ~36 Mb \\ Bytes to encode one
 sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
 \end{tabular}
+\caption{\label{tab:args}Summary of the inferred ARGs.
+}
 \end{table}
-
 
 Most of the nodes in the ARGs represent sample genomes (Table 1). Only a small
 fraction of the nodes represent recombination events (0.28\% and 0.27\% in the
@@ -470,8 +472,6 @@ and long ARG (657 thousand genomes) are compactly stored in ~57 Mb and ~36 Mb,
 respectively (less than ten bytes per sample). These ARGs can be loaded for
 analysis in a Jupyter notebook on a typical commercial laptop in merely a
 fraction of a second using the Python package tskit (Table 1).
-
-\subsection{Computational resources}
 
 The wide ARG (with over one million sample genomes) was built using 128 threads
 on a machine with 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). Inference ran for 17
@@ -488,9 +488,9 @@ sc2ts-inferred ARGs with phylogenetic relationships inferred by the NextStrain
 project \citep{Hadfield2018-ef}. The NextStrain trees consist of subsamples of
 SARS-CoV-2 genomes, which over the time period of our ARGs are almost entirely
 restricted to non-recombinant lineages. To allow for comparison, the ARGs were
-"simplified" \citep{Kelleher2018-xc} to retain only those tips of our genealogy
-that match the samples present in a specific NextStrain tree. These simplified
-"backbone" ARGs exhibit very little recombination (6 and 5 trees across the
+``simplified'' \citep{Kelleher2018-xc} to retain only those samples of our genealogy
+that match those present in a specific NextStrain tree. These simplified
+``backbone'' ARGs exhibit very little recombination (6 and 5 trees across the
 genome for the wide and long ARGs, respectively).
 
 Figure 4 shows a co-phylogeny of the 88 samples shared between the wide ARG and
@@ -529,7 +529,188 @@ incongruence) across the SARS-CoV-2 genome, much of which may be attributable
 to recombination. Such complex reticulate relationships are appropriately
 captured by a genealogy in the form of an ARG.
 
-\subsection{Putative recombination events}
+\subsection{Mutational spectrum}
+
+In addition to recombination events, the ARGs record mutation events along the
+SARS-CoV-2 phylogeny. \cite{Yi2021-sc} reconstructed a SARS-CoV-2
+phylogeny of over 350,000 genomes sampled globally from December 24, 2019, to
+January 12, 2021, and systematically catalogued all the mutations occurring
+along the phylogeny. Notably, in the mutational spectrum described by Yi et
+al., C-to-U and G-to-U mutations occur more frequently than U-to-C and U-to-G
+mutations, respectively.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/mutational_spectra.pdf}
+\caption{\label{fig:mutational_spectra}
+Mutational spectrum of SARS-CoV-2 in
+the wide ARG (sampled to mid-2021) compared to \cite{Yi2021-sc}.
+Mutations are categorised by type (i.e., ancestral state $>$
+derived state). The percentages of each mutation type from the wide ARG are
+represented by blue bars and the percentages from Yi et al. by orange bars,
+with the darker colours representing one direction (e.g., C$>$U) and the
+lighter colours the reverse (e.g., U$>$C).}
+\end{figure}
+
+
+For validation purposes, we compare the mutational spectrum from the wide ARG
+with the mutational spectrum of Yi et al. We categorised all of the single
+nucleotide mutations by type (defined by the ancestral state and derived
+state), excluded mutations inherited by only a single sample (which are
+enriched for sequencing errors and artefacts), and tallied them up by type.
+Similarly, we took the data for single nucleotide mutations from Yi et al.
+\url{https://github.com/ju-lab/SC2_evol_signature}, excluded mutations
+occurring along terminal branches, and tallied them up by type. We find that
+the mutational spectrum from the wide ARG (448,825 mutations) matches the
+mutational spectrum reported by Yi et al. (92,344 mutations) (Figure X). In
+both spectra, C-to-U mutations and G-to-U mutations occur more frequently than
+U-to-C and U-to-G, respectively (Figure X). Similar results are obtained when
+including the mutations inherited by only a single sample or occurring on
+terminal branches (data not shown).
+
+% If we do this, goes here
+% \subsection{Mutations under selection}
+% XX
+
+\subsection{Early recombinants reported by Jackson et al. (2021)}
+% - Early Recombinants from Jackson et al
+%     Discuss results from Wide ARG in detail. Go into the details of the
+% forward-backward HMM runs for each example. Be much more explicity about the
+% single origin for the different groups (maybe give one of Ana's graphs for
+% Group A (XA I think?)
+
+By searching for samples combining genomic segments from Alpha (B.1.1.7) and
+from the parental lineage B.1.1 based on a list of 22 Alpha-defining mutations,
+Jackson et al. (Jackson et al. 2021) reported 16 recombinant sequences among
+genomes sampled in the United Kingdom up to March 7, 2021. The authors proposed
+that the recombinants likely arose from eight independent recombination events
+(categorised into groups A to D and four singletons).
+
+\begin{table} \centering
+\begin{tabular}{l|c|c|c|c|c} \hline
+\multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Jackson et al. (2021)}} &
+\multicolumn{2}{c}{\textbf{sc2ts (wide ARG)}} \\ \hline
+\textbf{Sample} &
+\textbf{Group} & \textbf{Parents} & \thead{Breakpoint \\
+interval(s)} &
+\textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
+\hline ALDP-11CF93B & A
+& \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
+21,256–22,227 \\ ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
+\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ ALDP-130BB95 & A &
+\thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
+21,256–22,227 \\ LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
+\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ QEUH-CCCB30 & B &
+\thead{B.1.36.28 \\ Alpha} & 6,528–6,953 & \thead{B.1.36 \\ Alpha} &
+6,529–6,954 \\ QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
+\thead{B.1.36 \\ Alpha} & 6,529–6,954 \\ MILK-1166F52 & C & \thead{Alpha \\
+B.1.221.1} & 25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 & \thead{Alpha \\
+B.1.221} & 25,997–27,972 \\ QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} &
+25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\ MILK-126FE1F & D &
+\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
+22,445–23,063 \\ RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062
+& \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\ RAND-128FA33 & D &
+\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
+22,445–23,063 \\ CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
+\thead{B.1.177 \\ Alpha} & 16,177–21,255 \\ CAMC-CB7AB3 & n/a & \thead{Alpha \\
+B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} & \thead{Alpha \\
+B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\ MILK-103C712 & n/a
+& \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} & n/a & n/a \\
+QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 & \thead{Alpha
+\\ B.1.177} & 7,729–10,870 \\ \hline
+\end{tabular}
+\caption{\label{tab:jackson}Recombinant sequences involving the Alpha (B.1.1.7)
+variant reported by \cite{Jackson2021-ik} have recombinant
+ancestry in the wide ARG. The breakpoint intervals and Pango lineage
+assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
+al., except the Pango lineage assignment of the parents of group B
+recombinants, which were taken from Table 1 (motif-based results).}
+\end{table}
+
+In the wide ARG (sampled to mid-2021), all these sequences are descendants of
+recombination nodes, except MILK-103C712, which was removed during
+preprocessing (Table 2); additionally, all are HMM-consistent, except
+QEUH-1067DEF. Overall, we find excellent agreement between Jackson et al.’s
+motif-based method and sc2ts in terms of (1) the Pango lineage of the parents
+and (2) the breakpoint intervals (Table 2). In all cases, the two methods
+proposed identical or very closely related parent lineages. The general mosaic
+genome structure is concordant in all the cases, even CAMC-CB7AB3 where there
+are two switches in the HMM copying paths (indicative of two breakpoints). The
+breakpoint intervals estimated using the two methods overlap substantially in
+all the cases (Table 2). Within each of the groups A to D, the constituent
+sequences have identical breakpoint intervals, because they trace back to a
+single recombination node in the wide ARG. This result is consistent with the
+hypothesis that the sequences of the groups A to D emerged from four separate
+recombination events~\cite{Jackson2021-ik}.
+
+\subsection{Distribution of recombination breakpoint intervals}
+
+% - Distribution of breakpoint intervals
+%     Study the breakpoint intervals in the Wide ARG. Because we are interested
+% in the intervals, we want to be sure that these are robustly reported by the
+% HMM. Hence, we focus on those that have two parents in the mirrored and
+% unmirrored HMM runs, the same set of mutations, and the left and right parents
+% are consistently imputed for Pango lineage status.
+%     We focus on the Wide ARG here because it covers (roughly?) the same time
+% period as the RIPPLES analysis.
+
+We explore recombination signals across the SARS-CoV-2 genome by inspecting the
+breakpoint intervals of the filtered recombination nodes from the wide ARG
+(sampled to mid-2021) in Figure~\ref{fig:breakpoint-distribution}.
+The length of a breakpoint interval reflects
+uncertainty in the estimated location of a breakpoint. On average, the length
+of the breakpoint intervals is 2,895 bases (median, 1,670 bases; range, 1 to
+23,666 bases). This broad distribution of interval length indicates that the
+location of a breakpoint often could not be precisely determined given the
+observed genetic variation.
+
+\begin{figure}
+\centering
+% \includegraphics[width=0.8\textwidth]{figures/mutational_spectra.pdf}
+\caption{\label{fig:breakpoint-distribution}
+Distribution of recombination breakpoints and mutations along the genome.}
+\end{figure}
+
+There is a preponderance of breakpoint intervals spanning the 3’ end of the
+genome (Figure 4A), as noted previously by
+\cite{Turakhia2022-it}.
+Inspecting more closely, we find an enrichment in the
+number of intersecting intervals in the E gene, ORF8, ORF8-N intergenic region,
+and 3’ untranslated region (Figure 4B). Markedly, there is an abrupt drop in
+the number of intersecting intervals in the N gene following the peak in ORF8
+towards the 3’ end.
+
+Next, we investigate the potential recombination signals alongside the number
+of mutations across the genome (Figure 4C). Regions with a higher density of
+mutations contain more genetic variation, increasing the power to detect
+recombination events. The position 28,271 (located in the ORF8-N intergenic
+region) has a particularly high number of mutations in the samples (Figure 5).
+At this position, mutations (n = 7,572), insertions (n = 5,782), and deletions
+(n = 1,605) appear to occur frequently. One possible explanation is that this
+homopolymeric region is prone to sequencing errors, giving rise to an
+artifactual recombination signal. At the upstream position 27,972, numerous
+mutations also occur. This position has been reported to be hypermutable
+\citep{Jungreis2021-dh}.
+
+We further consider the breakpoint intervals within the context of
+recombination breakpoint sequence motifs. It is hypothesised that certain
+palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
+template switching during replication in SARS-CoV-2 via formation of
+base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
+are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
+reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
+breakpoint intervals of the HMM-consistent recombinants span at least one of
+the breakpoint sequences.
+
+\subsection{Divergence between recombinant parents}
+% - Divergence between recombinant parents
+%     We study the recombination events in the Long ARG in terms. A recombinant
+% will not always have two parents, for reasons X, Y and Z. As a first
+% approximation, we can assume that each breakpoint corresponds to a
+% recombination event (although there are some exceptions). Here we have to get
+% into all the hairy details about which sets of breakpoints we filter and don't
+% filter.
 
 Both the wide and long ARGs contain a large number of recombination nodes
 (4,123 and 2,078, respectively; Supplementary Tables 1 and 2), with each of
@@ -589,118 +770,118 @@ This may reflect either sampling intensity, the prevalence of cases (which
 increases the chance of coinfection and recombination), or possibly
 heterogeneity in recombination rates among lineages.
 
-\subsection{Early recombinants reported by Jackson et al. (2021)}
+\subsection{Recombinant Pango lineages}
 
-By searching for samples combining genomic segments from Alpha (B.1.1.7) and
-from the parental lineage B.1.1 based on a list of 22 Alpha-defining mutations,
-Jackson et al. (Jackson et al. 2021) reported 16 recombinant sequences among
-genomes sampled in the United Kingdom up to March 7, 2021. The authors proposed
-that the recombinants likely arose from eight independent recombination events
-(categorised into groups A to D and four singletons).
+In this section we examine the Long ARG to determine how well it reflects
+the structure of previously identified recombinant lineages.
+There are [high level summary of the pango recombinant lineages and samples
+in the Long ARG].
+long ARG (subsampled to mid-2022) contains samples
+from 33 Pango-designated recombinant lineages (XA to XAK; Supplementary Table)
+[Probably could have a table here to summarise?]
 
-\begin{table} \centering
-\begin{tabular}{l|c|c|c|c|c} \hline
-\multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Jackson et al. (2021)}} &
-\multicolumn{2}{c}{\textbf{sc2ts (wide ARG)}} \\ \hline
-\textbf{Sample} &
-\textbf{Group} & \textbf{Parents} & \thead{Breakpoint \\
-interval(s)} &
-\textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
-\hline ALDP-11CF93B & A
-& \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\ ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ ALDP-130BB95 & A &
-\thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\ LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
-\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ QEUH-CCCB30 & B &
-\thead{B.1.36.28 \\ Alpha} & 6,528–6,953 & \thead{B.1.36 \\ Alpha} &
-6,529–6,954 \\ QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-\thead{B.1.36 \\ Alpha} & 6,529–6,954 \\ MILK-1166F52 & C & \thead{Alpha \\
-B.1.221.1} & 25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
-MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 & \thead{Alpha \\
-B.1.221} & 25,997–27,972 \\ QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} &
-25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\ MILK-126FE1F & D &
-\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
-22,445–23,063 \\ RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062
-& \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\ RAND-128FA33 & D &
-\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
-22,445–23,063 \\ CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
-\thead{B.1.177 \\ Alpha} & 16,177–21,255 \\ CAMC-CB7AB3 & n/a & \thead{Alpha \\
-B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} & \thead{Alpha \\
-B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\ MILK-103C712 & n/a
-& \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} & n/a & n/a \\
-QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 & \thead{Alpha
-\\ B.1.177} & 7,729–10,870 \\ \hline
-\end{tabular}
-\caption{\label{tab:jackson}Recombinant sequences involving the Alpha (B.1.1.7)
-variant reported by \cite{Jackson2021-ik} have recombinant
-ancestry in the wide ARG. The breakpoint intervals and Pango lineage
-assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
-al., except the Pango lineage assignment of the parents of group B
-recombinants, which were taken from Table 1 (motif-based results).} \end{table}
 
-In the wide ARG (sampled to mid-2021), all these sequences are descendants of
-recombination nodes, except MILK-103C712, which was removed during
-preprocessing (Table 2); additionally, all are HMM-consistent, except
-QEUH-1067DEF. Overall, we find excellent agreement between Jackson et al.’s
-motif-based method and sc2ts in terms of (1) the Pango lineage of the parents
-and (2) the breakpoint intervals (Table 2). In all cases, the two methods
-proposed identical or very closely related parent lineages. The general mosaic
-genome structure is concordant in all the cases, even CAMC-CB7AB3 where there
-are two switches in the HMM copying paths (indicative of two breakpoints). The
-breakpoint intervals estimated using the two methods overlap substantially in
-all the cases (Table 2). Within each of the groups A to D, the constituent
-sequences have identical breakpoint intervals, because they trace back to a
-single recombination node in the wide ARG. This result is consistent with the
-hypothesis that the sequences of the groups A to D emerged from four separate
-recombination events~\cite{Jackson2021-ik}.
-
-\subsection{Pango recombinants}
-
-The wide ARG only contains samples from three Pango-designated recombinant
-lineages (XA, XB, and XC), due to the fact that it only includes samples up to
-mid-2021. By contrast, the long ARG (subsampled to mid-2022) contains samples
-from 33 Pango-designated recombinant lineages (XA to XAK; Supplementary Table
-3). For Pango recombinant analysis, we therefore focus on the long ARG.
-
-In the wide ARG, every sequence of the three Pango recombinants trace back to
-some recombination node. XA, XB, and XC.
-
-In the unfiltered long ARG, the sequences of 28 Pango recombinants trace back
+The sequences of 28 Pango recombinants trace back
 to some recombinant node(s); however, the sequences of the five Pango
-recombinants XP, XU, XAA, XAG, and XAK do not. A likely explanation for the XP
+% jk: really? I thought it was just XP that wasn't inferred to be a
+% recombinant.
+recombinants XP, XU, XAA, XAG, and XAK do not.
+A likely explanation for the XP
 recombinant sequences not having a recombinant origin in the long ARG is that
 its characteristic multibase deletion
-(https://github.com/cov-lineages/pango-designation/issues/481) was masked
-during preprocessing and therefore was not incorporated into the HMM. Upon
-tracing the origin of XAG through the ARG, XAG might have been caused by
+(\url{https://github.com/cov-lineages/pango-designation/issues/481}) was masked
+during preprocessing and therefore was not incorporated into the HMM.
+% Eh?
+Upon tracing the origin of XAG through the ARG, XAG might have been caused by
 incorrect imputation of its parent nodes(?). XAK likely does not appear to have
 a recombinant origin because of random subsampling, but it may with a more
 complete tree.
 
-The sequences of 14 Pango recombinants trace back to a single recombination
-node. The sequences of the remaining 18 Pango recombinants trace back to
-multiple recombination nodes, however. This may be a result of undersampling in
-the long ARG, which was built by randomly subsampling at most 1,000 sequences
-from each daily batch. Having extra recombination nodes in the long ARG
-appeared to be a more parsimonious explanation for the 19 Pango recombinants
-than having a single recombination node with many immediately ancestral
-mutations (including recurrent mutations and reversions), despite that the
-recombinants may indeed trace to a single origin.
-
-The mosaic genome structure of all the 32 Pango recombinants is concordant with
+[FIXME this isn't quite right - not all the sequences for a given pango
+lineage trace back to the same recombination event, so won't have the same
+intervals.]
+The mosaic genome structure of all the 32 Pango recombinant lineages is concordant with
 the structure determined by the Pango Lineage Designation Committee
 (Supplementary Table 3). For example, the genome of XD (also known as
 ``Deltacron'') is inferred to consist of B.1.617.2 (Delta) on the 5’ end, BA.1.17
 (Omicron) in the middle, and B.1.617.2 (Delta) on the 3’ end.
 
+The wide ARG contains samples from three Pango-designated recombinant
+lineages (XA, XB, and XC) and N samples, since it only includes data
+up to mid-2021.
+In the wide ARG, every sequence of the three Pango recombinants trace back to
+some recombination node. XA, XB, and XC.
+
+For the long ARG, we examine the lineages in increasing complexity of the
+inferred evolutionary relationships between samples assigned to Pango
+X lineages.
+
+% - Recombinant Pango lineages
+%     How well do we recover recombinant Pango lineages? Work through the
+% examples in increasing compexity, using headings to split things up if
+% necessary. (i.e., Single origin, Multiple origin, Interellated lineages). We'd
+% need to be clear about what these terms mean, of course. We could include
+% lineage graphs for all of these examples?
+
+% OLD TEXT
+
+% The sequences of 14 Pango recombinants trace back to a single recombination
+% node. The sequences of the remaining 18 Pango recombinants trace back to
+% multiple recombination nodes, however. This may be a result of undersampling in
+% the long ARG, which was built by randomly subsampling at most 1,000 sequences
+% from each daily batch. Having extra recombination nodes in the long ARG
+% appeared to be a more parsimonious explanation for the 19 Pango recombinants
+% than having a single recombination node with many immediately ancestral
+% mutations (including recurrent mutations and reversions), despite that the
+% recombinants may indeed trace to a single origin.
+
+
+\subsubsection{Single origin}
+
+We would usually assume that all sequences assigned to a given Pango X
+lineage are descendants of a single recombinant sequence, arising as a
+result of a mixed infection followed by onward transmission. Thus, we
+would also expect our ARG to reflect this evolutionary history, where
+we have a all the samples assigned to this recombinant lineage tracing
+back to a single recombination node, representing this original
+recombination event.
+
+The sequences of 14 Pango recombinants trace back to a single recombination
+node. The details are given in Figure X, where we [give the details of
+the numbers of samples, etc for each of these 14 lineages] and
+show the lineage subgraph for X?, which makes this simple structure
+clear. [Explain the lineage subgraph format a bit]
+
+\subsubsection{Multiple origin}
+The ARG inference has no pre-defined knowledge of Pango X lineage assignments,
+and there is therefore no particular requirement that all the samples
+assigned to a given lineage must trace back to a single recombination
+event. In this section we examine the Pango X lineage samples that
+are inferred to have multiple recombinant origins (i.e., trace
+back to different recombination nodes in the ARG), but are still
+form monophyletic clades % is this the right term?
+descending from these nodes .
+
+In Figure XXX we give the details of these multiple pango lineages,
+along with an example lineage subgraph.
+
+Interestingly, XC is inferred to be single origin in the Wide ARG but
+not in the long ARG. See lineage subgraphs in supplemental figure Y.
+This suggests that insufficient sampling may be the explanation for
+many of these multiple origin events.
+
+\subsubsection{Complex relationships between X lineages}
+
+Some lineages are inferred to have overlapping ancestral histories.
+Discuss XAG example in Figure XXX.
+
 \subsection{Novel recombinants}
 
-Next, we examine recombination nodes in the filtered long ARG (sampled to
+Next, we examine recombination nodes in the long ARG (sampled to
 mid-2022) that represent previously unnamed putative recombinant sequences,
 which do not have a Pango recombinant designation. For this proof-of-concept
 study, we have arbitrarily picked 12 recombination nodes that seem plausible
-(Supplementary Table 4). Coincidentally, all these nodes involve Omicron
+(Supplementary Table 4). All these nodes involve Omicron
 subvariants (BA.1, BA.2, BA.4, and BA.5). These recombination nodes (1) were
 inserted into the long ARG on or after January 8, 2022; (2) have at least 10
 descendent samples; and (3) have no mutational differences (including immediate
@@ -709,95 +890,6 @@ reversions) from their parent nodes.
 TODO: Node  740761 (USA/NC-CDC-LC0668306/2022) is a sister clade proposed1006
 in the UShER public phylogeny. Node 628656 (Scotland/QEUH-37794BB/2022) is a
 sister clade of XAC, and annotated as ``miscBA2BA1PostSpike''.
-
-\subsection{Recombinant origins of the Pango lineages XA and XAG}
-
-XX
-
-\subsection{Distribution of recombination breakpoint intervals}
-
-We explore recombination signals across the SARS-CoV-2 genome by inspecting the
-breakpoint intervals of the filtered recombination nodes from the wide ARG
-(sampled to mid-2021) (Figure 4). The length of a breakpoint interval reflects
-uncertainty in the estimated location of a breakpoint. On average, the length
-of the breakpoint intervals is 2,895 bases (median, 1,670 bases; range, 1 to
-23,666 bases). This broad distribution of interval length indicates that the
-location of a breakpoint often could not be precisely determined given the
-observed genetic variation.
-
-There is a preponderance of breakpoint intervals spanning the 3’ end of the
-genome (Figure 4A), as noted previously by
-\cite{Turakhia2022-it}.
-Inspecting more closely, we find an enrichment in the
-number of intersecting intervals in the E gene, ORF8, ORF8-N intergenic region,
-and 3’ untranslated region (Figure 4B). Markedly, there is an abrupt drop in
-the number of intersecting intervals in the N gene following the peak in ORF8
-towards the 3’ end.
-
-Next, we investigate the potential recombination signals alongside the number
-of mutations across the genome (Figure 4C). Regions with a higher density of
-mutations contain more genetic variation, increasing the power to detect
-recombination events. The position 28,271 (located in the ORF8-N intergenic
-region) has a particularly high number of mutations in the samples (Figure 5).
-At this position, mutations (n = 7,572), insertions (n = 5,782), and deletions
-(n = 1,605) appear to occur frequently. One possible explanation is that this
-homopolymeric region is prone to sequencing errors, giving rise to an
-artifactual recombination signal. At the upstream position 27,972, numerous
-mutations also occur. This position has been reported to be hypermutable
-\citep{Jungreis2021-dh}.
-
-We further consider the breakpoint intervals within the context of
-recombination breakpoint sequence motifs. It is hypothesised that certain
-palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
-template switching during replication in SARS-CoV-2 via formation of
-base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
-are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
-reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
-breakpoint intervals of the HMM-consistent recombinants span at least one of
-the breakpoint sequences.
-
-\subsection{Mutational spectrum}
-
-In addition to recombination events, the ARGs record mutation events along the
-SARS-CoV-2 phylogeny. \cite{Yi2021-sc} reconstructed a SARS-CoV-2
-phylogeny of over 350,000 genomes sampled globally from December 24, 2019, to
-January 12, 2021, and systematically catalogued all the mutations occurring
-along the phylogeny. Notably, in the mutational spectrum described by Yi et
-al., C-to-U and G-to-U mutations occur more frequently than U-to-C and U-to-G
-mutations, respectively.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figures/mutational_spectra.pdf}
-\caption{\label{fig:mutational_spectra}
-Mutational spectrum of SARS-CoV-2 in
-the wide ARG (sampled to mid-2021) compared to \cite{Yi2021-sc}.
-Mutations are categorised by type (i.e., ancestral state >
-derived state). The percentages of each mutation type from the wide ARG are
-represented by blue bars and the percentages from Yi et al. by orange bars,
-with the darker colours representing one direction (e.g., C > U) and the
-lighter colours the reverse (e.g., U > C).}
-\end{figure}
-
-
-For validation purposes, we compare the mutational spectrum from the wide ARG
-with the mutational spectrum of Yi et al. We categorised all of the single
-nucleotide mutations by type (defined by the ancestral state and derived
-state), excluded mutations inherited by only a single sample (which are
-enriched for sequencing errors and artefacts), and tallied them up by type.
-Similarly, we took the data for single nucleotide mutations from Yi et al.
-\url{https://github.com/ju-lab/SC2_evol_signature}, excluded mutations
-occurring along terminal branches, and tallied them up by type. We find that
-the mutational spectrum from the wide ARG (448,825 mutations) matches the
-mutational spectrum reported by Yi et al. (92,344 mutations) (Figure X). In
-both spectra, C-to-U mutations and G-to-U mutations occur more frequently than
-U-to-C and U-to-G, respectively (Figure X). Similar results are obtained when
-including the mutations inherited by only a single sample or occurring on
-terminal branches (data not shown).
-
-\subsection{Mutations under selection}
-
-XX
 
 \section{Discussion}
 
