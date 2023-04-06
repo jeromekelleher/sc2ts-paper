@@ -6,7 +6,13 @@
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{natbib}
+\usepackage{url}
+% JK: turning this off for the moment as I keep clicking through on links
+% to the bibliography while reading the text and it's intensely annoying.
+% Can reinstate when we're ready to preprint
+% \usepackage[hidelinks]{hyperref}
+
 \usepackage{makecell}
 
 \title{Towards a Pandemic-Scale Ancestral Recombination Graph of SARS-CoV-2}
@@ -36,12 +42,12 @@ XX
 \section{Introduction}
 
 Recombination via template switching is a common feature in the evolution of
-coronaviruses (CoV) \cite{Graham2010-xe,De_Klerk2022-tt}), including SARS-CoV-2
-\cite{VanInsberghe2021-eu,Jackson2021-ik,Ignatieva2021-rg}. By bringing
+coronaviruses (CoV) \citep{Graham2010-xe,De_Klerk2022-tt}), including SARS-CoV-2
+\citep{VanInsberghe2021-eu,Jackson2021-ik,Ignatieva2021-rg}. By bringing
 together mutations carried by different lineages, recombination plays an
 important role in generating genomic diversity, with recombinant lineages
 associated with CoV adaptation to new host species and with the production of
-more immune evasive variants \cite{Graham2010-xe,De_Klerk2022-tt}.
+more immune evasive variants \citep{Graham2010-xe,De_Klerk2022-tt}.
 
 Recombination was challenging to detect in SARS-CoV-2 early in the pandemic due
 to gradual accumulation of genetic variation. In late 2020, the appearance and
@@ -49,24 +55,24 @@ spread of variants of concern (VoC) harbouring multiple characteristic
 mutations increased the detectability of recombination. By searching for
 genomes containing segments from different VoC, multiple recombinant lineages
 have been detected, for example, between Alpha and pre-VoC
-\cite{Jackson2021-ik}, Alpha and Epsilon \cite{Wertheim2022-hj}, and Alpha and
-Delta \cite{Sekizuka2022-xz}). More recently, the high prevalence of Omicron,
+\citep{Jackson2021-ik}, Alpha and Epsilon \citep{Wertheim2022-hj}, and Alpha and
+Delta \citep{Sekizuka2022-xz}). More recently, the high prevalence of Omicron,
 with multiple co-circulating deeply divergent lineages (BA.1 to BA.5), has
 accelerated the rate of coinfection and the potential for recombination
-\cite{Bal2022-hq}. Recombinant lineages that have sufficient evidence of onward
+\citep{Bal2022-hq}. Recombinant lineages that have sufficient evidence of onward
 transmission (more than five descendants) and monophyly (> 70\% bootstrap
-support) are eligible for a Pango lineage designation \cite{Rambaut2020-dw},
+support) are eligible for a Pango lineage designation \citep{Rambaut2020-dw},
 starting with the letter X (“Pango Lineage Nomenclature: Provisional Rules for
 Naming Recombinant Lineages” 2021).
 
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
 combine specific subsets of mutations from different lineages (e.g.,
-\cite{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}).
+\citep{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}).
 This approach only identifies those inter-lineage recombination events
 resulting in the patterns investigated. Others have inferred recombinant
 genealogies to disentangle recombination from recurrent mutation, without
 having to pre-specify characteristic mutations for each lineage
-\cite{Ignatieva2021-rg}. More recently, Turakhia et al. \cite{Turakhia2022-it}
+\citep{Ignatieva2021-rg}. More recently, Turakhia et al. \citep{Turakhia2022-it}
 has presented a phylogeny-based approach ("RIPPLES") to identify putative
 recombinants among over ten million SARS-CoV-2 genomes, without pre-specifying
 motifs. To find candidate recombinants, RIPPLES first builds a phylogeny
@@ -83,33 +89,33 @@ history of SARS-CoV-2. As noted by the authors, a \textit{post hoc} treatment
 of recombination is possible when recombinant lineages are rare and leave few
 descendants, but this is becoming increasingly untenable with the proliferation
 of recombinant lineages (e.g., more than half of the sequences sampled in
-February, 2023 are from XBB and its descendants; \cite{Chen2022-pz}.
+February, 2023 are from XBB and its descendants; \citep{Chen2022-pz}.
 
 Inferring evolutionary trees while accounting for both mutation and
 recombination is a long-standing challenge. This challenge is particularly
 acute for SARS-CoV-2, given the large amount of data that has been shared, with
-over 15 million sequences in the GISAID database \cite{Shu2017-hp}. It is well
-known that recombination distorts phylogenies \cite{Schierup2000-fg} and
+over 15 million sequences in the GISAID database \citep{Shu2017-hp}. It is well
+known that recombination distorts phylogenies \citep{Schierup2000-fg} and
 affects the results of downstream analysis (e.g., inference of selection;
-\cite{Anisimova2003-vr}). However, standard phylogenetic methods do not account
-for recombination (e.g., \cite{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}).
+\citep{Anisimova2003-vr}). However, standard phylogenetic methods do not account
+for recombination (e.g., \citep{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}).
 Alternatively, genetic ancestries of recombining lineages can be represented by
-ancestral recombination graphs (ARG; \cite{Griffiths1981-lw,Hudson1983-if},
-which  capture network-like phylogenetic relationships \cite{Gusfield2014-qw}.
+ancestral recombination graphs (ARG; \citep{Griffiths1981-lw,Hudson1983-if},
+which  capture network-like phylogenetic relationships \citep{Gusfield2014-qw}.
 
 Approaches to infer ARGs now exist that can scale to tens of thousands of human
 genomes and beyond
-\cite{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}. Recently,
-Wohns et al. \cite{Wohns2022-th} reconstructed a unified whole-genome genealogy
+\citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}. Recently,
+Wohns et al. \citep{Wohns2022-th} reconstructed a unified whole-genome genealogy
 of thousands of modern and ancient human genomes, based on over 90 million
-variable sites. To achieve this, Wohns et al. \cite{Wohns2022-th} utilised
+variable sites. To achieve this, Wohns et al. \citep{Wohns2022-th} utilised
 several computational advances in ARG inference: (1) the "succinct tree
 sequence" data structure that can compactly store large ARGs
-\cite{Kelleher2018-xc}; (2) a highly efficient Hidden Markov Model (HMM)
+\citep{Kelleher2018-xc}; (2) a highly efficient Hidden Markov Model (HMM)
 implementation of the Li and Stephens (LS) model (Li and Stephens 2003) to
-infer copying paths between genomes \cite{Kelleher2019-ba}; and (3) efficient,
+infer copying paths between genomes \citep{Kelleher2019-ba}; and (3) efficient,
 open-source software tools
-\cite{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
+\citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
 
 Here, we present a preliminary version of a novel scalable methodology
 (“sc2ts”, pronounced “scoots”) that builds on the advances above and
@@ -120,7 +126,7 @@ detect putative SARS-CoV-2 recombinants; (2) infer the phylogenetic
 relationships of the major SARS-CoV-2 lineages; (3) reconstruct the mutational
 spectrum of SARS-CoV-2; and (4) provide a compact record of evolutionary
 information about SARS-CoV-2 that can be efficiently accessed using "tskit"
-(tree sequence toolkit) software library \cite{Kelleher2018-xc}. Sc2ts is a
+(tree sequence toolkit) software library \citep{Kelleher2018-xc}. Sc2ts is a
 promising method to automate detection of SARS-CoV-2 recombinants and to
 jointly model recombinational and mutational processes shaping the genomic
 diversity of SARS-CoV-2 at large scale.
@@ -132,12 +138,12 @@ diversity of SARS-CoV-2 at large scale.
 \subsubsection{Sequence-level preprocessing}
 
 The findings of this study are based on sequences and metadata available on
-GISAID (\href{https://gisaid.org/}) up to Aug 22, 2022 and accessible at
+GISAID (\url{https://gisaid.org/}) up to Aug 22, 2022 and accessible at
 doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
 if they (1) had ambiguous collection dates; (2) were collected before January
 01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
 Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
-MN908947.3) using Nextclade v2.3.0 \cite{Aksamentov2021-hj} (dataset tag
+MN908947.3) using Nextclade v2.3.0 \citep{Aksamentov2021-hj} (dataset tag
 2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
 inference, sequences were excluded if they had a “bad” quality control status
 in any of the four Nextclade columns ("qc.missingData.status”,
@@ -151,12 +157,12 @@ Ambiguous nucleotide letters (i.e., not A, C, G, T, or a gap) in the pairwise
 genome alignments were encoded as N. Problematic bases in the alignments, which
 had two or more ambiguous letters or gaps within a distance of seven bases,
 were masked as missing data following the protocol in
-\href{https://github.com/roblanf/sarscov2phylo/}. Masked bases were ignored
+\url{https://github.com/roblanf/sarscov2phylo/}. Masked bases were ignored
 when attaching a sample genome to the ARG, but they were subsequently imputed.
 Further, 481 problematic sites flagged as prone to sequencing errors or highly
 homoplasic were excluded entirely
-(\href{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
-\href{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
+(\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
+\url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
 
 \subsubsection{Exclusion of “time travellers”}
 
@@ -183,7 +189,7 @@ on the tree, allowing an automated assessment of collection date discrepancies.
 \subsubsection{Overview of sc2ts}
 
 We introduce an ARG inference method (schematic in Figure 1) that uses (1) an
-efficient HMM implementation of the Li and Stephens (LS) model \cite{Li2003-ib}
+efficient HMM implementation of the Li and Stephens (LS) model \citep{Li2003-ib}
 to copy SARS-CoV-2 genomes (see Sections 2.2 and 2.3); (2) the reported
 collection dates of the SARS-CoV-2 samples to determine the order of genome
 copying; and (3) several parsimony-based heuristics to locally refine the
@@ -213,7 +219,7 @@ most recent of its parent nodes. Otherwise, the genomes are attached to the
 most closely related ancestral node (an attachment node). This creates
 polytomies that are then locally resolved among the descendants of each
 attachment node using the Unweighted Pair Group Method with Arithmetic Mean
-(UPGMA) algorithm \cite{Michener1957-tr}, with average linkage (Figure 1C).
+(UPGMA) algorithm \citep{Michener1957-tr}, with average linkage (Figure 1C).
 This hierarchical clustering algorithm produces a dendrogram relating a set of
 sequences, which is treated as an ultrametric binary tree here. Subsequently,
 mutations are placed onto the daily tree by maximum parsimony. An issue with
@@ -241,13 +247,13 @@ thereby reducing the number of mutations on the branches. Note that these
 non-sample nodes are used as reconstructed genomes during HMM copying.
 
 Furthermore, during inference, the ARG is automatically encoded, stored, and
-updated as a tree sequence using tskit \cite{Kelleher2018-xc}.
+updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
 
 \subsubsection{Brief description of the Li and Stephens model}
 
 The LS model is a convenient probabilistic approximation to the coalescent with
-recombination \cite{Hudson1983-if}, itself a generative model of a genealogical
-process with recombination \cite{Li2003-ib}. Importantly, it can be implemented
+recombination \citep{Hudson1983-if}, itself a generative model of a genealogical
+process with recombination \citep{Li2003-ib}. Importantly, it can be implemented
 as an HMM in which a focal genome is a sequence of nucleotides (observed
 states) that are probabilistically emitted as an imperfect mosaic of a set of
 reference genomes (hidden states). As such, an efficient HMM machinery can be
@@ -255,17 +261,17 @@ employed to make statements about parameters of interest and highlight
 potential sources of error in genotyping and sequencing data. The LS model is
 used in a wide variety of applications in genomics. For example, it is the
 engine that drives statistical genotype phasing and imputation
-\cite{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa}, and it
+\citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa}, and it
 can be used to estimate mutation rates (e.g., REF), recombination rates (e.g.,
-\cite{Hinch2011-tz}), and selection within and across hosts in viral sequence
-data (e.g., \cite{Palmer2019-wa}).
+\citep{Hinch2011-tz}), and selection within and across hosts in viral sequence
+data (e.g., \citep{Palmer2019-wa}).
 
 The generative process of the LS model is summarised in Figure 2. Here, a
 transition matrix, Q, governs the process of switching (recombining) between
 members of the reference panel (the hidden states). An emission matrix,
 \textit{E}, allows for differences between the focal sequence and the hidden
 state from which it is copied (due to mutation as well as genotyping or
-sequencing error). Then, we use the Viterbi algorithm \cite{Viterbi1967-ol} to
+sequencing error). Then, we use the Viterbi algorithm \citep{Viterbi1967-ol} to
 find the most likely copying path through the sequences, given a set of
 reference sequences, \textit{Q}, and \textit{E}.
 
@@ -311,7 +317,7 @@ the non-sample node, then the parental node’s status was directly propagated t
 the non-sample node. Otherwise, the Pango lineage of the non-sample node was
 inferred by matching its full set of mutations against the Pango
 lineage-defining mutations (based on 90\% consensus of the sequences analysed)
-from the COVID-CG website \cite{Chen2021-zc}; \href{https://covidcg.org/};
+from the COVID-CG website \citep{Chen2021-zc}; \url{https://covidcg.org/};
 accessed on November 04, 2022).
 
 \subsubsection{Breakpoint intervals and HMM consistency}
@@ -336,13 +342,13 @@ recombinant.
 \subsubsection{Code availability}
 
 The source code implementing the sc2ts pipeline is available via GitHub
-\href{https://github.com/jeromekelleher/sc2ts/}. The sc2ts pipeline uses
+\url{https://github.com/jeromekelleher/sc2ts/}. The sc2ts pipeline uses
 various functions and algorithms implemented in tskit and tsinfer
-\href{https://github.com/tskit-dev/}. The pipeline uses the SciPy
+\url{https://github.com/tskit-dev/}. The pipeline uses the SciPy
 implementation of the UPGMA algorithm to build daily trees
-\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.average.html}.
+\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.average.html}.
 The Jupyter notebooks used to produce the results described herein are also
-available on GitHub \href{https://github.com/jeromekelleher/sc2ts-paper/}.
+available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
 
 \section{Results}
 
@@ -389,10 +395,10 @@ running the HMM.
 
 For validation purposes, we compare the genetic relationships in the
 sc2ts-inferred ARGs with phylogenetic relationships inferred by the NextStrain
-project \cite{Hadfield2018-ef}. The NextStrain trees consist of subsamples of
+project \citep{Hadfield2018-ef}. The NextStrain trees consist of subsamples of
 SARS-CoV-2 genomes, which over the time period of our ARGs are almost entirely
 restricted to non-recombinant lineages. To allow for comparison, the ARGs were
-"simplified" \cite{Kelleher2018-xc} to retain only those tips of our genealogy
+"simplified" \citep{Kelleher2018-xc} to retain only those tips of our genealogy
 that match the samples present in a specific NextStrain tree. These simplified
 "backbone" ARGs exhibit very little recombination (6 and 5 trees across the
 genome for the wide and long ARGs, respectively).
@@ -590,7 +596,7 @@ observed genetic variation.
 
 There is a preponderance of breakpoint intervals spanning the 3’ end of the
 genome (Figure 4A), as noted previously by Turakhia et al.
-\cite{Turakhia2022-it}. Inspecting more closely, we find an enrichment in the
+\citep{Turakhia2022-it}. Inspecting more closely, we find an enrichment in the
 number of intersecting intervals in the E gene, ORF8, ORF8-N intergenic region,
 and 3’ untranslated region (Figure 4B). Markedly, there is an abrupt drop in
 the number of intersecting intervals in the N gene following the peak in ORF8
@@ -606,13 +612,13 @@ At this position, mutations (n = 7,572), insertions (n = 5,782), and deletions
 homopolymeric region is prone to sequencing errors, giving rise to an
 artifactual recombination signal. At the upstream position 27,972, numerous
 mutations also occur. This position has been reported to be hypermutable
-\cite{Jungreis2021-dh}.
+\citep{Jungreis2021-dh}.
 
 We further consider the breakpoint intervals within the context of
 recombination breakpoint sequence motifs. It is hypothesised that certain
 palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
 template switching during replication in SARS-CoV-2 via formation of
-base-paired stem loops in the genome structure \cite{Gallaher2020-lb}. There
+base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
 are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
 reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
 breakpoint intervals of the HMM-consistent recombinants span at least one of
@@ -621,7 +627,7 @@ the breakpoint sequences.
 \subsection{Mutational spectrum}
 
 In addition to recombination events, the ARGs record mutation events along the
-SARS-CoV-2 phylogeny. Yi et al. \cite{Yi2021-sc} reconstructed a SARS-CoV-2
+SARS-CoV-2 phylogeny. Yi et al. \citep{Yi2021-sc} reconstructed a SARS-CoV-2
 phylogeny of over 350,000 genomes sampled globally from December 24, 2019, to
 January 12, 2021, and systematically catalogued all the mutations occurring
 along the phylogeny. Notably, in the mutational spectrum described by Yi et
@@ -634,7 +640,7 @@ nucleotide mutations by type (defined by the ancestral state and derived
 state), excluded mutations inherited by only a single sample (which are
 enriched for sequencing errors and artefacts), and tallied them up by type.
 Similarly, we took the data for single nucleotide mutations from Yi et al.
-\ref{https://github.com/ju-lab/SC2_evol_signature}, excluded mutations
+\url{https://github.com/ju-lab/SC2_evol_signature}, excluded mutations
 occurring along terminal branches, and tallied them up by type. We find that
 the mutational spectrum from the wide ARG (448,825 mutations) matches the
 mutational spectrum reported by Yi et al. (92,344 mutations) (Figure X). In
@@ -842,7 +848,7 @@ B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\ MILK-103C712 & n
 QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 & \thead{Alpha
 \\ B.1.177} & 7,729–10,870 \\ \hline \end{tabular}
 \caption{\label{tab:jackson}Recombinant sequences involving the Alpha (B.1.1.7)
-variant reported by Jackson et al. \cite{Jackson2021-ik} have recombinant
+variant reported by Jackson et al. \citep{Jackson2021-ik} have recombinant
 ancestry in the wide ARG. The breakpoint intervals and Pango lineage
 assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
 al., except the Pango lineage assignment of the parents of group B
@@ -898,13 +904,13 @@ algorithm.} \end{figure}
 \includegraphics[width=0.8\textwidth]{figures/mutational_spectra.pdf}
 \caption{\label{fig:mutational_spectra} Mutational spectrum of SARS-CoV-2 in
 the wide ARG (sampled to mid-2021) compared to that reported by Yi et al.
-\cite{Yi2021-sc}. Mutations are categorised by type (i.e., ancestral state >
+\citep{Yi2021-sc}. Mutations are categorised by type (i.e., ancestral state >
 derived state). The percentages of each mutation type from the wide ARG are
 represented by blue bars and the percentages from Yi et al. by orange bars,
 with the darker colours representing one direction (e.g., C > U) and the
 lighter colours the reverse (e.g., U > C).} \end{figure}
 
-\bibliographystyle{alpha}
+\bibliographystyle{plainnat}
 \bibliography{paper}
 
 \end{document}
