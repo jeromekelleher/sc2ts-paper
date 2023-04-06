@@ -199,7 +199,30 @@ on the tree, allowing an automated assessment of collection date discrepancies.
 
 \subsubsection{Overview of sc2ts}
 
-We introduce an ARG inference method (schematic in Figure 1) that uses (1) an
+\begin{figure} \centering
+\includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
+\caption{\label{fig:overview_sc2ts} A schematic of the sc2ts method. Sc2ts
+reconstructs the genetic relationships among SARS-CoV-2 genomes by copying
+samples to all possible ancestors collected at earlier time points (curved
+arrows). An ARG is built by attaching new sample genomes grouped by collection
+date to an existing ARG rooted at the Wuhan-Hu-1 reference genome, day by day.
+Each iteration involves three stages: (1) attachment of new samples to the
+growing ARG (A, B); (2) reconstruction of trees relating the samples under each
+attachment node (C); and parsimony-based tree topology adjustments (D, E). In
+the absence of  recombination, sc2ts infers an ARG that is a single tree
+relating the samples (A). However, in the presence of recombination, sc2ts
+infers an ARG that is encoded as a sequence of local trees relating segments of
+the sample genomes (B), inserting a recombination node to represent a putative
+recombination event. Additionally, mutation-collapsing nodes (D) and
+pushed-reversion nodes (E) are inserted to make more parsimonious placements of
+mutations that should be shared or should not be immediately reverted,
+respectively.}
+\end{figure}
+
+We introduce an ARG inference method, summarised in
+Figure~\ref{fig:overview_sc2ts}.
+% Note going to rewrite this anyway, so not trying to make it flow.
+It uses (1) an
 efficient HMM implementation of the Li and Stephens (LS) model \citep{Li2003-ib}
 to copy SARS-CoV-2 genomes (see Sections 2.2 and 2.3); (2) the reported
 collection dates of the SARS-CoV-2 samples to determine the order of genome
@@ -277,14 +300,44 @@ can be used to estimate mutation rates (e.g., REF), recombination rates
 \citep[e.g.][]{Hinch2011-tz}, and selection within and across hosts in viral sequence
 data \citep[e.g.][]{Palmer2019-wa}.
 
-The generative process of the LS model is summarised in Figure 2. Here, a
-transition matrix, Q, governs the process of switching (recombining) between
+\begin{figure} \centering
+\includegraphics[width=0.6\textwidth]{figures/ls_diagram_covid.pdf}
+% FIXME this caption is too long
+\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS) model.
+The LS model in its implementation as an HMM is governed by the transition and
+emission matrices, $Q$ and $E$, respectively. Each may be a
+function of the reference panel members, but transitions are generally assumed
+to be independent of the hidden states themselves (shown in the pink panel).
+This dramatically increases performance as the state space drops to two states
+(i.e., switching or not switching). The recombination probability at site
+$\ell$ is $r\ell$, while n denotes the number of members in the
+reference panel. Emissions may also be a function of the nucleotide states, but
+in our case, we assume that all observed alleles (in both the reference panel
+and focal sequence, $a\ell$) at the site under consideration are equally
+likely and occur with mutation probability $\ell$ (shown in the blue
+panel). These two processes, transition and emission (which encode
+recombination and mutation, respectively), define the generative process of the
+HMM, by which an imperfect mosaic is emitted from a reference panel of samples
+and nodes from the ARG inserted at earlier collection dates (shown in the lower
+panel). Here, the unseen states in the reference panel are shown as coloured
+lines enclosed by the grey box, and the true path through the data which leads
+to the emitted focal sequence is displayed by the black arrow. Examples of
+transition and emission probabilities along this trajectory are shown by the
+red and blue arrows, respectively. Black crosses along the focal sequence show
+genotyping errors or mutations. Note that in practice, we do not know the
+pattern of colours along the focal sequence and must infer it using the Viterbi
+algorithm.} \end{figure}
+
+The generative process of the LS model is summarised in
+Figure~\ref{fig:ls_diagram}.
+Here, a
+transition matrix, $Q$, governs the process of switching (recombining) between
 members of the reference panel (the hidden states). An emission matrix,
-\textit{E}, allows for differences between the focal sequence and the hidden
+$E$, allows for differences between the focal sequence and the hidden
 state from which it is copied (due to mutation as well as genotyping or
 sequencing error). Then, we use the Viterbi algorithm \citep{Viterbi1967-ol} to
 find the most likely copying path through the sequences, given a set of
-reference sequences, \textit{Q}, and \textit{E}.
+reference sequences, $Q$, and $E$.
 
 Because the HMM is memoryless, the potential parental lineages are
 independently assessed at each recombinantion breakpoint. This can result in
@@ -379,6 +432,32 @@ date of the final batch of sequences which were preprocessed for the
 development of sc2ts. Once sc2ts is further developed and tested, we will
 attach samples collected after that date to infer a fully sampled
 pandemic-scale ARG.
+
+\begin{table}
+\centering
+\begin{tabular}{l|l|l} \hline \textbf{Property} &
+\textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
+& 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
+\multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
+1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
+adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
+(10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
+\multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons (i.e.
+no descendant besides the sequence causing insertion of the node) & 2,601
+(63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
+\\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
+\multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
+1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
+(72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
+Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
+intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
+\multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
+(including sample metadata, imputed Pango lineage assignments, and results of
+HMM runs for recombination nodes) & ~57 Mb & ~36 Mb \\ Bytes to encode one
+sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
+\end{tabular}
+\end{table}
+
 
 Most of the nodes in the ARGs represent sample genomes (Table 1). Only a small
 fraction of the nodes represent recombination events (0.28\% and 0.27\% in the
@@ -519,6 +598,47 @@ genomes sampled in the United Kingdom up to March 7, 2021. The authors proposed
 that the recombinants likely arose from eight independent recombination events
 (categorised into groups A to D and four singletons).
 
+\begin{table} \centering
+\begin{tabular}{l|c|c|c|c|c} \hline
+\multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Jackson et al. (2021)}} &
+\multicolumn{2}{c}{\textbf{sc2ts (wide ARG)}} \\ \hline
+\textbf{Sample} &
+\textbf{Group} & \textbf{Parents} & \thead{Breakpoint \\
+interval(s)} &
+\textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
+\hline ALDP-11CF93B & A
+& \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
+21,256–22,227 \\ ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
+\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ ALDP-130BB95 & A &
+\thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
+21,256–22,227 \\ LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
+\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ QEUH-CCCB30 & B &
+\thead{B.1.36.28 \\ Alpha} & 6,528–6,953 & \thead{B.1.36 \\ Alpha} &
+6,529–6,954 \\ QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
+\thead{B.1.36 \\ Alpha} & 6,529–6,954 \\ MILK-1166F52 & C & \thead{Alpha \\
+B.1.221.1} & 25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 & \thead{Alpha \\
+B.1.221} & 25,997–27,972 \\ QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} &
+25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\ MILK-126FE1F & D &
+\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
+22,445–23,063 \\ RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062
+& \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\ RAND-128FA33 & D &
+\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
+22,445–23,063 \\ CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
+\thead{B.1.177 \\ Alpha} & 16,177–21,255 \\ CAMC-CB7AB3 & n/a & \thead{Alpha \\
+B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} & \thead{Alpha \\
+B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\ MILK-103C712 & n/a
+& \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} & n/a & n/a \\
+QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 & \thead{Alpha
+\\ B.1.177} & 7,729–10,870 \\ \hline
+\end{tabular}
+\caption{\label{tab:jackson}Recombinant sequences involving the Alpha (B.1.1.7)
+variant reported by \cite{Jackson2021-ik} have recombinant
+ancestry in the wide ARG. The breakpoint intervals and Pango lineage
+assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
+al., except the Pango lineage assignment of the parents of group B
+recombinants, which were taken from Table 1 (motif-based results).} \end{table}
+
 In the wide ARG (sampled to mid-2021), all these sequences are descendants of
 recombination nodes, except MILK-103C712, which was removed during
 preprocessing (Table 2); additionally, all are HMM-consistent, except
@@ -533,7 +653,7 @@ all the cases (Table 2). Within each of the groups A to D, the constituent
 sequences have identical breakpoint intervals, because they trace back to a
 single recombination node in the wide ARG. This result is consistent with the
 hypothesis that the sequences of the groups A to D emerged from four separate
-recombination events (Jackson et al. 2021).
+recombination events~\cite{Jackson2021-ik}.
 
 \subsection{Pango recombinants}
 
@@ -645,6 +765,20 @@ January 12, 2021, and systematically catalogued all the mutations occurring
 along the phylogeny. Notably, in the mutational spectrum described by Yi et
 al., C-to-U and G-to-U mutations occur more frequently than U-to-C and U-to-G
 mutations, respectively.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/mutational_spectra.pdf}
+\caption{\label{fig:mutational_spectra}
+Mutational spectrum of SARS-CoV-2 in
+the wide ARG (sampled to mid-2021) compared to \cite{Yi2021-sc}.
+Mutations are categorised by type (i.e., ancestral state >
+derived state). The percentages of each mutation type from the wide ARG are
+represented by blue bars and the percentages from Yi et al. by orange bars,
+with the darker colours representing one direction (e.g., C > U) and the
+lighter colours the reverse (e.g., U > C).}
+\end{figure}
+
 
 For validation purposes, we compare the mutational spectrum from the wide ARG
 with the mutational spectrum of Yi et al. We categorised all of the single
@@ -818,119 +952,6 @@ for kindly providing the genomic coordinates of the breakpoint sequence motifs.
 SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK,
 YW, and BJ are supported by the Robertson Foundation.
 
-\begin{table} \centering \begin{tabular}{l|l|l} \hline \textbf{Property} &
-\textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
-& 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
-\multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
-1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
-adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
-(10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
-\multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons (i.e.
-no descendant besides the sequence causing insertion of the node) & 2,601
-(63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
-\\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
-\multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
-1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
-(72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
-Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
-intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
-\multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
-(including sample metadata, imputed Pango lineage assignments, and results of
-HMM runs for recombination nodes) & ~57 Mb & ~36 Mb \\ Bytes to encode one
-sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
-\end{tabular} \end{table}
-
-\begin{table} \centering \begin{tabular}{l|c|c|c|c|c} \hline
-\multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Jackson et al. (2021)}} &
-\multicolumn{2}{c}{\textbf{sc2ts (wide ARG)}} \\ \hline \textbf{Sample} &
-\textbf{Group} & \textbf{Parents} & \thead{Breakpoint \\ interval(s)} &
-\textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\ \hline ALDP-11CF93B & A
-& \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\ ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ ALDP-130BB95 & A &
-\thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\ LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
-\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ QEUH-CCCB30 & B &
-\thead{B.1.36.28 \\ Alpha} & 6,528–6,953 & \thead{B.1.36 \\ Alpha} &
-6,529–6,954 \\ QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-\thead{B.1.36 \\ Alpha} & 6,529–6,954 \\ MILK-1166F52 & C & \thead{Alpha \\
-B.1.221.1} & 25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
-MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 & \thead{Alpha \\
-B.1.221} & 25,997–27,972 \\ QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} &
-25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\ MILK-126FE1F & D &
-\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
-22,445–23,063 \\ RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062
-& \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\ RAND-128FA33 & D &
-\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
-22,445–23,063 \\ CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
-\thead{B.1.177 \\ Alpha} & 16,177–21,255 \\ CAMC-CB7AB3 & n/a & \thead{Alpha \\
-B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} & \thead{Alpha \\
-B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\ MILK-103C712 & n/a
-& \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} & n/a & n/a \\
-QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 & \thead{Alpha
-\\ B.1.177} & 7,729–10,870 \\ \hline \end{tabular}
-\caption{\label{tab:jackson}Recombinant sequences involving the Alpha (B.1.1.7)
-variant reported by Jackson et al. \citep{Jackson2021-ik} have recombinant
-ancestry in the wide ARG. The breakpoint intervals and Pango lineage
-assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
-al., except the Pango lineage assignment of the parents of group B
-recombinants, which were taken from Table 1 (motif-based results).} \end{table}
-
-\begin{figure} \centering
-\includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
-\caption{\label{fig:overview_sc2ts} A schematic of the sc2ts method. Sc2ts
-reconstructs the genetic relationships among SARS-CoV-2 genomes by copying
-samples to all possible ancestors collected at earlier time points (curved
-arrows). An ARG is built by attaching new sample genomes grouped by collection
-date to an existing ARG rooted at the Wuhan-Hu-1 reference genome, day by day.
-Each iteration involves three stages: (1) attachment of new samples to the
-growing ARG (A, B); (2) reconstruction of trees relating the samples under each
-attachment node (C); and parsimony-based tree topology adjustments (D, E). In
-the absence of  recombination, sc2ts infers an ARG that is a single tree
-relating the samples (A). However, in the presence of recombination, sc2ts
-infers an ARG that is encoded as a sequence of local trees relating segments of
-the sample genomes (B), inserting a recombination node to represent a putative
-recombination event. Additionally, mutation-collapsing nodes (D) and
-pushed-reversion nodes (E) are inserted to make more parsimonious placements of
-mutations that should be shared or should not be immediately reverted,
-respectively.} \end{figure}
-
-\begin{figure} \centering
-\includegraphics[width=0.8\textwidth]{figures/ls_diagram_covid.pdf}
-\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS) model.
-The LS model in its implementation as an HMM is governed by the transition and
-emission matrices, \textit{Q} and \textit{E}, respectively. Each may be a
-function of the reference panel members, but transitions are generally assumed
-to be independent of the hidden states themselves (shown in the pink panel).
-This dramatically increases performance as the state space drops to two states
-(i.e., switching or not switching). The recombination probability at site
-\textit{l} is \textit{rl}, while n denotes the number of members in the
-reference panel. Emissions may also be a function of the nucleotide states, but
-in our case, we assume that all observed alleles (in both the reference panel
-and focal sequence, \textit{al}) at the site under consideration are equally
-likely and occur with mutation probability \textit{l} (shown in the blue
-panel). These two processes, transition and emission (which encode
-recombination and mutation, respectively), define the generative process of the
-HMM, by which an imperfect mosaic is emitted from a reference panel of samples
-and nodes from the ARG inserted at earlier collection dates (shown in the lower
-panel). Here, the unseen states in the reference panel are shown as coloured
-lines enclosed by the grey box, and the true path through the data which leads
-to the emitted focal sequence is displayed by the black arrow. Examples of
-transition and emission probabilities along this trajectory are shown by the
-red and blue arrows, respectively. Black crosses along the focal sequence show
-genotyping errors or mutations. Note that in practice, we do not know the
-pattern of colours along the focal sequence and must infer it using the Viterbi
-algorithm.} \end{figure}
-
-\begin{figure} \centering
-\includegraphics[width=0.8\textwidth]{figures/mutational_spectra.pdf}
-\caption{\label{fig:mutational_spectra} Mutational spectrum of SARS-CoV-2 in
-the wide ARG (sampled to mid-2021) compared to that reported by Yi et al.
-\citep{Yi2021-sc}. Mutations are categorised by type (i.e., ancestral state >
-derived state). The percentages of each mutation type from the wide ARG are
-represented by blue bars and the percentages from Yi et al. by orange bars,
-with the darker colours representing one direction (e.g., C > U) and the
-lighter colours the reverse (e.g., U > C).} \end{figure}
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
