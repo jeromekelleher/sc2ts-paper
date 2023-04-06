@@ -142,15 +142,21 @@ diversity of SARS-CoV-2 at large scale.
 
 The findings of this study are based on sequences and metadata available on
 GISAID (\url{https://gisaid.org/}) up to Aug 22, 2022 and accessible at
-doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
-if they (1) had ambiguous collection dates; (2) were collected before January
-01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
-Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
-MN908947.3) using Nextclade v2.3.0 \citep{Aksamentov2021-hj} (dataset tag
-2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
-inference, sequences were excluded if they had a “bad” quality control status
-in any of the four Nextclade columns ("qc.missingData.status”,
-“qc.mixedSites.status”, “qc.frameShifts.status”, and “qc.stopCodons.status”).
+% FIXME
+doi.org/10.55876/gis8.230329cd (Supplementary Table 1).
+Sequences were removed
+if they (1) had ambiguous collection dates;
+(2) were collected before January 01, 2020 or after June 30, 2022; or
+(3) were isolated from a non-human host.
+Sequences were aligned to the
+Wuhan-Hu-1/2019 reference sequence (GenBank: MN908947.3)
+using Nextclade v2.3.0~\citep{Aksamentov2021-hj}
+(dataset tag 2022-07-26T12:00:00Z).
+To reduce the impact of poor-quality sequences on ARG inference,
+sequences were excluded if they had a ``bad'' quality control status
+in any of the four Nextclade columns (``qc.missingData.status'',
+``qc.mixedSites.status'', ``qc.frameShifts.status'' and
+``qc.stopCodons.status'').
 These excluded genomes are enriched for low-coverage, contaminated, or
 misassembled sequences.
 
@@ -160,20 +166,22 @@ Ambiguous nucleotide letters (i.e., not A, C, G, T, or a gap) in the pairwise
 genome alignments were encoded as N. Problematic bases in the alignments, which
 had two or more ambiguous letters or gaps within a distance of seven bases,
 were masked as missing data following the protocol in
-\url{https://github.com/roblanf/sarscov2phylo/}. Masked bases were ignored
-when attaching a sample genome to the ARG, but they were subsequently imputed.
+\url{https://github.com/roblanf/sarscov2phylo/}.
+Masked bases were ignored when attaching a sample genome to the ARG,
+but they were subsequently imputed.
 Further, 481 problematic sites flagged as prone to sequencing errors or highly
 homoplasic were excluded entirely
+% Do we need this first URL?
 (\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
 \url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
 
-\subsubsection{Exclusion of “time travellers”}
+\subsubsection{Exclusion of ``time travellers''}
 
 Including samples with incorrectly reported collection dates (e.g., an Alpha
 sample purportedly collected in 2020 from the United States, before Alpha
 appeared in the United Kingdom, USA/MN-Mayo-1563/2020) was found to produce
 artefacts that distorted the topology of ARGs inferred early on in the study.
-Hence, to exclude such potential “time travellers”, we employed two filters.
+Hence, to exclude such potential ``time travellers'' we employed two filters.
 The first was to remove any sequence with a collection date that pre-dated the
 time to the most recent common ancestor (tMRCA) of its corresponding clade. The
 tMRCA for each clade was obtained from a Nextstrain GISAID reference tree
@@ -216,7 +224,7 @@ be samples or inferred ancestors.
 
 Each daily batch of genomes is first attached to the growing ARG without any
 phylogenetic resolution. In cases where the newly added sequence is inferred to
-be a recombinant, a recombination node is inserted; the “date” of this node is
+be a recombinant, a recombination node is inserted; the ``date'' of this node is
 arbitrarily set to the average of the collection dates of the genome and the
 most recent of its parent nodes. Otherwise, the genomes are attached to the
 most closely related ancestral node (an attachment node). This creates
@@ -228,9 +236,9 @@ sequences, which is treated as an ultrametric binary tree here. Subsequently,
 mutations are placed onto the daily tree by maximum parsimony. An issue with
 the UPGMA algorithm is that it may create internal nodes supported by no
 informative site (i.e., having no mutation immediately ancestral to them). In
-an adjustment step, such unsupported internal nodes are removed to “un-resolve”
+an adjustment step, such unsupported internal nodes are removed to ``un-resolve''
 the daily tree; the remaining internal nodes, which are supported by at least
-one shared mutation, are retained. The “dates” of the non-sample internal nodes
+one shared mutation, are retained. The ``dates'' of the non-sample internal nodes
 are set to the same date as the samples in the daily batch. The resulting daily
 tree is grafted onto the attachment node in the global ARG.
 
@@ -358,11 +366,11 @@ available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
 \subsection{Inferred ARGs}
 
 To illustrate the use of sc2ts, we employed two different sampling strategies.
-First, we inferred a densely sampled but time-limited “wide” ARG by attaching
+First, we inferred a densely sampled but time-limited ``wide'' ARG by attaching
 all the sample genomes with an MSD of 30 days, one daily batch at a time. The
 inference procedure ran until the genomes sampled on June 30, 2021 were
 attached to the ARG, resulting in a total of 1.27 million samples. Second, we
-inferred a “long” ARG over a more extended timespan, by attaching at most 1,000
+inferred a ``long'' ARG over a more extended timespan, by attaching at most 1,000
 genomes, which were randomly subsampled from each daily batch with an MSD
 within 30 days. For this ARG, the inference procedure ran until the genomes
 sampled on June 30, 2022 were attached to the ARG. The long ARG covers an extra
@@ -434,7 +442,7 @@ branch length differences are due to poor calibration or methodological
 differences.
 
 Although here we focus on a single local tree at an arbitrarily chosen
-position, note that in the original “un-simplified” ARGs, there are 1,496 and
+position, note that in the original ``un-simplified'' ARGs, there are 1,496 and
 958 trees, respectively (Table 1). Hence, while for a relatively small sample
 the genealogy may be well described by a single tree, the full dataset shows
 substantial variation in phylogenetic relationships (or phylogenetic
@@ -455,7 +463,7 @@ simply not transmitted onwards and so were excluded from subsequent analyses
 their analysis using RIPPLES, Turakhia et al. (2022) detected 589 recombinants,
 also excluding singletons.
 
-For simplicity, we focus primarily on “non-complex” recombination nodes. To do
+For simplicity, we focus primarily on ``non-complex'' recombination nodes. To do
 this, we apply a filtering step that removes those with more than one
 breakpoint (and often more than two parent lineages), or where matching is not
 HMM-consistent or identifies parents with different Pango lineage assignments
@@ -563,7 +571,7 @@ recombinants may indeed trace to a single origin.
 The mosaic genome structure of all the 32 Pango recombinants is concordant with
 the structure determined by the Pango Lineage Designation Committee
 (Supplementary Table 3). For example, the genome of XD (also known as
-“Deltacron”) is inferred to consist of B.1.617.2 (Delta) on the 5’ end, BA.1.17
+``Deltacron'') is inferred to consist of B.1.617.2 (Delta) on the 5’ end, BA.1.17
 (Omicron) in the middle, and B.1.617.2 (Delta) on the 3’ end.
 
 \subsection{Novel recombinants}
@@ -580,7 +588,7 @@ reversions) from their parent nodes.
 
 TODO: Node  740761 (USA/NC-CDC-LC0668306/2022) is a sister clade proposed1006
 in the UShER public phylogeny. Node 628656 (Scotland/QEUH-37794BB/2022) is a
-sister clade of XAC, and annotated as “miscBA2BA1PostSpike”.
+sister clade of XAC, and annotated as ``miscBA2BA1PostSpike''.
 
 \subsection{Recombinant origins of the Pango lineages XA and XAG}
 
@@ -711,8 +719,8 @@ enhancements, we will use sc2ts to build a comprehensive ARG to search for
 recombination signals among all the 15 million and counting SARS-CoV-2 genomes
 available.
 
-“The rate of putative recombination breakpoints is about three times higher
-towards the 3' of the change point than the 5' interval.“ Consistent with this,
+``The rate of putative recombination breakpoints is about three times higher
+towards the 3' of the change point than the 5' interval.`` Consistent with this,
 the breakpoint intervals of the putative recombinants identified here tend to
 occur on the 3’ end of the SARS-CoV-2 genome.
 
@@ -767,7 +775,7 @@ to quantify uncertainty about putative parent node(s) and switch positions.
 These estimates of uncertainty may be used as support values for branches
 analogous to bootstrap values produced by standard phylogenetic methods. \item
 Daily trees are built using the UPGMA algorithm. This entails an extra step to
-“un-resolve” daily trees in parts of the trees with no phylogenetic resolution.
+``un-resolve'' daily trees in parts of the trees with no phylogenetic resolution.
 To avoid this step, a better approach is to use a maximum-parsimony algorithm
 to build daily trees instead. \end{itemize}
 
