@@ -1,0 +1,4 @@
+pandas
+tqdm
+git+http://github.com/tskit-dev/tsconvert
+git+https://github.com/jeromekelleher/sc2ts
