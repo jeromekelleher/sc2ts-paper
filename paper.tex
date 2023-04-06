@@ -4,6 +4,7 @@
 \usepackage[english]{babel}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
+\usepackage{booktabs}
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -435,31 +436,66 @@ attach samples collected after that date to infer a fully sampled
 pandemic-scale ARG.
 
 \begin{table}
-\centering
-\begin{tabular}{l|l|l} \hline \textbf{Property} &
-\textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
-& 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
-\multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
-1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
-adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
-(10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
-\multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons (i.e.
-no descendant besides the sequence causing insertion of the node) & 2,601
-(63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
-\\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
-\multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
-1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
-(72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
-Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
-intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
-\multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
-(including sample metadata, imputed Pango lineage assignments, and results of
-HMM runs for recombination nodes) & ~57 Mb & ~36 Mb \\ Bytes to encode one
-sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
+\begin{center}
+    \begin{tabular}{llrlrl}\toprule
+        &  & \multicolumn{2}{l}{Wide ARG} & \multicolumn{2}{l}{Long ARG} \\
+    \cmidrule{3-6}
+    \multicolumn{2}{l}{Sample filtering}
+             & \multicolumn{2}{l}{collection $\leq$ 2021-06-30}
+                 & \multicolumn{2}{l}{collection $\leq$ 2022-06-30} \\
+           & & \multicolumn{2}{l}{max-delay=30} & \multicolumn{2}{l}{max-delay=30} \\
+        &  & &                               & \multicolumn{2}{l}{max-daily=1000} \\
+    \midrule
+
+    Nodes & & 1,453,347 & & 783,231  & \\
+    & Samples & 1,265,685 & (87\%) & 657,239 & (84\%) \\
+    & Local (UPGMA) & 103K & (7.1\%) & 52K & (6.6\%)  \\
+    & Tree adjustment & 80,830 & (5.6\%) & 72,107 & (9.2\%) \\
+    & Recombination & 4,123 & (0.33\%) & 2,078 & (0.27\%) \\
+    \cmidrule{2-6}
+    % TODO add more information on mutations
+    Mutations & & 1.21M &  & 1.06M & \\
+    & On one sample & 759K & (63\%) & 767K & (72\%) \\
+    & Reversions & 72K & (5.98\%) & 48K & (4.54\%) \\
+    & per node & 0.83  &   & 1.36 \\
+    \cmidrule{2-6}
+    Recombination events & \\
+    & Total & 4,123 & & 2,078 & \\
+    & Singletons & 2,601  & (63\%) & 1,315 & (63\%) \\
+    % clearer for many than "local trees?"
+    & Unique breakpoints & 1,496 &  & 958 & \\
+    \cmidrule{2-6}
+    \multicolumn{2}{l}{Size (inc metadata)} & 57MB & & 36MB&  \\
+    \multicolumn{2}{l}{Bytes/sample (exc metadata)}  & 8.29  & & 10.83 \\
+    Load time & & 0.9s & & 0.5s & \\
+    \bottomrule
 \end{tabular}
+\end{center}
+
 \caption{\label{tab:args}Summary of the inferred ARGs.
 }
 \end{table}
+
+% \centering
+% \begin{tabular}{l|l|l} \hline \textbf{Property} &
+% \textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
+% & 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
+% \multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
+% 1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
+% adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
+% (10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
+% \multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons  & 2,601
+% (63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
+% \\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
+% \multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
+% 1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
+% (72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
+% Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
+% intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
+% \multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
+%  & ~57 Mb & ~36 Mb \\ Bytes to encode one
+% sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
+% \end{tabular}
 
 Most of the nodes in the ARGs represent sample genomes (Table 1). Only a small
 fraction of the nodes represent recombination events (0.28\% and 0.27\% in the
@@ -473,13 +509,13 @@ respectively (less than ten bytes per sample). These ARGs can be loaded for
 analysis in a Jupyter notebook on a typical commercial laptop in merely a
 fraction of a second using the Python package tskit (Table 1).
 
-The wide ARG (with over one million sample genomes) was built using 128 threads
-on a machine with 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). Inference ran for 17
-days to attach genomes sampled up to June 30, 2021. The long ARG (with ~700
-thousand sample genomes) was built using 40 threads on a machine with 256 GB
-RAM (2x Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz). Inference ran for 23 days
-to attach genomes sampled up to June 30, 2022. Most of the runtime was spent on
-running the HMM.
+Inferring the wide ARG required 17 days of computation time on a machine
+with 128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz).
+The long ARG required 23 days on a (much older) machine
+with 40 threads and 256 GB RAM (2x Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz).
+The majority of the time is spent on running the HMM to find the copying
+path for each sequence, and the process is therefore highly amenable to
+distributing across multiple machines.
 
 \subsection{Backbone phylogeny}
 
@@ -586,6 +622,8 @@ genomes sampled in the United Kingdom up to March 7, 2021. The authors proposed
 that the recombinants likely arose from eight independent recombination events
 (categorised into groups A to D and four singletons).
 
+% FIXME there's too much vspace between the rows here. Probably best to redo
+% the formatting.
 \begin{table} \centering
 \begin{tabular}{l|c|c|c|c|c} \hline
 \multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Jackson et al. (2021)}} &
@@ -595,30 +633,38 @@ that the recombinants likely arose from eight independent recombination events
 interval(s)} &
 \textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
 \hline ALDP-11CF93B & A
-& \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\ ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ ALDP-130BB95 & A &
-\thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\ LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
-\thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\ QEUH-CCCB30 & B &
-\thead{B.1.36.28 \\ Alpha} & 6,528–6,953 & \thead{B.1.36 \\ Alpha} &
-6,529–6,954 \\ QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-\thead{B.1.36 \\ Alpha} & 6,529–6,954 \\ MILK-1166F52 & C & \thead{Alpha \\
-B.1.221.1} & 25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
-MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 & \thead{Alpha \\
-B.1.221} & 25,997–27,972 \\ QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} &
-25,996–27,441 & \thead{Alpha \\ B.1.221} & 25,997–27,972 \\ MILK-126FE1F & D &
-\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
-22,445–23,063 \\ RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062
-& \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\ RAND-128FA33 & D &
-\thead{B.1.36.39 \\ Alpha} & 20,703–23,062 & \thead{B.1.36.39 \\ Alpha} &
-22,445–23,063 \\ CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
-\thead{B.1.177 \\ Alpha} & 16,177–21,255 \\ CAMC-CB7AB3 & n/a & \thead{Alpha \\
-B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} & \thead{Alpha \\
-B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\ MILK-103C712 & n/a
-& \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} & n/a & n/a \\
-QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 & \thead{Alpha
-\\ B.1.177} & 7,729–10,870 \\ \hline
+    & \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
+21,256–22,227 \\
+    ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\
+ALDP-130BB95 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\
+LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\
+QEUH-CCCB30 & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
+    \thead{B.1.36 \\ Alpha} & 6,529–6,954 \\
+QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
+    \thead{B.1.36 \\ Alpha} & 6,529–6,954 \\
+MILK-1166F52 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
+    \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
+    \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
+    \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+MILK-126FE1F & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
+    \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\
+RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
+    \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\
+RAND-128FA33 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
+    \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\
+CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
+    \thead{B.1.177 \\ Alpha} & 16,177–21,255 \\
+CAMC-CB7AB3 & n/a & \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} &
+     \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\
+MILK-103C712 & n/a & \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} &
+    n/a & n/a \\
+QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
+    \thead{Alpha \\ B.1.177} & 7,729–10,870 \\ \hline
 \end{tabular}
 \caption{\label{tab:jackson}Recombinant sequences involving the Alpha (B.1.1.7)
 variant reported by \cite{Jackson2021-ik} have recombinant
@@ -627,6 +673,27 @@ assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
 al., except the Pango lineage assignment of the parents of group B
 recombinants, which were taken from Table 1 (motif-based results).}
 \end{table}
+
+% jk: this is the proposal from issue #33
+
+% \begin{tabular}{ll|clll}
+% \toprule
+% A Group (XA) & Jackson        & 21,255–21,613 & B.1.177/B.1.1.7 \\
+%              & \texttt{sc2ts} &  21,256--22,227 & B.1.177.18/B.1.1.7 \\
+% \midrule
+% B Group & Jackson        &  6,528--6,954 & B.1.36/B.1.1.7  \\
+%         & \texttt{sc2ts} &  6,529--6,954 & B.1.36/B.1.1.7  \\
+% \midrule
+% C Group & Jackson        &  25,997--27,972 &  B.1.1.7/B.1.221 \\
+%         & \texttt{sc2ts} &  25,996--27,441 &  B.1.1.7/B.1.221 \\
+% \midrule
+% D Group & Jackson        &  21,575--23,063 &  B.1.36.17/B.1.1.7 \\
+%         & \texttt{sc2ts} &  22,445--23,063 &  B.1.36.39/B.1.1.7 \\
+% \midrule
+% CAMC-CBA018 & Jackson        &  20,389--21,254 & B.1.177/B.1.1.7 \\
+%             & \texttt{sc2ts} & 16,177--21,255 & B.1.177/B.1.1.7 \\
+% \midrule
+% \end{tabular}
 
 In the wide ARG (sampled to mid-2021), all these sequences are descendants of
 recombination nodes, except MILK-103C712, which was removed during
@@ -776,10 +843,16 @@ In this section we examine the Long ARG to determine how well it reflects
 the structure of previously identified recombinant lineages.
 There are [high level summary of the pango recombinant lineages and samples
 in the Long ARG].
-long ARG (subsampled to mid-2022) contains samples
+long ARG (subsampled to mid-2022) contains 749 samples
 from 33 Pango-designated recombinant lineages (XA to XAK; Supplementary Table)
 [Probably could have a table here to summarise?]
 
+% \item Total of 2078 recombinants.
+% \item 749 samples from 33 Pango X lineage (recombinant) designations
+% \item \alert{All but} 2 XP samples inferred to have recombinant ancestry
+% (Almost certainly missing XP because of our alignment masking approach)
+
+All but 2 XP samples inferred to have recombinant ancestry.
 
 The sequences of 28 Pango recombinants trace back
 to some recombinant node(s); however, the sequences of the five Pango
@@ -852,6 +925,26 @@ the numbers of samples, etc for each of these 14 lineages] and
 show the lineage subgraph for X?, which makes this simple structure
 clear. [Explain the lineage subgraph format a bit]
 
+[TODO need to be clear if we're looking at single monophyletic origins
+here, or whether we include complicated things like XAG etc or not.
+Probably not?]
+
+% \item 14 out of 33 of the Pango X lineage inferred to have a single
+% recombinant origin. (XA, XAA, XAC, XAE, XAG, XAK, XF, XG, XH, XL,
+%  XR, XT, XW, XY)
+% \item Total of 148 samples (max 32, average of 10 per group)
+% \item XAA and XAG share the same origin, all others are distinct
+%     \begin{itemize}
+%         \item Ours: BA.1 \& BA.2.9 (6472 -- 8393)
+%         \item XAA: BA.1* \& BA.2* (8393 -- 9343)
+%         \item XAG: BA.2* \& BA.1* (6516 -- 8392)
+%         \item At least one XAB lineage (50 samples, with 10 origins)
+%         also descends from this recombinant---unclear what's happening
+%     \end{itemize}
+% \end{itemize}
+% \end{block}
+% \end{frame}
+
 \subsubsection{Multiple origin}
 The ARG inference has no pre-defined knowledge of Pango X lineage assignments,
 and there is therefore no particular requirement that all the samples
@@ -861,6 +954,70 @@ are inferred to have multiple recombinant origins (i.e., trace
 back to different recombination nodes in the ARG), but are still
 form monophyletic clades % is this the right term?
 descending from these nodes .
+
+% \begin{frame}
+% \begin{block}{Multiple origin Pango X lineages}
+% \begin{itemize}
+% \item For the remaining 18, the story is more complicated.
+% \item XJ, XU and XV each have 3 samples and 3 recombinants
+% \item One recombinant shared among 5 lineages (XAA, XAB, XAG, XQ, XU)
+% \item XE has 170 samples and 12 recombinants; some are very similar
+% (Official: BA.1* \& BA.2, 10448--11287):
+% \\
+% \vspace{1em}
+% \begin{tabular}{llll}
+% \toprule
+% Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
+% \midrule
+% BA.1.15 & BA.2  &9867  &10198\\
+% BA.1.15 & BA.2  &9867  &10198\\
+% BA.1.1  &BA.2  &10451  &11537\\
+% BA.1.1.5 & BA.2 &10448 & 11537\\
+% BA.1.15 & BA.2  &10448  &12880\\
+% BA.1.17 & BA.2  &10448 & 11537\\
+% BA.1  &BA.2.9  &10448 & 11537\\
+% BA.1  &BA.2  &12764  &13195\\
+% \bottomrule
+% \end{tabular}
+% % BA.3  &BA.1.17  &22674  &22674\\
+% % BA.1.1.15 Recombinant 10448 11537
+% % BA.1.1 Recombinant 10030 10447
+% % Recombinant BA.2 17411 19955
+% \end{itemize}
+% \end{block}
+% \end{frame}
+
+
+\begin{figure}
+\begin{tabular}{cc}
+
+Example lineage subgraph
+ &
+
+\begin{tabular}{llll}
+\toprule
+Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
+\midrule
+BA.1.15 & BA.2  &9867  &10198\\
+BA.1.15 & BA.2  &9867  &10198\\
+BA.1.1  &BA.2  &10451  &11537\\
+BA.1.1.5 & BA.2 &10448 & 11537\\
+BA.1.15 & BA.2  &10448  &12880\\
+BA.1.17 & BA.2  &10448 & 11537\\
+BA.1  &BA.2.9  &10448 & 11537\\
+BA.1  &BA.2  &12764  &13195\\
+\bottomrule
+\end{tabular}
+% BA.3  &BA.1.17  &22674  &22674\\
+% BA.1.1.15 Recombinant 10448 11537
+% BA.1.1 Recombinant 10030 10447
+% Recombinant BA.2 17411 19955
+\end{tabular}
+\caption{A. Example subgraph for a multi origin example. B. details
+of inferred breakpoints for different recombination events inferred
+for XE samples (170 samples and 12 inferred recombination nodes; some are very
+similar (Official: BA.1* \& BA.2, 10448–11287)}
+\end{figure}
 
 In Figure XXX we give the details of these multiple pango lineages,
 along with an example lineage subgraph.
