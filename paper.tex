@@ -4,6 +4,7 @@
 \usepackage[english]{babel}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
+\usepackage{booktabs}
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -435,31 +436,66 @@ attach samples collected after that date to infer a fully sampled
 pandemic-scale ARG.
 
 \begin{table}
-\centering
-\begin{tabular}{l|l|l} \hline \textbf{Property} &
-\textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
-& 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
-\multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
-1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
-adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
-(10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
-\multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons (i.e.
-no descendant besides the sequence causing insertion of the node) & 2,601
-(63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
-\\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
-\multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
-1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
-(72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
-Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
-intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
-\multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
-(including sample metadata, imputed Pango lineage assignments, and results of
-HMM runs for recombination nodes) & ~57 Mb & ~36 Mb \\ Bytes to encode one
-sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
+\begin{center}
+    \begin{tabular}{llrlrl}\toprule
+        &  & \multicolumn{2}{l}{Wide ARG} & \multicolumn{2}{l}{Long ARG} \\
+    \cmidrule{3-6}
+    \multicolumn{2}{l}{Sample filtering}
+             & \multicolumn{2}{l}{collection $\leq$ 2021-06-30}
+                 & \multicolumn{2}{l}{collection $\leq$ 2022-06-30} \\
+           & & \multicolumn{2}{l}{max-delay=30} & \multicolumn{2}{l}{max-delay=30} \\
+        &  & &                               & \multicolumn{2}{l}{max-daily=1000} \\
+    \midrule
+
+    Nodes & & 1,453,347 & & 783,231  & \\
+    & Samples & 1,265,685 & (87\%) & 657,239 & (84\%) \\
+    & Local (UPGMA) & 103K & (7.1\%) & 52K & (6.6\%)  \\
+    & Tree adjustment & 80,830 & (5.6\%) & 72,107 & (9.2\%) \\
+    & Recombination & 4,123 & (0.33\%) & 2,078 & (0.27\%) \\
+    \cmidrule{2-6}
+    % TODO add more information on mutations
+    Mutations & & 1.21M &  & 1.06M & \\
+    & On one sample & 759K & (63\%) & 767K & (72\%) \\
+    & Reversions & 72K & (5.98\%) & 48K & (4.54\%) \\
+    & per node & 0.83  &   & 1.36 \\
+    \cmidrule{2-6}
+    Recombination events & \\
+    & Total & 4,123 & & 2,078 & \\
+    & Singletons & 2,601  & (63\%) & 1,315 & (63\%) \\
+    % clearer for many than "local trees?"
+    & Unique breakpoints & 1,496 &  & 958 & \\
+    \cmidrule{2-6}
+    \multicolumn{2}{l}{Size (inc metadata)} & 57MB & & 36MB&  \\
+    \multicolumn{2}{l}{Bytes/sample (exc metadata)}  & 8.29  & & 10.83 \\
+    Load time & & 0.9s & & 0.5s & \\
+    \bottomrule
 \end{tabular}
+\end{center}
+
 \caption{\label{tab:args}Summary of the inferred ARGs.
 }
 \end{table}
+
+% \centering
+% \begin{tabular}{l|l|l} \hline \textbf{Property} &
+% \textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
+% & 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
+% \multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
+% 1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
+% adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
+% (10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
+% \multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons  & 2,601
+% (63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
+% \\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
+% \multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
+% 1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
+% (72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
+% Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
+% intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
+% \multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
+%  & ~57 Mb & ~36 Mb \\ Bytes to encode one
+% sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
+% \end{tabular}
 
 Most of the nodes in the ARGs represent sample genomes (Table 1). Only a small
 fraction of the nodes represent recombination events (0.28\% and 0.27\% in the
@@ -473,13 +509,13 @@ respectively (less than ten bytes per sample). These ARGs can be loaded for
 analysis in a Jupyter notebook on a typical commercial laptop in merely a
 fraction of a second using the Python package tskit (Table 1).
 
-The wide ARG (with over one million sample genomes) was built using 128 threads
-on a machine with 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). Inference ran for 17
-days to attach genomes sampled up to June 30, 2021. The long ARG (with ~700
-thousand sample genomes) was built using 40 threads on a machine with 256 GB
-RAM (2x Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz). Inference ran for 23 days
-to attach genomes sampled up to June 30, 2022. Most of the runtime was spent on
-running the HMM.
+Inferring the wide ARG required 17 days of computation time on a machine
+with 128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz).
+The long ARG required 23 days on a (much older) machine
+with 40 threads and 256 GB RAM (2x Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz).
+The majority of the time is spent on running the HMM to find the copying
+path for each sequence, and the process is therefore highly amenable to
+distributing across multiple machines.
 
 \subsection{Backbone phylogeny}
 
