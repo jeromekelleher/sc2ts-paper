@@ -540,12 +540,17 @@ class Cophylogeny(Figure):
             sc2ts_str += "first tree"
         else:
             sc2ts_str += f"tree @ position {self.sc2ts.pos}"
+        w, h = 900, 800
+        mar_in = 0.05
+        w_in = w / 96 + mar_in * 2
+        h_in = h / 96 + mar_in * 2
         svg_string = (
-            '<svg baseProfile="full" height="800" version="1.1" width="900" id="main"'
+            f'<svg baseProfile="full" width="{w}" height="{h}" version="1.1" id="main"'
             + ' xmlns="http://www.w3.org/2000/svg" '
             + 'xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">'
-            + f'<defs><style>{"".join(global_styles)}</style></defs>'
-            f'<text text-anchor="middle" transform="translate(200, 12)">{sc2ts_str}</text>'
+            + f'<defs><style>@page {{margin: {mar_in}in; padding: 0; size: {w_in:.2f}in {h_in:.2f}in;}} '
+            + f'{"".join(global_styles)}</style></defs>'
+            + f'<text text-anchor="middle" transform="translate(200, 12)">{sc2ts_str}</text>'
             + '<text text-anchor="middle" transform="translate(600, 12)">Nextstrain tree</text>'
             + "<g>"
             + "".join(
