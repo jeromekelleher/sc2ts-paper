@@ -531,27 +531,13 @@ that match those present in a specific NextStrain tree. These simplified
 genome for the wide and long ARGs, respectively).
 
 \begin{figure} \centering
-\includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
-\caption{\label{fig:overview_sc2ts} A schematic of the sc2ts method. Sc2ts
-reconstructs the genetic relationships among SARS-CoV-2 genomes by copying
-samples to all possible ancestors collected at earlier time points (curved
-arrows). An ARG is built by attaching new sample genomes grouped by collection
-date to an existing ARG rooted at the Wuhan-Hu-1 reference genome, day by day.
-Each iteration involves three stages: (1) attachment of new samples to the
-growing ARG (A, B); (2) reconstruction of trees relating the samples under each
-attachment node (C); and parsimony-based tree topology adjustments (D, E). In
-the absence of  recombination, sc2ts infers an ARG that is a single tree
-relating the samples (A). However, in the presence of recombination, sc2ts
-infers an ARG that is encoded as a sequence of local trees relating segments of
-the sample genomes (B), inserting a recombination node to represent a putative
-recombination event. Additionally, mutation-collapsing nodes (D) and
-pushed-reversion nodes (E) are inserted to make more parsimonious placements of
-mutations that should be shared or should not be immediately reverted,
-respectively.}
+\includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
+\caption{\label{fig:cophlogeny} DESCRIBE ME.
+}
 \end{figure}
 
 
-Figure 4 shows a co-phylogeny of the 88 samples shared between the wide ARG and
+Figure~\ref{fig:cophlogeny} shows a co-phylogeny of the 88 samples shared between the wide ARG and
 a GISAID global "all-time" tree from NextStrain (downloaded on January 21,
 2023). To reduce the ARG to a single tree, we show the very first tree in the
 wide ARG; however, the five other trees in this simplified ARG show
