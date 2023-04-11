@@ -5,6 +5,7 @@
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{authblk}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -529,7 +530,14 @@ that match those present in a specific NextStrain tree. These simplified
 ``backbone'' ARGs exhibit very little recombination (6 and 5 trees across the
 genome for the wide and long ARGs, respectively).
 
-Figure 4 shows a co-phylogeny of the 88 samples shared between the wide ARG and
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
+\caption{\label{fig:cophlogeny} DESCRIBE ME.
+}
+\end{figure}
+
+
+Figure~\ref{fig:cophlogeny} shows a co-phylogeny of the 88 samples shared between the wide ARG and
 a GISAID global "all-time" tree from NextStrain (downloaded on January 21,
 2023). To reduce the ARG to a single tree, we show the very first tree in the
 wide ARG; however, the five other trees in this simplified ARG show
@@ -919,11 +927,42 @@ we have a all the samples assigned to this recombinant lineage tracing
 back to a single recombination node, representing this original
 recombination event.
 
+\begin{figure}
+\begin{tabularx}{\textwidth}{cc}
+\includegraphics[width=0.4\textwidth]{figures/Pango_XA_nxcld_tight_graph.pdf}
+&
+\begin{tabular}[b]{llr}
+Lineage & number of samples & other details... \\
+XA & & \\
+XF & & \\
+XG & & \\
+XH & & \\
+XL & & \\
+XR & & \\
+XT & & \\
+XW & & \\
+XY & & \\
+XAC & & \\
+XAE & & \\
+XAK & & \\
+XAA & & \\
+XAB & & \\
+XAG & & \\
+\end{tabular}\\
+\multicolumn{2}{c}{
+\includegraphics[width=\textwidth]{figures/Pango_XAG_nxcld_tight_graph.pdf}}
+\end{tabularx}
+\caption{Single origin Pango X lineages. (A) Subgraph for XA (Wide ARG).
+(B) Details for the the single-origin Pango
+X lineages in the long ARG. (C) XAA, XAB and XAG share a single recombinant
+origin in the Long ARG. }
+\end{figure}
+
 The sequences of 14 Pango recombinants trace back to a single recombination
 node. The details are given in Figure X, where we [give the details of
 the numbers of samples, etc for each of these 14 lineages] and
 show the lineage subgraph for X?, which makes this simple structure
-clear. [Explain the lineage subgraph format a bit]
+clear. [Explan the lineage subgraph format a bit]
 
 [TODO need to be clear if we're looking at single monophyletic origins
 here, or whether we include complicated things like XAG etc or not.
@@ -944,6 +983,8 @@ Probably not?]
 % \end{itemize}
 % \end{block}
 % \end{frame}
+
+[Discuss panel C where XAA, XAB,XAG and share a common recombinant origin]
 
 \subsubsection{Multiple origin}
 The ARG inference has no pre-defined knowledge of Pango X lineage assignments,
