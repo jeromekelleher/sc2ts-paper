@@ -532,12 +532,14 @@ genome for the wide and long ARGs, respectively).
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
-\caption{\label{fig:cophlogeny} DESCRIBE ME.
+\caption{\label{fig:cophylogeny} DESCRIBE ME. See
+Figure~\ref{fig:cophlogeny_long} for the equivalent cophylogeny
+for the Long ARG.
 }
 \end{figure}
 
 
-Figure~\ref{fig:cophlogeny} shows a co-phylogeny of the 88 samples shared between the wide ARG and
+Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared between the wide ARG and
 a GISAID global "all-time" tree from NextStrain (downloaded on January 21,
 2023). To reduce the ARG to a single tree, we show the very first tree in the
 wide ARG; however, the five other trees in this simplified ARG show
@@ -742,6 +744,17 @@ the breakpoint sequences.
 % recombination event (although there are some exceptions). Here we have to get
 % into all the hairy details about which sets of breakpoints we filter and don't
 % filter.
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/recombination_node_mrcas.pdf}
+\caption{\label{fig:recomb_mrcas} Divergance between parents at
+recombination breakpoints. (A) All recombination nodes that are ancestral
+to least two samples. (B) Further filtered as described in the text.
+MORE DETAIL. Horizontal lines represent WHAT,
+Figure~\ref{fig:recomb_mrcas_lineage_breakdown} shows the same data
+broken down by parental lineage.}
+\end{figure}
+
 
 Both the wide and long ARGs contain a large number of recombination nodes
 (4,123 and 2,078, respectively; Supplementary Tables 1 and 2), with each of
@@ -1202,7 +1215,17 @@ YW, and BJ are supported by the Robertson Foundation.
 \bibliographystyle{plainnat}
 \bibliography{paper}
 
-\section{Supplementary}
+\renewcommand\thefigure{S\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand\thetable{S\arabic{table}}
+\setcounter{table}{0}
+\section*{Supplementary}
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/supp_cophylogeny_long.pdf}
+\caption{\label{fig:cophlogeny_long}Copyhlogeny for the Long ARG. MORE DETAIL.}
+\end{figure}
+
 
 % FIXME there's too much vspace between the rows here. Probably best to redo
 % the formatting.
@@ -1255,5 +1278,11 @@ assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
 al., except the Pango lineage assignment of the parents of group B
 recombinants, which were taken from Table 1 (motif-based results).}
 \end{table}
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/supp_recombination_node_mrcas.pdf}
+\caption{\label{fig:recomb_mrcas_lineage_breakdown}  DESCRIBE ME}
+\end{figure}
+
 
 \end{document}
