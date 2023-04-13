@@ -672,15 +672,7 @@ class RecombinationNodeMrcas(Figure):
             if (self.basetime - datetime(y, m, 1)).days > -2
         ]
 
-        for num_parents_2, colour in zip([True, False], ["green", "blue"]):
-            df_ = df[df.num_parents == 2] if num_parents_2 else df[df.num_parents > 2]
-            main_ax.scatter(
-                df_.tmrca_delta / 7,
-                df_.tmrca,
-                alpha=0.1,
-                c=colour,
-                label="num_parents=2" if num_parents_2 else "num_parents>2",
-            )
+        main_ax.scatter(df.tmrca_delta / 7, df.tmrca, alpha=0.1)
         if xlab:
             hist_ax.set_xlabel("Estimated divergence between lineage pairs (weeks)")
         if ylab:
@@ -833,7 +825,7 @@ class RecombinationNodeMrcas_filtered_subset(RecombinationNodeMrcas_subset):
 
     def __init__(self, args):
         super().__init__(args)
-        self.df = self.filter(self.df)
+        self.df = self._filter(self.df)
 
 
 def change_pos(pos, key, dx=None, dy=None, x=None, y=None, xy_from=None):
