@@ -853,10 +853,10 @@ class Pango_X_graph(Figure):
         # Pango X-lineages in red/brown/pink
         'XA': '#fe812e',
         'XB': '#fc31fb',
-        'XQ': '#e780a9',
-        'XU': '#c35aab',
-        'XAA': '#fdacfe',
-        'XAB': '#f2b6b9',
+        'XQ': '#db5884',
+        'XU': '#894a4e',
+        'XAA': '#ffc9a5',
+        'XAB': '#fdacfe',
         'XAG': '#fc3131',
 
         # B lineages in blue/green (AY.100 is B.1.617.2.100)
