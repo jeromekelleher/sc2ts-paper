@@ -541,7 +541,8 @@ Terminal branches are colour-coded according to the Pango lineage status
 assigned to the tip samples; no Pango recombinants are shown, as none are shared
 between the trees. The tanglegram was generated with the aid of the Neighbor-Net
 algorithm \citep{Scornavacca2011-mg} implemented in Dendroscope
-version 3.8.5 \citep{Huson2012-ys}. See Figure~\ref{fig:cophlogeny_long} for the equivalent cophylogeny
+version 3.8.5 \citep{Huson2012-ys}. See
+Figure~\ref{fig:cophylogeny_long} for the equivalent cophylogeny
 for the Long ARG.}
 \end{figure}
 
@@ -903,42 +904,91 @@ we have a all the samples assigned to this recombinant lineage tracing
 back to a single recombination node, representing this original
 recombination event.
 
+\begin{table}
+% \begin{footnotesize}
+\begin{tabular}{lllrl}
+\toprule
+{} &         parent\_lineages &          pango\_parents &   n &
+descendant\_lineages \\
+lineage &                         &                        &     &
+\\
+\midrule
+XA      &   [B.1.177.18, B.1.1.7] &     [B.1.1.7, B.1.177] &   5 & \{'XA': 5\} \\
+XAA     &          [BA.1, BA.2.9] &         [BA.1*, BA.2*] &   8 &  \{'XAB':
+39, 'XAG': 17, 'XAA': 8, 'XQ': 2, 'XU'... \\
+XAC     &     [BA.2.3, BA.1.17.2] &  [BA.2*, BA.1*, BA.2*] &  27 &
+\{'XAC': 27\} \\
+XAE     &            [BA.2, BA.1] &         [BA.2*, BA.1*] &   9 &
+\{'XAE': 9\} \\
+XAG     &          [BA.1, BA.2.9] &         [BA.1*, BA.2*] &  17 &  \{'XAB':
+39, 'XAG': 17, 'XAA': 8, 'XQ': 2, 'XU'... \\
+XF      &            [AY.4, BA.1] &    [B.1.617.2*, BA.1*] &   2 &
+\{'XF': 2\} \\
+XG      &         [BA.1.17, BA.2] &         [BA.1*, BA.2*] &  32 &
+\{'XG': 32, 'XAB': 1\} \\
+XH      &       [BA.1.20, BA.2.9] &         [BA.1*, BA.2*] &  11 &  \{'XAF':
+34, 'XH': 11, 'B.1.1.529': 3, 'XE': 3,... \\
+XL      &       [BA.1.17.2, BA.2] &         [BA.1*, BA.2*] &  10 &
+\{'XL': 10, 'XAB': 1, 'XU': 1, 'XQ': 1\} \\
+XR      &          [BA.1.1, BA.2] &       [BA.1.1*, BA.2*] &   8 &
+\{'XQ': 9, 'XR': 8, 'XAB': 2\} \\
+XT      &  [BA.2.23, Unknown (R)] &         [BA.2*, BA.1*] &   1 &  \{'BA.2':
+1, 'BA.1': 1, 'BA.1.9': 1, 'BA.2.23':... \\
+XW      &       [BA.1.1.15, BA.2] &         [BA.1*, BA.2*] &  11 &
+\{'XW': 11, 'XN': 2\} \\
+XY      &          [BA.1.1, BA.2] &         [BA.1*, BA.2*] &   6 &
+\{'XY': 6, 'XAF': 1\} \\
+\bottomrule
+\end{tabular}
+\caption{\label{tab:pango-single-origin}
+Table summarising the status of the Pango X-lineages in the
+Long ARG that are inferred to have a single recombinant origin
+based on the NextClade Pango lineage assignments. Imputed parent lineages
+are shown from the ARG and also to parent lineages as defined by
+the official Pango designation alias key.
+FIXME: if we like this table then we can reformat it so that lists
+at the end are spread over multiple lines rather than using Python
+dict notation }
+\end{table}
+
+
 \begin{figure}
-\begin{tabularx}{\textwidth}{cc}
+\begin{tabularx}{\textwidth}{c}
+
+
+% \end{footnotesize}
+% \\
+
 \includegraphics[width=0.4\textwidth]{figures/Pango_XA_nxcld_tight_graph.pdf}
-&
-\begin{tabular}[b]{llr}
-Lineage & number of samples & other details... \\
-XA & & \\
-XF & & \\
-XG & & \\
-XH & & \\
-XL & & \\
-XR & & \\
-XT & & \\
-XW & & \\
-XY & & \\
-XAC & & \\
-XAE & & \\
-XAK & & \\
-XAA & & \\
-XAB & & \\
-XAG & & \\
-\end{tabular}\\
-\multicolumn{2}{c}{
-\includegraphics[width=\textwidth]{figures/Pango_XAG_nxcld_tight_graph.pdf}}
+\\ % &
+% \multicolumn{2}{c}{
+\includegraphics[width=\textwidth]{figures/Pango_XAG_nxcld_tight_graph.pdf}
+% }
 \end{tabularx}
-\caption{Single origin Pango X lineages. (A) Subgraph for XA (Wide ARG).
+\caption{\label{fig:pango-single-origin-graph}
+Single origin Pango X lineages. (A) Subgraph for XA (Wide ARG).
 (B) Details for the the single-origin Pango
 X lineages in the long ARG. (C) XAA, XAB and XAG share a single recombinant
 origin in the Long ARG. }
 \end{figure}
 
-The sequences of 14 Pango recombinants trace back to a single recombination
-node. The details are given in Figure X, where we [give the details of
+The sequences of 13 Pango recombinant lineages trace back to a single recombination
+node, as summarised in Table~\ref{tab:pango-single-origin}. We can
+see that XA, XAC, XAE, and XF form monophyletic clades, in which all of the
+samples given that Pango designation descendand from a single recombination
+node.
+
+The details are given in Figure X, where we [give the details of
 the numbers of samples, etc for each of these 14 lineages] and
 show the lineage subgraph for X?, which makes this simple structure
 clear. [Explan the lineage subgraph format a bit]
+
+
+
+We exclude XAK it only has a single sample in this dataset, and
+that sample traces to an older recombination node that
+that is likely to be spurious since it has a very large number of descendants.
+
 
 [TODO need to be clear if we're looking at single monophyletic origins
 here, or whether we include complicated things like XAG etc or not.
@@ -1230,8 +1280,8 @@ YW, and BJ are supported by the Robertson Foundation.
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/supp_cophylogeny_long.pdf}
-\caption{\label{fig:cophlogeny_long}Tanglegram equivalent to that in
-Figure~{fig:cophlogeny}, but for the long ARG (i.e. subsampled to mid-2022). }
+\caption{\label{fig:cophylogeny_long}Tanglegram equivalent to that in
+Figure~\ref{fig:cophylogeny}, but for the long ARG (i.e. subsampled to mid-2022). }
 \end{figure}
 
 
