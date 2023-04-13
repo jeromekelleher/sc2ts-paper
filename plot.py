@@ -618,22 +618,17 @@ class RecombinationNodeMrcas(Figure):
         df["tmrca_delta"] = df.tmrca - self.ts.nodes_time[df.node.values]
         logging.info(f"{len(df)} breakpoints | {len(np.unique(df.node))} re nodes read")
         # Remove potential contaminents
-        df = df[df.max_descendant_samples > 1]
-        # For all plots, omit the breakpoints which are not in the tree seq but listed
-        # in the HMM metadata, see https://github.com/jeromekelleher/sc2ts/issues/121
-        self.df = df[df.is_arg_hmm_path_length_consistent == True]
+        self.df = df[df.max_descendant_samples > 1]
         logging.info(
-            f"{len(self.df)} breakpoints | {len(np.unique(self.df.node))} "
-            "re nodes initially retained"
+            f"{len(self.df)} breakpoints in the ARG | " +
+            f"{len(np.unique(self.df.node))} re nodes initially retained"
         )
 
     @staticmethod
-    def _filter(df):
-        return df[
-            np.logical_and(
-                df.fwd_bck_parents_max_mut_dist == 0, df.is_hmm_mutation_consistent
-            )
-        ]
+    def is_strict_HMM_consistent(df):
+        return np.logical_and(
+            df.fwd_bck_parents_max_mut_dist == 0, df.is_hmm_mutation_consistent
+        )
 
     @staticmethod
     def add_common_lines(ax, num, ts, common_proportions):
@@ -659,20 +654,59 @@ class RecombinationNodeMrcas(Figure):
                 bbox=dict(facecolor="white", edgecolor="none", pad=0),
             )
 
-    def do_plot(self, main_ax, hist_ax, df, title, label_tweak, xlab=True, ylab=True):
+    def do_plot(
+            self,
+            main_ax,
+            hist_ax,
+            df,
+            title,
+            label_tweak,
+            xlab=True,
+            ylab=True,
+            HMM_consistent_col="green",  # or "" to not plot
+            HMM_inconsistent_col="blue",
+    ):
         logging.info(f"Plotting {title}")
-        logging.info(f" {len(df)} points, {len(np.unique(df.node))} rec nodes")
-        logging.info(
-            f" time diff: min={df.tmrca_delta.min()}, max={df.tmrca_delta.max()}"
-        )
         dates = [
             datetime(y, m, 1)
             for y in (2020, 2021, 2022)
             for m in range(1, 13, 3)
             if (self.basetime - datetime(y, m, 1)).days > -2
         ]
+        HMM_cons = self.is_strict_HMM_consistent(df)
+        HMM_incons = ~self.is_strict_HMM_consistent(df)
 
-        main_ax.scatter(df.tmrca_delta / 7, df.tmrca, alpha=0.1)
+        points = []
+        pangoX = []
+        tmrca_delta = []
+        for col, use in zip(
+            [HMM_consistent_col, HMM_inconsistent_col], [HMM_cons, HMM_incons]
+        ):
+            if col:
+                plot_df = df[use]
+                points.extend(plot_df.node.values)
+                tmrca_delta.extend(plot_df.tmrca_delta.values)
+                is_pangoX = df.causal_lineage.str.startswith("X")
+                pangoX.extend(np.flatnonzero(np.logical_and(use, is_pangoX)))
+                main_ax.scatter(
+                    plot_df.tmrca_delta / 7, plot_df.tmrca, alpha=0.1, c=col, 
+                    label="HMM consistent" if col == HMM_consistent_col else "HMM inconsistent")
+        tmrca_delta = np.array(tmrca_delta)
+        logging.info(f" {len(points)} points, {len(np.unique(points))} rec nodes")
+        logging.info(f" T diff: min={tmrca_delta.min()}, max={tmrca_delta.max()} days")
+
+        label_tweak = np.array(label_tweak) # Tweak so e.g. it is above the point
+        plot_df = df.iloc[pangoX]
+        for row in  plot_df.itertuples():
+            main_ax.annotate(
+                row.causal_lineage,
+                label_tweak + [row.tmrca_delta / 7, row.tmrca],
+                size=6,
+                ha="center",
+                rotation=70,
+            )
+        main_ax.scatter(plot_df.tmrca_delta / 7, plot_df.tmrca, c="orange", s=8)
+
         if xlab:
             hist_ax.set_xlabel("Estimated divergence between lineage pairs (weeks)")
         if ylab:
@@ -686,23 +720,8 @@ class RecombinationNodeMrcas(Figure):
         hist_ax.spines["right"].set_visible(False)
         hist_ax.spines["left"].set_visible(False)
         hist_ax.get_yaxis().set_visible(False)
-        hist_ax.hist(df.tmrca_delta / 7, bins=60, density=True)
+        hist_ax.hist(tmrca_delta / 7, bins=60, density=True)
 
-        x = []
-        y = []
-        for row in df.itertuples():
-            if row.causal_lineage.startswith("X"):
-                x.append(row.tmrca_delta / 7)
-                y.append(row.tmrca)
-                main_ax.text(
-                    x[-1] + label_tweak[0],
-                    y[-1] + label_tweak[1],  # Tweak so it is above the point
-                    row.causal_lineage,
-                    size=6,
-                    ha="center",
-                    rotation=70,
-                )
-        main_ax.scatter(x, y, c="orange", s=8)
 
 
 class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
@@ -736,18 +755,22 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
             axes[0][0],
             axes[1][0],
             self.df,
-            "A. Unfiltered",
+            "A. Recombinants with > 1 descendant sample",
             label_tweak=[1, -8],
+            HMM_consistent_col="tab:blue",
+            HMM_inconsistent_col="tab:blue",
         )
+        use = self.is_strict_HMM_consistent(self.df)
         self.do_plot(
             axes[0][1],
             axes[1][1],
-            self._filter(self.df),
-            "B. After filtering",
+            self.df,
+            "B. > 1 descendant sample and parents HMM consistent",
             label_tweak=[1, -8],
             ylab=False,
+            HMM_consistent_col="tab:blue",
+            HMM_inconsistent_col="",  # Don't plot
         )
-        axes[0][1].legend()
         axes[0][1].invert_yaxis()
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
@@ -806,6 +829,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         self.subplot(
             axes[0][2], axes[1][2], ["Omicron", "Omicron"], parent_variants, labs=False
         )
+        axes[0][2].legend()
         self.subplot(axes[2][0], axes[3][0], ["Alpha", "Delta"], parent_variants)
         self.subplot(
             axes[2][1], axes[3][1], ["Alpha", "Omicron"], parent_variants, ylab=False
