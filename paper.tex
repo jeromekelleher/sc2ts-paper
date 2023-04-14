@@ -823,56 +823,81 @@ increases the chance of coinfection and recombination), or possibly
 heterogeneity in recombination rates among lineages.
 
 \subsection{Recombinant Pango lineages}
+[Intro bit saying what we're doing]
 
+[Quick overview of the wide ARG.]
+The wide ARG contains samples from three Pango-designated recombinant
+lineages (XA, XB, and XC) and N samples, since it only includes data
+up to mid-2021.
+In the wide ARG, every sequence of the three Pango recombinants trace back to
+some recombination node
+
+[Details of the long ARG]
 In this section we examine the Long ARG to determine how well it reflects
 the structure of previously identified recombinant lineages.
 There are [high level summary of the pango recombinant lineages and samples
 in the Long ARG].
 long ARG (subsampled to mid-2022) contains 749 samples
 from 33 Pango-designated recombinant lineages (XA to XAK; Supplementary Table)
-[Probably could have a table here to summarise?]
 
-% \item Total of 2078 recombinants.
-% \item 749 samples from 33 Pango X lineage (recombinant) designations
-% \item \alert{All but} 2 XP samples inferred to have recombinant ancestry
-% (Almost certainly missing XP because of our alignment masking approach)
+Of these 749 samples, all but 2 are inferred to descend from a recombination
+node. These two samples are designated XP, and a likely explanation
+for their not have an inferred recombinant origin in the long ARG is that
+the characteristic multibase deletion for XP
+(\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
+during preprocessing. An improved masking pipeline is an important avenue
+for future development (see the Discussion).
 
-All but 2 XP samples inferred to have recombinant ancestry.
+38 of the remaining X designated samples descend from recombination
+nodes that are ancestral only to that sample
+(10 are XZ; 6 are XE;  3 each from
+XN and XK; 2 each from XC, XS, XV, XQ and XAB; and 1 sample from each
+of XB, XM, XJ, XAF, XAH and XAJ).
+Such samples are likely to be enriched for sequencing errors and
+lineage designation artefacts, and so we exclude them from further
+analysis in this section.
 
-The sequences of 28 Pango recombinants trace back
-to some recombinant node(s); however, the sequences of the five Pango
-% jk: really? I thought it was just XP that wasn't inferred to be a
-% recombinant.
-recombinants XP, XU, XAA, XAG, and XAK do not.
-A likely explanation for the XP
-recombinant sequences not having a recombinant origin in the long ARG is that
-its characteristic multibase deletion
-(\url{https://github.com/cov-lineages/pango-designation/issues/481}) was masked
-during preprocessing and therefore was not incorporated into the HMM.
-% Eh?
-Upon tracing the origin of XAG through the ARG, XAG might have been caused by
-incorrect imputation of its parent nodes(?). XAK likely does not appear to have
-a recombinant origin because of random subsampling, but it may with a more
-complete tree.
+The most recent recombination node for 79 samples
+(XN: 53, XZ: 16, XAJ: 6, XE: 1, XAD: 1, XAH: 1, XAK: 1)
+is the same. This node is ancestral to more than 127K samples,
+and is likely to be a spuriously inferred recombination event.
+Understanding the origin of this and other similar nodes, is
+an important direction for future work (see Discussion).
+For simplicity, we exclude these samples from further
+analyses in this section.
 
-[FIXME this isn't quite right - not all the sequences for a given pango
-lineage trace back to the same recombination event, so won't have the same
-intervals.]
-The mosaic genome structure of all the 32 Pango recombinant lineages is concordant with
-the structure determined by the Pango Lineage Designation Committee
-(Supplementary Table 3). For example, the genome of XD (also known as
-``Deltacron'') is inferred to consist of B.1.617.2 (Delta) on the 5’ end, BA.1.17
-(Omicron) in the middle, and B.1.617.2 (Delta) on the 3’ end.
+We analyse the inferred evolutionary patterns of the
+remaining 630 Pango X designated sequences in the following
+subsections.
 
-The wide ARG contains samples from three Pango-designated recombinant
-lineages (XA, XB, and XC) and N samples, since it only includes data
-up to mid-2021.
-In the wide ARG, every sequence of the three Pango recombinants trace back to
-some recombination node. XA, XB, and XC.
+% The sequences of 28 Pango recombinants trace back
+% to some recombinant node(s); however, the sequences of the five Pango
+% % jk: really? I thought it was just XP that wasn't inferred to be a
+% % recombinant.
+% recombinants XP, XU, XAA, XAG, and XAK do not.
+% A likely explanation for the XP
+% recombinant sequences not having a recombinant origin in the long ARG is that
+% its characteristic multibase deletion
+% (\url{https://github.com/cov-lineages/pango-designation/issues/481}) was masked
+% during preprocessing and therefore was not incorporated into the HMM.
+% % Eh?
+% Upon tracing the origin of XAG through the ARG, XAG might have been caused by
+% incorrect imputation of its parent nodes(?). XAK likely does not appear to have
+% a recombinant origin because of random subsampling, but it may with a more
+% complete tree.
 
-For the long ARG, we examine the lineages in increasing complexity of the
-inferred evolutionary relationships between samples assigned to Pango
-X lineages.
+% [FIXME this isn't quite right - not all the sequences for a given pango
+% lineage trace back to the same recombination event, so won't have the same
+% intervals.]
+% The mosaic genome structure of all the 32 Pango recombinant lineages is concordant with
+% the structure determined by the Pango Lineage Designation Committee
+% (Supplementary Table 3). For example, the genome of XD (also known as
+% ``Deltacron'') is inferred to consist of B.1.617.2 (Delta) on the 5’ end, BA.1.17
+% (Omicron) in the middle, and B.1.617.2 (Delta) on the 3’ end.
+
+% For the long ARG, we examine the lineages in increasing complexity of the
+% inferred evolutionary relationships between samples assigned to Pango
+% X lineages.
 
 % - Recombinant Pango lineages
 %     How well do we recover recombinant Pango lineages? Work through the
