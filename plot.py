@@ -921,7 +921,10 @@ class Pango_X_graph(Figure):
         return nodes[np.sort(idx)]
 
     def __init__(self, args):
-        self.ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
+        ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
+        self.ts = sc2ts.dereference_singleton_recombinants(ts)
+        logging.info(
+            f"Removed {ts.num_samples - self.ts.num_samples} singleton recombinants")
         self.node_positions_fn = os.path.join(self.ts_dir, self.name + "_nodepos.json")
         try:
             with open(self.node_positions_fn) as f:
