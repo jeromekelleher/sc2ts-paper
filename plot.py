@@ -848,15 +848,6 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
 
-class RecombinationNodeMrcas_filtered_subset(RecombinationNodeMrcas_subset):
-    name = "supp_recombination_node_mrcas_filtered"
-    # Only used to get information out really.
-
-    def __init__(self, args):
-        super().__init__(args)
-        self.df = self._filter(self.df)
-
-
 def change_pos(pos, key, dx=None, dy=None, x=None, y=None, xy_from=None):
     """
     Helper function to change the position of a node in a graph layout. `pos`
@@ -872,27 +863,36 @@ class Pango_X_graph(Figure):
     sample_metadata_labels = ""  # Don't show the strain name
     node_colours = {
         # Pango X-lineages in red/brown/pink
-        "XA": "#fe812e",
-        "XB": "#fc31fb",
-        "XQ": "#db5884",
-        "XU": "#894a4e",
-        "XAA": "#ffc9a5",
-        "XAB": "#fdacfe",
-        "XAG": "#fc3131",
+        'XA': '#bb0000',
+        'XB': '#fe812e',
+        'XD': '#fc31fb',
+        'XQ': '#db5884',
+        'XU': '#894a4e',
+        'XAA': '#ffc9a5',
+        'XAB': '#fdacfe',
+        'XAG': '#ff0055',
+
         # B lineages in blue/green (AY.100 is B.1.617.2.100)
         # Basic in blue
-        "B.1": "#212fe1",
-        "B.1.177.18": "#93e8ff",
-        "B.1.631": "#add9e5",
-        "B.1.634": "#2092e1",
-        "B.1.627": "#7b96cc",
-        "B.1.1": "#aea4ff",
-        "B.1.1.7": "#8666e3",  # Alpha
-        "AY.100": "#c6c076",  # Delta
+        'B.1': '#212fe1',
+        'B.1.177.18': '#93e8ff',
+        'B.1.631': '#add9e5',
+        'B.1.634': '#2092e1',
+        'B.1.627': '#7b96cc',
+        'B.1.1': '#aea4ff',
+
+        'B.1.1.7': '#8666e3', # Alpha
+
+        'B.1.617.2': '#e2da91',  # Delta
+        'AY.4': '#b78c19',  # Delta
+
         # Omicron (B.1.1.529...) in green-ish
-        "BA.1": "#74b058",  # Omicron
-        "BA.2": "#4de120",  # Omicron
-        "BA.2.9": "#21e1ab",
+        'BA.1': '#74b058',  # Omicron
+        'BA.1.17': '#57de3c',  # Omicron
+        'BA.1.15': '#248f0f',  # Omicron
+        'BA.2.9': '#21e1ab', # Omicron
+
+
         None: "lightgray",  # Default
         "Unknown (R)": "k",
         "Unknown": "None",
@@ -1100,6 +1100,35 @@ class Pango_XAG_nxcld_tight_graph(Pango_X_tight_graph):
     def post_process(ax):
         x_min, x_max = ax.get_xlim()
         ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
+
+
+class Pango_XD_nxcld_tight_graph(Pango_X_tight_graph):
+    name = "Pango_XD_nxcld_tight_graph"
+    imputed_lineage = "Nextclade_pango"
+
+    figsize=(4, 4)
+
+    @staticmethod
+    def define_nodes(ts, imputed_lineage):
+        XD = [n.id for n in ts.nodes() if n.metadata.get(imputed_lineage) == "XD"]
+        return Pango_X_graph.grow_graph(ts, XD)
+
+    @staticmethod
+    def adjust_positions(pos):
+        dy = pos[665231][1] - pos[644359][1]
+
+        # All adjustments below found by tedious trial and error
+        change_pos(pos, 517356, dy=dy/2)
+        change_pos(pos, 518483, xy_from=630772, dy=dy)
+        change_pos(pos, 361569, xy_from=518483, dy=dy)
+        change_pos(pos, 630772, xy_from=638775, dy=dy)
+
+        change_pos(pos, 396442, x=pos[557733][0])
+        change_pos(pos, 557733, xy_from=416354, dy=dy)
+        change_pos(pos, 416354, x=pos[400974][0])
+        change_pos(pos, 400974, x=pos[396442][0])
+        change_pos(pos, 375328, x=pos[396442][0])
+
 
 
 class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
@@ -1387,7 +1416,7 @@ class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     imputed_lineage = "GISAID_lineage"
     figsize = (64, 20)
     node_size = 2000
-    show_ids = None  # Only show for sample nodes
+    show_ids = True  # Only show for sample nodes
     edge_font_size = 6
     node_font_size = 7.5
     mutations_fn = None
