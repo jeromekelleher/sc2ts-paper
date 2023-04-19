@@ -1106,7 +1106,7 @@ class Pango_XD_nxcld_tight_graph(Pango_X_tight_graph):
     name = "Pango_XD_nxcld_tight_graph"
     imputed_lineage = "Nextclade_pango"
 
-    figsize=(4, 4)
+    figsize=(4, 3.5)
 
     @staticmethod
     def define_nodes(ts, imputed_lineage):
@@ -1147,7 +1147,7 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
             334261,
             337869,
             345330,
-            394058,  # most recent nodes, product of the most recent recombination
+            # 394058, # most recent nodes, product of the most recent recombination 
         ]
         for n in basic_nodes:
             pango = ts.node(n).metadata.get("Imputed_" + imputed_lineage)
@@ -1173,12 +1173,12 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
 
         # All adjustments below found by tedious trial and error
 
-        change_pos(pos, 351074, xy_from=73385)
-        change_pos(pos, 73385, xy_from=322395, dx=5 * dx)
-        pos[322395], pos[345330] = pos[345330], pos[322395]
-        change_pos(pos, 345330, dx=dx)
-        change_pos(pos, 394059, x=pos[345330][0] / 2 + pos[73385][0] / 2)
-        change_pos(pos, 394058, xy_from=394059, y=pos[394058][1])
+        #change_pos(pos, 351074, xy_from=73385)
+        #change_pos(pos, 73385, xy_from=322395, dx=5 * dx)
+        #pos[322395], pos[345330] = pos[345330], pos[322395]
+        #change_pos(pos, 345330, dx=dx)
+        #change_pos(pos, 394059, x=pos[345330][0] / 2 + pos[73385][0] / 2)
+        #change_pos(pos, 394058, xy_from=394059, y=pos[394058][1])
         pos[329950], pos[280287] = pos[280287], pos[329950]
         pos[359092], pos[339516] = pos[339516], pos[359092]
         change_pos(pos, 359092, dx=dx)
@@ -1189,10 +1189,10 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
         for p in [380107, 335144, 338964]:
             change_pos(pos, p, dx=-dx, dy=-dy)
 
-        change_pos(pos, 423732, dx=-5 * dx)
-        change_pos(pos, 423733, xy_from=423732, y=pos[423733][1])
-        for p in [352126, 358835, 379420]:
-            change_pos(pos, p, dx=4 * dx)
+        # change_pos(pos, 423732, dx=-5 * dx)
+        # change_pos(pos, 423733, xy_from=423732, y=pos[423733][1])
+        # for p in [352126, 358835, 379420]:
+        #    change_pos(pos, p, dx=4 * dx)
 
         change_pos(pos, 300560, dx=dx)
         change_pos(pos, 5731, dx=dx / 2)
@@ -1416,7 +1416,7 @@ class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     imputed_lineage = "GISAID_lineage"
     figsize = (64, 20)
     node_size = 2000
-    show_ids = True  # Only show for sample nodes
+    show_ids = None  # Only show for sample nodes
     edge_font_size = 6
     node_font_size = 7.5
     mutations_fn = None
