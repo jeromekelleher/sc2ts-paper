@@ -93,7 +93,7 @@ During ARG inference, two types of non-sample nodes are inserted to improve pars
 
 Furthermore, during inference, the ARG is automatically encoded, stored, and updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
 
-\subsubsection{Brief description of the Li and Stephens model} 
+\subsubsection{Brief description of the Li and Stephens model}
 The LS model is a convenient probabilistic approximation to the coalescent with recombination \citep{Hudson1983-if}, itself a generative model of a genealogical process with recombination \citep{Li2003-ib}. Importantly, it can be implemented as an HMM in which a focal genome is a sequence of nucleotides (observed states) that are probabilistically emitted as an imperfect mosaic of a set of reference genomes (hidden states). As such, an efficient HMM machinery can be employed to make statements about parameters of interest and highlight potential sources of error in genotyping and sequencing data. The LS model is used in a wide variety of applications in genomics. For example, it is the engine that drives statistical genotype phasing and imputation \citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa}, and it can be used to estimate mutation rates (e.g., REF), recombination rates \citep[e.g.][]{Hinch2011-tz}, and selection within and across hosts in viral sequence data \citep[e.g.][]{Palmer2019-wa}.
 
 \begin{figure} \centering
@@ -105,11 +105,11 @@ The generative process of the LS model is summarised in Figure~\ref{fig:ls_diagr
 
 Because the HMM is memoryless, the potential parental lineages are independently assessed at each recombination breakpoint. This can result in the inference of a recombinant lineage descending immediately from three (or even more) parental lineages. We find that often two of the three parents are identical or similar in sequence in the segments contributed to the recombinant lineage. A more parsimonious explanation would be to switch back to the original parent sequence. In the future, a pragmatic solution would be to detect such cases during the ARG inference stage and to adjust the copying paths accordingly (see ``Improvements'', below). Meanwhile, however, we urge caution when interpreting the parentage of lineages with multiple breakpoints.
 
-\subsubsection{Parameterization of the HMM implementation of Li and Stephens model} 
+\subsubsection{Parameterization of the HMM implementation of Li and Stephens model}
 Recombination is inferred using an efficient HMM implementation of the LS model. Copying paths are estimated from SARS-CoV-2 genomes sampled over time, with younger genomes copying (i.e. inheriting segments and mutations) from older genomes. Here, we were able to apply the LS model on millions of SARS-CoV-2 genomes because of a highly efficient, exact HMM implementation of the LS model that is a core component of the tsinfer software. For this application, we have parameterised the HMM using a mismatch ratio (MMR), which tunes how strongly mutations (i.e., no switching of template sequences) are preferred over recombination (i.e., switching between sequences) during copying. Under a lower MMR value, the maximum-likelihood HMM copying path of a focal genome more likely spans at least two ancestral genomes (i.e,. the focal genome is a putative recombinant) than a single ancestral genome. Here, the MMR was set to three in all the HMM runs (see ``Improvements'' for future potential development of the HMM).
 
-\subsection{Analysis} 
-\subsubsection{Imputation of Pango lineage for non-sample nodes} 
+\subsection{Analysis}
+\subsubsection{Imputation of Pango lineage for non-sample nodes}
 Non-sample nodes inserted during ARG inference had no Pango lineage assignment from Nextclade. We imputed the Pango lineage of non-sample nodes using a two-step procedure (Figure 3) to help assess how consistently breakpoint intervals are estimated by the HMM runs (see below). If the Pango lineage of the parental node was available and no mutation was immediately ancestral to the non-sample node, then the parental node’s status was directly propagated to the non-sample node. Otherwise, the Pango lineage of the non-sample node was inferred by matching its full set of mutations against the Pango lineage-defining mutations (based on 90\% consensus of the sequences analysed) from the COVID-CG website \citep{Chen2021-zc}; \url{https://covidcg.org/}; accessed on November 04, 2022).
 
 \subsubsection{Breakpoint intervals and HMM consistency}
@@ -121,8 +121,30 @@ A recombinant sequence was deemed to be HMM-consistent if (1) the same number of
  The source code implementing the sc2ts pipeline is available via GitHub \url{https://github.com/jeromekelleher/sc2ts/}. The sc2ts pipeline uses various functions and algorithms implemented in tskit and tsinfer \url{https://github.com/tskit-dev/}. The pipeline uses the SciPy implementation of the UPGMA algorithm to build daily trees \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.average.html}. The Jupyter notebooks used to produce the results described herein are also available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
 
 \section{Results}
-\subsection{Inferred ARGs} 
-To illustrate the use of sc2ts, we employed two different sampling strategies. First, we inferred a densely sampled but time-limited ``wide'' ARG by attaching all the sample genomes with an MSD of 30 days, one daily batch at a time. The inference procedure ran until the genomes sampled on June 30, 2021 were attached to the ARG, resulting in a total of 1.27 million samples. Second, we inferred a ``long'' ARG over a more extended timespan, by attaching at most 1,000 genomes, which were randomly subsampled from each daily batch with an MSD within 30 days. For this ARG, the inference procedure ran until the genomes sampled on June 30, 2022 were attached to the ARG. The long ARG covers an extra year of samples but is more sparsely sampled. June 30, 2022 is the collection date of the final batch of sequences which were preprocessed for the development of sc2ts. Once sc2ts is further developed and tested, we will attach samples collected after that date to infer a fully sampled pandemic-scale ARG.
+\subsection{Inferred ARGs}
+For this prelimary study our goals are to illustrate the utility of
+\texttt{sc2ts}, but to also closely study the properties of the
+inferred ARGs to inform subsequent development. Thus, rather
+than attempting to be comprehensive we chose to work with a
+representative subset of the available data, and limited to
+inferences that could be performed on a single server in
+a few weeks (see below for further details on timings and
+computer hardware used). The cut-off dates for sampling were chosen
+arbitrarily. We anticipate that further development of the
+inference methods and scaling out across multiple servers will
+enable inferences at the full pandemic scale using \texttt{sc2ts}
+(see Discussion).
+
+To investigate the properties of the inferred ARGs under different
+sampling conditions, we inferred two ARGs, which we refer to as the
+``Wide'' and ``Long'' ARGs throughout.
+The Wide ARG is densely sampled but time-limited and
+includes all 1.27 million sample genomes  with a
+maximum sampling delay of 30 days (see Methods) up to June 30, 2021.
+The Long ARG is more sparsely sampled but
+includes data for an additional year (June 30, 2022).
+For the long ARG, we use at most 1,000 randomly subsampled
+genomes per day from those meeting the maximum sampling delay criterion.
 
 \begin{table}
 \begin{center}
@@ -186,17 +208,35 @@ To illustrate the use of sc2ts, we employed two different sampling strategies. F
 % sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
 % \end{tabular}
 
-Most of the nodes in the ARGs represent sample genomes (Table 1). Only a small fraction of the nodes represent recombination events (0.28\% and 0.27\% in the wide ARG and long ARG, respectively), over half of which have no descendant samples (besides the recombinant sequence that triggered insertion of the recombination node) (Table 1). There are over one million mutations on the ARGs, the majority of which occur on a terminal edge (Table 1). Notably, the massive amount of genomic variation data in the wide ARG (1.27 million genomes) and long ARG (657 thousand genomes) are compactly stored in ~57 Mb and ~36 Mb, respectively (less than ten bytes per sample). These ARGs can be loaded for analysis in a Jupyter notebook on a typical commercial laptop in merely a fraction of a second using the Python package tskit (Table 1).
+The properties of the inferred ARGs are summarised in Table~\ref{tab:args}.
+% TODO more discussion here, making sure we explain anything that might not be
+% obvious.
+Most of the nodes in the ARGs represent sample genomes
+Only a small fraction of the nodes represent recombination events (0.28\% and
+0.27\% in the wide ARG and long ARG, respectively), over half of which have no
+descendant samples (besides the recombinant sequence that triggered insertion
+of the recombination node). There are over one million mutations on
+the ARGs, the majority of which occur on a terminal edge. Notably,
+the massive amount of genomic variation data in the wide ARG (1.27 million
+genomes) and long ARG (657 thousand genomes) are compactly stored in ~57 Mb and
+~36 Mb, respectively (less than ten bytes per sample). These ARGs can be loaded
+for analysis in a Jupyter notebook on a typical laptop in a
+fraction of a second using the Python package tskit.
 
-Inferring the wide ARG required 17 days of computation time on a machine with 128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). Inferring the long ARG required 23 days on a (much older) machine with 40 threads and 256 GB RAM (2x Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz). The majority of the time is spent on running the HMM to find the copying path for each sequence, and the process is therefore highly amenable to distributing across multiple machines.
+Inferring the wide ARG required 17 days of computation time on a machine with
+128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). Inferring the long ARG
+required 23 days on a (much older) machine with 40 threads and 256 GB RAM (2x
+Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz). The majority of the time is spent
+on running the HMM to find the copying path for each sequence, and the process
+is therefore highly amenable to distributing across multiple machines.
 
-\subsection{Backbone phylogeny} 
+\subsection{Backbone phylogeny}
 For validation purposes, we compare the genetic relationships in the sc2ts-inferred ARGs with phylogenetic relationships inferred by the NextStrain project \citep{Hadfield2018-ef}. The NextStrain trees consist of subsamples of SARS-CoV-2 genomes, which over the time period of our ARGs are almost entirely restricted to non-recombinant lineages. To allow for comparison, the ARGs were ``simplified'' \citep{Kelleher2018-xc} to retain only those samples of our genealogy that match those present in a specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very little recombination (6 and 5 trees across the genome for the wide and long ARGs, respectively).
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
 \caption{\label{fig:cophylogeny} Tanglegram comparing the first local tree in the wide ARG (sampled to mid-2021) and an “all-time” global NextStrain tree (sampled to January 21, 2023). The trees were pruned down to the samples present in both the trees. Light grey lines match the corresponding samples between the two trees; black circles indicate identical sample partitions between the two trees. Terminal branches are colour-coded according to the Pango lineage status assigned to the tip samples; no Pango recombinants are shown, as none are shared between the trees. The tanglegram was generated with the aid of the Neighbor-Net algorithm \citep{Scornavacca2011-mg} implemented in Dendroscope version 3.8.5 \citep{Huson2012-ys}. See Figure~\ref{fig:cophylogeny_long} for the equivalent cophylogeny for the Long ARG.}
-\end{figure} 
+\end{figure}
 
 Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared between the wide ARG and a GISAID global "all-time" tree from NextStrain (downloaded on January 21, 2023). To reduce the ARG to a single tree, we show the very first tree in the wide ARG; however, the five other trees in this simplified ARG show near-identical patterns. Supplementary Figure~\ref{fig:cophylogeny_long} shows the same comparison for the long ARG. It is clear that the backbone topology of the sc2ts tree shows very close agreement with the NextStrain tree. The sample genomes cluster by their assigned Pango lineage status, and many variants and their descendents form identical monophyletic clades in both the trees (e.g., the Alpha and Delta VoC clades, labelled).
 
@@ -578,7 +618,7 @@ Currently, sc2ts is in development. Below, we propose several ways to potentiall
 The global understanding of viral evolution during the COVID-19 pandemic is unprecedented, with over 15 million sequences shared to date. We envisage that once fully developed and tested, sc2ts methodology and software may provide a unified computational framework to study the evolution and epidemiology of SARS-CoV-2 at pandemic scale. The evolutionary analyses presented herein exemplify the numerous applications possible using the ancestral recombination graph inferred by sc2ts. We invite bioinformaticians, evolutionary biologists, and virologists to join us and the broader tskit community to build the most complete representation of the evolutionary history of SARS-CoV-2. Moreover, while we have focussed on the particular application to SARS-CoV-2, the methods we describe are readily applicable to the analysis of many other viral pathogens. Solving the challenges in building and analysing large viral genealogies would therefore contribute to the important goal of improving preparedness for potential future pandemics.
 
 \section{Acknowledgements}
-We gratefully acknowledge all data contributors, i.e., the Authors and their Originating laboratories responsible for obtaining the specimens, and their Submitting laboratories for generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. Also, we thank Dr. Morag Graham (the National Microbiology Laboratory, Winnipeg, Canada) for kindly providing the genomic coordinates of the breakpoint sequence motifs. SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK, YW, and BJ are supported by the Robertson Foundation. 
+We gratefully acknowledge all data contributors, i.e., the Authors and their Originating laboratories responsible for obtaining the specimens, and their Submitting laboratories for generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. Also, we thank Dr. Morag Graham (the National Microbiology Laboratory, Winnipeg, Canada) for kindly providing the genomic coordinates of the breakpoint sequence motifs. SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK, YW, and BJ are supported by the Robertson Foundation.
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
@@ -593,7 +633,7 @@ We gratefully acknowledge all data contributors, i.e., the Authors and their Ori
 \includegraphics[width=\textwidth]{figures/supp_cophylogeny_long.pdf}
 \caption{\label{fig:cophylogeny_long}Tanglegram equivalent to that in Figure~\ref{fig:cophylogeny}, but for the long ARG (i.e. subsampled to mid-2022). }
 \end{figure}
- 
+
 % FIXME there's too much vspace between the rows here. Probably best to redo
 % the formatting.
 \begin{table} \centering
