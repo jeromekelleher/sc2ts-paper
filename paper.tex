@@ -307,16 +307,6 @@ the positions. The switch positions in the copying paths of both the HMM runs
 were used to define the breakpoint interval(s) of an HMM-consistent
 recombinant.
 
-\subsubsection{Code availability} The source code implementing the sc2ts
-pipeline is available via GitHub
-\url{https://github.com/jeromekelleher/sc2ts/}. The sc2ts pipeline uses various
-functions and algorithms implemented in tskit and tsinfer
-\url{https://github.com/tskit-dev/}. The pipeline uses the SciPy implementation
-of the UPGMA algorithm to build daily trees
-\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.average.html}.
-The Jupyter notebooks used to produce the results described herein are also
-available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
-
 \section{Results}
 \subsection{Inferred ARGs}
 For this prelimary study our goals are to illustrate the utility of
@@ -815,7 +805,25 @@ Currently, sc2ts is in development. Below, we propose several ways to potentiall
 The global understanding of viral evolution during the COVID-19 pandemic is unprecedented, with over 15 million sequences shared to date. We envisage that once fully developed and tested, sc2ts methodology and software may provide a unified computational framework to study the evolution and epidemiology of SARS-CoV-2 at pandemic scale. The evolutionary analyses presented herein exemplify the numerous applications possible using the ancestral recombination graph inferred by sc2ts. We invite bioinformaticians, evolutionary biologists, and virologists to join us and the broader tskit community to build the most complete representation of the evolutionary history of SARS-CoV-2. Moreover, while we have focussed on the particular application to SARS-CoV-2, the methods we describe are readily applicable to the analysis of many other viral pathogens. Solving the challenges in building and analysing large viral genealogies would therefore contribute to the important goal of improving preparedness for potential future pandemics.
 
 \section{Acknowledgements}
-We gratefully acknowledge all data contributors, i.e., the Authors and their Originating laboratories responsible for obtaining the specimens, and their Submitting laboratories for generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. Also, we thank Dr. Morag Graham (the National Microbiology Laboratory, Winnipeg, Canada) for kindly providing the genomic coordinates of the breakpoint sequence motifs. SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK, YW, and BJ are supported by the Robertson Foundation.
+We gratefully acknowledge all data contributors, i.e., the Authors and their
+Originating laboratories responsible for obtaining the specimens, and their
+Submitting laboratories for generating the genetic sequence and metadata and
+sharing via the GISAID Initiative, on which this research is based. Also, we
+thank Dr. Morag Graham (the National Microbiology Laboratory, Winnipeg, Canada)
+for kindly providing the genomic coordinates of the breakpoint sequence motifs.
+SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK,
+YW, and BJ are supported by the Robertson Foundation.
+
+\section{Data Availability}
+The source code for \texttt{sc2ts} is
+is available on GitHub
+\url{https://github.com/jeromekelleher/sc2ts/}.
+The Jupyter notebooks and code used to produce the results described here are also
+available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
+
+% TODO what's the right way to say this?
+The inferred ARGs described here are available on request to those with
+the appropriate GISAID data access.
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
