@@ -59,56 +59,6 @@ Here, we present a preliminary version of a novel scalable methodology
 
 \section{Methods}
 
-\subsection{Data preprocessing}
-
-\subsubsection{Sequence-level preprocessing}
-The findings of this study are
-based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
-up to Aug 22, 2022 and accessible at
-% FIXME
-doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
-if they (1) had ambiguous collection dates; (2) were collected before January
-01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
-Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
-MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
-2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
-inference, sequences were excluded if they had a ``bad'' quality control status
-in any of the four Nextclade columns (``qc.missingData.status'',
-``qc.mixedSites.status'', ``qc.frameShifts.status'' and
-`qc.stopCodons.status''). These excluded genomes are enriched for low-coverage,
-contaminated, or misassembled sequences.
-
-\subsubsection{Site-level preprocessing} Ambiguous nucleotide letters (i.e.,
-not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
-Problematic bases in the alignments, which had two or more ambiguous letters or
-gaps within a distance of seven bases, were masked as missing data following
-the protocol in \url{https://github.com/roblanf/sarscov2phylo/}. Masked bases
-were ignored when attaching a sample genome to the ARG, but they were
-subsequently imputed. Further, 481 problematic sites flagged as prone to
-sequencing errors or highly homoplasic were excluded entirely
-% Do we need this first URL?
-(\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
-\url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
-
-\subsubsection{Exclusion of ``time travellers''}
-
-Including samples with incorrectly reported collection dates (e.g., an Alpha
-sample purportedly collected in 2020 from the United States, before Alpha
-appeared in the United Kingdom, USA/MN-Mayo-1563/2020) was found to produce
-artefacts that distorted the topology of ARGs inferred early on in the study.
-Hence, to exclude such potential ``time travellers'' we employed two filters.
-The first was to remove any sequence with a collection date that pre-dated the
-time to the most recent common ancestor (tMRCA) of its corresponding clade. The
-tMRCA for each clade was obtained from a Nextstrain GISAID reference tree
-(downloaded on August 22, 2022) where we used the lower bound of the 95\%
-confidence interval of each clade as the minimum date cut-off. The second
-filter was a simple threshold on the time delay between the collection date and
-submission date (maximum submission delay, or MSD). Indeed, we found that ARGs
-inferred from the MSD-filtered genome set had noticeably fewer branches with a
-high number of reversions. After some preliminary analysis, a MSD threshold
-value of 30 days was used when building the ARGs described herein. Future work
-could estimate collection dates by adding these potential time travellers back
-on the tree, allowing an automated assessment of collection date discrepancies.
 
 \subsection{Inference}
 \subsubsection{Overview of sc2ts}
@@ -306,6 +256,57 @@ different positions, typically because of a lack of genetic variation between
 the positions. The switch positions in the copying paths of both the HMM runs
 were used to define the breakpoint interval(s) of an HMM-consistent
 recombinant.
+
+\subsection{Data preprocessing}
+
+\subsubsection{Sequence-level preprocessing}
+The findings of this study are
+based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
+up to Aug 22, 2022 and accessible at
+% FIXME
+doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
+if they (1) had ambiguous collection dates; (2) were collected before January
+01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
+Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
+MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
+2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
+inference, sequences were excluded if they had a ``bad'' quality control status
+in any of the four Nextclade columns (``qc.missingData.status'',
+``qc.mixedSites.status'', ``qc.frameShifts.status'' and
+`qc.stopCodons.status''). These excluded genomes are enriched for low-coverage,
+contaminated, or misassembled sequences.
+
+\subsubsection{Site-level preprocessing} Ambiguous nucleotide letters (i.e.,
+not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
+Problematic bases in the alignments, which had two or more ambiguous letters or
+gaps within a distance of seven bases, were masked as missing data following
+the protocol in \url{https://github.com/roblanf/sarscov2phylo/}. Masked bases
+were ignored when attaching a sample genome to the ARG, but they were
+subsequently imputed. Further, 481 problematic sites flagged as prone to
+sequencing errors or highly homoplasic were excluded entirely
+% Do we need this first URL?
+(\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
+\url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
+
+\subsubsection{Exclusion of ``time travellers''}
+
+Including samples with incorrectly reported collection dates (e.g., an Alpha
+sample purportedly collected in 2020 from the United States, before Alpha
+appeared in the United Kingdom, USA/MN-Mayo-1563/2020) was found to produce
+artefacts that distorted the topology of ARGs inferred early on in the study.
+Hence, to exclude such potential ``time travellers'' we employed two filters.
+The first was to remove any sequence with a collection date that pre-dated the
+time to the most recent common ancestor (tMRCA) of its corresponding clade. The
+tMRCA for each clade was obtained from a Nextstrain GISAID reference tree
+(downloaded on August 22, 2022) where we used the lower bound of the 95\%
+confidence interval of each clade as the minimum date cut-off. The second
+filter was a simple threshold on the time delay between the collection date and
+submission date (maximum submission delay, or MSD). Indeed, we found that ARGs
+inferred from the MSD-filtered genome set had noticeably fewer branches with a
+high number of reversions. After some preliminary analysis, a MSD threshold
+value of 30 days was used when building the ARGs described herein. Future work
+could estimate collection dates by adding these potential time travellers back
+on the tree, allowing an automated assessment of collection date discrepancies.
 
 \section{Results}
 \subsection{Inferred ARGs}
