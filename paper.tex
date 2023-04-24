@@ -341,10 +341,10 @@ could estimate collection dates by adding these potential time travellers back
 on the tree, allowing an automated assessment of collection date discrepancies.
 
 \subsection{Imputation of Pango lineage for non-sample nodes}
-Non-sample nodes inserted during ARG inference had no Pango lineage
-assignment from Nextclade. We imputed the Pango lineage of non-sample nodes
-using a two-step procedure (Figure 3) to help assess how consistently
-breakpoint intervals are estimated by the HMM runs (see below). If the Pango
+Initially, only sample nodes have Pango lineage assignments.
+For analysis of recombinant parents, it is also helpful to assign
+Pango lineages to non-sample nodes. We do this
+using a two-step procedure (Figure 3). If the Pango
 lineage of the parental node was available and no mutation was immediately
 ancestral to the non-sample node, then the parental node’s status was directly
 propagated to the non-sample node. Otherwise, the Pango lineage of the
@@ -567,14 +567,12 @@ We further consider the breakpoint intervals within the context of recombination
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/recombination_node_mrcas.pdf}
-\caption{\label{fig:recomb_mrcas} Divergance between parents at recombination breakpoints. (A) All recombination nodes that are ancestral to least two samples. (B) Further filtered as described in the text.
-MORE DETAIL. Horizontal lines represent WHAT,
-Figure~\ref{fig:recomb_mrcas_voc_breakdown} shows the same data broken down by parental ``VoC'' classification.}
+\caption{\label{fig:recomb_mrcas} Date of common ancestry between the parents either side of recombination breakpoints, as a function of degree of parental divergence. MRCAs of parents inferred to have produced a Pango designated recombinant (XA, XB, etc.) are identified in orange (A) Data after removing singleton recombinants (XXX parent pairs). Many recombinations involve parental strains that descend from the same MRCA: dates for the four most frequently identified MRCA nodes are indicated by horizontal dotted lines. These frequent MRCA nodes tend to be associated with major waves and commonly have many immediate children (i.e. are large polytomies, likely to indicate undersampled outbreaks) (B) Further filtered by removing HMM inconsistent breakpoints (YYY parent pairs). Note that Figure~\ref{fig:recomb_mrcas_voc_breakdown} shows the same data broken down by parental VoC classification.}
 \end{figure}
 
 Both the wide and long ARGs contain a large number of recombination nodes (4123 and 2078 respectively; Supplementary Tables 1 and 2). Each of these nodes were inferred as a result of matching a specific recombinant sample into the ARG. However, ~63\% of recombination nodes are ancestral to only a single recombinant sample; we exclude these "singleton recombinants" from subsequent analyses as they may have arisen from sequencing of mixed samples (e.g., from co-infection or contamination), and in any case, never result in onward transmission.  This leaves 1522 and 763 recombination nodes in the wide and long ARGs, respectively. In their analysis using RIPPLES, \cite{Turakhia2022-it} detected 589 non-singleton recombinants.
 
-We focus on the long ARG because compared to the wide ARG,  it includes time periods of increased rates of coinfection and recombination, and contains many samples previously identified as the product of recombination (i.e. with a Pango lineage designation starting with an "X"). Not only does the long ARG capture all but one of the Pango designated recombinant lineages during this time period (see the section below), but it also includes a large number of non-Pango-identified recombinants. Many of these involve recombination between relatively closely related lineages, as measured by the divergence time between the recombination events and the most recent common ancestor (MRCA) shared by  the left and right parent at each breakpoint. As can be seen from Figure~\ref{fig:recomb_mrcas}, this divergence time ranges from as little as five or six days, to as much as several years in the case of recent recombinants. This demonstrates that sc2ts can identify viral recombination between very closely related lineages, providing a degree of resolution not available with other recombination detection methods.
+We focus on the long ARG because compared to the wide ARG, it includes time periods of increased rates of coinfection and recombination, and contains many samples previously identified as the product of recombination (i.e. with a Pango lineage designation starting with an "X"). Not only does the long ARG capture all but one of the Pango designated recombinant lineages during this time period (see the section below), but it also includes a large number of non-Pango-identified recombinants. Many of these involve recombination between relatively closely related lineages, as measured by the divergence time between the recombination events and the most recent common ancestor (MRCA) shared by  the left and right parent at each breakpoint. As can be seen from Figure~\ref{fig:recomb_mrcas}, this divergence time ranges from as little as five or six days, to as much as several years in the case of recent recombinants. This demonstrates that sc2ts can identify viral recombination between very closely related lineages, providing a degree of resolution not available with other recombination detection methods.
 
 The histograms in Figure~\ref{fig:recomb_mrcas} show that
 majority of newly identified recombinants arise from parents that diverged 10 to 30 weeks previously. However, there is also a peak of recombinants that diverged ~95 weeks prior to the event: these correspond to recombinants whose parental common ancestor traces to early 2020, including both Delta-Delta and Delta-Omicron recombinants (Supplementary Figure~\ref{fig:recomb_mrcas_voc_breakdown}). Note that each point in these plots represents a breakpoint, so that recombination events with more than one breakpoint (e.g. with 3 or more parents, which comprise X \% of the recombination events) are represented by several plotted points.
@@ -935,7 +933,7 @@ QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/supp_recombination_node_mrcas.pdf}
-\caption{\label{fig:recomb_mrcas_voc_breakdown}  DESCRIBE ME}
+\caption{\label{fig:recomb_mrcas_voc_breakdown}  Divergence between parent lineages for recombination events within and among different VoC categories. HMM-consistent recombinants are shown in green, HMM-inconsistent in blue (including many of the named Delta-Omicron recombinants). We find 69 HMM consistent (77 inconsistent) Alpha-Alpha recombination breakpoints = 13\% (10\%) of the total; 84 HMM consistent (143 inconsistent) Delta-Delta recombination breakpoints = 18\% (18\%) of the total; 99 HMM consistent (155 inconsistent) Omicron-Omicron recombination breakpoints = 22\% (19\%) of the total; and 2 HMM consistent (20 inconsistent) Delta-Omicron recombination breakpoints = 2\% (< 1\%) of the total. These plots do not include recombination breakpoints involved lineages that were not classified into these VoC categories}
 \end{figure}
 
 \begin{figure} \centering
