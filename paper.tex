@@ -344,7 +344,7 @@ on the tree, allowing an automated assessment of collection date discrepancies.
 Initially, only sample nodes have Pango lineage assignments.
 For analysis of recombinant parents, it is also helpful to assign
 Pango lineages to non-sample nodes. We do this
-using a two-step procedure (Figure 3). If the Pango
+using a two-step procedure (Figure~\ref{fig:imputation}). If the Pango
 lineage of the parental node was available and no mutation was immediately
 ancestral to the non-sample node, then the parental node’s status was directly
 propagated to the non-sample node. Otherwise, the Pango lineage of the
@@ -352,6 +352,11 @@ non-sample node was inferred by matching its full set of mutations against the
 Pango lineage-defining mutations (based on 90\% consensus of the sequences
 analysed) from the COVID-CG website \citep{Chen2021-zc};
 \url{https://covidcg.org/}; accessed on November 04, 2022).
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/imputation.pdf}
+\caption{\label{fig:imputation} WRITE ME. }
+\end{figure}
 
 
 \section{Results}
