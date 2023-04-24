@@ -481,11 +481,15 @@ Although the simplified backbone ARGs have few local trees, all of which show es
 \subsection{Mutational spectrum}
  In addition to recombination events, the ARGs record mutation events along the SARS-CoV-2 phylogeny. \cite{Yi2021-sc} reconstructed a SARS-CoV-2 phylogeny of over 350,000 genomes sampled globally from December 24, 2019, to January 12, 2021, and systematically catalogued all the mutations occurring along the phylogeny. Notably, they described a mutational spectrum in which C-to-U and G-to-U mutations occur more frequently than U-to-C and U-to-G mutations, respectively.
 
-\begin{figure}
-\centering
+\begin{figure} \centering
 \includegraphics[width=0.4\textwidth]{figures/mutational_spectra.pdf}
 \caption{\label{fig:mutational_spectra}
-Mutational spectrum of SARS-CoV-2 in the wide ARG (sampled to mid-2021) compared to \cite{Yi2021-sc}. Mutations are categorised by type (i.e., ancestral state $>$ derived state). The percentages of each mutation type from the wide ARG are represented by blue bars and the percentages from Yi et al. by orange bars, with the darker colours representing one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).}
+Mutational spectrum of SARS-CoV-2 in
+the wide ARG (sampled to mid-2021) compared to \cite{Yi2021-sc}. Mutations are
+categorised by type (i.e., ancestral state $>$ derived state). The percentages
+of each mutation type from the wide ARG are represented by blue bars and the
+percentages from Yi et al. by orange bars, with the darker colours representing
+one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).}
 \end{figure}
 
 For validation purposes, we compare the mutational spectrum from the wide ARG with the mutational spectrum of \citet{Yi2021-sc}. We categorised all of the single nucleotide mutations by type (defined by the ancestral state and derived state), excluded mutations inherited by only a single sample (which are enriched for sequencing errors and artefacts), and tallied them up by type. Similarly, we took the data for single nucleotide mutations from \url{https://github.com/ju-lab/SC2_evol_signature} \citep{Yi2021-sc}, excluded mutations occurring along terminal branches, and tallied them up by type. Figure~\ref{fig:mutational_spectra} shows that the mutational spectrum from the wide ARG (based on 448,825 mutations) matches that reported by \citet[based on 92,344 mutations]{Yi2021-sc}. In both spectra, C-to-U mutations and G-to-U mutations occur more frequently than U-to-C and U-to-G, respectively. Similar results are obtained when including the mutations inherited by only a single sample or those occurring on terminal branches (data not shown).
