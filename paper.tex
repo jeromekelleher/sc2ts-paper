@@ -50,24 +50,55 @@ Recombination was challenging to detect early in the SARS-CoV-2 pandemic due to 
 
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that combine specific subsets of mutations from different lineages \citep[e.g.][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}. This approach only identifies those inter-lineage recombination events resulting in the patterns investigated. Others have inferred recombinant genealogies to disentangle recombination from recurrent mutation, without having to pre-specify characteristic mutations for each lineage \citep{Ignatieva2021-rg}. More recently, \cite{Turakhia2022-it} presented a phylogeny-based approach (``RIPPLES'') to identify putative recombinants among over ten million SARS-CoV-2 genomes, without pre-specifying motifs. To find candidate recombinants, RIPPLES first builds a phylogeny without assuming recombination and then scans for long branches (i.e., carrying many mutations) and then determines if these candidates would be better explained by recombination. Specifically, RIPPLES exhaustively breaks each candidate sequence into segments and attempts to find more parsimonious placements for each segment on the phylogeny. If such placements are found, the sequence is identified as a putative recombinant. Although it enables rapid searches for genomic evidence of recombinants, RIPPLES relies on a SARS-CoV-2 phylogeny that accounts for only mutations, treats recombinants \textit{post hoc}, and is an incomplete representation of the reticulate evolutionary history of SARS-CoV-2. As noted by the authors, a \textit{post hoc} treatment of recombination is possible when recombinant lineages are rare and leave few descendants. However, this is becoming increasingly untenable with the proliferation of recombinant lineages; for example, more than half of the sequences sampled in February 2023 are from XBB and its descendants~\citep{Chen2022-pz}. This also means that future evolution of SARS-CoV-2 is likely to involve multiple sequential recombination events on top of existing recombinant lineages, creating a highly reticulated genealogy.
 
-Inferring evolutionary trees while accounting for both mutation and
-recombination is a long-standing computational challenge. This challenge is
-particularly acute for SARS-CoV-2, given the large amount of data that has been
-shared, with over 15 million sequences in the GISAID database
-\citep{Shu2017-hp}. It is well known that recombination distorts phylogenies
-\citep{Schierup2000-fg} and affects the results of downstream analysis, e.g.,
-inference of selection~\citep{Anisimova2003-vr}. However, standard phylogenetic
-methods do not account for recombination
-\citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}. Alternatively,
-genetic ancestries of recombining lineages can be represented by ancestral
-recombination graphs (ARGs)~\citep{Griffiths1998-ancestral,Wong2023-efficient},
-which
-capture network-like phylogenetic relationships \citep{Gusfield2014-qw}.
+%% ARGs are good for *representing* viral genealogies
 
-Approaches to infer ARGs now exist that can scale to tens of thousands of human genomes and beyond  \citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}, and which deal with levels of sequential recombination far in excess of those seen in viral phylogenies. For example, using over 90 million variable sites \citet{Wohns2022-th} reconstructed a unified whole-genome genealogy of thousands of modern and ancient human genomes, accounting for millions of recombination events (over 5 million "local trees"). To achieve this, \cite{Wohns2022-th} took advantage of several computational advances in ARG inference: (1) the "succinct tree sequence" data structure that can compactly store large ARGs \citep{Kelleher2018-xc}; (2) a highly efficient Hidden Markov Model (HMM) implementation of the Li and Stephens (LS) model \citep{Li2003-ib} to infer copying paths between genomes \citep{Kelleher2019-ba}; and (3) efficient, open-source software tools \citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
+It is well known that recombination distorts phylogenies \citep{Schierup2000-fg}
+and affects the results of downstream analysis, e.g., inference of
+selection~\citep{Anisimova2003-vr}. However, standard phylogenetic methods do
+not account for recombination
+\citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}. Instead,
+genetic ancestries of recombining lineages can be represented by ancestral
+recombination graphs (ARGs)~\citep{Griffiths1981-lw,Hudson1983-if}, which
+capture network-like phylogenetic relationships \citep{Gusfield2014-qw}. Recently, 
+development of the ``succinct tree sequence'' data
+structure \citep{Kelleher2018-xc}  has enabled compact yet flexible
+encoding of large ARGs, and this representation should be well-suited to storing
+recombinant viral genealogies, even those with millions of sampled sequence,
+such as SARS-CoV-2 (with currently over 15 million sequences in the GISAID database
+\citep{Shu2017-hp}). Moreover the ``tskit'' software library, which implements this
+data structure, enables efficient manipulation of the stored genealogies and is
+integrated with a suite of open-source software tools to simulate, analyse, and
+infer them \citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
+
+%% ARG inference is hard
+
+Inferring recombinant phylogenies has been a long-standing computational challenge.
+However, approaches to infer ARGs now exist that can scale to tens of
+thousands of human genomes and beyond
+\citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}, and which
+deal with levels of repeated recombination far in excess of those seen in viral
+phylogenies. For example, using over 90 million variable sites
+\citet{Wohns2022-th} reconstructed a unified whole-genome genealogy of thousands
+of modern and ancient human genomes, accounting for millions of recombination
+events (over 5 million "local trees"). To achieve this, \cite{Wohns2022-th}
+took advantage of a highly efficient Hidden Markov Model (HMM) implementation
+of the Li and Stephens (LS) model \citep{Li2003-ib} to infer copying paths between
+genomes \citep{Kelleher2019-ba}.
+
+% What is new here?
 
 Here, we present a preliminary version of a novel scalable methodology
-(``sc2ts'', optionally pronounced ``scoots'') that builds on the advances above and additionally takes advantage of known collection dates to infer ARGs from millions of full-length SARS-CoV-2 genomes. Using publicly available SARS-CoV-2 genome sequences, we demonstrate that sc2ts can be used to simultaneously (1) detect putative SARS-CoV-2 recombinants; (2) infer the phylogenetic relationships of the major SARS-CoV-2 lineages; (3) reconstruct the mutational spectrum of SARS-CoV-2; and (4) provide a compact record of evolutionary information about SARS-CoV-2 that can be efficiently accessed using "tskit" (tree sequence toolkit) software library \citep{Kelleher2018-xc}. Sc2ts is a promising method to automate detection of SARS-CoV-2 recombinants and to jointly model recombinational and mutational processes shaping the genomic diversity of SARS-CoV-2 at scale.
+(``sc2ts'', optionally pronounced ``scoots'') that builds on the advances above
+and additionally takes advantage of known collection dates to infer ARGs from millions
+of full-length SARS-CoV-2 genomes. Using publicly available SARS-CoV-2 genome sequences,
+we demonstrate that sc2ts can be used to simultaneously (1) detect putative SARS-CoV-2
+recombinants; (2) infer the phylogenetic relationships of the major SARS-CoV-2 lineages;
+(3) reconstruct the mutational spectrum of SARS-CoV-2; and (4) provide a compact record
+of evolutionary information about SARS-CoV-2 that can be efficiently accessed using
+"tskit" (tree sequence toolkit) software library \citep{Kelleher2018-xc}.
+Sc2ts is a promising method to automate detection of SARS-CoV-2 recombinants
+and to jointly model recombinational and mutational processes shaping the genomic
+diversity of SARS-CoV-2 at scale.
 
 \section{Methods}
 
