@@ -2,6 +2,7 @@ import argparse
 import collections
 from datetime import datetime, timedelta
 import hashlib
+import itertools
 import re
 import sys
 import json
@@ -18,6 +19,7 @@ mpl.use("Agg")
 from matplotlib.colors import rgb2hex
 from matplotlib.cm import get_cmap
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 from matplotlib import pyplot as plt
 import numpy as np
 import tqdm
@@ -848,15 +850,6 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
 
-class RecombinationNodeMrcas_filtered_subset(RecombinationNodeMrcas_subset):
-    name = "supp_recombination_node_mrcas_filtered"
-    # Only used to get information out really.
-
-    def __init__(self, args):
-        super().__init__(args)
-        self.df = self._filter(self.df)
-
-
 def change_pos(pos, key, dx=None, dy=None, x=None, y=None, xy_from=None):
     """
     Helper function to change the position of a node in a graph layout. `pos`
@@ -871,28 +864,40 @@ def change_pos(pos, key, dx=None, dy=None, x=None, y=None, xy_from=None):
 class Pango_X_graph(Figure):
     sample_metadata_labels = ""  # Don't show the strain name
     node_colours = {
-        # Pango X-lineages in red/brown/pink
-        "XA": "#fe812e",
-        "XB": "#fc31fb",
-        "XQ": "#db5884",
-        "XU": "#894a4e",
-        "XAA": "#ffc9a5",
-        "XAB": "#fdacfe",
-        "XAG": "#fc3131",
+
         # B lineages in blue/green (AY.100 is B.1.617.2.100)
         # Basic in blue
-        "B.1": "#212fe1",
-        "B.1.177.18": "#93e8ff",
-        "B.1.631": "#add9e5",
-        "B.1.634": "#2092e1",
-        "B.1.627": "#7b96cc",
-        "B.1.1": "#aea4ff",
-        "B.1.1.7": "#8666e3",  # Alpha
-        "AY.100": "#c6c076",  # Delta
+        'B.1': '#212fe1',
+        'B.1.177.18': '#93e8ff',
+        'B.1.631': '#add9e5',
+        'B.1.634': '#2092e1',
+        'B.1.627': '#7b96cc',
+        'B.1.1': '#aea4ff',
+
+        # Alpha: purple / lilac
+        'B.1.1.7': '#ae9cff',
+
+        # Delta: yellow/brown
+        'B.1.617.2': '#e2da91',  # Delta
+        'AY.1': '#ffe44a',  # Delta
+        'AY.4': '#b78c19',  # Delta
+
         # Omicron (B.1.1.529...) in green-ish
-        "BA.1": "#74b058",  # Omicron
-        "BA.2": "#4de120",  # Omicron
-        "BA.2.9": "#21e1ab",
+        'BA.1': '#74b058',  # Omicron
+        'BA.1.17': '#57de3c',  # Omicron
+        'BA.1.15': '#248f0f',  # Omicron
+        'BA.2.9': '#21e1ab', # Omicron
+
+        # Pango X-lineages in red/orange/pink
+        'XA': '#ff0055',
+        'XB': '#fc31fb',
+        'XD': '#bb0000',
+        'XQ': '#db5884',
+        'XU': '#894a4e',
+        'XAA': '#ffc9a5',
+        'XAB': '#fdacfe',
+        'XAG': '#fe812e',
+
         None: "lightgray",  # Default
         "Unknown (R)": "k",
         "Unknown": "None",
@@ -921,7 +926,10 @@ class Pango_X_graph(Figure):
         return nodes[np.sort(idx)]
 
     def __init__(self, args):
-        self.ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
+        ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
+        self.ts = sc2ts.detach_singleton_recombinants(ts)
+        logging.info(
+            f"Removed {ts.num_samples - self.ts.num_samples} singleton recombinants")
         self.node_positions_fn = os.path.join(self.ts_dir, self.name + "_nodepos.json")
         try:
             with open(self.node_positions_fn) as f:
@@ -947,6 +955,8 @@ class Pango_X_tight_graph(Pango_X_graph):
     show_metadata = False
     mutations_fn = ""
     exterior_edge_len = 0.5
+    legend=None
+    node_def_lineage = "Nextclade_pango"  # Always use this when defining which nodes to pick
 
     def __init__(self, args):
         super().__init__(args)
@@ -963,8 +973,8 @@ class Pango_X_tight_graph(Pango_X_graph):
                 "…": "─",
             }
 
-    @staticmethod
-    def define_nodes(ts, imputed_lineage):
+    @classmethod
+    def define_nodes(cls, ts):
         raise NotImplementedError()
 
     def used_pango_colours(self, used_nodes):
@@ -984,8 +994,8 @@ class Pango_X_tight_graph(Pango_X_graph):
             # json.dumps doesn't like np.int's
             f.write(json.dumps({int(k): v for k, v in pos.items()}))
 
-    @staticmethod
-    def post_process(ax):
+    @classmethod
+    def post_process(cls, ax):
         pass
 
     @staticmethod
@@ -1016,11 +1026,11 @@ class Pango_X_tight_graph(Pango_X_graph):
 
     def plot(self, args):
         fig, ax = plt.subplots(1, 1, figsize=self.figsize)
-        nodes = self.define_nodes(self.ts, self.imputed_lineage)
-        G, pos = self.plot_subgraph(nodes, ax=ax, node_positions=self.node_positions)
+        self.nodes = self.define_nodes(self.ts)
+        G, pos = self.plot_subgraph(
+            self.nodes, ax=ax, node_positions=self.node_positions)
+        self.plot_legend(ax)
         self.post_process(ax)
-        # Could use the following for a legend
-        used_colours = self.used_pango_colours(list(pos.keys()))
 
         if self.node_positions is None:
             self.save_adjusted_positions(pos, self.node_positions_fn)
@@ -1029,15 +1039,19 @@ class Pango_X_tight_graph(Pango_X_graph):
             fn = self.fn_prefix
         plt.savefig(fn + f".{args.outtype}", bbox_inches="tight")
 
-    def make_legend_elements(self, used_colours, size):
+    def plot_legend(self, ax):
+        pass
+
+    @classmethod
+    def make_legend_elements(cls, used_colours, sizes):
         legend_elements = []
-        for k, v in used_colours.items():
+        for (k, v), size in zip(used_colours.items(), itertools.cycle(sizes)):
             if k is None:
                 k = "Other"
             elif k == "Unknown (R)":
                 k = "Recombination node"
             elif k == "Unknown":
-                k = "Pango not imputed"
+                k = "Not imputed"
             else:
                 voc = variant_name(k)
                 if not voc.startswith("_"):
@@ -1062,50 +1076,189 @@ class Pango_X_tight_graph(Pango_X_graph):
 class Pango_XA_nxcld_tight_graph(Pango_X_tight_graph):
     name = "Pango_XA_nxcld_tight_graph"
     imputed_lineage = "Nextclade_pango"
-    figsize = (3, 4)
+    sample_metadata_labels = "Imputed_" + imputed_lineage  # For the first plot, use labels
+    figsize=(7, 4)
 
-    @staticmethod
-    def define_nodes(ts, imputed_lineage):
-        XA = [n.id for n in ts.nodes() if n.metadata.get(imputed_lineage) == "XA"]
-        return Pango_X_graph.grow_graph(ts, XA)
+    def __init__(self, args):
+        super().__init__(args)
+        # For the first plot, leave the "mutation" labels as they are
+        del self.label_replace[" mutation"]
+        del self.label_replace[" mutations"]
+
+    @classmethod
+    def define_nodes(cls, ts):
+        XA = [n.id for n in ts.nodes() if n.metadata.get(cls.node_def_lineage) == "XA"]
+        nodes = Pango_X_graph.grow_graph(ts, XA)
+        XA = [n.id for n in ts.nodes() if n.metadata.get(cls.imputed_lineage) == "XA"]
+        if not set(XA).issubset(set(nodes)):
+            logging.warning("Not all XA nodes included in graph")
+        return nodes
 
     @staticmethod
     def adjust_positions(pos):
-        dx = pos[154551][0] - pos[147032][0]
-        change_pos(pos, 130298, dx=-dx / 2)
+        dx = pos[147032][0] - pos[154551][0]
+        change_pos(pos, 130298, dx=dx/2)
+        change_pos(pos, 227648, dx=-dx/2)
+        change_pos(pos, 228656, dx=+dx/2)        
 
-    @staticmethod
-    def post_process(ax):
-        # The points are a bit close to the L and R edges
+    @classmethod
+    def post_process(cls, ax):
+        # Make room for the legend
         x_min, x_max = ax.get_xlim()
-        ax.set_xlim(x_min - (x_max - x_min) * 0.15, x_max + (x_max - x_min) * 0.15)
+        y_min, y_max = ax.get_ylim()
+        ax.set_xlim(x_min - (x_max - x_min) * 0.25, x_max)
+        # ax.set_ylim(y_min, y_max + (y_max - y_min) * 0.3)
+
+    def plot_legend(self, ax):
+        legend_pts = plt.legend(
+            title=f"Node types",
+            handles=self.make_legend_elements(
+                {"sample node": "lightgray", "inserted node": "lightgray", "recombination node": "k"},
+                sizes=np.sqrt(np.array([1, 1/3, 1/3]) * self.node_size)
+            ),
+            loc='center left',
+            labelspacing=0.9,
+            alignment="left",
+            borderpad=0.6,
+        )
+        # extra legend below the previous ont, without points, showing the edge intervals
+
+        legend_intervals = plt.legend(
+            title=f"Inheritance above recombination node",
+            handles=[
+                Patch(facecolor='none', edgecolor='none', label='from genomic position $0..N$'),
+                Patch(facecolor='none', edgecolor='none', label='from position $N$ to end'),
+            ],
+            loc='upper left',
+            labelspacing=0.9,
+            alignment="left",
+            borderpad=0.6,
+            handletextpad=3,
+        )
+        ax.add_artist(legend_pts)
+        ax.add_artist(legend_intervals)
+
 
 
 class Pango_XAG_nxcld_tight_graph(Pango_X_tight_graph):
     name = "Pango_XAG_nxcld_tight_graph"
     imputed_lineage = "Nextclade_pango"
-    figsize = (11, 4)
+    legend = "upper left"
+    figsize=(11, 4.5)
 
-    @staticmethod
-    def define_nodes(ts, imputed_lineage):
+    def plot_legend(self, ax):
+        used_colours = self.used_pango_colours(self.nodes)
+        del used_colours["Unknown (R)"]
+        ax.legend(
+            title=f"{self.imputed_lineage.split('_')[0]} Pango lineage",
+            handles=self.make_legend_elements(
+                used_colours, sizes=[np.sqrt(self.node_size)*0.8]),
+            loc='upper left',
+            labelspacing=0.75,
+            alignment="left",
+            borderpad=0.6,
+        )
+
+    @classmethod
+    def define_nodes(cls, ts):
         nodes = Pango_X_graph.grow_graph(ts, [712029])  # This gives a nice layout
-        XAG = [n.id for n in ts.nodes() if n.metadata.get(imputed_lineage) == "XAG"]
-        assert len(set(XAG) - set(nodes)) == 0
+        XAG = [n.id for n in ts.nodes() if n.metadata.get(cls.imputed_lineage) == "XAG"]
+        if not set(XAG).issubset(set(nodes)):
+            logging.warning("Not all XAG nodes included in the graph")
         return nodes
 
-    @staticmethod
-    def post_process(ax):
+    @classmethod
+    def post_process(cls, ax):
         x_min, x_max = ax.get_xlim()
         ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
 
+    @staticmethod
+    def adjust_positions(pos):
+        dx = pos[734769][0] - pos[716314][0]
+        change_pos(pos, 675573, dx=dx * 5)
+        change_pos(pos, 635895, dx=dx)
+        change_pos(pos, 583065, dx=dx)
+        change_pos(pos, 635896, dx=dx/2)
+        change_pos(pos, 673653, dx=-dx/2)
+        change_pos(pos, 780910, dx=-dx/2)
+
+
+class Pango_XD_nxcld_tight_graph(Pango_X_tight_graph):
+    name = "Pango_XD_nxcld_tight_graph"
+    imputed_lineage = "Nextclade_pango"
+
+    figsize=(5, 6)
+
+    @classmethod
+    def define_nodes(cls, ts):
+        XD = [n.id for n in ts.nodes() if n.metadata.get(cls.node_def_lineage) == "XD"]
+        # Add the immediate descendants of XD too
+        XD.extend(ts.edges_child[np.isin(ts.edges_parent, XD)])
+        nodes = Pango_X_graph.grow_graph(ts, XD)
+        XD = [n.id for n in ts.nodes() if n.metadata.get(cls.imputed_lineage) == "XD"]
+        if not set(XD).issubset(set(nodes)):
+            logging.warning("Not all XD nodes included in the graph")
+        return nodes
+
+    @classmethod
+    def post_process(cls, ax):
+        x_min, x_max = ax.get_xlim()
+        y_min, y_max = ax.get_ylim()
+        ax.set_xlim(x_min - (x_max - x_min) * 0.01, x_max + (x_max - x_min) * 0.01)
+        ax.set_ylim(y_min, y_max + (y_max - y_min) * 0.4)
+
+    @staticmethod
+    def adjust_positions(pos):
+        dx = pos[644359][0] - pos[638774][0]
+        dy = pos[665231][1] - pos[644359][1]
+
+        # All adjustments below found by tedious trial and error
+        # Arranged so that the recombination edge intervals
+        # are in L->R order
+        change_pos(pos, 517356, dy=dy/2, dx=dx)
+        change_pos(pos, 518483, xy_from=630772, dy=dy, dx=-dx)
+        change_pos(pos, 361569, xy_from=518483, dy=dy)
+        change_pos(pos, 630772, xy_from=638775, dy=dy)
+
+        change_pos(pos, 396442, x=pos[557733][0] - dx)
+        change_pos(pos, 557733, xy_from=416354, dy=dy)
+        change_pos(pos, 416354, x=pos[400974][0] + dx)
+        change_pos(pos, 400974, x=pos[396442][0])
+        change_pos(pos, 375328, x=pos[396442][0])
+
+        # Shift positions of all nodes in the LH subgraph
+        shift = dx * 9
+        change_pos(pos, 396442, dx=shift)
+        change_pos(pos, 557733, dx=shift)
+        change_pos(pos, 416354, dx=shift)
+        change_pos(pos, 400974, dx=shift)
+        change_pos(pos, 375328, dx=shift)
+        change_pos(pos, 573905, dx=shift)
+        change_pos(pos, 573904, dx=shift)
+        change_pos(pos, 575079, dx=shift)
+
+
+    def plot_legend(self, ax):
+        used_colours = self.used_pango_colours(self.nodes)
+        del used_colours["Unknown (R)"]
+        ax.legend(
+            title=f"{self.imputed_lineage.split('_')[0]} Pango lineage",
+            handles=self.make_legend_elements(
+                used_colours, sizes=[np.sqrt(self.node_size)*0.8]),
+            loc='upper right',
+            labelspacing=0.75,
+            alignment="left",
+            borderpad=0.6,
+            ncol=2,
+        )
 
 class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
     name = "Pango_XB_nxcld_tight_graph"
     imputed_lineage = "Nextclade_pango"
     figsize = (16, 6)
 
-    @staticmethod
-    def define_nodes(ts, imputed_lineage):
+    @classmethod
+    def define_nodes(cls, ts):
         # Order of nodes here matters. This is found by trial-and-error :(
         basic_nodes = [
             285180,  # lone AB on the side
@@ -1115,96 +1268,69 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
             334261,
             337869,
             345330,
-            394058,  # most recent nodes, product of the most recent recombination
+            # 394058, # a singleton recombinant, prob worth not showing 
         ]
         for n in basic_nodes:
-            pango = ts.node(n).metadata.get("Imputed_" + imputed_lineage)
+            pango = ts.node(n).metadata.get("Imputed_" + cls.imputed_lineage)
             if pango != "XB":
                 logging.info(f"XB plot: input node {n} is {pango} not XB")
         nodes = Pango_X_graph.grow_graph(ts, basic_nodes)
         if logging.getLogger().isEnabledFor(logging.INFO):
-            XB = [n.id for n in ts.nodes() if n.metadata.get(imputed_lineage) == "XB"]
+            XB = [n.id for n in ts.nodes() if n.metadata.get(cls.imputed_lineage) == "XB"]
             logging.info(
                 f"XB nodes not shown (perhaps below '+N' nodes): {set(XB) - set(nodes)}"
             )
         return nodes
 
-    @staticmethod
-    def post_process(ax):
+    @classmethod
+    def post_process(cls, ax):
         x_min, x_max = ax.get_xlim()
         ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
 
     @staticmethod
     def adjust_positions(pos):
-        dx = pos[341400][0] - pos[350705][0]
-        dy = pos[325792][1] - pos[285180][1]
+        dx = pos[350705][0] - pos[341400][0]
+        dy = pos[351074][1] - pos[341400][1]
 
         # All adjustments below found by tedious trial and error
+        change_pos(pos, 200603, dx=2*dx)
+        change_pos(pos, 12108, dx=-2*dx)
 
-        change_pos(pos, 351074, xy_from=73385)
-        change_pos(pos, 73385, xy_from=322395, dx=5 * dx)
-        pos[322395], pos[345330] = pos[345330], pos[322395]
-        change_pos(pos, 345330, dx=dx)
-        change_pos(pos, 394059, x=pos[345330][0] / 2 + pos[73385][0] / 2)
-        change_pos(pos, 394058, xy_from=394059, y=pos[394058][1])
-        pos[329950], pos[280287] = pos[280287], pos[329950]
-        pos[359092], pos[339516] = pos[339516], pos[359092]
-        change_pos(pos, 359092, dx=dx)
-        change_pos(pos, 339516, dx=dx)
+        change_pos(pos, 310013, dx=dx)
+        change_pos(pos, 295321, dx=dx)
+        change_pos(pos, 335988, dx=dx)
+        change_pos(pos, 325792, dx=dx)
+        change_pos(pos, 282861, dx=dx)
+        change_pos(pos, 282727, dx=2.5*dx)
+        change_pos(pos, 265975, dx=3*dx)
 
-        change_pos(pos, 392495, dx=-3 * dx, xy_from=339516)
-
-        for p in [380107, 335144, 338964]:
-            change_pos(pos, p, dx=-dx, dy=-dy)
-
-        change_pos(pos, 423732, dx=-5 * dx)
-        change_pos(pos, 423733, xy_from=423732, y=pos[423733][1])
-        for p in [352126, 358835, 379420]:
-            change_pos(pos, p, dx=4 * dx)
-
+        change_pos(pos, 309252, dx=-2 * dx)  # Rec node
+        change_pos(pos, 289479, dx=-dx/2, dy=dy/2)
+        change_pos(pos, 320601, dx=-dx)
+        change_pos(pos, 179, dx=-2*dx, dy=dy)
+        change_pos(pos, 3940, dx=-3.5*dx, dy=dy)
+        change_pos(pos, 1165, dx=-dx, dy=dy)
+        
+        change_pos(pos, 285180, dx=dx)
+        change_pos(pos, 285181, dx=dx)
         change_pos(pos, 300560, dx=dx)
-        change_pos(pos, 5731, dx=dx / 2)
-
-        change_pos(pos, 285181, dx=1.5 * dx)
-        change_pos(pos, 325792, dx=3 * dx)
-        change_pos(pos, 282861, dx=5 * dx)
-        change_pos(pos, 285180, dx=3 * dx)
-        change_pos(pos, 282727, dx=9 * dx)
-        change_pos(pos, 265975, dx=10 * dx)
-        change_pos(pos, 274176, dx=1.5 * dx)
-        change_pos(pos, 305005, dx=-dx)
-        change_pos(pos, 358998, dx=dx)
-
-        for p in [273897, 206465]:
-            change_pos(pos, p, dx=4 * dx)
-
-        change_pos(pos, 266716, xy_from=325792, dx=-dx / 2, y=pos[266716][1])
-        change_pos(pos, 206466, xy_from=266716, dx=dx / 2, y=pos[206466][1])
-        change_pos(pos, 200603, xy_from=206466, dx=2 * dx, y=pos[200603][1])
-        change_pos(pos, 12108, xy_from=206466, dx=-2 * dx, y=pos[12108][1])
-
-        change_pos(pos, 13053, dx=dx / 2)
-        change_pos(pos, 320601, dx=-dx / 2)
-        change_pos(pos, 309252, dx=-dx)
-
-        change_pos(pos, 289479, dx=0.3 * dx, dy=dy / 2)
-        change_pos(pos, 3940, dx=-2 * dx, dy=dy / 2)
-        change_pos(pos, 1165, dx=-0.2 * dx, dy=dy / 2)
-        change_pos(pos, 179, dx=-dx, dy=dy / 2)
-
-        change_pos(pos, 339517, dx=0.5 * dx)
-        change_pos(pos, 338965, dx=-0.5 * dx)
-        change_pos(pos, 365162, dx=-0.5 * dx)
-
         change_pos(pos, 328838, dx=dx)
 
-        change_pos(pos, 341400, xy_from=351074, dx=dx / 2, y=pos[341400][1])
-        change_pos(pos, 350705, xy_from=351074, dx=-dx / 2, y=pos[350705][1])
+        change_pos(pos, 339516, dx=dx)
 
-        change_pos(pos, 334261, xy_from=336014, dx=dx / 2, y=pos[334261][1])
-        change_pos(pos, 335592, xy_from=336014, dx=-dx / 2, y=pos[335592][1])
-
-        change_pos(pos, 328838, dx=-dx)
+    def plot_legend(self, ax):
+        used_colours = self.used_pango_colours(self.nodes)
+        del used_colours["Unknown (R)"]
+        ax.legend(
+            title=f"{self.imputed_lineage.split('_')[0]} Pango lineage",
+            handles=self.make_legend_elements(
+                used_colours, sizes=[np.sqrt(self.node_size)*0.8]),
+            loc='upper right',
+            labelspacing=0.75,
+            alignment="left",
+            borderpad=0.6,
+            ncol=3,
+        )
 
 
 class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
@@ -1253,19 +1379,27 @@ class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
         treeinfo = sc2ts.TreeInfo(self.ts)
 
         fn = self.fn_prefix
-        all_nodes = set()
+        self.nodes = set()
         for Xlin, ax, cls in [
             ("XA", ax1, Pango_XA_nxcld_tight_graph),
             ("XAG", ax2, Pango_XAG_nxcld_tight_graph),
             ("XB", ax3, Pango_XB_nxcld_tight_graph),
         ]:
             logging.info(f"Plotting {Xlin}")
-            nodes = cls.define_nodes(self.ts, self.imputed_lineage)
+            nodes = cls.define_nodes(self.ts)
             G, pos = self.plot_subgraph(
+<<<<<<< HEAD
                 nodes, ax, treeinfo=treeinfo, node_positions=self.node_positions[Xlin]
             )
             all_nodes.update(G.nodes)
             cls.post_process(ax)
+=======
+                nodes, ax, treeinfo=treeinfo, node_positions=self.node_positions[Xlin])
+            self.nodes.update(G.nodes)
+            if Xlin != "XA":
+                # The XA bespoke limits mess up the 3-panel layout
+                cls.post_process(ax)
+>>>>>>> b70e051 (Add plots with legends)
 
             if self.node_positions[Xlin] is None:
                 cls.save_adjusted_positions(pos, self.node_positions_fn[Xlin])
@@ -1273,7 +1407,7 @@ class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
 
         sample_nodes = []
         nonsample_nodes = []
-        for n in all_nodes:
+        for n in self.nodes:
             if self.ts.node(n).is_sample():
                 sample_nodes.append(n)
             else:
@@ -1291,12 +1425,18 @@ class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
 
         legend1 = ax_legend.legend(
             title=f"Pango ({self.imputed_lineage.split('_')[0]})",
+<<<<<<< HEAD
             handles=self.make_legend_elements(sample_colours, size=sample_node_size),
             loc="upper right",
             bbox_to_anchor=(
                 ax_legend.get_xlim()[1] * 1.04,
                 ax_legend.get_ylim()[1] * 1.02,
             ),
+=======
+            handles=self.make_legend_elements(sample_colours, sizes=[sample_node_size]),
+            loc='upper right',
+            bbox_to_anchor=(ax_legend.get_xlim()[1]*1.04, ax_legend.get_ylim()[1]*1.02),
+>>>>>>> b70e051 (Add plots with legends)
             labelspacing=1.05,
             alignment="left",
             borderpad=0.6,
@@ -1352,6 +1492,21 @@ large_replace = {
     # TODO - add the rest of the Pango lineages
 }
 
+<<<<<<< HEAD
+=======
+class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
+    name = "Pango_XA_gisaid_large_graph"
+    imputed_lineage = "GISAID_lineage"
+    figsize=(12, 16)
+    node_size = 2000
+    show_ids = None  # Only show for sample nodes
+    edge_font_size = 6
+    node_font_size = 7.5
+    mutations_fn = None
+    show_metadata=True
+    label_replace = large_replace
+
+>>>>>>> b70e051 (Add plots with legends)
 
 class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
     name = "Pango_XAG_gisaid_large_graph"
@@ -1364,12 +1519,21 @@ class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
     mutations_fn = None
     show_metadata = True
     label_replace = large_replace
+    def plot_legend(self, ax):
+        pass
 
 
+<<<<<<< HEAD
 class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     name = "Pango_XA_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
     figsize = (12, 16)
+=======
+class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
+    name = "Pango_XD_gisaid_large_graph"
+    imputed_lineage = "GISAID_lineage"
+    figsize=(16, 16)
+>>>>>>> b70e051 (Add plots with legends)
     node_size = 2000
     show_ids = None  # Only show for sample nodes
     edge_font_size = 6
@@ -1377,6 +1541,9 @@ class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     mutations_fn = None
     show_metadata = True
     label_replace = large_replace
+    def plot_legend(self, ax):
+        pass
+
 
 
 class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
