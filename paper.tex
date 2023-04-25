@@ -50,7 +50,19 @@ Recombination was challenging to detect early in the SARS-CoV-2 pandemic due to 
 
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that combine specific subsets of mutations from different lineages \citep[e.g.][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}. This approach only identifies those inter-lineage recombination events resulting in the patterns investigated. Others have inferred recombinant genealogies to disentangle recombination from recurrent mutation, without having to pre-specify characteristic mutations for each lineage \citep{Ignatieva2021-rg}. More recently, \cite{Turakhia2022-it} presented a phylogeny-based approach (``RIPPLES'') to identify putative recombinants among over ten million SARS-CoV-2 genomes, without pre-specifying motifs. To find candidate recombinants, RIPPLES first builds a phylogeny without assuming recombination and then scans for long branches (i.e., carrying many mutations) and then determines if these candidates would be better explained by recombination. Specifically, RIPPLES exhaustively breaks each candidate sequence into segments and attempts to find more parsimonious placements for each segment on the phylogeny. If such placements are found, the sequence is identified as a putative recombinant. Although it enables rapid searches for genomic evidence of recombinants, RIPPLES relies on a SARS-CoV-2 phylogeny that accounts for only mutations, treats recombinants \textit{post hoc}, and is an incomplete representation of the reticulate evolutionary history of SARS-CoV-2. As noted by the authors, a \textit{post hoc} treatment of recombination is possible when recombinant lineages are rare and leave few descendants. However, this is becoming increasingly untenable with the proliferation of recombinant lineages; for example, more than half of the sequences sampled in February 2023 are from XBB and its descendants~\citep{Chen2022-pz}. This also means that future evolution of SARS-CoV-2 is likely to involve multiple sequential recombination events on top of existing recombinant lineages, creating a highly reticulated genealogy.
 
-Inferring evolutionary trees while accounting for both mutation and recombination is a long-standing computational challenge. This challenge is particularly acute for SARS-CoV-2, given the large amount of data that has been shared, with over 15 million sequences in the GISAID database \citep{Shu2017-hp}. It is well known that recombination distorts phylogenies \citep{Schierup2000-fg} and affects the results of downstream analysis, e.g., inference of selection~\citep{Anisimova2003-vr}. However, standard phylogenetic methods do not account for recombination \citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}. Alternatively, genetic ancestries of recombining lineages can be represented by ancestral recombination graphs (ARGs)~\citep{Griffiths1981-lw,Hudson1983-if}, which capture network-like phylogenetic relationships \citep{Gusfield2014-qw}.
+Inferring evolutionary trees while accounting for both mutation and
+recombination is a long-standing computational challenge. This challenge is
+particularly acute for SARS-CoV-2, given the large amount of data that has been
+shared, with over 15 million sequences in the GISAID database
+\citep{Shu2017-hp}. It is well known that recombination distorts phylogenies
+\citep{Schierup2000-fg} and affects the results of downstream analysis, e.g.,
+inference of selection~\citep{Anisimova2003-vr}. However, standard phylogenetic
+methods do not account for recombination
+\citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}. Alternatively,
+genetic ancestries of recombining lineages can be represented by ancestral
+recombination graphs (ARGs)~\citep{Griffiths1998-ancestral,Wong2023-efficient},
+which
+capture network-like phylogenetic relationships \citep{Gusfield2014-qw}.
 
 Approaches to infer ARGs now exist that can scale to tens of thousands of human genomes and beyond  \citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}, and which deal with levels of sequential recombination far in excess of those seen in viral phylogenies. For example, using over 90 million variable sites \citet{Wohns2022-th} reconstructed a unified whole-genome genealogy of thousands of modern and ancient human genomes, accounting for millions of recombination events (over 5 million "local trees"). To achieve this, \cite{Wohns2022-th} took advantage of several computational advances in ARG inference: (1) the "succinct tree sequence" data structure that can compactly store large ARGs \citep{Kelleher2018-xc}; (2) a highly efficient Hidden Markov Model (HMM) implementation of the Li and Stephens (LS) model \citep{Li2003-ib} to infer copying paths between genomes \citep{Kelleher2019-ba}; and (3) efficient, open-source software tools \citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
 
@@ -66,17 +78,22 @@ The essential idea is to incrementally update the ARG each day
 with the sequences collected on that day. These updates are performed by
 first finding likely ``copying paths'' for each sequence in the daily
 batch to the current ARG, using the ARG-based implementation of
-the Li and Stephens model~\citep{Li2003-ib} introduced as
-part of \texttt{tsinfer}~\citep{Kelleher2019-ba}. These copying paths
-will mostly consist of a new sequence copying from a node in the ARG
-with a small number of mutations, and many sequences
-from a daily batch often copy from the same ARG node. The second
+the Li and Stephens model~\citep{Li2003-ib} introduced
+in \texttt{tsinfer}~\citep{Kelleher2019-ba}.
+These copying paths
+will mostly consist of a new sample sequence copying from a node in the ARG
+with a small number of mutations, and often many samples
+from a daily batch will copy from the same ARG node. The second
 step is then to ``resolve'' these implied polytomies by using
 standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C).
-Such local (greedy) ARG updates inevitably lead to unparsimonious
-topologies, and the third step is then to attempt to increase the
-overall parsimony of the inference by making some simple topological
+This greedy update strategy inevitably lead to unparsimonious
+topologies, and the third step is to then increase the
+overall parsimony of the inferred ARG by making some simple topological
 updates (Figure~\ref{fig:overview_sc2ts}C and D).
+The operations are carried out efficiently using the well-established
+\texttt{tskit} library~\citep{Kelleher2018-xc,Ralph2020-efficiently},
+and the resulting structure can be conveniently and interactively
+analysed using the many features provided by \texttt{tskit}.
 
 \begin{figure} \centering
 \includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
@@ -98,12 +115,6 @@ make more parsimonious placements of mutations that should be shared or should
 not be immediately reverted, respectively.}
 \end{figure}
 
-[Quick overview of LS and ARGs/tskit computation here]
-As used here, the Li and Stephens model essentially searches among
-all sequences in the ARG (both sampled and inferred ancestral nodes)
-
-The details of each of these steps are discussed in subsequent
-sections.
 
 % We introduce an ARG inference method, summarised in
 % Figure~\ref{fig:overview_sc2ts}.
@@ -170,8 +181,64 @@ sections.
 % updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
 
 \subsection{Ancestral Recombination Graphs}
-[Quick overview of ARGs and Tree Sequences/tskit. Refer to the ARG paper for
-more discussion and details.]
+The term ``Ancestral Recombination Graph'' was introduced by
+Griffiths and colleagues~\citep{Griffiths1991-two,Griffiths1998-ancestral}
+and originally defined an alternative formulation of the coalescent
+with recombination stochastic process~\citep{Hudson1983-properties}.
+Subsequently, the term ARG came to be used in a more general way to
+describe not just realisations of this model, but to any
+recombinant genetic ancestry~\citep{Minichiello2006-mapping}.
+While there is some subtlety in the details~\citep{Wong2023-efficient},
+we can think of an ARG as being any graph that encodes the
+reticulate genetic ancestry of a sample of sequences under
+the influence of recombination.
+
+The ``succinct tree sequence'' is an ARG data structure
+that is both general (in terms of the types of ancestry that can
+be described) and computationally efficient~\citep{Wong2023-efficient}.
+Originally developed to facilitate large-scale coalescent
+simulations~\citep{Kelleher2016-wk}, the methods have been
+extended and applied to forwards-time
+simulations~\citep{Kelleher2018-xc,Haller2018-tree},
+calculation of population genetics statistics~\citep{Ralph2020-efficiently}
+and ARG inference~\citep{Kelleher2019-ba,Wohns2022-th}.
+The succinct tree sequence is based on a simple tabular representation,
+which defines a set of nodes, edges, sites and mutations. A \emph{node}
+represents a particular genome, which may be an observed sample
+or an inferred genetic ancestor. The genetic inheritance between
+a pair of nodes along a segment of genome is defined by
+the \emph{edge} $(\ell, r, p, c)$, which states that
+child node $c$ inherited its genome from parent node $p$
+from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
+defines the genomic position at which some variation occurs,
+and a \emph{mutation} defines the site, node and derived state
+that generates variation.
+Given these tables, we can then efficiently construct the local
+genealogical trees along the genome (arising from recombination),
+and also perform a range of calculations efficiently by
+reasoning about the differences between these local
+trees~\citep{Kelleher2016-wk,Ralph2020-efficiently}. These
+algorithms have led to peformance increases of several orders
+of magnitude over the state-of-the-art in a range of
+applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,
+Ralph2020-efficiently,Baumdicker2022-ep}.
+The succinct tree sequence encoding
+is also very concise, allowing, for example, for millions of
+complete human genomes to be stored in a few gigabytes of
+space~\citep{Kelleher2019-ba}.
+
+The \texttt{tskit} library~\citep{Tskit2023-tskit} is a liberally
+licensed open source toolkit that provides a comprehensive suite
+of tools for working with ARGs. Based on core functionality written
+in C, it provides interfaces in C, Python and Rust. The Python interface
+is based on NumPy~\citep{Harris2020-array}, and provides a convenient
+platform for interactive analysis of large-scale data using, for
+example, Jupyter notebooks~\citep{Kluyver2016-jupyter} and taking
+advantage of the analysis tools in the burgeoning PyData ecosystem.
+Tskit is mature software, widely used in population genetics, and
+has been incorporated into several downstream
+% TODO Add more - geonomics?
+applications~\citep[e.g.][]{Speidel2019-yh,Haller2019-slim}
 
 
 \subsection{The Li and Stephens model}
@@ -179,7 +246,7 @@ more discussion and details.]
 
 The Li and Stephens (LS) model is
 a convenient probabilistic approximation to the coalescent with recombination
-\citep{Hudson1983-if}, itself a generative model of a genealogical process with
+\citep{Hudson1983-properties}, itself a generative model of a genealogical process with
 recombination \citep{Li2003-ib}. Importantly, it can be implemented as an HMM
 in which a focal genome is a sequence of nucleotides (observed states) that are
 probabilistically emitted as an imperfect mosaic of a set of reference genomes
@@ -354,8 +421,16 @@ analysed) from the COVID-CG website \citep{Chen2021-zc};
 \url{https://covidcg.org/}; accessed on November 04, 2022).
 
 \begin{figure} \centering
-\includegraphics[width=\textwidth]{figures/imputation.pdf}
-\caption{\label{fig:imputation}A schematic of the two-step procedure to impute Pango lineage for inserted, non-sample nodes. Here, three nodes (question marks) have unknown Pango lineage (A). Because the parent of node 1 is available (i.e., L2) and there is no mutation occurring on the edge connecting the two nodes, the Pango lineage of the parent is directly propagated to node 1 (B). However, if there is a mutation (red X’s), then the Pango lineage is inferred by comparison to the set of lineage-defining mutations from COVID-CG\citep{Chen2021-zc}, as in case (C). Finally, the inferred status is propagated to any non-mutant child nodes, as in case (D).
+\includegraphics[width=.7\textwidth]{figures/imputation.pdf}
+\caption{\label{fig:imputation}A schematic of the two-step procedure to impute
+Pango lineage for inserted, non-sample nodes. Here, three nodes (question
+marks) have unknown Pango lineage (A). Because the parent of node 1 is
+available (i.e., L2) and there is no mutation occurring on the edge connecting
+the two nodes, the Pango lineage of the parent is directly propagated to node 1
+(B). However, if there is a mutation (red X’s), then the Pango lineage is
+inferred by comparison to the set of lineage-defining mutations from
+COVID-CG\citep{Chen2021-zc}, as in case (C). Finally, the inferred status is
+propagated to any non-mutant child nodes, as in case (D).
 }
 \end{figure}
 
