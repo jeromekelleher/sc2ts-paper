@@ -1388,18 +1388,11 @@ class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
             logging.info(f"Plotting {Xlin}")
             nodes = cls.define_nodes(self.ts)
             G, pos = self.plot_subgraph(
-<<<<<<< HEAD
-                nodes, ax, treeinfo=treeinfo, node_positions=self.node_positions[Xlin]
-            )
-            all_nodes.update(G.nodes)
-            cls.post_process(ax)
-=======
                 nodes, ax, treeinfo=treeinfo, node_positions=self.node_positions[Xlin])
             self.nodes.update(G.nodes)
             if Xlin != "XA":
                 # The XA bespoke limits mess up the 3-panel layout
                 cls.post_process(ax)
->>>>>>> b70e051 (Add plots with legends)
 
             if self.node_positions[Xlin] is None:
                 cls.save_adjusted_positions(pos, self.node_positions_fn[Xlin])
@@ -1425,18 +1418,9 @@ class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
 
         legend1 = ax_legend.legend(
             title=f"Pango ({self.imputed_lineage.split('_')[0]})",
-<<<<<<< HEAD
-            handles=self.make_legend_elements(sample_colours, size=sample_node_size),
-            loc="upper right",
-            bbox_to_anchor=(
-                ax_legend.get_xlim()[1] * 1.04,
-                ax_legend.get_ylim()[1] * 1.02,
-            ),
-=======
             handles=self.make_legend_elements(sample_colours, sizes=[sample_node_size]),
             loc='upper right',
             bbox_to_anchor=(ax_legend.get_xlim()[1]*1.04, ax_legend.get_ylim()[1]*1.02),
->>>>>>> b70e051 (Add plots with legends)
             labelspacing=1.05,
             alignment="left",
             borderpad=0.6,
@@ -1492,8 +1476,6 @@ large_replace = {
     # TODO - add the rest of the Pango lineages
 }
 
-<<<<<<< HEAD
-=======
 class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     name = "Pango_XA_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
@@ -1506,7 +1488,6 @@ class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     show_metadata=True
     label_replace = large_replace
 
->>>>>>> b70e051 (Add plots with legends)
 
 class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
     name = "Pango_XAG_gisaid_large_graph"
@@ -1523,17 +1504,10 @@ class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
         pass
 
 
-<<<<<<< HEAD
-class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
-    name = "Pango_XA_gisaid_large_graph"
-    imputed_lineage = "GISAID_lineage"
-    figsize = (12, 16)
-=======
 class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
     name = "Pango_XD_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
     figsize=(16, 16)
->>>>>>> b70e051 (Add plots with legends)
     node_size = 2000
     show_ids = None  # Only show for sample nodes
     edge_font_size = 6
