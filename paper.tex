@@ -58,7 +58,7 @@ selection~\citep{Anisimova2003-vr}. However, standard phylogenetic methods do
 not account for recombination
 \citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}. Instead,
 genetic ancestries of recombining lineages can be represented by ancestral
-recombination graphs (ARGs)~\citep{Griffiths1981-lw,Hudson1983-if}, which
+recombination graphs (ARGs)~\citep{Griffiths1981-lw,Hudson1983-properties}, which
 capture network-like phylogenetic relationships \citep{Gusfield2014-qw}. Recently,
 development of the ``succinct tree sequence'' data
 structure \citep{Kelleher2018-xc}  has enabled compact yet flexible
@@ -273,51 +273,64 @@ applications~\citep[e.g.][]{Speidel2019-yh,Haller2019-slim}
 
 
 \subsection{The Li and Stephens model}
-[Edit down, cutting the text in the fig caption significantly]
-
-The Li and Stephens (LS) model is
-a convenient probabilistic approximation to the coalescent with recombination
-\citep{Hudson1983-properties}, itself a generative model of a genealogical process with
-recombination \citep{Li2003-ib}. Importantly, it can be implemented as an HMM
-in which a focal genome is a sequence of nucleotides (observed states) that are
-probabilistically emitted as an imperfect mosaic of a set of reference genomes
-(hidden states). As such, an efficient HMM machinery can be employed to make
-statements about parameters of interest and highlight potential sources of
-error in genotyping and sequencing data. The LS model is used in a wide variety
-of applications in genomics. For example, it is the engine that drives
+The Li and Stephens (LS) model\citep{Li2003-ib}  is an approximation of the
+coalescent with recombination~\citep{Hudson1983-properties}, which captures
+many of the important features of the joint processes of mutation and
+recombination. It is a Hidden Markov Model (HMM) in which a focal genome is a
+sequence of nucleotides that are probabilistically emitted as
+an imperfect mosaic of a set of reference genomes
+(Figure~\ref{fig:ls_diagram}).
+The LS model is used in a wide variety
+of applications in genomics, including modern approaches to
 statistical genotype phasing and imputation
-\citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa}, and
-it can be used to estimate mutation rates (e.g., REF), recombination rates
-\citep[e.g.][]{Hinch2011-tz}, and selection within and across hosts in viral
+\citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa},
+and estimation of parameters such as
+recombination rates \citep[e.g.][]{Hinch2011-tz},
+and selection within and across hosts in viral
 sequence data \citep[e.g.][]{Palmer2019-wa}.
+See~\cite{Mcvean2019-linkage} for further review and discussion
+of the LS model.
 
 \begin{figure} \centering
-\includegraphics[width=0.6\textwidth]{figures/ls_diagram_covid.pdf}
+\includegraphics[width=0.5\textwidth]{figures/ls_diagram_covid.pdf}
 % FIXME this caption is too long
-\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS) model.
-The LS model in its implementation as an HMM is governed by the transition and
-emission matrices, $Q$ and $E$, respectively. Each may be a function of the
-reference panel members, but transitions are generally assumed to be
-independent of the hidden states themselves (shown in the pink panel). This
-dramatically increases performance as the state space drops to two states
-(i.e., switching or not switching). The recombination probability at site
-$\ell$ is $r\ell$, while n denotes the number of members in the reference
-panel. Emissions may also be a function of the nucleotide states, but in our
-case, we assume that all observed alleles (in both the reference panel and
-focal sequence, $a\ell$) at the site under consideration are equally likely and
-occur with mutation probability $\ell$ (shown in the blue panel). These two
-processes, transition and emission (which encode recombination and mutation,
-respectively), define the generative process of the HMM, by which an imperfect
-mosaic is emitted from a reference panel of samples and nodes from the ARG
-inserted at earlier collection dates (shown in the lower panel). Here, the
-unseen states in the reference panel are shown as coloured lines enclosed by
-the grey box, and the true path through the data which leads to the emitted
-focal sequence is displayed by the black arrow. Examples of transition and
-emission probabilities along this trajectory are shown by the red and blue
-arrows, respectively. Black crosses along the focal sequence show genotyping
-errors or mutations. Note that in practice, we do not know the pattern of
-colours along the focal sequence and must infer it using the Viterbi
-algorithm.} \end{figure}
+\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
+model, in which a query sequence (bottom) is described as an
+imperfect mosaic of the sequences in a reference panel.
+Black crosses along the focal sequence show genotyping
+errors or mutations.
+In the standard formulation, at site $\ell$, the recombination probability is $r_\ell$,
+the mutation probability is $\mu_\ell$ and $n$
+denotes the size of the reference panel.
+The Viterbi algorithm can be used to find a
+``copying path'' through the reference panel for a given query sequence that
+maximises the likelihood under these parameters.
+% The LS HMM is governed by the transition and
+% emission matrices, $Q$ and $E$, respectively.
+% Each may be a function of the
+% reference panel members, but transitions are generally assumed to be
+% independent of the hidden states themselves (shown in the pink panel). This
+% dramatically increases performance as the state space drops to two states
+% (i.e., switching or not switching).
+% Emissions may also be a function of the nucleotide states, but in our
+% case, we assume that all observed alleles (in both the reference panel and
+% focal sequence, $a\ell$) at the site under consideration are equally likely and
+% occur with mutation probability $\ell$ (shown in the blue panel).
+% These two
+% processes, transition and emission (which encode recombination and mutation,
+% respectively), define the generative process of the HMM, by which an imperfect
+% mosaic is emitted from a reference panel.
+ % of samples and nodes from the ARG
+% inserted at earlier collection dates (shown in the lower panel). Here, the
+% unseen states in the reference panel are shown as coloured lines enclosed by
+% the grey box, and the true path through the data which leads to the emitted
+% focal sequence is displayed by the black arrow. Examples of transition and
+% emission probabilities along this trajectory are shown by the red and blue
+% arrows, respectively.
+% Note that in practice, we do not know the pattern of
+% colours along the focal sequence and must infer it using the Viterbi algorithm.
+}
+\end{figure}
 
 The generative process of the LS model is summarised in
 Figure~\ref{fig:ls_diagram}. Here, a transition matrix, $Q$, governs the
@@ -327,17 +340,18 @@ focal sequence and the hidden state from which it is copied (due to mutation as
 well as genotyping or sequencing error). Then, we use the Viterbi algorithm
 \citep{Viterbi1967-ol} to find the most likely copying path through the
 sequences, given a set of reference sequences, $Q$, and $E$.
+The relative rates of mutation and recombination are usually controlled by
+the site-specific parameters $\mu_\ell$ and $r_\ell$, respectively.
+For this work we used a simpler formulation, which uses a single parameter
+(the mismatch ratio, MMR) to control the relative importance of mutation
+and recombination in the HMM. Specifically, an MMR value of $k$ will
+prefer $k$ mismatches (mutations) to a recombination.[DUNCAN MORE DETAILS
+HERE PLEASE]
 
-Because the HMM is memoryless, the potential parental lineages are
-independently assessed at each recombination breakpoint. This can result in the
-inference of a recombinant lineage descending immediately from three (or even
-more) parental lineages. We find that often two of the three parents are
-identical or similar in sequence in the segments contributed to the recombinant
-lineage. A more parsimonious explanation would be to switch back to the
-original parent sequence. In the future, a pragmatic solution would be to
-detect such cases during the ARG inference stage and to adjust the copying
-paths accordingly (see ``Improvements'', below). Meanwhile, however, we urge
-caution when interpreting the parentage of lineages with multiple breakpoints.
+[JK: TODO, expand this next paragraph to two, explaining a bit more that
+we're searching among every node in the ARG, using the efficient tree
+implementation in tsinfer, and a few words about how we can use the
+HMM more, to do things like stochastic traceback, etc.]
 
 Recombination is inferred using an efficient HMM implementation of the
 LS model. Copying paths are estimated from SARS-CoV-2 genomes sampled over
