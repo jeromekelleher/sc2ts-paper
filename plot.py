@@ -1029,7 +1029,7 @@ class Pango_X_tight_graph(Pango_X_graph):
         self.nodes = self.define_nodes(self.ts)
         G, pos = self.plot_subgraph(
             self.nodes, ax=ax, node_positions=self.node_positions)
-        self.plot_legend(ax)
+        self.legend_key(ax)
         self.post_process(ax)
 
         if self.node_positions is None:
@@ -1039,7 +1039,8 @@ class Pango_X_tight_graph(Pango_X_graph):
             fn = self.fn_prefix
         plt.savefig(fn + f".{args.outtype}", bbox_inches="tight")
 
-    def plot_legend(self, ax):
+    def legend_key(self, ax):
+        # Plot or otherwise output a legend or key. Define in the subcless
         pass
 
     @classmethod
@@ -1110,7 +1111,7 @@ class Pango_XA_nxcld_tight_graph(Pango_X_tight_graph):
         ax.set_xlim(x_min - (x_max - x_min) * 0.25, x_max)
         # ax.set_ylim(y_min, y_max + (y_max - y_min) * 0.3)
 
-    def plot_legend(self, ax):
+    def legend_key(self, ax):
         legend_pts = plt.legend(
             title=f"Node types",
             handles=self.make_legend_elements(
@@ -1147,7 +1148,7 @@ class Pango_XAG_nxcld_tight_graph(Pango_X_tight_graph):
     legend = "upper left"
     figsize=(11, 4.5)
 
-    def plot_legend(self, ax):
+    def legend_key(self, ax):
         used_colours = self.used_pango_colours(self.nodes)
         del used_colours["Unknown (R)"]
         ax.legend(
@@ -1239,7 +1240,7 @@ class Pango_XD_nxcld_tight_graph(Pango_X_tight_graph):
         change_pos(pos, 575079, dx=shift)
 
 
-    def plot_legend(self, ax):
+    def legend_key(self, ax):
         used_colours = self.used_pango_colours(self.nodes)
         del used_colours["Unknown (R)"]
         ax.legend(
@@ -1320,7 +1321,7 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
 
         change_pos(pos, 339516, dx=dx)
 
-    def plot_legend(self, ax):
+    def legend_key(self, ax):
         used_colours = self.used_pango_colours(self.nodes)
         del used_colours["Unknown (R)"]
         ax.legend(
@@ -1498,6 +1499,15 @@ large_replace = {
 
 }
 
+def print_sample_map(ts, nodes):
+    isl_map = {}
+    for u in nodes:
+        if ts.node(u).is_sample():
+            md = ts.node(u).metadata
+            isl_map[u] = md["gisaid_epi_isl"] if "gisaid_epi_isl" in md else "Unknown"
+    for k in sorted(isl_map.keys()):
+        print(f"tsk{k}: {isl_map[k]}")
+
 class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     name = "Pango_XA_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
@@ -1510,10 +1520,12 @@ class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     show_metadata = True
     sample_metadata_labels = ""
     label_replace = large_replace
+
+    def legend_key(self, ax):
+        print_sample_map(self.ts, self.define_nodes(self.ts))
+
     @classmethod
     def post_process(cls, ax):
-        pass
-    def plot_legend(self, ax):
         pass
 
 
@@ -1528,7 +1540,12 @@ class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
     mutations_fn = None
     show_metadata = True
     label_replace = large_replace
-    def plot_legend(self, ax):
+
+    def legend_key(self, ax):
+        print_sample_map(self.ts, self.define_nodes(self.ts))
+
+    @classmethod
+    def post_process(cls, ax):
         pass
 
 
@@ -1543,7 +1560,12 @@ class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
     mutations_fn = None
     show_metadata = True
     label_replace = large_replace
-    def plot_legend(self, ax):
+
+    def legend_key(self, ax):
+        print_sample_map(self.ts, self.define_nodes(self.ts))
+
+    @classmethod
+    def post_process(cls, ax):
         pass
 
     @classmethod
@@ -1562,7 +1584,12 @@ class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     mutations_fn = None
     show_metadata = True
     label_replace = large_replace
-    def plot_legend(self, ax):
+
+    def legend_key(self, ax):
+        print_sample_map(self.ts, self.define_nodes(self.ts))
+
+    @classmethod
+    def post_process(cls, ax):
         pass
 
 
