@@ -193,7 +193,7 @@ class Cophylogeny(Figure):
                     order.append([int(n[1:]) for n in re.findall(r"n\d+", line)])
         return order
 
-    def __init__(self, args):
+    def __init__(self):
         """
         Defines two simplified tree sequences, focussed on a specific tree. These are
         stored in self.sc2ts and self.nxstr
@@ -611,7 +611,7 @@ class RecombinationNodeMrcas(Figure):
     csv_fn = "breakpoints_{}.csv"
     data_dir = "data"
 
-    def __init__(self, args):
+    def __init__(self):
         self.ts, self.basetime = utils.load_tsz(self.data_dir, self.sc2ts_filename)
 
         prefix = utils.snip_tsz_suffix(self.sc2ts_filename)
@@ -925,7 +925,7 @@ class Pango_X_graph(Figure):
         _, idx = np.unique(nodes, return_index=True)
         return nodes[np.sort(idx)]
 
-    def __init__(self, args):
+    def __init__(self):
         ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
         self.ts = sc2ts.detach_singleton_recombinants(ts)
         logging.info(
@@ -958,8 +958,8 @@ class Pango_X_tight_graph(Pango_X_graph):
     legend=None
     node_def_lineage = "Nextclade_pango"  # Always use this when defining which nodes to pick
 
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self):
+        super().__init__()
         if not hasattr(self, "label_replace"):
             self.label_replace = {
                 "Unknown": "",
@@ -1079,11 +1079,12 @@ class Pango_XA_nxcld_tight_graph(Pango_X_tight_graph):
     sample_metadata_labels = "Imputed_" + imputed_lineage  # For the first plot, use labels
     figsize=(7, 4)
 
-    def __init__(self, args):
-        super().__init__(args)
-        # For the first plot, leave the "mutation" labels as they are
-        del self.label_replace[" mutation"]
-        del self.label_replace[" mutations"]
+    def __init__(self):
+        super().__init__()
+        # If this is the base class, don't abbreviate the "mutation" labels
+        if self.__class__.__name__ == "Pango_XA_nxcld_tight_graph":
+            del self.label_replace[" mutation"]
+            del self.label_replace[" mutations"]
 
     @classmethod
     def define_nodes(cls, ts):
@@ -1293,8 +1294,9 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
         dy = pos[351074][1] - pos[341400][1]
 
         # All adjustments below found by tedious trial and error
+        change_pos(pos, 206466, dx=dx/2)
         change_pos(pos, 200603, dx=2*dx)
-        change_pos(pos, 12108, dx=-2*dx)
+        change_pos(pos, 12108, dx=-dx)
 
         change_pos(pos, 310013, dx=dx)
         change_pos(pos, 295321, dx=dx)
@@ -1338,8 +1340,8 @@ class Pango_XA_XAG_XB_nxcld_tight_graph(Pango_X_tight_graph):
     imputed_lineage = "Nextclade_pango"
     figsize = (16, 10)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         assert self.node_positions is None
         self.node_positions = {}
         self.node_positions_fn = {}
@@ -1465,15 +1467,35 @@ large_replace = {
     "Unknown (R)": "Rec\nnode",
     "Unknown": "",
     # Make all the Pango lineages bold
-    "XAG": r"$\bf XAG$",
-    "XAA": r"$\bf XAA$",
-    "XAB": r"$\bf XAB$",
+
     "XB": r"$\bf XB$",
+    "XA": r"$\bf XA$",
+    "XD": r"$\bf XD$",
+    "XQ": r"$\bf XQ$",
+    "XU": r"$\bf XU$",
+    "XA$G": "XAG$",  # This is a hack because replacement has been already done
+    "XA$A": "XAA$",
+    "XA$B": "XAB$",
+
     "BA.2": r"$\bf BA.2$",
-    "AY.100": r"$\bf AY.100$",
-    r"$\bf BA.2$.9": r"$\bf BA.2.9$",  # hack, because BA.2.9 already replaced above
+    "BA.2$.9": "BA.2.9$",
     "BA.1": r"$\bf BA.1$",
-    # TODO - add the rest of the Pango lineages
+    "BA.1$.17": "BA.1.17$",
+    "BA.1$.15": "BA.1.15$",
+
+    'B.1': r"$\bf B.1$",
+    'B.1$.1': "B.1.1$",
+    'B.1$.384': "B.1.384$",
+    "B.1.1$.7": "B.1.1.7$",
+    'B.1$.177.18': 'B.1.177.18$',
+    'B.1$.631': 'B.1.631$',
+    'B.1$.634': 'B.1.634$',
+    'B.1$.627': 'B.1.637$',
+
+    "B.1$.617.2": "B.1.617.2$",
+    "AY.1": r"$\bf AY.1$",
+    "AY.4": r"$\bf AY.4$",
+
 }
 
 class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
@@ -1485,8 +1507,14 @@ class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     edge_font_size = 6
     node_font_size = 7.5
     mutations_fn = None
-    show_metadata=True
+    show_metadata = True
+    sample_metadata_labels = ""
     label_replace = large_replace
+    @classmethod
+    def post_process(cls, ax):
+        pass
+    def plot_legend(self, ax):
+        pass
 
 
 class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
@@ -1518,7 +1546,10 @@ class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
     def plot_legend(self, ax):
         pass
 
-
+    @classmethod
+    def post_process(cls, ax):
+        x_min, x_max = ax.get_xlim()
+        ax.set_xlim(x_min - (x_max - x_min) * 0.01, x_max + (x_max - x_min) * 0.01)
 
 class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     name = "Pango_XB_gisaid_large_graph"
@@ -1531,6 +1562,8 @@ class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     mutations_fn = None
     show_metadata = True
     label_replace = large_replace
+    def plot_legend(self, ax):
+        pass
 
 
 ######################################
@@ -1587,7 +1620,7 @@ class MutationalSpectra(Figure):
 
     # Defining the __init__ here to get the code to run, see note below in main
     # about passing same args to plot and constructor
-    def __init__(self, args):
+    def __init__(self):
         pass
 
     def plot(self, args):
@@ -1682,7 +1715,7 @@ def main():
         "name",
         type=str,
         help="figure name",
-        choices=sorted(list(name_map.keys()) + ["all"]),
+        choices=sorted(list(name_map.keys()) + ["all", "Pango_X_graph"]),
     )
     args = parser.parse_args()
 
@@ -1694,13 +1727,20 @@ def main():
         for name, fig in name_map.items():
             if fig in figures:
                 logging.info(f"plotting {name}")
-                fig(args).plot(args)
+                fig().plot(args)
+
+    elif args.name == "Pango_X_graph":
+        for name, fig in name_map.items():
+            if issubclass(fig, Pango_X_graph):
+                logging.info(f"plotting {name}")
+                fig().plot(args)
+
     else:
         fig = name_map[args.name]
         logging.info(f"plotting {args.name}")
         # FIXME not much point in passing the same args to the constructor
         # and plot.
-        fig(args).plot(args)
+        fig().plot(args)
 
 
 if __name__ == "__main__":
