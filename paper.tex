@@ -255,7 +255,7 @@ applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,
 Ralph2020-efficiently,Baumdicker2022-ep}.
 The succinct tree sequence encoding
 is also very concise, allowing, for example, for millions of
-complete human genomes to be stored in a few gigabytes of
+complete human genomes to potentially be stored in a few gigabytes of
 space~\citep{Kelleher2019-ba}.
 
 The \texttt{tskit} library~\citep{Tskit2023-tskit} is a liberally
@@ -349,25 +349,55 @@ and recombination in the HMM. Specifically, an MMR value of $k$ will
 prefer $k$ mismatches (mutations) to a recombination.[DUNCAN MORE DETAILS
 HERE PLEASE]
 
-[JK: TODO, expand this next paragraph to two, explaining a bit more that
-we're searching among every node in the ARG, using the efficient tree
-implementation in tsinfer, and a few words about how we can use the
-HMM more, to do things like stochastic traceback, etc.]
+% OLD text, ready to be adapted (and deleted once done)
+% For this
+% application, we have parameterised the HMM using a mismatch ratio (MMR), which
+% tunes how strongly mutations (i.e., no switching of template sequences) are
+% preferred over recombination (i.e., switching between sequences) during
+% copying. Under a lower MMR value, the maximum-likelihood HMM copying path of a
+% focal genome more likely spans at least two ancestral genomes (i.e,. the focal
+% genome is a putative recombinant) than a single ancestral genome. Here, the MMR
+% was set to three in all the HMM runs .
 
-Recombination is inferred using an efficient HMM implementation of the
-LS model. Copying paths are estimated from SARS-CoV-2 genomes sampled over
-time, with younger genomes copying (i.e. inheriting segments and mutations)
-from older genomes. Here, we were able to apply the LS model on millions of
-SARS-CoV-2 genomes because of a highly efficient, exact HMM implementation of
-the LS model that is a core component of the tsinfer software. For this
-application, we have parameterised the HMM using a mismatch ratio (MMR), which
-tunes how strongly mutations (i.e., no switching of template sequences) are
-preferred over recombination (i.e., switching between sequences) during
-copying. Under a lower MMR value, the maximum-likelihood HMM copying path of a
-focal genome more likely spans at least two ancestral genomes (i.e,. the focal
-genome is a putative recombinant) than a single ancestral genome. Here, the MMR
-was set to three in all the HMM runs (see ``Improvements'' for future potential
-development of the HMM).
+In \texttt{sc2ts} we use the efficient ARG-based implementation of the
+LS Viterbi algorithm from \texttt{tsinfer}~\citep{Kelleher2019-ba} to find
+the most likely copying path for each sample sequence
+among all sequences (sampled and inferred) in the current ARG.
+In the majority of cases, with non-recombinant sample sequences,
+the most likely solution is to copy from one
+of the nodes in the ARG that minimised the number of mutations required
+on the query sequence. Importantly, because the reference panel here consists of
+\emph{every} node in the ARG, we can match to both older sample
+sequences or internal nodes representing an inferred ancestral sequence
+(see subsequent subsections for details about how these are added).
+Thus, when no recombination is present, the LS Viterbi algorithm is
+implementing a version of parsimony, in which we are guaranteed to
+find a sequence that minimises the number of additional mutations required
+to incorporate a newly-added sample into the ARG.
+Recombination is then inferred when the most likely solution to the LS
+HMM is to copy from more than one ARG node along the genome, for a
+given sample sequece. [TODO MORE]
+
+We can solve this massive optimisation problem exactly because the ARG-based
+implementation of the LS HMM used in \texttt{tsinfer} scales approximately
+logarithmically with reference panel size (as opposed to linearly,
+for standard matrix-based approaches)~\citep{Kelleher2019-ba}.
+This efficient HMM algorithm is the main reason for \texttt{tsinfer}'s
+scalability, and here allows us to find closely matching
+sequences and recombination paths among millions of SARS-CoV-2
+genomes exactly under a well-defined statistical model.
+
+It is important to note that the Viterbi algorithm only returns
+\emph{one of} the copying paths that maximise the likelihood under
+ the given mutation and recombination parameters. There may be many
+such paths, from which we choose one arbitrarily. Also, the
+present choice of using a single mismatch-ratio parameter to control
+the likelihood of recombination vs mutation may lead to relatively
+flat likelihood spaces where many different paths have equal likelihood.
+There are many possibilities in using established HMM methodology
+to reason about and explore the space of possible matches, which may
+be a fruitful avenue for future work. See the Discussion for further
+potential improvements that may be made to the HMM.
 
 \subsection{Tree inference from clusters of samples}
 [Discuss the "local" tree inference, but be careful not to use the term]
