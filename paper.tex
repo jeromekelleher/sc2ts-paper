@@ -1314,7 +1314,7 @@ to reason about and explore the space of possible matches, which may
 be a fruitful avenue for future work. See the Discussion for further
 potential improvements that may be made to the HMM.
 
-\subsection{Tree inference from clusters of samples}
+\subsection{Tree inference from HMM sample clusters}
 For a given daily batch of sample sequences that are to be attached to the
 ARG, the LS HMM provides the most likely copying path and required mutations
 for each of those sequences. We could directly attach these samples to
@@ -1364,9 +1364,48 @@ tree building methods which keep track of the location of the required mutations
 (rather then inferring post-hoc by parsimony), is a likely avenue
 for improvements in overall inference quality.
 
-\subsection{Parsimony updates}
-[Discuss the parsimony tweaks we make to the trees. Get a better name
-for the subsection title]
+\subsection{Parsimony increasing hueristics}
+Attaching trees built from the clusters of samples that copy from
+a particular node (or path of nodes for recombinants, see the
+next section) under the HMM is an inherently greedy strategy,
+and can produce inferences that are clearly unparsimonious.
+The final step in adding a daily batch of samples to the ARG
+is then to perform some local updates that target specific
+types of parsimony violation in the just-updated regions of the
+ARG. There are currently two parsimony-increasing operations
+applied, which we refer to as ``mutation collapsing'' and ``reversion
+pushing''.
+
+Mutation collapsing inspects the siblings of a newly attached node
+to check if any of them share (a subset) of the mutations that
+it carries. If so, we increase the overall parsimony of the inference
+by creating a new node representing the ancestor that carried
+those shared mutations, and make that new node the parent of the
+siblings carrying those shared mutations. The patterns of
+shared mutations between siblings can be complex, and the current
+implementation uses a simple greedy strategy for choosing
+the particular mutations to collapse. [TODO back ref to the
+Results section to discuss how important these nodes are]
+
+The reversion push operation inspects newly added nodes to see
+if any of its mutations are ``immediate reversions''; that is,
+are reversions of a mutation that occured on the new node's
+immediate parent. We increase the overall parsimony of the
+inference by ``pushing in'' a new node in which descends from the
+original parent which carries all its mutations except those
+causing the reversions on the newly added node.
+[TODO back ref to the
+Results section to discuss how important these nodes are]
+
+Together these operations substantially increase the overall parsimony
+of the inferred ARGs, most noticably in terms of the number of
+reversion mutations inferred. However, they are both simple
+greedy operations, just examining the local parts of the
+ARG topology affected by newly added samples. Since the inferred
+ARGs still contain a large number of reversion mutations which
+are likely to be mostly artefactual, it is clear that there
+is room for improvement, and that further parsimony increasing
+hueristics would likely be of benefit.
 
 \subsection{Treatment of recombinants}
 [Discuss the special treatment we give to recombinants.]
