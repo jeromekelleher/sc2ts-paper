@@ -1320,34 +1320,49 @@ ARG, the LS HMM provides the most likely copying path and required mutations
 for each of those sequences. We could directly attach these samples to
 the ARG according to the copying paths and sets of mutations, but
 such an approach would be highly unparsimonious because there are
-often many samples that share the same copying path with
-complex patterns of shared mutations.
+often many samples that share the same copying path, with
+complex patterns of shared mutations among those clusters of samples.
 In this section we discuss the strategy used to infer likely tree
-toplogies among the samples that share the same copying path.
-In the majority of cases this copying path will consist of a single
-node (no recombination), and so for simplicity we will assume in the
+topologies within these clusters of samples sharing the same copying path.
+In the majority of cases the copying path will consist of a single
+node (i.e., no recombination), and so for simplicity we will assume in the
 following discussion that all of the samples in a HMM-defined cluster
-attach to a single node. The differences required to deal with
+attach to a single node. The special treatment afforded to
 newly-detected putative recombinants are discussed below
 in Section XXX.
 
 With tens of thousands of samples being added to the ARG per day,
-such clusters of sequences attaching to the same node
-can be large, with complex patterns of shared mutations.
-To avoid the implied large polytomy and unparsimonious
-repetition of identical mutations among sibling nodes, we
-infer a tree among these samples (the LS HMM has already
+we can have clusters of hundreds of sequences attaching to the same node.
+While some of these samples will require no extra mutations
+(i.e, they are identical to the attachment node), in general there
+will be complex patterns of shared mutations among the samples
+reflecting their evolutionary relationships. A natural way to infer
+these within-cluster evolutionary relationships is to use standard
+tree-building algorithms.
+We can infer a likely tree relating the
+samples in a cluster independently of the other samples in a
+daily batch, and then attach the tree (and mutations)
+to the ARG at the node identified by the HMM.
 
+We currently use the implementation of the UPGMA algorithm~\citep{Michener1957-tr}
+from SciPy~\citep{Pauli2020-scipy} to build trees from sample
+clusters, and map mutations back to this topology using maximum parsimony.
+This approach was chosen mainly for simplicity and because of the
+speed and reliability of the implementation.
+An issue with the UPGMA algorithm is that it generates a strictly
+binary tree, creating internal nodes
+supported by no informative site (i.e., having no mutation immediately
+ancestral to them). To avoid such false precision we post-process
+to remove unsupported internal nodes, representing the relationship
+between $k$ identical descendants of the node as a polytomy of size $k$.
 
-A natural
-way to
-
-We can think of the sequences attaching to a given node in the ARG
-from a daily batch as a polytomy,
-but with potentially shared mutations among the sibling nodes
-(Figure~\ref{fig:overview_sc2ts}C).
-
-
+There are well-known issues with using such a simple algorithm for inferring
+evolutionary relationships~\citep{Felsenstein2004-inferring}.
+Since this within-cluster tree building has a significant influence on the
+overall ARG topology (see Results), implementing more sophisticated
+tree building methods which keep track of the location of the required mutations
+(rather then inferring post-hoc by parsimony), is a likely avenue
+for improvements in overall inference quality.
 
 \subsection{Parsimony updates}
 [Discuss the parsimony tweaks we make to the trees. Get a better name
@@ -1356,6 +1371,9 @@ for the subsection title]
 \subsection{Treatment of recombinants}
 [Discuss the special treatment we give to recombinants.]
 Include the discussion about mirrored coords from here :]
+
+\subsection{Node dating}
+[Discuss how we date nodes, and suggest caution on interpretation]
 
 % \subsubsection{Breakpoint intervals and HMM consistency} When recombinant
 % ancestry for a given genome is inferred by the LS HMM, a breakpoint is
