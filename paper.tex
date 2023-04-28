@@ -1315,6 +1315,7 @@ be a fruitful avenue for future work. See the Discussion for further
 potential improvements that may be made to the HMM.
 
 \subsection{Tree inference from HMM sample clusters}
+\label{sec-sample-cluster-tree-inference}
 For a given daily batch of sample sequences that are to be attached to the
 ARG, the LS HMM provides the most likely copying path and required mutations
 for each of those sequences. We could directly attach these samples to
@@ -1408,8 +1409,27 @@ is room for improvement, and that further parsimony increasing
 hueristics would likely be of benefit.
 
 \subsection{Treatment of recombinants}
-[Discuss the special treatment we give to recombinants.]
-Include the discussion about mirrored coords from here :]
+A sample sequence is designated as a recombinant if the most likely
+path inferred by the LS HMM for that sample contains at least
+one switch between parents. Recombinant sequences are mostly treated
+identically to non-recombinants, as we simply need to reason about
+a path of parent nodes along genome intervals rather than a
+single parent over the whole genome, which is naturally handled by
+the succinct tree sequence data structure and \texttt{tskit} library
+(see the Ancestral Recombination Graphs section above). To facilitate
+analysis and to help understand the robustness of recombinants
+we perform some additional steps in \texttt{sc3ts}.
+
+The LS HMM may infer identical paths and patterns of mutations
+for multiple samples in a daily batch, and so we
+create a ``recombination`` node (marked with a specific ``flags'' value)
+for each distinct recombinant. (This node is not strictly necessary
+but makes it convenient to find recombinants for subsequent analysis.)
+Variation within a cluster
+of recombinant sequences is handled in the same way as non-recombinants
+(see Section~\ref{sec-sample-cluster-tree-inference} above for details).
+
+[TODO ADD IN HMM RERUN STUFF]
 
 \subsection{Node dating}
 [Discuss how we date nodes, and suggest caution on interpretation]
