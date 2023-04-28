@@ -100,447 +100,6 @@ Sc2ts is a promising method to automate detection of SARS-CoV-2 recombinants
 and to jointly model recombinational and mutational processes shaping the genomic
 diversity of SARS-CoV-2 at scale.
 
-\section{Methods}
-
-\subsection{Overview}
-Sc2ts is a method for inferring ARGs from densely sampled pandemic-scale data
-in real time, in which recombination occurs at a low but significant rate.
-The essential idea is to incrementally update the ARG each day
-with the sequences collected on that day. These updates are performed by
-first finding likely ``copying paths'' for each sequence in the daily
-batch to the current ARG, using the ARG-based implementation of
-the Li and Stephens model~\citep{Li2003-ib} introduced
-in \texttt{tsinfer}~\citep{Kelleher2019-ba}.
-These copying paths
-will mostly consist of a new sample sequence copying from a node in the ARG
-with a small number of mutations, and often many samples
-from a daily batch will copy from the same ARG node. The second
-step is then to ``resolve'' these implied polytomies by using
-standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C).
-This greedy update strategy inevitably lead to unparsimonious
-topologies, and the third step is to then increase the
-overall parsimony of the inferred ARG by making some simple topological
-updates (Figure~\ref{fig:overview_sc2ts}C and D).
-The operations are carried out efficiently using the well-established
-\texttt{tskit} library~\citep{Kelleher2018-xc,Ralph2020-efficiently},
-and the resulting structure can be conveniently and interactively
-analysed using the many features provided by \texttt{tskit}.
-
-\begin{figure} \centering
-\includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
-\caption{\label{fig:overview_sc2ts}
-A schematic of the sc2ts method. Sc2ts reconstructs the genetic relationships
-among SARS-CoV-2 genomes by copying samples to all possible ancestors collected
-at earlier time points (curved arrows). An ARG is built by attaching new sample
-genomes grouped by collection date to an existing ARG rooted at the Wuhan-Hu-1
-reference genome, day by day. Each iteration involves three stages: (1)
-attachment of new samples to the growing ARG (A, B); (2) reconstruction of
-trees relating the samples under each attachment node (C); and parsimony-based
-tree topology adjustments (D, E). In the absence of  recombination, sc2ts
-infers an ARG that is a single tree relating the samples (A). However, in the
-presence of recombination, sc2ts infers an ARG that is encoded as a sequence of
-local trees relating segments of the sample genomes (B), inserting a
-recombination node to represent a putative recombination event. Additionally,
-mutation-collapsing nodes (D) and pushed-reversion nodes (E) are inserted to
-make more parsimonious placements of mutations that should be shared or should
-not be immediately reverted, respectively.}
-\end{figure}
-
-
-% We introduce an ARG inference method, summarised in
-% Figure~\ref{fig:overview_sc2ts}.
-% % Note going to rewrite this anyway, so not trying to make it flow.
-% It uses (1) an efficient HMM implementation of the Li and Stephens (LS) model
-% \citep{Li2003-ib} to copy SARS-CoV-2 genomes (see Sections 2.2 and 2.3); (2)
-% the reported collection dates of the SARS-CoV-2 samples to determine the order
-% of genome copying; and (3) several parsimony-based heuristics to locally refine
-% the topology. In brief, this combined approach uses the likelihood model of LS
-% to attach sample genomes to existing nodes and to detect recombinants, but
-% because many of the daily tip samples harbour few, if any, mutational changes,
-% we use parsimony to resolve their close relationships.
-
-% Our HMM implementation, sc2ts, builds a reticulated graph for SARS-CoV-2 by
-% taking advantage of the reported collection dates to incrementally grow the
-% ARG. The inference process occurs forward in time, attaching new genomes
-% aggregated by their collection date (daily batches), from the earliest to the
-% last collection date. Prior to attaching sample genomes, the ARG is initialised
-% such that the Wuhan-Hu-1/2019 reference genome is the root node. In the absence
-% of recombination, the ARG is a single tree with no reticulation (Figure 1A);
-% however, in the presence of recombination, a reticulate ARG is generated, with
-% variation in tree topology across the genome (Figure 1B). Unlike standard
-% phylogenetic trees in which internal nodes always represent inferred ancestors,
-% internal nodes in the sc2ts ARGs represent sequences which can either be
-% inferred ancestors or known samples.
-
-% Each daily batch of genomes is first attached to the growing ARG without any
-% phylogenetic resolution. In cases where the newly added sequence is inferred to
-% be a recombinant, a recombination node is inserted; the ``date'' of this node
-% is arbitrarily set to the average of the collection dates of the genome and the
-% most recent of its parent nodes. Otherwise, the genomes are attached to the
-% most closely related ancestral node (an attachment node). This creates
-% polytomies that are then locally resolved among the descendants of each
-% attachment node using the Unweighted Pair Group Method with Arithmetic Mean
-% (UPGMA) algorithm \citep{Michener1957-tr}, with average linkage (Figure 1C).
-% This hierarchical clustering algorithm produces a dendrogram relating a set of
-% sequences, which is treated as an ultrametric binary tree here. Subsequently,
-% mutations are placed onto the daily tree by maximum parsimony. An issue with
-% the UPGMA algorithm is that it may create internal nodes supported by no
-% informative site (i.e., having no mutation immediately ancestral to them). In
-% an adjustment step, such unsupported internal nodes are removed to
-% ``un-resolve'' the daily tree; the remaining internal nodes, which are
-% supported by at least one shared mutation, are retained. The ``dates'' of the
-% non-sample internal nodes are set to the same date as the samples in the daily
-% batch. The resulting daily tree is grafted onto the attachment node in the
-% global ARG.
-
-% During ARG inference, two types of non-sample nodes are inserted to improve
-% parsimonious placement of mutations: mutation-coalescing nodes and
-% pushed-reversion nodes. We call these operations tree adjustments. A
-% mutation-collapsing node is inserted when a shared mutation between sibling
-% nodes is found (Figure 1D). An attempt to create mutation-collapsing nodes is
-% made after grafting a new daily tree onto the global ARG. If shared mutations
-% exist between two or more sibling nodes, then a parsimonious explanation is to
-% create a new node that is the parent of those siblings, on which these
-% mutations occurred. A pushed-reversion node is inserted when an immediate
-% reversion occurs (Figure 1E), i.e. a mutation that reverts another mutation on
-% its parent node. Instead of retaining both the mutation and immediate
-% reversion, only the mutation is kept after a pushed-reversion node is inserted,
-% thereby reducing the number of mutations on the branches. Note that these
-% non-sample nodes are used as reconstructed genomes during HMM copying.
-
-% Furthermore, during inference, the ARG is automatically encoded, stored, and
-% updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
-
-\subsection{Ancestral Recombination Graphs}
-The term ``Ancestral Recombination Graph'' was introduced by
-Griffiths and colleagues~\citep{Griffiths1991-two,Griffiths1998-ancestral}
-and originally defined an alternative formulation of the coalescent
-with recombination stochastic process~\citep{Hudson1983-properties}.
-Subsequently, the term ARG came to be used in a more general way to
-describe not just realisations of this model, but to any
-recombinant genetic ancestry~\citep{Minichiello2006-mapping}.
-While there is some subtlety in the details~\citep{Wong2023-efficient},
-we can think of an ARG as being any graph that encodes the
-reticulate genetic ancestry of a sample of sequences under
-the influence of recombination.
-
-The ``succinct tree sequence'' is an ARG data structure
-that is both general (in terms of the types of ancestry that can
-be described) and computationally efficient~\citep{Wong2023-efficient}.
-Originally developed to facilitate large-scale coalescent
-simulations~\citep{Kelleher2016-wk}, the methods have been
-extended and applied to forwards-time
-simulations~\citep{Kelleher2018-xc,Haller2018-tree},
-calculation of population genetics statistics~\citep{Ralph2020-efficiently}
-and ARG inference~\citep{Kelleher2019-ba,Wohns2022-th}.
-The succinct tree sequence is based on a simple tabular representation,
-which defines a set of nodes, edges, sites and mutations. A \emph{node}
-represents a particular genome, which may be an observed sample
-or an inferred genetic ancestor. The genetic inheritance between
-a pair of nodes along a segment of genome is defined by
-the \emph{edge} $(\ell, r, p, c)$, which states that
-child node $c$ inherited its genome from parent node $p$
-from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
-defines the genomic position at which some variation occurs,
-and a \emph{mutation} defines the site, node and derived state
-that generates variation.
-Given these tables, we can then efficiently construct the local
-genealogical trees along the genome (arising from recombination),
-and also perform a range of calculations efficiently by
-reasoning about the differences between these local
-trees~\citep{Kelleher2016-wk,Ralph2020-efficiently}. These
-algorithms have led to peformance increases of several orders
-of magnitude over the state-of-the-art in a range of
-applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,
-Ralph2020-efficiently,Baumdicker2022-ep}.
-The succinct tree sequence encoding
-is also very concise, allowing, for example, for millions of
-complete human genomes to potentially be stored in a few gigabytes of
-space~\citep{Kelleher2019-ba}.
-
-The \texttt{tskit} library~\citep{Tskit2023-tskit} is a liberally
-licensed open source toolkit that provides a comprehensive suite
-of tools for working with ARGs. Based on core functionality written
-in C, it provides interfaces in C, Python and Rust. The Python interface
-is based on NumPy~\citep{Harris2020-array}, and provides a convenient
-platform for interactive analysis of large-scale data using, for
-example, Jupyter notebooks~\citep{Kluyver2016-jupyter} and taking
-advantage of the analysis tools in the burgeoning PyData ecosystem.
-Tskit is mature software, widely used in population genetics, and
-has been incorporated into several downstream
-applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
-Terasaki2021-geonomics,
-Fan2022-genealogical,Korfmann2022-weak,
-Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
-
-\subsection{The Li and Stephens model}
-The Li and Stephens (LS) model\citep{Li2003-ib}  is an approximation of the
-coalescent with recombination~\citep{Hudson1983-properties}, which captures
-many of the important features of the joint processes of mutation and
-recombination. It is a Hidden Markov Model (HMM) in which a focal genome is a
-sequence of nucleotides that are probabilistically emitted as
-an imperfect mosaic of a set of reference genomes
-(Figure~\ref{fig:ls_diagram}).
-The LS model is used in a wide variety
-of applications in genomics, including modern approaches to
-statistical genotype phasing and imputation
-\citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa},
-and estimation of parameters such as
-recombination rates \citep[e.g.][]{Hinch2011-tz},
-and selection within and across hosts in viral
-sequence data \citep[e.g.][]{Palmer2019-wa}.
-See~\cite{Mcvean2019-linkage} for further review and discussion
-of the LS model.
-
-\begin{figure} \centering
-\includegraphics[width=0.5\textwidth]{figures/ls_diagram_covid.pdf}
-% FIXME this caption is too long
-\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
-model, in which a query sequence (bottom) is described as an
-imperfect mosaic of the sequences in a reference panel.
-Black crosses along the focal sequence show genotyping
-errors or mutations.
-In the standard formulation, at site $\ell$, the recombination probability is $r_\ell$,
-the mutation probability is $\mu_\ell$ and $n$
-denotes the size of the reference panel.
-The Viterbi algorithm can be used to find a
-``copying path'' through the reference panel for a given query sequence that
-maximises the likelihood under these parameters.
-% The LS HMM is governed by the transition and
-% emission matrices, $Q$ and $E$, respectively.
-% Each may be a function of the
-% reference panel members, but transitions are generally assumed to be
-% independent of the hidden states themselves (shown in the pink panel). This
-% dramatically increases performance as the state space drops to two states
-% (i.e., switching or not switching).
-% Emissions may also be a function of the nucleotide states, but in our
-% case, we assume that all observed alleles (in both the reference panel and
-% focal sequence, $a\ell$) at the site under consideration are equally likely and
-% occur with mutation probability $\ell$ (shown in the blue panel).
-% These two
-% processes, transition and emission (which encode recombination and mutation,
-% respectively), define the generative process of the HMM, by which an imperfect
-% mosaic is emitted from a reference panel.
- % of samples and nodes from the ARG
-% inserted at earlier collection dates (shown in the lower panel). Here, the
-% unseen states in the reference panel are shown as coloured lines enclosed by
-% the grey box, and the true path through the data which leads to the emitted
-% focal sequence is displayed by the black arrow. Examples of transition and
-% emission probabilities along this trajectory are shown by the red and blue
-% arrows, respectively.
-% Note that in practice, we do not know the pattern of
-% colours along the focal sequence and must infer it using the Viterbi algorithm.
-}
-\end{figure}
-
-The generative process of the LS model is summarised in
-Figure~\ref{fig:ls_diagram}. Here, a transition matrix, $Q$, governs the
-process of switching (recombining) between members of the reference panel (the
-hidden states). An emission matrix, $E$, allows for differences between the
-focal sequence and the hidden state from which it is copied (due to mutation as
-well as genotyping or sequencing error). Then, we use the Viterbi algorithm
-\citep{Viterbi1967-ol} to find the most likely copying path through the
-sequences, given a set of reference sequences, $Q$, and $E$.
-The relative rates of mutation and recombination are usually controlled by
-the site-specific parameters $\mu_\ell$ and $r_\ell$, respectively.
-For this work we used a simpler formulation, which uses a single parameter
-(the mismatch ratio, MMR) to control the relative importance of mutation
-and recombination in the HMM. Specifically, an MMR value of $k$ will
-prefer $k$ mismatches (mutations) to a recombination.[DUNCAN MORE DETAILS
-HERE PLEASE]
-
-% OLD text, ready to be adapted (and deleted once done)
-% For this
-% application, we have parameterised the HMM using a mismatch ratio (MMR), which
-% tunes how strongly mutations (i.e., no switching of template sequences) are
-% preferred over recombination (i.e., switching between sequences) during
-% copying. Under a lower MMR value, the maximum-likelihood HMM copying path of a
-% focal genome more likely spans at least two ancestral genomes (i.e,. the focal
-% genome is a putative recombinant) than a single ancestral genome. Here, the MMR
-% was set to three in all the HMM runs .
-
-In \texttt{sc2ts} we use the efficient ARG-based implementation of the
-LS Viterbi algorithm from \texttt{tsinfer}~\citep{Kelleher2019-ba} to find
-the most likely copying path for each sample sequence
-among all sequences (sampled and inferred) in the current ARG.
-In the majority of cases, with non-recombinant sample sequences,
-the most likely solution is to copy from one
-of the nodes in the ARG that minimised the number of mutations required
-on the query sequence. Importantly, because the reference panel here consists of
-\emph{every} node in the ARG, we can match to both older sample
-sequences or internal nodes representing an inferred ancestral sequence
-(see subsequent subsections for details about how these are added).
-Thus, when no recombination is present, the LS Viterbi algorithm is
-implementing a version of parsimony, in which we are guaranteed to
-find a sequence that minimises the number of additional mutations required
-to incorporate a newly-added sample into the ARG.
-Recombination is then inferred when the most likely solution to the LS
-HMM is to copy from more than one ARG node along the genome, for a
-given sample sequece. [TODO MORE]
-
-We can solve this massive optimisation problem exactly because the ARG-based
-implementation of the LS HMM used in \texttt{tsinfer} scales approximately
-logarithmically with reference panel size (as opposed to linearly,
-for standard matrix-based approaches)~\citep{Kelleher2019-ba}.
-This efficient HMM algorithm is the main reason for \texttt{tsinfer}'s
-scalability, and here allows us to find closely matching
-sequences and recombination paths among millions of SARS-CoV-2
-genomes exactly under a well-defined statistical model.
-
-It is important to note that the Viterbi algorithm only returns
-\emph{one of} the copying paths that maximise the likelihood under
- the given mutation and recombination parameters. There may be many
-such paths, from which we choose one arbitrarily. Also, the
-present choice of using a single mismatch-ratio parameter to control
-the likelihood of recombination vs mutation may lead to relatively
-flat likelihood spaces where many different paths have equal likelihood.
-There are many possibilities in using established HMM methodology
-to reason about and explore the space of possible matches, which may
-be a fruitful avenue for future work. See the Discussion for further
-potential improvements that may be made to the HMM.
-
-\subsection{Tree inference from clusters of samples}
-For a given daily batch of sample sequences that are to be attached to the
-ARG, the LS HMM provides the most likely copying path and required mutations
-for each of those sequences. We could directly attach these samples to
-the ARG according to the copying paths and sets of mutations, but
-such an approach would be highly unparsimonious because there are
-often many samples that share the same copying path with
-complex patterns of shared mutations.
-In this section we discuss the strategy used to infer likely tree
-toplogies among the samples that share the same copying path.
-In the majority of cases this copying path will consist of a single
-node (no recombination), and so for simplicity we will assume in the
-following discussion that all of the samples in a HMM-defined cluster
-attach to a single node. The differences required to deal with
-newly-detected putative recombinants are discussed below
-in Section XXX.
-
-With tens of thousands of samples being added to the ARG per day,
-such clusters of sequences attaching to the same node
-can be large, with complex patterns of shared mutations.
-To avoid the implied large polytomy and unparsimonious
-repetition of identical mutations among sibling nodes, we
-infer a tree among these samples (the LS HMM has already
-
-
-A natural
-way to
-
-We can think of the sequences attaching to a given node in the ARG
-from a daily batch as a polytomy,
-but with potentially shared mutations among the sibling nodes
-(Figure~\ref{fig:overview_sc2ts}C).
-
-
-
-\subsection{Parsimony updates}
-[Discuss the parsimony tweaks we make to the trees. Get a better name
-for the subsection title]
-
-\subsection{Treatment of recombinants}
-[Discuss the special treatment we give to recombinants.]
-Include the discussion about mirrored coords from here :]
-
-% \subsubsection{Breakpoint intervals and HMM consistency} When recombinant
-% ancestry for a given genome is inferred by the LS HMM, a breakpoint is
-% identified as the last possible position where the copying path must switch.
-% Thus, the breakpoints used in the ARG represent the rightmost end of the
-% interval, within which the recombination event could have occurred. To obtain
-% the leftmost end of this interval, we rerun the HMM using mirrored coordinates
-% (i.e., from the 3’ end to the 5’ end).
-
-% A recombinant sequence was deemed to be HMM-consistent if (1) the same number
-% of parent nodes and (2) the same set of mutations immediately ancestral to it
-% were obtained from both the unmirrored and mirrored HMM runs. In the ideal
-% case, the copying paths of both the HMM runs switch between parent sequences at
-% the same position(s); in less ideal cases, however, the copying paths switch at
-% different positions, typically because of a lack of genetic variation between
-% the positions. The switch positions in the copying paths of both the HMM runs
-% were used to define the breakpoint interval(s) of an HMM-consistent
-% recombinant.
-
-
-\subsection{Data preprocessing}
-
-The findings of this study are
-based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
-up to Aug 22, 2022 and accessible at
-% FIXME
-doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
-if they (1) had ambiguous collection dates; (2) were collected before January
-01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
-Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
-MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
-2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
-inference, sequences were excluded if they had a ``bad'' quality control status
-in any of the four Nextclade columns (``qc.missingData.status'',
-``qc.mixedSites.status'', ``qc.frameShifts.status'' and
-`qc.stopCodons.status''). These excluded genomes are enriched for low-coverage,
-contaminated, or misassembled sequences.
-
-Ambiguous nucleotide letters (i.e.,
-not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
-Problematic bases in the alignments, which had two or more ambiguous letters or
-gaps within a distance of seven bases, were masked as missing data following
-the protocol in \url{https://github.com/roblanf/sarscov2phylo/}. Masked bases
-were ignored when attaching a sample genome to the ARG, but they were
-subsequently imputed. Further, 481 problematic sites flagged as prone to
-sequencing errors or highly homoplasic were excluded entirely
-% Do we need this first URL?
-(\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
-\url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
-
-\subsection{Exclusion of ``time travellers''}
-[FIXME I'm pretty sure we don't have two filters here, we just use
-maximum sampling delay. Also not sure the MSD acronym is worth it,
-we don't use it much.]
-
-Including samples with incorrectly reported collection dates (e.g., an Alpha
-sample purportedly collected in 2020 from the United States, before Alpha
-appeared in the United Kingdom, USA/MN-Mayo-1563/2020) was found to produce
-artefacts that distorted the topology of ARGs inferred early on in the study.
-Hence, to exclude such potential ``time travellers'' we employed two filters.
-The first was to remove any sequence with a collection date that pre-dated the
-time to the most recent common ancestor (tMRCA) of its corresponding clade. The
-tMRCA for each clade was obtained from a Nextstrain GISAID reference tree
-(downloaded on August 22, 2022) where we used the lower bound of the 95\%
-confidence interval of each clade as the minimum date cut-off. The second
-filter was a simple threshold on the time delay between the collection date and
-submission date (maximum submission delay, or MSD). Indeed, we found that ARGs
-inferred from the MSD-filtered genome set had noticeably fewer branches with a
-high number of reversions. After some preliminary analysis, a MSD threshold
-value of 30 days was used when building the ARGs described herein. Future work
-could estimate collection dates by adding these potential time travellers back
-on the tree, allowing an automated assessment of collection date discrepancies.
-
-\subsection{Imputation of Pango lineage for non-sample nodes}
-Initially, only sample nodes have Pango lineage assignments.
-For analysis of recombinant parents, it is also helpful to assign
-Pango lineages to non-sample nodes. We do this
-using a two-step procedure (Figure~\ref{fig:imputation}). If the Pango
-lineage of the parental node was available and no mutation was immediately
-ancestral to the non-sample node, then the parental node’s status was directly
-propagated to the non-sample node. Otherwise, the Pango lineage of the
-non-sample node was inferred by matching its full set of mutations against the
-Pango lineage-defining mutations (based on 90\% consensus of the sequences
-analysed) from the COVID-CG website \citep{Chen2021-zc};
-\url{https://covidcg.org/}; accessed on November 04, 2022).
-
-\begin{figure} \centering
-\includegraphics[width=.7\textwidth]{figures/imputation.pdf}
-\caption{\label{fig:imputation}A schematic of the two-step procedure to impute
-Pango lineage for inserted, non-sample nodes. Here, three nodes (question
-marks) have unknown Pango lineage (A). Because the parent of node 1 is
-available (i.e., L2) and there is no mutation occurring on the edge connecting
-the two nodes, the Pango lineage of the parent is directly propagated to node 1
-(B). However, if there is a mutation (red X’s), then the Pango lineage is
-inferred by comparison to the set of lineage-defining mutations from
-COVID-CG\citep{Chen2021-zc}, as in case (C). Finally, the inferred status is
-propagated to any non-mutant child nodes, as in case (D).
-}
-\end{figure}
-
 
 \section{Results}
 \subsection{Inferred ARGs}
@@ -1036,7 +595,461 @@ Currently, sc2ts is in development. Below, we propose several ways to potentiall
 \end{itemize}
 
 \section{Conclusions}
-The global understanding of viral evolution during the COVID-19 pandemic is unprecedented, with over 15 million sequences shared to date. We envisage that once fully developed and tested, sc2ts methodology and software may provide a unified computational framework to study the evolution and epidemiology of SARS-CoV-2 at pandemic scale. The evolutionary analyses presented herein exemplify the numerous applications possible using the ancestral recombination graph inferred by sc2ts. We invite bioinformaticians, evolutionary biologists, and virologists to join us and the broader tskit community to build the most complete representation of the evolutionary history of SARS-CoV-2. Moreover, while we have focussed on the particular application to SARS-CoV-2, the methods we describe are readily applicable to the analysis of many other viral pathogens. Solving the challenges in building and analysing large viral genealogies would therefore contribute to the important goal of improving preparedness for potential future pandemics.
+The global understanding of viral evolution during the COVID-19 pandemic is
+unprecedented, with over 15 million sequences shared to date. We envisage that
+once fully developed and tested, sc2ts methodology and software may provide a
+unified computational framework to study the evolution and epidemiology of
+SARS-CoV-2 at pandemic scale. The evolutionary analyses presented herein
+exemplify the numerous applications possible using the ancestral recombination
+graph inferred by sc2ts. We invite bioinformaticians, evolutionary biologists,
+and virologists to join us and the broader tskit community to build the most
+complete representation of the evolutionary history of SARS-CoV-2. Moreover,
+while we have focussed on the particular application to SARS-CoV-2, the methods
+we describe are readily applicable to the analysis of many other viral
+pathogens. Solving the challenges in building and analysing large viral
+genealogies would therefore contribute to the important goal of improving
+preparedness for potential future pandemics.
+
+\section{Methods}
+
+\subsection{Overview}
+Sc2ts is a method for inferring ARGs from densely sampled pandemic-scale data
+in real time, in which recombination occurs at a low but significant rate.
+The essential idea is to incrementally update the ARG each day
+with the sequences collected on that day. These updates are performed by
+first finding likely ``copying paths'' for each sequence in the daily
+batch to the current ARG, using the ARG-based implementation of
+the Li and Stephens model~\citep{Li2003-ib} introduced
+in \texttt{tsinfer}~\citep{Kelleher2019-ba}.
+These copying paths
+will mostly consist of a new sample sequence copying from a node in the ARG
+with a small number of mutations, and often many samples
+from a daily batch will copy from the same ARG node. The second
+step is then to ``resolve'' these implied polytomies by using
+standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C).
+This greedy update strategy inevitably lead to unparsimonious
+topologies, and the third step is to then increase the
+overall parsimony of the inferred ARG by making some simple topological
+updates (Figure~\ref{fig:overview_sc2ts}C and D).
+The operations are carried out efficiently using the well-established
+\texttt{tskit} library~\citep{Kelleher2018-xc,Ralph2020-efficiently},
+and the resulting structure can be conveniently and interactively
+analysed using the many features provided by \texttt{tskit}.
+
+\begin{figure} \centering
+\includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
+\caption{\label{fig:overview_sc2ts}
+A schematic of the sc2ts method. Sc2ts reconstructs the genetic relationships
+among SARS-CoV-2 genomes by copying samples to all possible ancestors collected
+at earlier time points (curved arrows). An ARG is built by attaching new sample
+genomes grouped by collection date to an existing ARG rooted at the Wuhan-Hu-1
+reference genome, day by day. Each iteration involves three stages: (1)
+attachment of new samples to the growing ARG (A, B); (2) reconstruction of
+trees relating the samples under each attachment node (C); and parsimony-based
+tree topology adjustments (D, E). In the absence of  recombination, sc2ts
+infers an ARG that is a single tree relating the samples (A). However, in the
+presence of recombination, sc2ts infers an ARG that is encoded as a sequence of
+local trees relating segments of the sample genomes (B), inserting a
+recombination node to represent a putative recombination event. Additionally,
+mutation-collapsing nodes (D) and pushed-reversion nodes (E) are inserted to
+make more parsimonious placements of mutations that should be shared or should
+not be immediately reverted, respectively.}
+\end{figure}
+
+
+% We introduce an ARG inference method, summarised in
+% Figure~\ref{fig:overview_sc2ts}.
+% % Note going to rewrite this anyway, so not trying to make it flow.
+% It uses (1) an efficient HMM implementation of the Li and Stephens (LS) model
+% \citep{Li2003-ib} to copy SARS-CoV-2 genomes (see Sections 2.2 and 2.3); (2)
+% the reported collection dates of the SARS-CoV-2 samples to determine the order
+% of genome copying; and (3) several parsimony-based heuristics to locally refine
+% the topology. In brief, this combined approach uses the likelihood model of LS
+% to attach sample genomes to existing nodes and to detect recombinants, but
+% because many of the daily tip samples harbour few, if any, mutational changes,
+% we use parsimony to resolve their close relationships.
+
+% Our HMM implementation, sc2ts, builds a reticulated graph for SARS-CoV-2 by
+% taking advantage of the reported collection dates to incrementally grow the
+% ARG. The inference process occurs forward in time, attaching new genomes
+% aggregated by their collection date (daily batches), from the earliest to the
+% last collection date. Prior to attaching sample genomes, the ARG is initialised
+% such that the Wuhan-Hu-1/2019 reference genome is the root node. In the absence
+% of recombination, the ARG is a single tree with no reticulation (Figure 1A);
+% however, in the presence of recombination, a reticulate ARG is generated, with
+% variation in tree topology across the genome (Figure 1B). Unlike standard
+% phylogenetic trees in which internal nodes always represent inferred ancestors,
+% internal nodes in the sc2ts ARGs represent sequences which can either be
+% inferred ancestors or known samples.
+
+% Each daily batch of genomes is first attached to the growing ARG without any
+% phylogenetic resolution. In cases where the newly added sequence is inferred to
+% be a recombinant, a recombination node is inserted; the ``date'' of this node
+% is arbitrarily set to the average of the collection dates of the genome and the
+% most recent of its parent nodes. Otherwise, the genomes are attached to the
+% most closely related ancestral node (an attachment node). This creates
+% polytomies that are then locally resolved among the descendants of each
+% attachment node using the Unweighted Pair Group Method with Arithmetic Mean
+% (UPGMA) algorithm \citep{Michener1957-tr}, with average linkage (Figure 1C).
+% This hierarchical clustering algorithm produces a dendrogram relating a set of
+% sequences, which is treated as an ultrametric binary tree here. Subsequently,
+% mutations are placed onto the daily tree by maximum parsimony. An issue with
+% the UPGMA algorithm is that it may create internal nodes supported by no
+% informative site (i.e., having no mutation immediately ancestral to them). In
+% an adjustment step, such unsupported internal nodes are removed to
+% ``un-resolve'' the daily tree; the remaining internal nodes, which are
+% supported by at least one shared mutation, are retained. The ``dates'' of the
+% non-sample internal nodes are set to the same date as the samples in the daily
+% batch. The resulting daily tree is grafted onto the attachment node in the
+% global ARG.
+
+% During ARG inference, two types of non-sample nodes are inserted to improve
+% parsimonious placement of mutations: mutation-coalescing nodes and
+% pushed-reversion nodes. We call these operations tree adjustments. A
+% mutation-collapsing node is inserted when a shared mutation between sibling
+% nodes is found (Figure 1D). An attempt to create mutation-collapsing nodes is
+% made after grafting a new daily tree onto the global ARG. If shared mutations
+% exist between two or more sibling nodes, then a parsimonious explanation is to
+% create a new node that is the parent of those siblings, on which these
+% mutations occurred. A pushed-reversion node is inserted when an immediate
+% reversion occurs (Figure 1E), i.e. a mutation that reverts another mutation on
+% its parent node. Instead of retaining both the mutation and immediate
+% reversion, only the mutation is kept after a pushed-reversion node is inserted,
+% thereby reducing the number of mutations on the branches. Note that these
+% non-sample nodes are used as reconstructed genomes during HMM copying.
+
+% Furthermore, during inference, the ARG is automatically encoded, stored, and
+% updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
+
+\subsection{Ancestral Recombination Graphs}
+The term ``Ancestral Recombination Graph'' was introduced by
+Griffiths and colleagues~\citep{Griffiths1991-two,Griffiths1998-ancestral}
+and originally defined an alternative formulation of the coalescent
+with recombination stochastic process~\citep{Hudson1983-properties}.
+Subsequently, the term ARG came to be used in a more general way to
+describe not just realisations of this model, but to any
+recombinant genetic ancestry~\citep{Minichiello2006-mapping}.
+While there is some subtlety in the details~\citep{Wong2023-efficient},
+we can think of an ARG as being any graph that encodes the
+reticulate genetic ancestry of a sample of sequences under
+the influence of recombination.
+
+The ``succinct tree sequence'' is an ARG data structure
+that is both general (in terms of the types of ancestry that can
+be described) and computationally efficient~\citep{Wong2023-efficient}.
+Originally developed to facilitate large-scale coalescent
+simulations~\citep{Kelleher2016-wk}, the methods have been
+extended and applied to forwards-time
+simulations~\citep{Kelleher2018-xc,Haller2018-tree},
+calculation of population genetics statistics~\citep{Ralph2020-efficiently}
+and ARG inference~\citep{Kelleher2019-ba,Wohns2022-th}.
+The succinct tree sequence is based on a simple tabular representation,
+which defines a set of nodes, edges, sites and mutations. A \emph{node}
+represents a particular genome, which may be an observed sample
+or an inferred genetic ancestor. The genetic inheritance between
+a pair of nodes along a segment of genome is defined by
+the \emph{edge} $(\ell, r, p, c)$, which states that
+child node $c$ inherited its genome from parent node $p$
+from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
+defines the genomic position at which some variation occurs,
+and a \emph{mutation} defines the site, node and derived state
+that generates variation.
+Given these tables, we can then efficiently construct the local
+genealogical trees along the genome (arising from recombination),
+and also perform a range of calculations efficiently by
+reasoning about the differences between these local
+trees~\citep{Kelleher2016-wk,Ralph2020-efficiently}. These
+algorithms have led to peformance increases of several orders
+of magnitude over the state-of-the-art in a range of
+applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,
+Ralph2020-efficiently,Baumdicker2022-ep}.
+The succinct tree sequence encoding
+is also very concise, allowing, for example, for millions of
+complete human genomes to potentially be stored in a few gigabytes of
+space~\citep{Kelleher2019-ba}.
+
+The \texttt{tskit} library~\citep{Tskit2023-tskit} is a liberally
+licensed open source toolkit that provides a comprehensive suite
+of tools for working with ARGs. Based on core functionality written
+in C, it provides interfaces in C, Python and Rust. The Python interface
+is based on NumPy~\citep{Harris2020-array}, and provides a convenient
+platform for interactive analysis of large-scale data using, for
+example, Jupyter notebooks~\citep{Kluyver2016-jupyter} and taking
+advantage of the analysis tools in the burgeoning PyData ecosystem.
+Tskit is mature software, widely used in population genetics, and
+has been incorporated into several downstream
+applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
+Terasaki2021-geonomics,
+Fan2022-genealogical,Korfmann2022-weak,
+Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
+
+\subsection{The Li and Stephens model}
+The Li and Stephens (LS) model\citep{Li2003-ib}  is an approximation of the
+coalescent with recombination~\citep{Hudson1983-properties}, which captures
+many of the important features of the joint processes of mutation and
+recombination. It is a Hidden Markov Model (HMM) in which a focal genome is a
+sequence of nucleotides that are probabilistically emitted as
+an imperfect mosaic of a set of reference genomes
+(Figure~\ref{fig:ls_diagram}).
+The LS model is used in a wide variety
+of applications in genomics, including modern approaches to
+statistical genotype phasing and imputation
+\citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa},
+and estimation of parameters such as
+recombination rates \citep[e.g.][]{Hinch2011-tz},
+and selection within and across hosts in viral
+sequence data \citep[e.g.][]{Palmer2019-wa}.
+See~\cite{Mcvean2019-linkage} for further review and discussion
+of the LS model.
+
+\begin{figure} \centering
+\includegraphics[width=0.5\textwidth]{figures/ls_diagram_covid.pdf}
+% FIXME this caption is too long
+\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
+model, in which a query sequence (bottom) is described as an
+imperfect mosaic of the sequences in a reference panel.
+Black crosses along the focal sequence show genotyping
+errors or mutations.
+In the standard formulation, at site $\ell$, the recombination probability is $r_\ell$,
+the mutation probability is $\mu_\ell$ and $n$
+denotes the size of the reference panel.
+The Viterbi algorithm can be used to find a
+``copying path'' through the reference panel for a given query sequence that
+maximises the likelihood under these parameters.
+% The LS HMM is governed by the transition and
+% emission matrices, $Q$ and $E$, respectively.
+% Each may be a function of the
+% reference panel members, but transitions are generally assumed to be
+% independent of the hidden states themselves (shown in the pink panel). This
+% dramatically increases performance as the state space drops to two states
+% (i.e., switching or not switching).
+% Emissions may also be a function of the nucleotide states, but in our
+% case, we assume that all observed alleles (in both the reference panel and
+% focal sequence, $a\ell$) at the site under consideration are equally likely and
+% occur with mutation probability $\ell$ (shown in the blue panel).
+% These two
+% processes, transition and emission (which encode recombination and mutation,
+% respectively), define the generative process of the HMM, by which an imperfect
+% mosaic is emitted from a reference panel.
+ % of samples and nodes from the ARG
+% inserted at earlier collection dates (shown in the lower panel). Here, the
+% unseen states in the reference panel are shown as coloured lines enclosed by
+% the grey box, and the true path through the data which leads to the emitted
+% focal sequence is displayed by the black arrow. Examples of transition and
+% emission probabilities along this trajectory are shown by the red and blue
+% arrows, respectively.
+% Note that in practice, we do not know the pattern of
+% colours along the focal sequence and must infer it using the Viterbi algorithm.
+}
+\end{figure}
+
+The generative process of the LS model is summarised in
+Figure~\ref{fig:ls_diagram}. Here, a transition matrix, $Q$, governs the
+process of switching (recombining) between members of the reference panel (the
+hidden states). An emission matrix, $E$, allows for differences between the
+focal sequence and the hidden state from which it is copied (due to mutation as
+well as genotyping or sequencing error). Then, we use the Viterbi algorithm
+\citep{Viterbi1967-ol} to find the most likely copying path through the
+sequences, given a set of reference sequences, $Q$, and $E$.
+The relative rates of mutation and recombination are usually controlled by
+the site-specific parameters $\mu_\ell$ and $r_\ell$, respectively.
+For this work we used a simpler formulation, which uses a single parameter
+(the mismatch ratio, MMR) to control the relative importance of mutation
+and recombination in the HMM. Specifically, an MMR value of $k$ will
+prefer $k$ mismatches (mutations) to a recombination.[DUNCAN MORE DETAILS
+HERE PLEASE]
+
+% OLD text, ready to be adapted (and deleted once done)
+% For this
+% application, we have parameterised the HMM using a mismatch ratio (MMR), which
+% tunes how strongly mutations (i.e., no switching of template sequences) are
+% preferred over recombination (i.e., switching between sequences) during
+% copying. Under a lower MMR value, the maximum-likelihood HMM copying path of a
+% focal genome more likely spans at least two ancestral genomes (i.e,. the focal
+% genome is a putative recombinant) than a single ancestral genome. Here, the MMR
+% was set to three in all the HMM runs .
+
+In \texttt{sc2ts} we use the efficient ARG-based implementation of the
+LS Viterbi algorithm from \texttt{tsinfer}~\citep{Kelleher2019-ba} to find
+the most likely copying path for each sample sequence
+among all sequences (sampled and inferred) in the current ARG.
+In the majority of cases, with non-recombinant sample sequences,
+the most likely solution is to copy from one
+of the nodes in the ARG that minimised the number of mutations required
+on the query sequence. Importantly, because the reference panel here consists of
+\emph{every} node in the ARG, we can match to both older sample
+sequences or internal nodes representing an inferred ancestral sequence
+(see subsequent subsections for details about how these are added).
+Thus, when no recombination is present, the LS Viterbi algorithm is
+implementing a version of parsimony, in which we are guaranteed to
+find a sequence that minimises the number of additional mutations required
+to incorporate a newly-added sample into the ARG.
+Recombination is then inferred when the most likely solution to the LS
+HMM is to copy from more than one ARG node along the genome, for a
+given sample sequece. [TODO MORE]
+
+We can solve this massive optimisation problem exactly because the ARG-based
+implementation of the LS HMM used in \texttt{tsinfer} scales approximately
+logarithmically with reference panel size (as opposed to linearly,
+for standard matrix-based approaches)~\citep{Kelleher2019-ba}.
+This efficient HMM algorithm is the main reason for \texttt{tsinfer}'s
+scalability, and here allows us to find closely matching
+sequences and recombination paths among millions of SARS-CoV-2
+genomes exactly under a well-defined statistical model.
+
+It is important to note that the Viterbi algorithm only returns
+\emph{one of} the copying paths that maximise the likelihood under
+ the given mutation and recombination parameters. There may be many
+such paths, from which we choose one arbitrarily. Also, the
+present choice of using a single mismatch-ratio parameter to control
+the likelihood of recombination vs mutation may lead to relatively
+flat likelihood spaces where many different paths have equal likelihood.
+There are many possibilities in using established HMM methodology
+to reason about and explore the space of possible matches, which may
+be a fruitful avenue for future work. See the Discussion for further
+potential improvements that may be made to the HMM.
+
+\subsection{Tree inference from clusters of samples}
+For a given daily batch of sample sequences that are to be attached to the
+ARG, the LS HMM provides the most likely copying path and required mutations
+for each of those sequences. We could directly attach these samples to
+the ARG according to the copying paths and sets of mutations, but
+such an approach would be highly unparsimonious because there are
+often many samples that share the same copying path with
+complex patterns of shared mutations.
+In this section we discuss the strategy used to infer likely tree
+toplogies among the samples that share the same copying path.
+In the majority of cases this copying path will consist of a single
+node (no recombination), and so for simplicity we will assume in the
+following discussion that all of the samples in a HMM-defined cluster
+attach to a single node. The differences required to deal with
+newly-detected putative recombinants are discussed below
+in Section XXX.
+
+With tens of thousands of samples being added to the ARG per day,
+such clusters of sequences attaching to the same node
+can be large, with complex patterns of shared mutations.
+To avoid the implied large polytomy and unparsimonious
+repetition of identical mutations among sibling nodes, we
+infer a tree among these samples (the LS HMM has already
+
+
+A natural
+way to
+
+We can think of the sequences attaching to a given node in the ARG
+from a daily batch as a polytomy,
+but with potentially shared mutations among the sibling nodes
+(Figure~\ref{fig:overview_sc2ts}C).
+
+
+
+\subsection{Parsimony updates}
+[Discuss the parsimony tweaks we make to the trees. Get a better name
+for the subsection title]
+
+\subsection{Treatment of recombinants}
+[Discuss the special treatment we give to recombinants.]
+Include the discussion about mirrored coords from here :]
+
+% \subsubsection{Breakpoint intervals and HMM consistency} When recombinant
+% ancestry for a given genome is inferred by the LS HMM, a breakpoint is
+% identified as the last possible position where the copying path must switch.
+% Thus, the breakpoints used in the ARG represent the rightmost end of the
+% interval, within which the recombination event could have occurred. To obtain
+% the leftmost end of this interval, we rerun the HMM using mirrored coordinates
+% (i.e., from the 3’ end to the 5’ end).
+
+% A recombinant sequence was deemed to be HMM-consistent if (1) the same number
+% of parent nodes and (2) the same set of mutations immediately ancestral to it
+% were obtained from both the unmirrored and mirrored HMM runs. In the ideal
+% case, the copying paths of both the HMM runs switch between parent sequences at
+% the same position(s); in less ideal cases, however, the copying paths switch at
+% different positions, typically because of a lack of genetic variation between
+% the positions. The switch positions in the copying paths of both the HMM runs
+% were used to define the breakpoint interval(s) of an HMM-consistent
+% recombinant.
+
+
+\subsection{Data preprocessing}
+
+The findings of this study are
+based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
+up to Aug 22, 2022 and accessible at
+% FIXME
+doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
+if they (1) had ambiguous collection dates; (2) were collected before January
+01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
+Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
+MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
+2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
+inference, sequences were excluded if they had a ``bad'' quality control status
+in any of the four Nextclade columns (``qc.missingData.status'',
+``qc.mixedSites.status'', ``qc.frameShifts.status'' and
+`qc.stopCodons.status''). These excluded genomes are enriched for low-coverage,
+contaminated, or misassembled sequences.
+
+Ambiguous nucleotide letters (i.e.,
+not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
+Problematic bases in the alignments, which had two or more ambiguous letters or
+gaps within a distance of seven bases, were masked as missing data following
+the protocol in \url{https://github.com/roblanf/sarscov2phylo/}. Masked bases
+were ignored when attaching a sample genome to the ARG, but they were
+subsequently imputed. Further, 481 problematic sites flagged as prone to
+sequencing errors or highly homoplasic were excluded entirely
+% Do we need this first URL?
+(\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
+\url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
+
+\subsection{Exclusion of ``time travellers''}
+[FIXME I'm pretty sure we don't have two filters here, we just use
+maximum sampling delay. Also not sure the MSD acronym is worth it,
+we don't use it much.]
+
+Including samples with incorrectly reported collection dates (e.g., an Alpha
+sample purportedly collected in 2020 from the United States, before Alpha
+appeared in the United Kingdom, USA/MN-Mayo-1563/2020) was found to produce
+artefacts that distorted the topology of ARGs inferred early on in the study.
+Hence, to exclude such potential ``time travellers'' we employed two filters.
+The first was to remove any sequence with a collection date that pre-dated the
+time to the most recent common ancestor (tMRCA) of its corresponding clade. The
+tMRCA for each clade was obtained from a Nextstrain GISAID reference tree
+(downloaded on August 22, 2022) where we used the lower bound of the 95\%
+confidence interval of each clade as the minimum date cut-off. The second
+filter was a simple threshold on the time delay between the collection date and
+submission date (maximum submission delay, or MSD). Indeed, we found that ARGs
+inferred from the MSD-filtered genome set had noticeably fewer branches with a
+high number of reversions. After some preliminary analysis, a MSD threshold
+value of 30 days was used when building the ARGs described herein. Future work
+could estimate collection dates by adding these potential time travellers back
+on the tree, allowing an automated assessment of collection date discrepancies.
+
+\subsection{Imputation of Pango lineage for non-sample nodes}
+Initially, only sample nodes have Pango lineage assignments.
+For analysis of recombinant parents, it is also helpful to assign
+Pango lineages to non-sample nodes. We do this
+using a two-step procedure (Figure~\ref{fig:imputation}). If the Pango
+lineage of the parental node was available and no mutation was immediately
+ancestral to the non-sample node, then the parental node’s status was directly
+propagated to the non-sample node. Otherwise, the Pango lineage of the
+non-sample node was inferred by matching its full set of mutations against the
+Pango lineage-defining mutations (based on 90\% consensus of the sequences
+analysed) from the COVID-CG website \citep{Chen2021-zc};
+\url{https://covidcg.org/}; accessed on November 04, 2022).
+
+\begin{figure} \centering
+\includegraphics[width=.7\textwidth]{figures/imputation.pdf}
+\caption{\label{fig:imputation}A schematic of the two-step procedure to impute
+Pango lineage for inserted, non-sample nodes. Here, three nodes (question
+marks) have unknown Pango lineage (A). Because the parent of node 1 is
+available (i.e., L2) and there is no mutation occurring on the edge connecting
+the two nodes, the Pango lineage of the parent is directly propagated to node 1
+(B). However, if there is a mutation (red X’s), then the Pango lineage is
+inferred by comparison to the set of lineage-defining mutations from
+COVID-CG\citep{Chen2021-zc}, as in case (C). Finally, the inferred status is
+propagated to any non-mutant child nodes, as in case (D).
+}
+\end{figure}
 
 \section{Acknowledgements}
 We gratefully acknowledge all data contributors, i.e., the Authors and their
