@@ -1186,6 +1186,7 @@ Fan2022-genealogical,Korfmann2022-weak,
 Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
 
 \subsection{The Li and Stephens model}
+\label{sec:ls}
 The Li and Stephens (LS) model\citep{Li2003-ib}  is an approximation of the
 coalescent with recombination~\citep{Hudson1983-properties}, which captures
 many of the important features of the joint processes of mutation and
@@ -1260,6 +1261,8 @@ For this work we used a simpler formulation, which uses a single parameter
 and recombination in the HMM. Specifically, an MMR value of $k$ will
 prefer $k$ mismatches (mutations) to a recombination.[DUNCAN MORE DETAILS
 HERE PLEASE]
+
+[ALSO MENTION MISSING DATA, where we deal with Ns in the alignment]
 
 % OLD text, ready to be adapted (and deleted once done)
 % For this
@@ -1496,61 +1499,63 @@ if they (1) had ambiguous collection dates;
 (3) were isolated from a non-human host.
 We aligned sequences to the Wuhan-Hu-1/2019 reference sequence
 (GenBank: MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
-2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
-inference, we also excluded sequences if they had a ``bad'' quality control status
+2022-07-26T12:00:00Z). We also excluded sequences if they had a
+``bad'' quality control status
 in any of the four Nextclade columns (``qc.missingData.status'',
 ``qc.mixedSites.status'', ``qc.frameShifts.status'' and `qc.stopCodons.status'').
 
-% FIXME this isn't quite right
 We encode ambiguous nucleotide letters (i.e.,
-not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
-Problematic bases in the alignments, which had two or more ambiguous letters or
-gaps within a distance of seven bases, were masked as missing data following
-the protocol in \url{https://github.com/roblanf/sarscov2phylo/}. Masked bases
-were ignored when attaching a sample genome to the ARG, but they were
-subsequently imputed. Further, 481 problematic sites flagged as prone to
-sequencing errors or highly homoplasic were excluded entirely
-% Do we need this first URL?
-(\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
-\url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
+not A, C, G, T, or a gap) in the pairwise genome alignments as missing data
+(N). Problematic bases in the alignments, which had two or more Ns or
+gaps within a distance of seven bases, are masked as missing data following
+the approach used in the ``faToVCF`` tool used by
+UShER~\citep{Turakhia2022-it}.
+Sites that are masked by this process are
+treated as missing data by the LS HMM (Section~\ref{sec:ls}).
+In addition, we exclude 481 problematic sites flagged as prone to
+sequencing errors or as highly homoplasic
+(\url{https://github.com/W-L/ProblematicSites_SARS-CoV2/},
+accessed 2022-09-22) entirely.
+
+Although the masking strategy used currently is simple and robust,
+there are significant disadvantages, excluding, for example, any
+deletions of length greater than one base. Exploring more sophisticated
+masking strategies is an important route for future improvements.
 
 \subsection{Filtering ``time travellers''}
 \label{sec:filtering_time_travellers}
-[FIXME I'm pretty sure we don't have two filters here, we just use
-maximum sampling delay. Also not sure the MSD acronym is worth it,
-we don't use it much.]
+A major source of error in early versions of \texttt{sc2ts} was
+the existance of ``time traveller'' sequences: those with erroneously
+early collection dates.
+For example, an Alpha sample purportedly collected in 2020 from the United States,
+before Alpha appeared in the United Kingdom (USA/MN-Mayo-1563/2020)
+produced significant topological distortions in
+ARGs inferred early on in the study.
+Hence, to exclude such potential ``time travellers'' we employ two filters.
+The first is to remove any sequence with a collection date that pre-dates the
+time to the most recent common ancestor (tMRCA) of its corresponding clade.
+We obtained the tMRCA for each clade from a Nextstrain GISAID reference tree
+(downloaded on August 22, 2022), and we used the lower bound of the 95\%
+confidence interval of each clade as the minimum date cut-off.
+This removed NN [Katherine can you fill in please?] sequences.
 
-Including samples with incorrectly reported collection dates (e.g., an Alpha
-sample purportedly collected in 2020 from the United States, before Alpha
-appeared in the United Kingdom, USA/MN-Mayo-1563/2020) was found to produce
-artefacts that distorted the topology of ARGs inferred early on in the study.
-Hence, to exclude such potential ``time travellers'' we employed two filters.
-The first was to remove any sequence with a collection date that pre-dated the
-time to the most recent common ancestor (tMRCA) of its corresponding clade. The
-tMRCA for each clade was obtained from a Nextstrain GISAID reference tree
-(downloaded on August 22, 2022) where we used the lower bound of the 95\%
-confidence interval of each clade as the minimum date cut-off. The second
-filter was a simple threshold on the time delay between the collection date and
-submission date (maximum submission delay, or MSD). Indeed, we found that ARGs
-inferred from the MSD-filtered genome set had noticeably fewer branches with a
-high number of reversions. After some preliminary analysis, a MSD threshold
-value of 30 days was used when building the ARGs described herein. Future work
-could estimate collection dates by adding these potential time travellers back
-on the tree, allowing an automated assessment of collection date discrepancies.
+This filter removes the most egregious time travellers, but many still
+remain. We thus employed a second filter which is a simple threshold on
+the time delay between the collection date and submission date.
+After some preliminary analysis we settled on a maximum submission delay
+of 30 days when building the ARGs described here as a reasonable compromise.
+
+As the results of \texttt{sc2ts} are sensitive to the existance of
+time-travellers, an imporant aspect of future work is to find better ways
+to identify them. One possibility is to use the LS HMM itself to flag
+overly divergent sequences, and to exclude them from attachment to the ARG.
+We might also estimate collection dates by adding these potential time travellers
+back to the ARG, allowing an automated assessment of collection date discrepancies.
 
 \subsection{Imputation of Pango lineage for non-sample nodes}
-Initially, only sample nodes have Pango lineage assignments.
-For analysis of recombinant parents, it is also helpful to assign
-Pango lineages to non-sample nodes. We do this
-using a two-step procedure (Figure~\ref{fig:imputation}). If the Pango
-lineage of the parental node was available and no mutation was immediately
-ancestral to the non-sample node, then the parental node’s status was directly
-propagated to the non-sample node. Otherwise, the Pango lineage of the
-non-sample node was inferred by matching its full set of mutations against the
-Pango lineage-defining mutations (based on 90\% consensus of the sequences
-analysed) from the COVID-CG website \citep{Chen2021-zc};
-\url{https://covidcg.org/}; accessed on November 04, 2022).
-
+% FIXME the caption and the text are basically saying the same thing here. Can
+% we streamline, and maybe give a bit more detail in the text about iteration,
+% and the concrete implementation?
 \begin{figure} \centering
 \includegraphics[width=.7\textwidth]{figures/imputation.pdf}
 \caption{\label{fig:imputation}A schematic of the two-step procedure to impute
@@ -1564,6 +1569,24 @@ COVID-CG\citep{Chen2021-zc}, as in case (C). Finally, the inferred status is
 propagated to any non-mutant child nodes, as in case (D).
 }
 \end{figure}
+For many applications it is helpful to infer the Pango lineage status
+of the internal ARG nodes estimated by \texttt{sc2ts}.
+% Initially, only sample nodes have Pango lineage assignments.
+% For analysis of recombinant parents, it is also helpful to assign
+% Pango lineages to non-sample nodes.
+We do this using a two-step procedure (Figure~\ref{fig:imputation}).
+Initially, only sample nodes have Pango lineage assignments.
+For a given non-sample node $u$, if the Pango lineage of its parent is
+available and there are no intervening mutations,
+then we impute that $u$'s Pango lineage is the same as its parent.
+Otherwise, the Pango lineage of the
+non-sample node is inferred by matching its full set of mutations against the
+Pango lineage-defining mutations (based on 90\% consensus of the sequences
+analysed) from the COVID-CG website \citep{Chen2021-zc};
+\url{https://covidcg.org/}; accessed on November 04, 2022).
+
+[TODO how accurate is this approach? We should probably discuss it somewhere
+in the Results, and refer back from here? ]
 
 \section{Acknowledgements}
 We gratefully acknowledge all data contributors, i.e., the Authors and their
