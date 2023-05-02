@@ -758,44 +758,45 @@ Table summarising the status of the Pango X-lineages in the Long ARG thare infer
 % \end{footnotesize}
 % \\
 
-\includegraphics[width=0.6\textwidth]{figures/Pango_XA_nxcld_tight_graph.pdf}
-\\ % &
-% \multicolumn{2}{c}{
-\includegraphics[width=\textwidth]{figures/Pango_XAG_nxcld_tight_graph.pdf}
+\includegraphics[width=\textwidth]{figures/Pango_XA_XAG_XD_nxcld_tight_graph.pdf}
 % }
-\end{tabularx} \caption{\label{fig:pango-single-origin-graph} Single origin
-Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all XA samples
-and their ancestral lineages are shown outwards to the nearest sampled viral
-genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
+\end{tabularx} \caption{\label{fig:pango-simple-origin-graph} Simple origin
+Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all five samples designated
+as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
+sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
 Pango designation; smaller symbols are non-sample nodes inserted by sc2ts, with
-imputed Pango status. (B) Details for the single-origin Pango X lineages in the
-long ARG. (C) XAG origins in the long ARG.
+imputed Pango status. (B) Equivalent plot for the 17 XAG samples in the long ARG
+(C) Equivalent plot for both origination events for the four XD samples in the long ARG.
 } \end{figure}
 
-In Figure~\ref{fig:pango-single-origin-graph}A we illustrate the case of XA. We construct a small subgraph of the long ARG, tracing routes from Nextclade-identified XA samples to the closest other sample strains in our dataset. Where a route passes upwards through a recombination node, we only show the continuing parental lineages to the most recent sample ancestors, rather than descending the ARG downward to cousins of the recombinant parents. Dotted lines show where this subgraph links to other nodes within the ARG. It is clear from the subgraph that all the XA samples trace to a single originating recombination node.
+In Figure~\ref{fig:pango-simple-origin-graph}A we illustrate the case of XA. We construct a small subgraph of the long ARG, tracing routes from Nextclade-identified XA samples to the closest other sample strains in our dataset. Where a route passes upwards through a recombination node, we only show the continuing parental lineages to the most recent sample ancestors, rather than descending the ARG downward to cousins of the recombinant parents. Dotted lines show where this subgraph links to other nodes within the ARG. It is clear from the subgraph that all the XA samples trace to a single originating recombination node.
 
 Table~\ref{tab:pango-single-origin} summarises the sequences of all 16 of the
 Pango recombinant lineages that trace back to a single recombination node in
 the long ARG. [FIXME UPDATE THESE] We can see that XA, XAC, XAE, and XF form
 monophyletic clades, in which all of the samples given that Pango designation
-descendand from a single recombination node.
+descend from a single recombination node.
 
 [Discuss remaining]
 
 There is generally good agreement on the imputed parental lineages from the ARG
 and the official Pango designations. [Discuss more]
 
-[Discuss panel C where XAG shares a common recombinant origin with samples from
-several other X lineages] All XAG samples share a single origin; however this
-is also shared with all XAA samples, and includes some, but not all, of the
-samples identified as XAB, XQ, and XU by Nextclade. Note that if the GISAID
+[Discuss panel B where XAG shares a common recombinant origin with samples from
+several other X lineages]
+
+Figure~\ref{fig:pango-simple-origin-graph}B shows a case of another
+Pango lineage, XAG, whose Nextclade-designated samples also trace to a
+single originating recombination. This is a more intricate example, as the same origin
+is also shared with all samples designated XAA, and some, but not all, of the
+samples identified as XAB, XQ, and XU by Nextclade. Note, however, that if the GISAID
 designations are used, many of the samples marked here as XAB are reclassified
 as BA.2, and XAG becomes fully monophyletic (supplementary figure
-\ref{fig:pango_XAG_gisaid_graph}; this also gives identifying labels to the
-sample nodes, which can be converted to EPI\_ISL indentifiers using
+\ref{fig:pango_XAG_gisaid_graph}, which also gives identifying labels to the
+sample nodes, convertable to EPI\_ISL identifiers using
 Supplementary table XXX )
 
-\subsubsection{Multiple origin} The ARG inference has no pre-defined knowledge
+\subsubsection{Multiple origins} The ARG inference has no pre-defined knowledge
 of Pango X lineage assignments, and there is therefore no particular
 requirement that all the samples assigned to a given lineage must trace back to
 a single recombination event. In this section we examine the Pango X lineage
@@ -837,11 +838,6 @@ clades % is this the right term? descending from these nodes .
 
 
 \begin{figure}
-\begin{tabular}{cc}
-
-\includegraphics[width=0.45\textwidth]{figures/Pango_XD_nxcld_tight_graph.pdf}
-
- &
 
 \begin{tabular}{llll}
 \toprule
@@ -861,48 +857,55 @@ BA.1  &BA.2  &12764  &13195\\
 % BA.1.1.15 Recombinant 10448 11537
 % BA.1.1 Recombinant 10030 10447
 % Recombinant BA.2 17411 19955
-\end{tabular}
-\caption{\label{fig:multiple_origins_graph}
-A. Example subgraph for XD in the long ARG, which shows two origins for the
-four Nextclade-labelled XD samples in the long ARG. B. details of inferred
+\caption{\label{tab:multiple_origins_table}
+details of inferred
 breakpoints for different recombination events inferred for XE samples (170
 samples and 12 inferred recombination nodes; some are very similar (Official:
 BA.1* \& BA.2, 10448–11287)}
 \end{figure}
 
-In Figure~\ref{fig:multiple_origins_graph} we give the details of these
-multiple pango lineages, along with an example lineage subgraph. In this XD
-example the left hand subgraph (the origin of three XD samples) has an earliest
+Figure~\ref{fig:pango-simple-origin-graph}C shows a simple example, consisting of
+the 4 samples labelled XD by Nextclade in the long ARG. The left hand subgraph
+(the origin of three XD samples) has an earliest
 sample with EPI\_ISL: 11222324 (dated 2022-02-26), while the right hand
 subgraph has a single sample with EPI\_ISL 8514045 (dated 2021-12-30). These
-two samples differ by 35 mutations; considering the time between the samples,
+two samples differ by 35 mutations; considering this, and the time between the samples,
 it does seem possible that they represent true independent origins of XD.
 Supplementary Figure~\ref{fig:pango_XD_gisaid_graph} shows the same subgraphs
 with sample identifiers and coloured by GISAID Pango labels (however, no
 samples are designated by GISAID as XD in the long ARG).
 
+Table \ref{tab:multiple_origins_table} summarises other Pango recombinants which
+we infer to have multiple origins. [TODO: needs more detail]
+
 
 \subsubsection{Complex origins}
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
-\caption{\label{fig:complex_origins_graph}  DESCRIBE ME}
+\caption{\label{fig:complex_origins_graph}  A Pango lineage subgraph showing
+complex origins of the recombinant lineage XB. All XB samples in the long ARG
+trace to a single recombination node (top centre), but three further recombinations
+also descend from this node, with many samples descending from these nested
+recombinations not being identified as XB, but instead assigned by Nextclade to
+various pre-Alpha lineages.}
 \end{figure}
 
-As well as cases where a single recombination event explains several X lineages
-(such as XAG above), many of the Pango X lineages involve more complex origins,
-in which samples which have not been previously identified as recombinants also
-descend from originating recombination events. In addition these complex
-topologies often include extra recombination nodes within the topology that
-descends from the main originating event. An example is XB in the long ARG,
+As well as cases where single recombination events explain an X lineage,
+such as the examples in Figure~\ref{fig:pango-simple-origin-graph}, many of the
+Pango X lineages involve more complex origins,
+in which additional recombination events are nested inside the earliest shared
+recombination. Frequently, the descendants of the original recombination
+also include samples which have not been previously identified as recombinants.
+An example is XB in the long ARG,
 plotted in Figure~\ref{fig:complex_origins_graph}. Here, a recombination
 between a B.1 sample and B.1.627 sample leads both to the XB samples and to a
-"hairball" of further recombination nodes whose descendants have not been
-identified as recombinants by Nextclade (blue nodes, "pre-Alpha" VoC). However,
+``hairball'' of further recombination nodes whose descendants have not been
+identified as recombinants by Nextclade (blue nodes, ``pre-Alpha'' VoC). However,
 in this subgraph, there is only a single sample, identified as XB by Nextclade,
 which is descended from these nested recombination events; moreover, this
 sample is not identified as XB by GISAID (Supplementary
 Figure~\ref{fig:pango_XB_gisaid_graph}). We suggest that investigating cases of
-complex origins, and identifing which (if any) of the nested, further
+complex origins, and identifying which (if any) of the nested, further
 recombination events may be artifactual, is an important area of future
 research.
 
@@ -1365,7 +1368,7 @@ tree building methods which keep track of the location of the required mutations
 (rather then inferring post-hoc by parsimony), is a likely avenue
 for improvements in overall inference quality.
 
-\subsection{Parsimony increasing hueristics}
+\subsection{Parsimony increasing heuristics}
 \label{sec:parsimony-heuristics}
 Attaching trees built from the clusters of samples that copy from
 a particular node (or path of nodes for recombinants, see the
@@ -1407,7 +1410,7 @@ ARG topology affected by newly added samples. Since the inferred
 ARGs still contain a large number of reversion mutations which
 are likely to be mostly artefactual, it is clear that there
 is room for improvement, and that further parsimony increasing
-hueristics would likely be of benefit.
+heuristics would likely be of benefit.
 
 \subsection{Treatment of recombinants}
 A sample sequence is designated as a recombinant if the most likely

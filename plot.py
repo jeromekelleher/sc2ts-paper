@@ -1328,6 +1328,7 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
     def post_process(cls, ax):
         x_min, x_max = ax.get_xlim()
         ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
+        ax.text(0.98, 0.05,  "XB subgraph", fontsize=18, transform=ax.transAxes, ha='right')
 
     @staticmethod
     def adjust_positions(pos):
