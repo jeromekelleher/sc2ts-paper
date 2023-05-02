@@ -988,9 +988,6 @@ Currently, sc2ts is in development. Below, we propose several ways to potentiall
 \item We have used a single mismatch value in all the HMM runs, set so that having three mutations is as likely as having a single recombination. This parameter choice is arbitrary, and higher values may reduce the number of origins for those Pango lineages that were inferred to descend from more than one recombinant ancestor. In addition, because both the mutation rate and recombination rate varies across the SARS-CoV-2 genome, it may be helpful to allow the mismatch value to vary along the genome.
 \item By treating mutations equally in the current HMM implementation, we implicitly assume that the rates of different types of mutations are identical. However, as reported previously \citep{Yi2021-sc}, there is a high degree of mutational asymmetry in SARS-CoV-2. To account for mutational biases, more sophisticated nucleotide substitution models (e.g., allowing for different rates of transition and transversion) can be incorporated into HMM likelihood calculations.
 \item Our current masking strategy handles indels as missing data. Doing this can remove information helpful to detect recombinants. For example, sequences of the Pango recombinant XP were not identified as recombinants, because XP’s characteristic multibase deletion was masked.
-\item The "lack of memory" in the HMM can result in  recombinants with two or more breakpoints to have different parents for each recombined portion of the genome, when it is sometimes equally parsimonious to match against the same parent in separate regions. The copying process in the HMM currently does not preferentially "switch back" to a previoulsy matched parent, but incorporating this would be a valuable addition.
-\item Some recombinants may reasonably have three or more parents, indicating multiple "stacked" recombination events. We have not investigated this in the current analysis, but with further sc2ts development, there is potential to analyse these putative recombinants and trace their evolutionary origins through the ARG.
-\item In the present implementation, HMM traceback is performed once, yielding a single maximum-likelihood genome copying path. A stochastic traceback algorithm (e.g., (Rasmussen et al. 2014)) can be implemented in order to quantify uncertainty about putative parent node(s) and switch positions. These estimates of uncertainty may be used as support values for branches analogous to bootstrap values produced by standard phylogenetic methods.
 \item Daily trees are built using the UPGMA algorithm. This entails an extra step to ``un-resolve'' daily trees in parts of the trees with no phylogenetic resolution. Using a maximum-parsimony algorithm to build daily trees would leave these "soft polytomies" in, removing the need for the un-resolving step.
 \end{itemize}
 
@@ -1315,7 +1312,7 @@ be a fruitful avenue for future work. See the Discussion for further
 potential improvements that may be made to the HMM.
 
 \subsection{Tree inference from HMM sample clusters}
-\label{sec-sample-cluster-tree-inference}
+\label{sec:sample-cluster-tree-inference}
 For a given daily batch of sample sequences that are to be attached to the
 ARG, the LS HMM provides the most likely copying path and required mutations
 for each of those sequences. We could directly attach these samples to
@@ -1366,6 +1363,7 @@ tree building methods which keep track of the location of the required mutations
 for improvements in overall inference quality.
 
 \subsection{Parsimony increasing hueristics}
+\label{sec:parsimony-heuristics}
 Attaching trees built from the clusters of samples that copy from
 a particular node (or path of nodes for recombinants, see the
 next section) under the HMM is an inherently greedy strategy,
@@ -1427,51 +1425,84 @@ for each distinct recombinant. (This node is not strictly necessary
 but makes it convenient to find recombinants for subsequent analysis.)
 Variation within a cluster
 of recombinant sequences is handled in the same way as non-recombinants
-(see Section~\ref{sec-sample-cluster-tree-inference} above for details).
+(see Section~\ref{sec:sample-cluster-tree-inference} above for details).
 
-[TODO ADD IN HMM RERUN STUFF]
+When the Viterbi algorithm implementation used by the LS HMM infers
+recombinant ancestry for a given genome, the point at which inheritance
+switches from one parent node to another is the last possible
+position.
+Thus, the breakpoints used in the ARG represent the rightmost end of the
+interval, within which the recombination event could have occurred. To obtain
+the leftmost end of this interval, we rerun the HMM using mirrored coordinates
+(i.e., from the 3’ end to the 5’ end) and store the information as
+metadata on the recombination node.
+These left- and rightmost positions
+are the recombination intervals reported throughout.
+Ultimately all the recombination intervals mean is that the parent sequences
+are identical within that interval, and there is therefore no information
+about where the recombination occured. There are many different processes
+that can contribute to the size of these intervals, and therefore
+understanding how these processes interact to produce wider or narrower
+intervals is an important avenue for future work.
+
+The LS HMM machinery, and the interpretation of inferred recombinant paths and
+breakpoint intervals is a central part of \texttt{sc2ts}, and there are many
+ways to extend and improve. For example, the current parameterisation of using
+a single ``mismatch ratio'' is very simplistic (see section XXX), and likely
+results in a very flat likelihood space where many sequences have equal
+likelihood of being chosen. More sophisticated parameterisations where we
+condition on known per-site mutation rates (and perhaps per-base subsitution
+rates) may lead to better results, although perhaps at the cost of some
+reduction in interpretability. Post-processing the match results to produce
+more parsimonious breakpoints may also be a worthwhile avenue for development.
+In particular, we may choose to insert breakpoints for the ARG that are choosed
+from within the possible interval, rather than the current approach of taking
+the right-most value. Cases where we have more than two parents may either be
+the ``stacking'' of multiple recombination events, or instances where
+the HMM has chosen to switch to a third sequence rather than back to
+the original parent (where this is equally parsimonious). Many putative
+recombination events, however, will represent poor quality data, where
+a recombinant copying path happens to be a more likely explanation
+of a highly divergent sequence.
+A thorough analysis of the behaviour of the LS model in the context
+of a pandemic-scale ARG may lead to significant improvements in our
+ability identify recombinants and to filter poor quality data.
 
 \subsection{Node dating}
-[Discuss how we date nodes, and suggest caution on interpretation]
-
-% \subsubsection{Breakpoint intervals and HMM consistency} When recombinant
-% ancestry for a given genome is inferred by the LS HMM, a breakpoint is
-% identified as the last possible position where the copying path must switch.
-% Thus, the breakpoints used in the ARG represent the rightmost end of the
-% interval, within which the recombination event could have occurred. To obtain
-% the leftmost end of this interval, we rerun the HMM using mirrored coordinates
-% (i.e., from the 3’ end to the 5’ end).
-
-% A recombinant sequence was deemed to be HMM-consistent if (1) the same number
-% of parent nodes and (2) the same set of mutations immediately ancestral to it
-% were obtained from both the unmirrored and mirrored HMM runs. In the ideal
-% case, the copying paths of both the HMM runs switch between parent sequences at
-% the same position(s); in less ideal cases, however, the copying paths switch at
-% different positions, typically because of a lack of genetic variation between
-% the positions. The switch positions in the copying paths of both the HMM runs
-% were used to define the breakpoint interval(s) of an HMM-consistent
-% recombinant.
-
+The approaches to assigning a date to nodes in \texttt{sc2ts} is currently
+ad-hoc, and the inferred timing of events from the ARGs reported
+here should be treated with caution (e.g., Figure~\ref{fig:recomb_mrcas}).
+Sample nodes (those corresponding to observed sample sequences) are the
+most accurately dated, as we use the reported collection date for
+these nodes. These are not entirely accurate, but our data filtering
+criteria should remove the most egregious errors (see
+Section~\ref{sec:filtering_time_travellers}). Other nodes in the ARG
+are dated by splitting the time between the attached samples
+and the chosen parent nodes equally (in the case of
+trees inferred from daily sample clusters,
+Section~\ref{sec:sample-cluster-tree-inference}) or by adding arbitrary
+small values when creating new nodes using parsimony rules
+(Section~\ref{sec:parsimony-heuristics}). Substantial improvements could
+likely be made using simple node dating methods.
 
 \subsection{Data preprocessing}
-
 The findings of this study are
 based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
 up to Aug 22, 2022 and accessible at
-% FIXME
-doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
-if they (1) had ambiguous collection dates; (2) were collected before January
-01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
-Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
-MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
+\url{https://doi.org/10.55876/gis8.230329cd} (Supplementary Table 1).
+We removed sequences
+if they (1) had ambiguous collection dates;
+(2) were collected before January 01, 2020 or after June 30, 2022; or
+(3) were isolated from a non-human host.
+We aligned sequences to the Wuhan-Hu-1/2019 reference sequence
+(GenBank: MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
 2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
-inference, sequences were excluded if they had a ``bad'' quality control status
+inference, we also excluded sequences if they had a ``bad'' quality control status
 in any of the four Nextclade columns (``qc.missingData.status'',
-``qc.mixedSites.status'', ``qc.frameShifts.status'' and
-`qc.stopCodons.status''). These excluded genomes are enriched for low-coverage,
-contaminated, or misassembled sequences.
+``qc.mixedSites.status'', ``qc.frameShifts.status'' and `qc.stopCodons.status'').
 
-Ambiguous nucleotide letters (i.e.,
+% FIXME this isn't quite right
+We encode ambiguous nucleotide letters (i.e.,
 not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
 Problematic bases in the alignments, which had two or more ambiguous letters or
 gaps within a distance of seven bases, were masked as missing data following
@@ -1483,7 +1514,8 @@ sequencing errors or highly homoplasic were excluded entirely
 (\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
 \url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
 
-\subsection{Exclusion of ``time travellers''}
+\subsection{Filtering ``time travellers''}
+\label{sec:filtering_time_travellers}
 [FIXME I'm pretty sure we don't have two filters here, we just use
 maximum sampling delay. Also not sure the MSD acronym is worth it,
 we don't use it much.]
