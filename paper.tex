@@ -1312,7 +1312,7 @@ be a fruitful avenue for future work. See the Discussion for further
 potential improvements that may be made to the HMM.
 
 \subsection{Tree inference from HMM sample clusters}
-\label{sec-sample-cluster-tree-inference}
+\label{sec:sample-cluster-tree-inference}
 For a given daily batch of sample sequences that are to be attached to the
 ARG, the LS HMM provides the most likely copying path and required mutations
 for each of those sequences. We could directly attach these samples to
@@ -1363,6 +1363,7 @@ tree building methods which keep track of the location of the required mutations
 for improvements in overall inference quality.
 
 \subsection{Parsimony increasing hueristics}
+\label{sec:parsimony-heuristics}
 Attaching trees built from the clusters of samples that copy from
 a particular node (or path of nodes for recombinants, see the
 next section) under the HMM is an inherently greedy strategy,
@@ -1424,7 +1425,7 @@ for each distinct recombinant. (This node is not strictly necessary
 but makes it convenient to find recombinants for subsequent analysis.)
 Variation within a cluster
 of recombinant sequences is handled in the same way as non-recombinants
-(see Section~\ref{sec-sample-cluster-tree-inference} above for details).
+(see Section~\ref{sec:sample-cluster-tree-inference} above for details).
 
 When the Viterbi algorithm implementation used by the LS HMM infers
 recombinant ancestry for a given genome, the point at which inheritance
@@ -1468,38 +1469,40 @@ of a pandemic-scale ARG may lead to significant improvements in our
 ability identify recombinants and to filter poor quality data.
 
 \subsection{Node dating}
-[Discuss how we date nodes, and suggest caution on interpretation]
-
-% A recombinant sequence was deemed to be HMM-consistent if (1) the same number
-% of parent nodes and (2) the same set of mutations immediately ancestral to it
-% were obtained from both the unmirrored and mirrored HMM runs. In the ideal
-% case, the copying paths of both the HMM runs switch between parent sequences at
-% the same position(s); in less ideal cases, however, the copying paths switch at
-% different positions, typically because of a lack of genetic variation between
-% the positions. The switch positions in the copying paths of both the HMM runs
-% were used to define the breakpoint interval(s) of an HMM-consistent
-% recombinant.
-
+The approaches to assigning a date to nodes in \texttt{sc2ts} is currently
+ad-hoc, and the inferred timing of events from the ARGs reported
+here should be treated with caution (e.g., Figure~\ref{fig:recomb_mrcas}).
+Sample nodes (those corresponding to observed sample sequences) are the
+most accurately dated, as we use the reported collection date for
+these nodes. These are not entirely accurate, but our data filtering
+criteria should remove the most egregious errors (see
+Section~\ref{sec:filtering_time_travellers}). Other nodes in the ARG
+are dated by splitting the time between the attached samples
+and the chosen parent nodes equally (in the case of
+trees inferred from daily sample clusters,
+Section~\ref{sec:sample-cluster-tree-inference}) or by adding arbitrary
+small values when creating new nodes using parsimony rules
+(Section~\ref{sec:parsimony-heuristics}). Substantial improvements could
+likely be made using simple node dating methods.
 
 \subsection{Data preprocessing}
-
 The findings of this study are
 based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
 up to Aug 22, 2022 and accessible at
-% FIXME
-doi.org/10.55876/gis8.230329cd (Supplementary Table 1). Sequences were removed
-if they (1) had ambiguous collection dates; (2) were collected before January
-01, 2020 or after June 30, 2022; or (3) were isolated from a non-human host.
-Sequences were aligned to the Wuhan-Hu-1/2019 reference sequence (GenBank:
-MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
+\url{https://doi.org/10.55876/gis8.230329cd} (Supplementary Table 1).
+We removed sequences
+if they (1) had ambiguous collection dates;
+(2) were collected before January 01, 2020 or after June 30, 2022; or
+(3) were isolated from a non-human host.
+We aligned sequences to the Wuhan-Hu-1/2019 reference sequence
+(GenBank: MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
 2022-07-26T12:00:00Z). To reduce the impact of poor-quality sequences on ARG
-inference, sequences were excluded if they had a ``bad'' quality control status
+inference, we also excluded sequences if they had a ``bad'' quality control status
 in any of the four Nextclade columns (``qc.missingData.status'',
-``qc.mixedSites.status'', ``qc.frameShifts.status'' and
-`qc.stopCodons.status''). These excluded genomes are enriched for low-coverage,
-contaminated, or misassembled sequences.
+``qc.mixedSites.status'', ``qc.frameShifts.status'' and `qc.stopCodons.status'').
 
-Ambiguous nucleotide letters (i.e.,
+% FIXME this isn't quite right
+We encode ambiguous nucleotide letters (i.e.,
 not A, C, G, T, or a gap) in the pairwise genome alignments were encoded as N.
 Problematic bases in the alignments, which had two or more ambiguous letters or
 gaps within a distance of seven bases, were masked as missing data following
@@ -1511,7 +1514,8 @@ sequencing errors or highly homoplasic were excluded entirely
 (\url{https://virological.org/t/issues-with-sars-cov-2-sequencing-data/473};
 \url{https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf}).
 
-\subsection{Exclusion of ``time travellers''}
+\subsection{Filtering ``time travellers''}
+\label{sec:filtering_time_travellers}
 [FIXME I'm pretty sure we don't have two filters here, we just use
 maximum sampling delay. Also not sure the MSD acronym is worth it,
 we don't use it much.]
