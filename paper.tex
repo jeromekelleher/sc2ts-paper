@@ -405,8 +405,11 @@ CAMC-CBA018 & Jackson        &  20,390--21,254 & B.1.177/B.1.1.7 \\
 
 In the wide ARG (sampled to mid-2021), all these sequences are descendants of
 recombination nodes, except MILK-103C712, which was removed during
-preprocessing (Table 2); additionally, all are HMM-consistent, except
-QEUH-1067DEF. Overall, we find excellent agreement between Jackson et al.’s
+preprocessing (Table 2). Additionally, all except QEUH-1067DEF are HMM-consistent:
+that is, the mirrored HMM runs (i.e. forward from 5’ to 3’ end versus backwards from 3’ to 5’ end)
+identify the same set of originating mutations, have the same number of breakpoints, and have
+equivalent (sequence-identical) parents from forward and backward runs.
+Overall, we find excellent agreement between Jackson et al.’s
 motif-based method and sc2ts in terms of (1) the Pango lineage of the parents
 and (2) the breakpoint intervals (Table 2). In all cases, the two methods
 proposed identical or very closely related parent lineages. The general mosaic
@@ -533,10 +536,7 @@ majority of newly identified recombinants arise from parents that diverged 10 to
 
 As a check on the reliability of these identified recombination events,
 Figure~\ref{fig:recomb_mrcas}B  plots only those breakpoints which are
-"HMM-consistent"; that is, where the mirrored HMM runs (i.e., 5’ to 3’ end
-versus 3’ to 5’ end) identify the same set of originating mutations and the
-same number of breakpoints, and the parents in the mirrored runs are
-sequence-identical. This reduces both the number of recombination nodes /
+HMM-consistent. This reduces both the number of recombination nodes /
 breakpoints from 1522 / B to C / D in the wide ARG and from 763 / 806 to 459 in
 the long ARG (Supplementary Tables 1 and 2).
 
