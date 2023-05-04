@@ -11,6 +11,10 @@
 \usepackage{graphicx}
 \usepackage{makecell}
 \usepackage{url}
+% For rotating figures, tables, etc.
+%  including their captions - only for supplementary figures
+\usepackage{rotating}
+
 % JK: turning this off for the moment as I keep clicking through on links
 % to the bibliography while reading the text and it's intensely annoying.
 % Can reinstate when we're ready to preprint
@@ -114,7 +118,7 @@ structure \citep{Kelleher2018-xc}  has enabled compact yet flexible
 encoding of large ARGs, and this representation should be well-suited to storing
 recombinant viral genealogies, even those with millions of sampled sequence,
 such as SARS-CoV-2 (with currently over 15 million sequences in the GISAID database
-\citep{Shu2017-hp}). Moreover the ``tskit'' software library, which implements this
+\citep{Shu2017-hp}). Moreover the \emph{tskit} software library, which implements this
 data structure, enables efficient manipulation of the stored genealogies and is
 integrated with a suite of open-source software tools to simulate, analyse, and
 infer them \citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
@@ -129,7 +133,7 @@ deal with levels of repeated recombination far in excess of those seen in viral
 phylogenies. For example, using over 90 million variable sites
 \citet{Wohns2022-th} reconstructed a unified whole-genome genealogy of thousands
 of modern and ancient human genomes, accounting for millions of recombination
-events (over 5 million "local trees"). To achieve this, \cite{Wohns2022-th}
+events (over 5 million ``local trees''). To achieve this, \cite{Wohns2022-th}
 took advantage of a highly efficient Hidden Markov Model (HMM) implementation
 of the Li and Stephens (LS) model \citep{Li2003-ib} to infer copying paths between
 genomes \citep{Kelleher2019-ba}.
@@ -137,14 +141,14 @@ genomes \citep{Kelleher2019-ba}.
 % What is new here?
 
 Here, we present a preliminary version of a novel scalable methodology
-(``sc2ts'', optionally pronounced ``scoots'') that builds on the advances above
+(\emph{sc2ts}, optionally pronounced ``scoots'') that builds on the advances above
 and additionally takes advantage of known collection dates to infer ARGs from millions
 of full-length SARS-CoV-2 genomes. Using publicly available SARS-CoV-2 genome sequences,
 we demonstrate that sc2ts can be used to simultaneously (1) detect putative SARS-CoV-2
 recombinants; (2) infer the phylogenetic relationships of the major SARS-CoV-2 lineages;
 (3) reconstruct the mutational spectrum of SARS-CoV-2; and (4) provide a compact record
 of evolutionary information about SARS-CoV-2 that can be efficiently accessed using
-"tskit" (tree sequence toolkit) software library \citep{Kelleher2018-xc}.
+\emph{tskit} (tree sequence toolkit) software library \citep{Kelleher2018-xc}.
 Sc2ts is a promising method to automate detection of SARS-CoV-2 recombinants
 and to jointly model recombinational and mutational processes shaping the genomic
 diversity of SARS-CoV-2 at scale.
@@ -152,7 +156,7 @@ diversity of SARS-CoV-2 at scale.
 
 \section{Results}
 \subsection{Inferred ARGs}
-For this prelimary study our goals are to illustrate the utility of
+For this preliminary study our goals are to illustrate the utility of
 \texttt{sc2ts}, but to also closely study the properties of the
 inferred ARGs to inform subsequent development. Thus, rather
 than attempting to be comprehensive we chose to work with a
@@ -165,12 +169,13 @@ inference methods and scaling out across multiple servers will
 enable inferences at the full pandemic scale using \texttt{sc2ts}
 (see Discussion).
 
-To investigate the properties of the inferred ARGs under different
+To investigate the properties of the method under different
 sampling conditions, we inferred two ARGs, which we refer to as the
 ``Wide'' and ``Long'' ARGs throughout.
 The Wide ARG is densely sampled but time-limited and
 includes all 1.27 million sample genomes  with a
-maximum sampling delay of 30 days (see Methods) up to June 30, 2021.
+maximum sampling delay of 30 days (see Methods Section~\ref{sec:filtering_time_travellers}) 
+up to June 30, 2021.
 The Long ARG is more sparsely sampled but
 includes data for an additional year (June 30, 2022).
 For the long ARG, we use at most 1,000 randomly subsampled
@@ -410,7 +415,7 @@ preprocessing (Table 2). Additionally, all except QEUH-1067DEF are HMM-consisten
 that is, the mirrored HMM runs (i.e. forward from 5’ to 3’ end versus backwards from 3’ to 5’ end)
 identify the same set of originating mutations, have the same number of breakpoints, and have
 equivalent (sequence-identical) parents from forward and backward runs.
-Overall, we find excellent agreement between Jackson et al.’s
+Overall, we find excellent agreement between Jackson et al.'s
 motif-based method and sc2ts in terms of (1) the Pango lineage of the parents
 and (2) the breakpoint intervals (Table 2). In all cases, the two methods
 proposed identical or very closely related parent lineages. The general mosaic
@@ -711,48 +716,6 @@ history, where we have a all the samples assigned to this recombinant lineage
 tracing back to a single recombination node, representing this original
 recombination event.
 
-\begin{table}
-% \begin{footnotesize}
-\begin{tabular}{lllrl}
-\toprule
-{} &              parent\_lineages &          pango\_parents &   n &
-descendant\_lineages \\
-lineage &                              &                        &     &
-\\
-\midrule
-XA      &        [B.1.177.18, B.1.1.7] &     [B.1.1.7, B.1.177] &   5 & XA: 5 \\
-XAA     &               [BA.1, BA.2.9] &         [BA.1*, BA.2*] &   8 &
-    XAB: 39, XAG: 17, XAA: 8 \\
-    &&&&   XAA: 8, XQ: 2, XU: ... \\
-XAC     &          [BA.2.3, BA.1.17.2] &  [BA.2*, BA.1*, BA.2*] &  27 & XAC: 27 \\
-XAE     &                 [BA.2, BA.1] &         [BA.2*, BA.1*] &   9 & XAE: 9 \\
-XAG     &               [BA.1, BA.2.9] &         [BA.1*, BA.2*] &  17 &
-    XAB: 39, XAG: 17, XAA: 8 \\
-    &&&&   XAA: 8, XQ: 2, XU: ... \\
-XF      &                 [AY.4, BA.1] &    [B.1.617.2*, BA.1*] &   2 & XF: 2 \\
-XG      &              [BA.1.17, BA.2] &         [BA.1*, BA.2*] &  32 & XG: 32, XAB: 1 \\
-XH      &            [BA.1.20, BA.2.9] &         [BA.1*, BA.2*] &  11 &
-    XAF: 34, XH: 11 \\
-&&&& B.1.1.529: 3, XE: 3,... \\
-XK      &             [BA.1.1.1, BA.2] &         [BA.1*, BA.2*] &   6 & XK: 3 \\
-XL      &            [BA.1.17.2, BA.2] &         [BA.1*, BA.2*] &  10 &
-    XL: 10, XAB: 1, XU: 1, \\
-    &&&& XQ: 1 \\
-XR      &               [BA.1.1, BA.2] &       [BA.1.1*, BA.2*] &   8 &
-    XQ: 9, XR: 8, XAB: 2\\
-XS      &              [AY.36, BA.1.1] &  [B.1.617.2*, BA.1.1*] &   6 & XS: 4\\
-XT      &       [BA.2.23, Unknown (R)] &         [BA.2*, BA.1*] &   1 &
-    BA.2: 1, BA.1: 1, BA.1.9: 1, \\
-    &&&& BA.2.23:... \\
-XV      &  [BA.1.1, BA.2, Unknown (R)] &         [BA.1*, BA.2*] &   3 & BA.2: 8, XV: 1 \\
-XW      &            [BA.1.1.15, BA.2] &         [BA.1*, BA.2*] &  11 & XW: 11, XN: 2 \\
-XY      &               [BA.1.1, BA.2] &         [BA.1*, BA.2*] &   6 & XY: 6, XAF: 1 \\
-\bottomrule
-\end{tabular}
-\caption{\label{tab:pango-single-origin}
-Table summarising the status of the Pango X-lineages in the Long ARG thare inferred to have a single recombinant origin based on the NextClade Pango lineage assignments. Imputed parent lineages are shown from the ARG and also to parent lineages as defined by the official Pango designation alias key. FIXME: if we like this table then we can reformat it so that lists at the end are spread over multiple lines rather than using Python dict notation }
-\end{table}
-
 \begin{figure}
 \begin{tabularx}{\textwidth}{c}
 
@@ -839,19 +802,19 @@ clades % is this the right term? descending from these nodes .
 
 
 \begin{figure}
-
+\centering
 \begin{tabular}{llll}
 \toprule
 Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
 \midrule
-BA.1.15 & BA.2  &9867  &10198\\
-BA.1.15 & BA.2  &9867  &10198\\
-BA.1.1  &BA.2  &10451  &11537\\
-BA.1.1.5 & BA.2 &10448 & 11537\\
-BA.1.15 & BA.2  &10448  &12880\\
-BA.1.17 & BA.2  &10448 & 11537\\
-BA.1  &BA.2.9  &10448 & 11537\\
-BA.1  &BA.2  &12764  &13195\\
+BA.1.15  & BA.2   & 9,867  & 10,198 \\
+BA.1.15  & BA.2   & 9,867  & 10,198 \\
+BA.1.1   & BA.2   & 10,451 & 11,537 \\
+BA.1.1.5 & BA.2   & 10,448 & 11,537 \\
+BA.1.15  & BA.2   & 10,448 & 12,880 \\
+BA.1.17  & BA.2   & 10,448 & 11,537 \\
+BA.1     & BA.2.9 & 10,448 & 11,537 \\
+BA.1     & BA.2   & 12,764 & 13,195 \\
 \bottomrule
 \end{tabular}
 % BA.3  &BA.1.17  &22674  &22674\\
@@ -859,7 +822,7 @@ BA.1  &BA.2  &12764  &13195\\
 % BA.1.1 Recombinant 10030 10447
 % Recombinant BA.2 17411 19955
 \caption{\label{tab:multiple_origins_table}
-details of inferred
+Details of inferred
 breakpoints for different recombination events inferred for XE samples (170
 samples and 12 inferred recombination nodes; some are very similar (Official:
 BA.1* \& BA.2, 10448–11287)}
@@ -982,13 +945,13 @@ enhancements, we will use sc2ts to build a comprehensive ARG to search for
 recombination signals among all the 15 million and counting SARS-CoV-2 genomes
 available.
 
-``The rate of putative recombination breakpoints is about three times higher towards the 3' of the change point than the 5' interval.`` Consistent with this, the breakpoint intervals of the putative recombinants identified here tend to occur on the 3’ end of the SARS-CoV-2 genome.
+``The rate of putative recombination breakpoints is about three times higher towards the 3' of the change point than the 5' interval.'' Consistent with this, the breakpoint intervals of the putative recombinants identified here tend to occur on the 3’ end of the SARS-CoV-2 genome.
 
 \section{Improvements}
 Currently, sc2ts is in development. Below, we propose several ways to potentially improve or enhance sc2ts. We welcome suggestions and ideas from experts.
 
 \begin{itemize}
-\item A potential source of error in sc2ts ARGs comes from incorrectly reported collection dates of the samples, which can cause sample genomes to be attached to the wrong parts of the ARGs. Thus far, we have attempted to correct the most offending errors in the ARGs by filtering out "time travellers", but the sampling time can still be wrong by days or tens of days. ***describe possible approaches to correct this?***
+\item A potential source of error in sc2ts ARGs comes from incorrectly reported collection dates of the samples, which can cause sample genomes to be attached to the wrong parts of the ARGs. Thus far, we have attempted to correct the most offending errors in the ARGs by filtering out ``time travellers'', but the sampling time can still be wrong by days or tens of days. ***describe possible approaches to correct this?***
 \item To avoid time travellers, we used a maximum submission delay, but this will systematically bias against submissions from countries with greater submission delays (Kalia et al.). An area of future work is to add back the excluded sequences to a built ARG to assess which ones are likely true time travellers.
 \item We have used a single mismatch value in all the HMM runs, set so that having three mutations is as likely as having a single recombination. This parameter choice is arbitrary, and higher values may reduce the number of origins for those Pango lineages that were inferred to descend from more than one recombinant ancestor. In addition, because both the mutation rate and recombination rate varies across the SARS-CoV-2 genome, it may be helpful to allow the mismatch value to vary along the genome.
 \item By treating mutations equally in the current HMM implementation, we implicitly assume that the rates of different types of mutations are identical. However, as reported previously \citep{Yi2021-sc}, there is a high degree of mutational asymmetry in SARS-CoV-2. To account for mutational biases, more sophisticated nucleotide substitution models (e.g., allowing for different rates of transition and transversion) can be incorporated into HMM likelihood calculations.
@@ -1223,64 +1186,70 @@ the mutation probability is $\mu_\ell$ and $n$
 denotes the size of the reference panel.
 The Viterbi algorithm can be used to find a
 ``copying path'' through the reference panel for a given query sequence that
-maximises the likelihood under these parameters.
+maximises the likelihood under these parameters. Unseen states in the reference panel are shown as coloured lines enclosed by
+the grey box. The black arrow describes the true path through the data which leads to the emitted
+focal sequence below. Examples of transition and
+emission probabilities along this trajectory are shown by the red and blue
+arrows, respectively.
+}
+\end{figure}
+
+
+
 % The LS HMM is governed by the transition and
 % emission matrices, $Q$ and $E$, respectively.
-% Each may be a function of the
-% reference panel members, but transitions are generally assumed to be
-% independent of the hidden states themselves (shown in the pink panel). This
-% dramatically increases performance as the state space drops to two states
-% (i.e., switching or not switching).
-% Emissions may also be a function of the nucleotide states, but in our
-% case, we assume that all observed alleles (in both the reference panel and
-% focal sequence, $a\ell$) at the site under consideration are equally likely and
-% occur with mutation probability $\ell$ (shown in the blue panel).
+% 
 % These two
 % processes, transition and emission (which encode recombination and mutation,
 % respectively), define the generative process of the HMM, by which an imperfect
 % mosaic is emitted from a reference panel.
  % of samples and nodes from the ARG
 % inserted at earlier collection dates (shown in the lower panel). Here, the
-% unseen states in the reference panel are shown as coloured lines enclosed by
-% the grey box, and the true path through the data which leads to the emitted
-% focal sequence is displayed by the black arrow. Examples of transition and
-% emission probabilities along this trajectory are shown by the red and blue
-% arrows, respectively.
+% 
 % Note that in practice, we do not know the pattern of
 % colours along the focal sequence and must infer it using the Viterbi algorithm.
-}
-\end{figure}
 
 The generative process of the LS model is summarised in
 Figure~\ref{fig:ls_diagram}. Here, a transition matrix, $Q$, governs the
 process of switching (recombining) between members of the reference panel (the
 hidden states). An emission matrix, $E$, allows for differences between the
 focal sequence and the hidden state from which it is copied (due to mutation as
-well as genotyping or sequencing error). Then, we use the Viterbi algorithm
+well as genotyping or sequencing error). Both $E$ and $Q$ may be a function of the reference panel members, 
+but transitions are generally assumed to be independent of the hidden states (Figure~\ref{fig:ls_diagram}, pink panel). 
+This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
+Emissions may also be a function of the nucleotide states, but in our
+case, we assume that all observed alleles (in both the reference panel and
+focal sequence, $a\ell$) at the site under consideration are equally likely and
+occur with mutation probability $\frac{\mu_\ell}{a_\ell-1}$ (Figure~\ref{fig:ls_diagram}, blue panel).
+We use the Viterbi algorithm
 \citep{Viterbi1967-ol} to find the most likely copying path through the
 sequences, given a set of reference sequences, $Q$, and $E$.
 The relative rates of mutation and recombination are usually controlled by
 the site-specific parameters $\mu_\ell$ and $r_\ell$, respectively.
-For this work we used a simpler formulation, which uses a single parameter
-(the mismatch ratio, MMR) to control the relative importance of mutation
+For this work we used a slightly different formulation, which uses a parameter, the mismatch ratio (MMR), to control the relative importance of mutation
 and recombination in the HMM. Specifically, an MMR value of $k$ will
-prefer $k$ mismatches (mutations) to a recombination.[DUNCAN MORE DETAILS
-HERE PLEASE]
+prefer $k$ mismatches (mutations) to a single recombination which results in copying from a template with no mismatches. To map between recombination probability and mutation probability for a particular mismatch ratio, we simply consider the two paths which we wish to be equally likely, and rearrange for the mutation or recombination probability. In the simple case when we assume $\mu_l=\mu$ and $r_l=r$, we obtain (supplementary methods):
+\begin{align*}
+r = \frac{n\mu^k}{(1-\mu)^k + (n-1)\mu^k}, \quad \quad
+\mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}.
+\end{align*}
+Under a lower MMR value (for which recombinations are favoured over mutations), the maximum-likelihood HMM copying path of a
+focal genome more likely spans at least two ancestral genomes (i.e,. the focal
+genome is a putative recombinant) than a single ancestral genome. Here, the MMR 
+was set to three in all the HMM runs.
 
-[ALSO MENTION MISSING DATA, where we deal with Ns in the alignment]
+A varying degree of missingness is present in the genetic data, that is, for a given sample, a subset of nucleotides coded as `unknown' at a set of positions. As a result, we had to consider missingness in our implementation of LS Viterbi. One approach would be to `impute' missing data, and hard-call or define some distribution over the possible missing nucleotide, and use that in the determination of path probabilities. Another is to not attempt to estimate the true nucleotide, but rather to consider such sites as uninformative to the path probability. We chose the latter. To do this, we simply encode the emission probability where the underlying nucleotide transition is $\mathit{unknown}\rightarrow \{A,C,G,T\}$, $\{A,C,G,T\}\rightarrow\mathit{unknown}$, or $\mathit{unknown}\rightarrow\mathit{unknown}$ at 1.
 
+% [ALSO MENTION MISSING DATA, where we deal with Ns in the alignment]
 % OLD text, ready to be adapted (and deleted once done)
 % For this
 % application, we have parameterised the HMM using a mismatch ratio (MMR), which
 % tunes how strongly mutations (i.e., no switching of template sequences) are
 % preferred over recombination (i.e., switching between sequences) during
-% copying. Under a lower MMR value, the maximum-likelihood HMM copying path of a
-% focal genome more likely spans at least two ancestral genomes (i.e,. the focal
-% genome is a putative recombinant) than a single ancestral genome. Here, the MMR
-% was set to three in all the HMM runs .
+% copying. 
 
 In \texttt{sc2ts} we use the efficient ARG-based implementation of the
-LS Viterbi algorithm from \texttt{tsinfer}~\citep{Kelleher2019-ba} to find
+LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
 the most likely copying path for each sample sequence
 among all sequences (sampled and inferred) in the current ARG.
 In the majority of cases, with non-recombinant sample sequences,
@@ -1296,7 +1265,7 @@ find a sequence that minimises the number of additional mutations required
 to incorporate a newly-added sample into the ARG.
 Recombination is then inferred when the most likely solution to the LS
 HMM is to copy from more than one ARG node along the genome, for a
-given sample sequece. [TODO MORE]
+given sample sequence. [TODO MORE]
 
 We can solve this massive optimisation problem exactly because the ARG-based
 implementation of the LS HMM used in \texttt{tsinfer} scales approximately
@@ -1513,7 +1482,7 @@ We encode ambiguous nucleotide letters (i.e.,
 not A, C, G, T, or a gap) in the pairwise genome alignments as missing data
 (N). Problematic bases in the alignments, which had two or more Ns or
 gaps within a distance of seven bases, are masked as missing data following
-the approach used in the ``faToVCF`` tool used by
+the approach used in the ``faToVCF'' tool used by
 UShER~\citep{Turakhia2022-it}.
 Sites that are masked by this process are
 treated as missing data by the LS HMM (Section~\ref{sec:ls}).
@@ -1622,6 +1591,23 @@ the appropriate GISAID data access.
 \renewcommand\thetable{S\arabic{table}}
 \setcounter{table}{0}
 \section*{Supplementary}
+\subsection*{Supplementary methods}
+\subsubsection*{Derivation of relation between recombination probability and mismatch probability conditional on mismatch ratio}
+Without loss of generality, consider a region of length $m$. Up until this region, two paths are equally likely, so we can re-scale by the likelihood up to the site before the region starts.
+
+For a MMR of $k$, we only need to consider two of the $n$ members of the reference panel. One; $\rho_1$, for which there are no mismatches, but we need to recombine in, and a second; $\rho_2$, for which there are $k$ (randomly chosen) mismatches in the region.
+
+We can simply follow the probability of tracking along each of those paths:
+\begin{align*}
+P(\rho_1) &= c \frac{r}{n} \left(\left(1-r\right)+\frac{r}{n}\right)^m\left(1-\mu\right)^m &\text{recombine to a template with no mismatches,}\\
+P(\rho_2) &= c \left(\left(1-r\right) + \frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^m \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
+\end{align*}
+where $r$ is the recombination probability between adjacent variants, $\mu$ is the mismatch probability between a target sequence at a variant and a particular member of the reference panel, and $c$ is the likelihood of the path up to this point, which we assume to be equal. 
+We then set these path probabilities equal, and rearrange to obtain:
+\begin{align*}
+r &= \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},\\
+\mu &= \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}
+\end{align*}
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/supp_cophylogeny_long.pdf}
@@ -1680,24 +1666,79 @@ QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
 \caption{\label{fig:recomb_mrcas_voc_breakdown}  Divergence between parent lineages for recombination events within and among different VoC categories. HMM-consistent recombinants are shown in green, HMM-inconsistent in blue (including many of the named Delta-Omicron recombinants). We find 69 HMM consistent (77 inconsistent) Alpha-Alpha recombination breakpoints = 13\% (10\%) of the total; 84 HMM consistent (143 inconsistent) Delta-Delta recombination breakpoints = 18\% (18\%) of the total; 99 HMM consistent (155 inconsistent) Omicron-Omicron recombination breakpoints = 22\% (19\%) of the total; and 2 HMM consistent (20 inconsistent) Delta-Omicron recombination breakpoints = 2\% (< 1\%) of the total. These plots do not include recombination breakpoints involved lineages that were not classified into these VoC categories}
 \end{figure}
 
-\begin{figure} \centering
-\includegraphics[width=\textwidth]{figures/Pango_XA_gisaid_large_graph.pdf}
-\caption{\label{fig:pango_XA_gisaid_graph}  DESCRIBE ME}
-\end{figure}
+\begin{table}
+% \begin{footnotesize}
+\begin{tabular}{lllrl}
+\toprule
+lineage & ARG parents & Official Pango parents & n & Other descendants \\
+\midrule
+XA      &       B.1.1.7 + B.1.177.18 &     B.1.1.7 + B.1.177 &   5 & -- \\
+XAA, XAG     &              BA.1 + BA.2.9 &         BA.1* + BA.2* &   8 &
+    XAB: 39, XAG: 17, XAA: 8 \\
+    &&&&   XAA: 8, XQ: 2, XU: ... \\
+XAC     &          [BA.2.3, BA.1.17.2] &  [BA.2*, BA.1*, BA.2*] &  27 & -- \\
+XAE     &                 [BA.2, BA.1] &         [BA.2*, BA.1*] &   9 & XAE: 9 \\
+XAG     &               [BA.1, BA.2.9] &         [BA.1*, BA.2*] &  17 &
+    XAB: 39, XAG: 17, XAA: 8 \\
+    &&&&   XAA: 8, XQ: 2, XU: ... \\
+XF      &                 [AY.4, BA.1] &    [B.1.617.2*, BA.1*] &   2 & XF: 2 \\
+XG      &              [BA.1.17, BA.2] &         [BA.1*, BA.2*] &  32 & XG: 32, XAB: 1 \\
+XH      &            [BA.1.20, BA.2.9] &         [BA.1*, BA.2*] &  11 &
+    XAF: 34, XH: 11 \\
+&&&& B.1.1.529: 3, XE: 3,... \\
+XK      &             [BA.1.1.1, BA.2] &         [BA.1*, BA.2*] &   6 & XK: 3 \\
+XL      &            [BA.1.17.2, BA.2] &         [BA.1*, BA.2*] &  10 &
+    XL: 10, XAB: 1, XU: 1, \\
+    &&&& XQ: 1 \\
+XR      &               [BA.1.1, BA.2] &       [BA.1.1*, BA.2*] &   8 &
+    XQ: 9, XR: 8, XAB: 2\\
+XS      &              [AY.36, BA.1.1] &  [B.1.617.2*, BA.1.1*] &   6 & XS: 4\\
+XT      &       [BA.2.23, Unknown (R)] &         [BA.2*, BA.1*] &   1 &
+    BA.2: 1, BA.1: 1, BA.1.9: 1, \\
+    &&&& BA.2.23:... \\
+XV      &  [BA.1.1, BA.2, Unknown (R)] &         [BA.1*, BA.2*] &   3 & BA.2: 8, XV: 1 \\
+XW      &            [BA.1.1.15, BA.2] &         [BA.1*, BA.2*] &  11 & XW: 11, XN: 2 \\
+XY      &               [BA.1.1, BA.2] &         [BA.1*, BA.2*] &   6 & XY: 6, XAF: 1 \\
+\bottomrule
+\end{tabular}
+\caption{\label{tab:pango-single-origin}
+Summary of the Pango X-lineages in the long ARG that are inferred to have a single recombinant origin based on the NextClade Pango lineage assignments. Parent lineages from the ARG (as designated by Nextclade and, where relevant and also to parent lineages as defined by the official Pango designation alias key. (TODO: explain the asterisks) FIXME: if we like this table then we can reformat it so that lists at the end are spread over multiple lines rather than using Python dict notation }
+\end{table}
 
 \begin{figure} \centering
-\includegraphics[width=\textwidth]{figures/Pango_XAG_gisaid_large_graph.pdf}
-\caption{\label{fig:pango_XAG_gisaid_graph}  DESCRIBE ME}
+\includegraphics[width=0.5\textwidth]{figures/Pango_XA_gisaid_large_graph.pdf}
+\caption{\label{fig:pango_XA_gisaid_graph}
+Detailed version of Figure~\ref{fig:pango-simple-origin-graph}A. All single nucleotide mutations are listed
+with the initial nucleotide state, followed by the reference genome position, followed by the derived
+nucleotide state (after mutation). Sample nodes are shown with \emph{tskit} IDs, which can be mapped to
+GISAID EPI ISL identifiers and strain names using supplementary file XXX. In contrast to
+Figure~\ref{fig:pango-simple-origin-graph}A, Pango lineages shown here are those assigned by GISAID
+rather than Nextclade. In the case of XA, Nextclade and GISAID agree completely on the lineage designations.
+}
 \end{figure}
+
+\begin{sidewaysfigure} \centering
+\includegraphics[width=\textwidth]{figures/Pango_XAG_gisaid_large_graph.pdf}
+\caption{\label{fig:pango_XAG_gisaid_graph}
+Detailed version of Figure~\ref{fig:pango-simple-origin-graph}B, with node and mutation labels as in
+Figure~\ref{fig:pango_XA_gisaid_graph}. 
+}
+\end{sidewaysfigure}
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/Pango_XD_gisaid_large_graph.pdf}
-\caption{\label{fig:pango_XD_gisaid_graph}  DESCRIBE ME}
+\caption{\label{fig:pango_XD_gisaid_graph}
+Detailed version of Figure~\ref{fig:pango-simple-origin-graph}C , with node and mutation labels as in
+Figure~\ref{fig:pango_XA_gisaid_graph}
+}
 \end{figure}
 
-\begin{figure} \centering
+\begin{sidewaysfigure} \centering
 \includegraphics[width=\textwidth]{figures/Pango_XB_gisaid_large_graph.pdf}
-\caption{\label{fig:pango_XB_gisaid_graph}  DESCRIBE ME}
-\end{figure}
+\caption{\label{fig:pango_XB_gisaid_graph}
+Detailed version of Figure~\ref{fig:complex_origins_graph}, with node and mutation labels as in
+Figure~\ref{fig:pango_XA_gisaid_graph}
+}
+\end{sidewaysfigure}
 
 \end{document}
