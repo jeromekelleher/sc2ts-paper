@@ -1491,15 +1491,18 @@ def print_sample_map(ts, nodes):
     for u in nodes:
         if ts.node(u).is_sample():
             md = ts.node(u).metadata
-            isl_map[u] = md["gisaid_epi_isl"] if "gisaid_epi_isl" in md else "Unknown"
+            isl_map[u] = (
+                md["gisaid_epi_isl"] if "gisaid_epi_isl" in md else "EPI_ISL_unknown",
+                md["strain"] if "strain" in md else "Strain_unknown",
+            )
     for k in sorted(isl_map.keys()):
-        print(f"tsk{k}: {isl_map[k]}")
+        print(f"tsk{k}: {isl_map[k][0]}, {isl_map[k][1]}")
 
 
 class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
     name = "Pango_XA_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
-    figsize = (12, 16)
+    figsize = (12, 10)
     node_size = 2000
     show_ids = None  # Only show for sample nodes
     edge_font_size = 6
@@ -1521,7 +1524,7 @@ class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
 class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
     name = "Pango_XAG_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
-    figsize = (44, 16)
+    figsize = (35, 16)
     node_size = 2000
     show_ids = None  # Only show for sample nodes
     edge_font_size = 6
@@ -1535,7 +1538,8 @@ class Pango_XAG_gisaid_large_graph(Pango_XAG_nxcld_tight_graph):
 
     @classmethod
     def post_process(cls, ax):
-        pass
+        x_min, x_max = ax.get_xlim()
+        ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
 
 
 class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
@@ -1556,10 +1560,6 @@ class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
 
     @classmethod
     def post_process(cls, ax):
-        pass
-
-    @classmethod
-    def post_process(cls, ax):
         x_min, x_max = ax.get_xlim()
         ax.set_xlim(x_min - (x_max - x_min) * 0.01, x_max + (x_max - x_min) * 0.01)
 
@@ -1567,7 +1567,7 @@ class Pango_XD_gisaid_large_graph(Pango_XD_nxcld_tight_graph):
 class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     name = "Pango_XB_gisaid_large_graph"
     imputed_lineage = "GISAID_lineage"
-    figsize = (64, 20)
+    figsize = (40, 20)
     node_size = 2000
     show_ids = None  # Only show for sample nodes
     edge_font_size = 6
@@ -1582,7 +1582,8 @@ class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
 
     @classmethod
     def post_process(cls, ax):
-        pass
+        x_min, x_max = ax.get_xlim()
+        ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
 
 
 ######################################
