@@ -261,16 +261,6 @@ on running the HMM to find the copying path for each sequence, and the process
 is therefore highly amenable to distributing across multiple machines.
 
 \subsection{Backbone phylogeny}
-For validation purposes, we compare the genetic
-relationships in the sc2ts-inferred ARGs with phylogenetic relationships
-inferred by the NextStrain project \citep{Hadfield2018-ef}. The NextStrain
-trees consist of subsamples of SARS-CoV-2 genomes, which over the time period
-of our ARGs are almost entirely restricted to non-recombinant lineages. To
-enable this comparison, the ARGs were ``simplified'' \citep{Kelleher2018-xc} to
-retain only those samples of our genealogy that match those present in a
-specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very
-little recombination (6 and 5 trees across the genome for the wide and long
-ARGs, respectively).
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
@@ -287,6 +277,17 @@ The tanglegram was generated with the aid of the Neighbor-Net algorithm
 \citep{Huson2012-ys}. See Figure~\ref{fig:cophylogeny_long} for the equivalent
 cophylogeny for the Long ARG.}
 \end{figure}
+
+For validation purposes, we compare the genetic
+relationships in the sc2ts-inferred ARGs with phylogenetic relationships
+inferred by the NextStrain project \citep{Hadfield2018-ef}. The NextStrain
+trees consist of subsamples of SARS-CoV-2 genomes, which over the time period
+of our ARGs are almost entirely restricted to non-recombinant lineages. To
+enable this comparison, the ARGs were ``simplified'' \citep{Kelleher2018-xc} to
+retain only those samples of our genealogy that match those present in a
+specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very
+little recombination (6 and 5 trees across the genome for the wide and long
+ARGs, respectively).
 
 Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared
 between the wide ARG and a GISAID global "all-time" tree from NextStrain
@@ -765,8 +766,8 @@ Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all five sample
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
 sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
 Pango designation; smaller symbols are non-sample nodes inserted by sc2ts, with
-imputed Pango status. (B) Equivalent plot for the 17 XAG samples in the long ARG
-(C) Equivalent plot for both origination events for the four XD samples in the long ARG.
+imputed Pango status. (B) Equivalent plot for the 17 XAG samples in the long ARG, with abbreviated labelling.
+(C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
 } \end{figure}
 
 In Figure~\ref{fig:pango-simple-origin-graph}A we illustrate the case of XA. We construct a small subgraph of the long ARG, tracing routes from Nextclade-identified XA samples to the closest other sample strains in our dataset. Where a route passes upwards through a recombination node, we only show the continuing parental lineages to the most recent sample ancestors, rather than descending the ARG downward to cousins of the recombinant parents. Dotted lines show where this subgraph links to other nodes within the ARG. It is clear from the subgraph that all the XA samples trace to a single originating recombination node.
@@ -885,9 +886,9 @@ we infer to have multiple origins. [TODO: needs more detail]
 \caption{\label{fig:complex_origins_graph}  A Pango lineage subgraph showing
 complex origins of the recombinant lineage XB. All XB samples in the long ARG
 trace to a single recombination node (top centre), but three further recombinations
-also descend from this node, with many samples descending from these nested
-recombinations not being identified as XB, but instead assigned by Nextclade to
-various pre-Alpha lineages.}
+also descend from this node. The samples descending from these nested
+recombinations include 9 that are assigned by Nextclade to
+various non-recombinant pre-Alpha lineages (blue).}
 \end{figure}
 
 As well as cases where single recombination events explain an X lineage,
@@ -899,15 +900,16 @@ also include samples which have not been previously identified as recombinants.
 An example is XB in the long ARG,
 plotted in Figure~\ref{fig:complex_origins_graph}. Here, a recombination
 between a B.1 sample and B.1.627 sample leads both to the XB samples and to a
-``hairball'' of further recombination nodes whose descendants have not been
-identified as recombinants by Nextclade (blue nodes, ``pre-Alpha'' VoC). However,
-in this subgraph, there is only a single sample, identified as XB by Nextclade,
-which is descended from these nested recombination events; moreover, this
-sample is not identified as XB by GISAID (Supplementary
-Figure~\ref{fig:pango_XB_gisaid_graph}). We suggest that investigating cases of
-complex origins, and identifying which (if any) of the nested, further
-recombination events may be artifactual, is an important area of future
-research.
+``hairball'' of further recombination nodes whose descendants are mostly not
+identified as recombinants by Nextclade, and plotted in blue. A similar
+pattern is seen when examining XB in the wide ARG (discussion above, plot not shown).
+Note that the descendants of nested recombination events include only one
+XB sample (pink upper left, with 7 mutations above it); moreover, this sample is
+not identified as XB by GISAID (Supplementary Figure~\ref{fig:pango_XB_gisaid_graph})
+indicating some uncertainty in lineage assignment in this part of the ARG.
+Investigating examples of complex recombinant origins, and identifying which
+(if any) of the nested recombination events may be artifactual, is an important
+area of future research.
 
 % JK: removing this for now
 
