@@ -174,7 +174,7 @@ sampling conditions, we inferred two ARGs, which we refer to as the
 ``Wide'' and ``Long'' ARGs throughout.
 The Wide ARG is densely sampled but time-limited and
 includes all 1.27 million sample genomes  with a
-maximum sampling delay of 30 days (see Methods Section~\ref{sec:filtering_time_travellers}) 
+maximum sampling delay of 30 days (see Methods Section~\ref{sec:filtering_time_travellers})
 up to June 30, 2021.
 The Long ARG is more sparsely sampled but
 includes data for an additional year (June 30, 2022).
@@ -194,10 +194,11 @@ genomes per day from those meeting the maximum sampling delay criterion.
     \midrule
 
     Nodes & & 1,453,347 & & 783,231  & \\
-    & Samples & 1,265,685 & (87\%) & 657,239 & (84\%) \\
-    & Local (UPGMA) & 103K & (7.1\%) & 52K & (6.6\%)  \\
-    & Tree adjustment & 80,830 & (5.6\%) & 72,107 & (9.2\%) \\
-    & Recombination & 4,123 & (0.33\%) & 2,078 & (0.27\%) \\
+    & Samples & 1,265,685 & (87.09\%) & 657,239 & (83.91\%) \\
+    & Local (UPGMA) & 102,709 & (7.07\%) & 51,807 & (6.61\%)  \\
+    & Reversion push & 40,538 & (2.79\%) & 34,358 & (4.39\%)  \\
+    & Mutation collapse & 40,292 & (2.77\%) & 37,749 & (4.82\%)  \\
+    & Recombination & 4,123 & (0.28\%) & 2,078 & (0.27\%) \\
     \cmidrule{2-6}
     % TODO add more information on mutations
     Mutations & & 1.21M &  & 1.06M & \\
@@ -1201,14 +1202,14 @@ arrows, respectively.
 
 % The LS HMM is governed by the transition and
 % emission matrices, $Q$ and $E$, respectively.
-% 
+%
 % These two
 % processes, transition and emission (which encode recombination and mutation,
 % respectively), define the generative process of the HMM, by which an imperfect
 % mosaic is emitted from a reference panel.
  % of samples and nodes from the ARG
 % inserted at earlier collection dates (shown in the lower panel). Here, the
-% 
+%
 % Note that in practice, we do not know the pattern of
 % colours along the focal sequence and must infer it using the Viterbi algorithm.
 
@@ -1217,8 +1218,8 @@ Figure~\ref{fig:ls_diagram}. Here, a transition matrix, $Q$, governs the
 process of switching (recombining) between members of the reference panel (the
 hidden states). An emission matrix, $E$, allows for differences between the
 focal sequence and the hidden state from which it is copied (due to mutation as
-well as genotyping or sequencing error). Both $E$ and $Q$ may be a function of the reference panel members, 
-but transitions are generally assumed to be independent of the hidden states (Figure~\ref{fig:ls_diagram}, pink panel). 
+well as genotyping or sequencing error). Both $E$ and $Q$ may be a function of the reference panel members,
+but transitions are generally assumed to be independent of the hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
 Emissions may also be a function of the nucleotide states, but in our
 case, we assume that all observed alleles (in both the reference panel and
@@ -1238,7 +1239,7 @@ r = \frac{n\mu^k}{(1-\mu)^k + (n-1)\mu^k}, \quad \quad
 \end{align*}
 Under a lower MMR value (for which recombinations are favoured over mutations), the maximum-likelihood HMM copying path of a
 focal genome more likely spans at least two ancestral genomes (i.e,. the focal
-genome is a putative recombinant) than a single ancestral genome. Here, the MMR 
+genome is a putative recombinant) than a single ancestral genome. Here, the MMR
 was set to three in all the HMM runs.
 
 A varying degree of missingness is present in the genetic data, that is, for a given sample, a subset of nucleotides coded as `unknown' at a set of positions. As a result, we had to consider missingness in our implementation of LS Viterbi. One approach would be to `impute' missing data, and hard-call or define some distribution over the possible missing nucleotide, and use that in the determination of path probabilities. Another is to not attempt to estimate the true nucleotide, but rather to consider such sites as uninformative to the path probability. We chose the latter. To do this, we simply encode the emission probability where the underlying nucleotide transition is $\mathit{unknown}\rightarrow \{A,C,G,T\}$, $\{A,C,G,T\}\rightarrow\mathit{unknown}$, or $\mathit{unknown}\rightarrow\mathit{unknown}$ at 1.
@@ -1249,7 +1250,7 @@ A varying degree of missingness is present in the genetic data, that is, for a g
 % application, we have parameterised the HMM using a mismatch ratio (MMR), which
 % tunes how strongly mutations (i.e., no switching of template sequences) are
 % preferred over recombination (i.e., switching between sequences) during
-% copying. 
+% copying.
 
 In \texttt{sc2ts} we use the efficient ARG-based implementation of the
 LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
@@ -1605,7 +1606,7 @@ We can simply follow the probability of tracking along each of those paths:
 P(\rho_1) &= c \frac{r}{n} \left(\left(1-r\right)+\frac{r}{n}\right)^m\left(1-\mu\right)^m &\text{recombine to a template with no mismatches,}\\
 P(\rho_2) &= c \left(\left(1-r\right) + \frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^m \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
 \end{align*}
-where $r$ is the recombination probability between adjacent variants, $\mu$ is the mismatch probability between a target sequence at a variant and a particular member of the reference panel, and $c$ is the likelihood of the path up to this point, which we assume to be equal. 
+where $r$ is the recombination probability between adjacent variants, $\mu$ is the mismatch probability between a target sequence at a variant and a particular member of the reference panel, and $c$ is the likelihood of the path up to this point, which we assume to be equal.
 We then set these path probabilities equal, and rearrange to obtain:
 \begin{align*}
 r &= \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},\\
