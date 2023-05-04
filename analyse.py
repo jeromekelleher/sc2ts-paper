@@ -1,4 +1,5 @@
 import argparse
+import os.path
 
 import numpy as np
 import tszip
@@ -22,9 +23,7 @@ class CompressedSc2tsARG:
         return self.treeinfo
 
     def compressed_bytes(self):
-        # return compressed size in bytes
-        raise NotImplementedError  # TODO
-        #return tszip.print_summary()
+        return os.path.getsize(self.fn)
 
 
 def perc(x, tot):
@@ -118,7 +117,7 @@ def print_stats(wide, long, use_treeinfo=True):
     #prt("", "3+ breaks",
     
     
-    # SIZES
+    # SIZES - currently quoted in MB not MiB - I think this is more useful to the layman
     prt("Size (inc metadata)", Total(wide.compressed_bytes()).total("M")+"B", Total(long.compressed_bytes()).total("M")+"B", )
 
 
@@ -129,7 +128,7 @@ def main():
 
     wide = CompressedSc2tsARG("data/upgma-full-md-30-mm-3-2021-06-30-recinfo-gisaid-il.ts.tsz")
     print("Read wide ARG")
-    long_ts = CompressedSc2tsARG("data/upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz")
+    long = CompressedSc2tsARG("data/upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz")
     print("Read long ARG")
     print("-------------")
 
