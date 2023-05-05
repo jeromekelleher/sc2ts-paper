@@ -291,71 +291,78 @@ enable inferences at the full pandemic scale
 (see Discussion).
 
 \subsection{Backbone phylogeny}
+\label{sec:backbone_phylogeny}
+For validation purposes, we compare the genetic
+relationships in our ARGs with phylogenetic relationships
+inferred by the NextStrain project \citep{Hadfield2018-ef}. 
+The NextStrain
+trees consist of a relatively small set of SARS-CoV-2 genomes, which over the time period
+of our ARGs are almost entirely restricted to non-recombinant lineages. 
+To enable this comparison, we ``simplified''~\citep{Kelleher2018-xc} 
+the ARGs to  retain only samples that are in a 
+specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very
+little recombination (6 and 5 trees across the genome for the Wide and Long
+ARGs, respectively). 
+% JK: This leaves a big question hanging - why do we ahave recombination
+% in here at all? It's probably just artefactual, right?
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
 \caption{\label{fig:cophylogeny}
-Tanglegram comparing the first local tree in the wide ARG (sampled to mid-2021)
+Tanglegram comparing the leftmost local tree in the Wide ARG 
+(sampled to mid-2021)
 and an ``all-time'' global NextStrain tree (sampled to January 21, 2023). The
-trees were pruned down to the samples present in both the trees. Light grey
+trees are pruned down to the samples present in both the trees. Light grey
 lines match the corresponding samples between the two trees; black circles
 indicate identical sample partitions between the two trees. Terminal branches
 are colour-coded according to the Pango lineage status assigned to the tip
 samples; no Pango recombinants are shown, as none are shared between the trees.
-The tanglegram was generated with the aid of the Neighbor-Net algorithm
+The tanglegram was generated using the Neighbor-Net algorithm
 \citep{Scornavacca2011-mg} implemented in Dendroscope version 3.8.5
 \citep{Huson2012-ys}. See Figure~\ref{fig:cophylogeny_long} for the equivalent
 cophylogeny for the Long ARG.}
 \end{figure}
 
-For validation purposes, we compare the genetic
-relationships in the sc2ts-inferred ARGs with phylogenetic relationships
-inferred by the NextStrain project \citep{Hadfield2018-ef}. The NextStrain
-trees consist of subsamples of SARS-CoV-2 genomes, which over the time period
-of our ARGs are almost entirely restricted to non-recombinant lineages. To
-enable this comparison, the ARGs were ``simplified'' \citep{Kelleher2018-xc} to
-retain only those samples of our genealogy that match those present in a
-specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very
-little recombination (6 and 5 trees across the genome for the wide and long
-ARGs, respectively).
-
 Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared
-between the wide ARG and a GISAID global "all-time" tree from NextStrain
-(downloaded on January 21, 2023). To reduce the ARG to a single tree, we show
-the very first tree in the wide ARG; however, the five other trees in this
+between the wide ARG and a GISAID global ``all-time'' tree from NextStrain
+(downloaded on January 21, 2023). 
+To reduce the ARG to a single tree, we show
+the left-most tree (covering the genome interval 0--64) in the Wide ARG; 
+however, the five other trees in this
 simplified ARG show near-identical patterns. Supplementary
-Figure~\ref{fig:cophylogeny_long} shows the same comparison for the long ARG.
+Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG.
 It is clear that the backbone topology of the sc2ts tree shows very close
 agreement with the NextStrain tree. The sample genomes cluster by their
 assigned Pango lineage status, and many variants and their descendents form
 identical monophyletic clades in both the trees (e.g., the Alpha and Delta VoC
 clades, labelled).
 
-Figure~\ref{fig:cophylogeny} reveals some notable differences between the
-trees. Firstly, the sc2ts tree is generally less well resolved (noticeably,
-February to March, 2020). Secondly, there are non-identical sample partitions
-near the tips (e.g., in the Alpha clade). These might have arisen because the
-samples containing the mutations needed to resolve local topologies were
-collected later than the cut-off date for the sc2ts ARG, but were for the
-NextStrain tree. Finally, the branch lengths differ. For example, the branch
-leading to the ancestral node of the Delta variant samples is much shorter in
-the sc2ts tree than the equivalent NextStrain tree. It is possible that the
-length of some of the branches was poorly calibrated, probably caused by overly
-aggressive insertion of mutation-collapsing nodes and reversion-pushed nodes or
-suboptimal sample attachment. Side-by-side comparison of sc2ts trees with trees
-inferred using another method (e.g., UShER) should help to understand whether
-branch length differences are due to poor calibration or methodological
-differences.
+Figure~\ref{fig:cophylogeny} also reveals some notable differences between the
+trees. Firstly, the \texttt{sc2ts} tree is generally less well resolved,
+particularly in early 2020 when sampling density was much lower than
+later in the pandemic.
+Secondly, there are non-identical sample partitions
+near the tips (e.g., in the Alpha clade).
+Finally, and most noticably, the branch lengths differ. 
+As discussed in Section~\ref{sec:node_dating}, the dating of nodes 
+other than samples in \texttt{sc2ts} is currently quite crude, and 
+it is likely that branches not ``anchored'' by samples will be 
+poorly calibrated. See [SOMEWHERE ELSE] for a discussion of how
+these issues may be alleviated in future versions of \texttt{sc2ts}.
 
-Although the simplified backbone ARGs have few local trees, all of which show
-essentially the same topologies, note that in the original ``un-simplified''
-wide and long ARGs, there are 1,496 and 958 local trees respectively (Table 1).
-Hence, while for a relatively small subset of the genealogy may be well
-described by a single tree, the full dataset shows substantial variation in
-phylogenetic relationships (i.e. ``phylogenetic incongruence'') across the
-SARS-CoV-2 genome, much of which may be attributable to recombination. An ARG
-representation is therefore essential to fully capture these reticulate
-genealogical relationships.
+% JK: I don't think this is the place to get into discussing the benefits 
+% of an ARG, and I don't want to get bogged down in explaining what it 
+% means to have 1500 trees along the genome.
+
+% Although the simplified backbone ARGs have few local trees, all of which show
+% essentially the same topologies, note that in the original ``un-simplified''
+% Wide and Long ARGs, there are 1,496 and 958 local trees respectively (Table 1).
+% Hence, while for a relatively small subset of the genealogy may be well
+% described by a single tree, the full dataset shows substantial variation in
+% phylogenetic relationships (i.e. ``phylogenetic incongruence'') across the
+% SARS-CoV-2 genome, much of which may be attributable to recombination. An ARG
+% representation is therefore essential to fully capture these reticulate
+% genealogical relationships.
 
 \subsection{Mutational spectrum}
 \label{sec:mutation_spectrum}
