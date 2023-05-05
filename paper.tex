@@ -157,24 +157,20 @@ diversity of SARS-CoV-2 at scale.
 \section{Results}
 \subsection{Inferred ARGs}
 For this preliminary study our goals are to illustrate the utility of
-\texttt{sc2ts}, but to also closely study the properties of the
-inferred ARGs to inform subsequent development. Thus, rather
+\texttt{sc2ts}, and to closely study the properties of the
+inferred ARGs to inform subsequent development. Rather
 than attempting to be comprehensive we chose to work with a
 representative subset of the available data, and limited to
 inferences that could be performed on a single server in
 a few weeks (see below for further details on timings and
 computer hardware used). The cut-off dates for sampling were chosen
-arbitrarily. We anticipate that further development of the
-inference methods and scaling out across multiple servers will
-enable inferences at the full pandemic scale using \texttt{sc2ts}
-(see Discussion).
-
-To investigate the properties of the method under different
-sampling conditions, we inferred two ARGs, which we refer to as the
+arbitrarily.
+We inferred two ARGs, which we refer to as the
 ``Wide'' and ``Long'' ARGs throughout.
 The Wide ARG is densely sampled but time-limited and
 includes all 1.27 million sample genomes  with a
-maximum sampling delay of 30 days (see Methods Section~\ref{sec:filtering_time_travellers})
+maximum sampling delay of 30 days
+(see Section~\ref{sec:filtering_time_travellers})
 up to June 30, 2021.
 The Long ARG is more sparsely sampled but
 includes data for an additional year (June 30, 2022).
@@ -194,77 +190,105 @@ genomes per day from those meeting the maximum sampling delay criterion.
     \midrule
 
     Nodes & & 1,453,347 & & 783,231  & \\
+     & \emph{Node type} & \\
     & Samples & 1,265,685 & (87.09\%) & 657,239 & (83.91\%) \\
-    & Local (UPGMA) & 102,709 & (7.07\%) & 51,807 & (6.61\%)  \\
+    & UPGMA   & 102,709 & (7.07\%) & 51,807 & (6.61\%)  \\
     & Reversion push & 40,538 & (2.79\%) & 34,358 & (4.39\%)  \\
     & Mutation collapse & 40,292 & (2.77\%) & 37,749 & (4.82\%)  \\
     & Recombination & 4,123 & (0.28\%) & 2,078 & (0.27\%) \\
     \cmidrule{2-6}
-    % TODO add more information on mutations
-    Mutations & & 1.21M &  & 1.06M & \\
-    & On one sample & 759K & (63\%) & 767K & (72\%) \\
-    & Reversions & 72K & (5.98\%) & 48K & (4.54\%) \\
-    & per node & 0.83  &   & 1.36 \\
+    Edges & & 1,458,146 &  & 785,539 & \\
+     & \emph{Parent node type} & \\
+    & Samples & 610,729 & (41.88\%) & 319,626 & (40.69\%) \\
+    & UPGMA   & 470,545 & (32.27\%) & 156,881 & (19.97\%)  \\
+    & Reversion push & 184,608 & (12.66\%) & 144,991 & (18.46\%)  \\
+    & Mutation collapse &186,218  & (12.77\%) & 160,833 & (20.47\%)  \\
+    & Recombination & 6,046 & (0.41\%) & 3,208 & (0.41\%) \\
     \cmidrule{2-6}
-    Recombination events & \\
-    & Total & 4,123 & & 2,078 & \\
-    & Singletons & 2,601  & (63\%) & 1,315 & (63\%) \\
-    % clearer for many than "local trees?"
-    & Unique breakpoints & 1,496 &  & 958 & \\
+    Mutations & & 1,231,193 &  & 1,062,072 & \\
+    & Per node & 0.83  & $\pm$1.40 & 1.36 & $\pm$1.72 \\
+    & Per sample & 0.77  & $\pm$1.39 & 1.38 & $\pm$1.77 \\
+    & Per site & 41.23  & $\pm$108.16    & 36.10 & $\pm$80.03\\
     \cmidrule{2-6}
-    \multicolumn{2}{l}{Size (inc metadata)} & 57MB & & 36MB&  \\
+    % size as reported by ls -lh
+    \multicolumn{2}{l}{Compressed size (inc metadata)} & 58MB & & 37MB&  \\
     \multicolumn{2}{l}{Bytes/sample (exc metadata)}  & 8.29  & & 10.83 \\
     Load time & & 0.9s & & 0.5s & \\
     \bottomrule
 \end{tabular}
 \end{center}
-
-\caption{\label{tab:args}Summary of the inferred ARGs.
+\caption{\label{tab:args}Summary of the inferred ARGs. Nodes are classified
+as either samples or by the inference process which produced them to aid
+understanding of the relative importances of these processes to the overall
+topology. Similarly, edges are classified by the type of the parent node,
+giving some insights into how often these nodes are subsequently
+copied from after insertion (although the relationship is more complicated
+for UPGMA inserted nodes). The mean and standard deviation ($\pm$)
+are reported for the number of mutations per node, sample and site.
 }
 \end{table}
-
-% \centering
-% \begin{tabular}{l|l|l} \hline \textbf{Property} &
-% \textbf{Wide ARG} & \textbf{Long ARG} \\ \hline Last sampling date & 2021-06-30
-% & 2022-06-30 \\ Local trees & 1,496 & 958 \\ \hline
-% \multicolumn{3}{l}{\textit{Nodes}} \\ All nodes (sample and non-sample) &
-% 1,453,347 & 783,231 \\ Sample nodes & 1,265,685 (87\%) & 657,239 (84\%) \\ Tree
-% adjustment nodes (excluding recombination nodes) & 80,830 (6.34\%) & 72,107
-% (10.97\%) \\ Recombination nodes & 4,123 (0.28\%) & 2,078 (0.27\%) \\ \hline
-% \multicolumn{3}{l}{\textit{Types of recombination nodes}} \\ Singletons  & 2,601
-% (63\%) & 1,315 (63\%) \\ Two-parent recombinants & 3,521 (85\%) & 1,869 (90\%)
-% \\ HMM-consistent recombinants & XX (XX\%) & XX (XX\%) \\ \hline
-% \multicolumn{3}{l}{\textit{Mutations}} \\ Total mutations & 1,213,193 &
-% 1,062,072 \\ Mutations on a terminal edge & 758,903 (62.55\%) & 767,111
-% (72.23\%) \\ Recurrent mutations & 74,719 (6.16\%) & 50,099 (4.72\%) \\
-% Reversions & 72,617 (5.99\%) & 48,226 (4.54\%) \\ Immediate reversions (one
-% intervening node only) & 3,541 (0.29\%) & 1,347 (0.13\%) \\ \hline
-% \multicolumn{3}{l}{\textit{Storage and loading time}} \\ tszipped file
-%  & ~57 Mb & ~36 Mb \\ Bytes to encode one
-% sample & 8.29 & 10.83 \\ Load time (seconds) & 0.9 & 0.5 \\ \hline
-% \end{tabular}
 
 The properties of the inferred ARGs are summarised in Table~\ref{tab:args}.
 % TODO more discussion here, making sure we explain anything that might not be
 % obvious.
 Most of the nodes in the ARGs represent sample genomes
-Only a small fraction of the nodes represent recombination events (0.28\% and
-0.27\% in the wide ARG and long ARG, respectively), over half of which have no
-descendant samples (besides the recombinant sequence that triggered insertion
-of the recombination node). There are over one million mutations on
-the ARGs, the majority of which occur on a terminal edge. Notably,
-the massive amount of genomic variation data in the wide ARG (1.27 million
-genomes) and long ARG (657 thousand genomes) are compactly stored in ~57 Mb and
-~36 Mb, respectively (less than ten bytes per sample). These ARGs can be loaded
-for analysis in a Jupyter notebook on a typical laptop in a
-fraction of a second using the Python package tskit.
+(Wide ARG: 87\%, Long ARG: 84\%), but the inferred ancestral sequences
+represented by the nodes inferred from daily sample clusters
+by UPGMA (Section~\ref{sec:sample-cluster-tree-inference})
+and parsimony heuristics (Section~\ref{sec:parsimony-heuristics})
+contribute significantly.
+Table~\ref{tab:args} shows the counts of edges (see
+Section~\ref{sec:args} for a technical definition) in the ARGs
+categorised by parent node type, and demonstrates that each
+of these contributes significantly to the overall topology.
+In particular, we can see that approximately 40\% of the edges
+in both ARGs involve inheriting directly from sampled genomes.
+Both ARGs contain 29,422 sites (\ref{sec:data_preprocessing}),
+and a large number of mutations.
+The average number of mutations per-site is high, although much
+of this may be explained by outlier sites with artefactually high
+mutation counts (see Figure~\ref{fig:breakpoint-distribution}).
+Despite this, however, the number of mutations per node
+is small. In the Wide ARG, for example, we have a mean of 0.77
+mutations per sample, demonstrating that new samples are generally
+well represented by the it. See Section~\ref{sec:mutation_spectrum}
+for more analyis on the patterns of mutations inferred.
+Recombination plays a relatively minor role, with $<0.3\%$
+of nodes in the ARGs representing inferred recombination events.
+We analyse these events in Sections~\ref{sec:jackson_recombs},
+\ref{sec:breakpoint_intervals}, \ref{sec:parent_divergence},
+and \ref{sec:pango_x_lineages}.
 
-Inferring the wide ARG required 17 days of computation time on a machine with
-128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). Inferring the long ARG
+Table~\ref{tab:args} also summarises some of the computational
+properties of the inferred ARGs.
+The ARGs are encoded as a ``succinct tree sequence'' using
+the \texttt{tskit} library, which provides an extensive
+suite of operations for constructing and analysing ARGs
+(Section~\ref{sec:args}). For exampl, the Wide ARG
+which contains complete genomes (with imputed missing data)
+for around 1.2 million samples, along with extensive sample
+and debugging metadata, requires only 58MB of space (compressed
+using the \texttt{tszip} utility). The majority of this
+space is used by metadata, which when discarded results in
+an encoding that requires an average of only 8.29 bytes per
+SARS-CoV-2 genome stored.
+Loading these ARGs takes less than a second, and they can be interactively
+analysed using Jupyter notebooks on a standard laptop. The majority
+of the analyses in this preprint can be carried out in seconds
+with the \texttt{tskit} Python API, using a few gigabytes of RAM.
+
+Inferring these ARGs does require substantial computation.
+The wide ARG required 17 days of computation time on a machine with
+128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). The long ARG
 required 23 days on a (much older) machine with 40 threads and 256 GB RAM (2x
 Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz). The majority of the time is spent
-on running the HMM to find the copying path for each sequence, and the process
+on running the LS HMM (Section~\ref{sec:ls}) to find the copying
+path for each sequence, and the process
 is therefore highly amenable to distributing across multiple machines.
+We therefore anticipate that further development of the
+inference methods and scaling out across multiple servers will
+enable inferences at the full pandemic scale
+(see Discussion).
 
 \subsection{Backbone phylogeny}
 
@@ -334,6 +358,7 @@ representation is therefore essential to fully capture these reticulate
 genealogical relationships.
 
 \subsection{Mutational spectrum}
+\label{sec:mutation_spectrum}
  In addition to recombination events, the ARGs record mutation events along the
 SARS-CoV-2 phylogeny. \cite{Yi2021-sc} reconstructed a SARS-CoV-2 phylogeny of
 over 350,000 genomes sampled globally from December 24, 2019, to January 12,
@@ -373,6 +398,7 @@ sample or those occurring on terminal branches (data not shown).
 % XX
 
 \subsection{Early recombinants reported by Jackson et al. (2021)}
+\label{sec:jackson_recombs}
 % - Early Recombinants from Jackson et al
 %     Discuss results from Wide ARG in detail. Go into the details of the
 % forward-backward HMM runs for each example. Be much more explicity about the
@@ -430,6 +456,7 @@ hypothesis that the sequences of the groups A to D emerged from four separate
 recombination events~\cite{Jackson2021-ik}.
 
 \subsection{Distribution of recombination breakpoint intervals}
+\label{sec:breakpoint_intervals}
 
 % - Distribution of breakpoint intervals
 %     Study the breakpoint intervals in the Wide ARG. Because we are interested
@@ -486,6 +513,7 @@ breakpoint intervals of the HMM-consistent recombinants span at least one of
 the breakpoint sequences.
 
 \subsection{Divergence between recombinant parents}
+\label{sec:parent_divergence}
 % - Divergence between recombinant parents
 %     We study the recombination events in the Long ARG in terms. A recombinant
 % will not always have two parents, for reasons X, Y and Z. As a first
@@ -569,6 +597,7 @@ chance of coinfection and recombination), or possibly heterogeneity in
 recombination probabilities among lineages.
 
 \subsection{Recombinant Pango lineages}
+\label{sec:pango_x_lineages}
 
 In this section we focus on the detailed genealogy of samples that have been
 previously identified as recombinants, i.e. given a Pango designation that
@@ -1096,6 +1125,7 @@ not be immediately reverted, respectively.}
 % updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
 
 \subsection{Ancestral Recombination Graphs}
+\label{sec:args}
 The term ``Ancestral Recombination Graph'' was introduced by
 Griffiths and colleagues~\citep{Griffiths1991-two,Griffiths1998-ancestral}
 and originally defined an alternative formulation of the coalescent
@@ -1450,6 +1480,7 @@ of a pandemic-scale ARG may lead to significant improvements in our
 ability identify recombinants and to filter poor quality data.
 
 \subsection{Node dating}
+\label{sec:node_dating}
 The approaches to assigning a date to nodes in \texttt{sc2ts} is currently
 ad-hoc, and the inferred timing of events from the ARGs reported
 here should be treated with caution (e.g., Figure~\ref{fig:recomb_mrcas}).
@@ -1467,6 +1498,7 @@ small values when creating new nodes using parsimony rules
 likely be made using simple node dating methods.
 
 \subsection{Data preprocessing}
+\label{sec:data_preprocessing}
 The findings of this study are
 based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
 up to Aug 22, 2022 and accessible at
