@@ -765,8 +765,7 @@ of Pango X lineage assignments, and there is therefore no particular
 requirement that all the samples assigned to a given lineage must trace back to
 a single recombination event. In this section we examine the Pango X lineage
 samples that are inferred to have multiple recombinant origins (i.e., trace
-back to different recombination nodes in the ARG), but still form monophyletic
-clades % is this the right term? descending from these nodes .
+back to independent recombination nodes in the ARG).
 
 % \begin{frame}
 % \begin{block}{Multiple origin Pango X lineages}
@@ -830,18 +829,22 @@ BA.1* \& BA.2, 10448–11287)}
 
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple example, consisting of
 the 4 samples labelled XD by Nextclade in the long ARG. The left hand subgraph
-(the origin of three XD samples) has an earliest
+(the origin of three XD samples, all sampled in France) has an earliest
 sample with EPI\_ISL: 11222324 (dated 2022-02-26), while the right hand
-subgraph has a single sample with EPI\_ISL 8514045 (dated 2021-12-30). These
-two samples differ by 35 mutations; considering this, and the time between the samples,
+subgraph has a single sample with EPI\_ISL 8514045 (sampled in Turkey and dated 2021-12-30).
+These two samples differ by 35 mutations; considering this, plus the geographical
+locations and time between the samples,
 it does seem possible that they represent true independent origins of XD.
 Supplementary Figure~\ref{fig:pango_XD_gisaid_graph} shows the same subgraphs
 with sample identifiers and coloured by GISAID Pango labels (however, no
 samples are designated by GISAID as XD in the long ARG).
 
-Table \ref{tab:multiple_origins_table} summarises other Pango recombinants which
-we infer to have multiple origins. [TODO: needs more detail]
+Another X lineage with multiple originating events is XE. In this case, however,
+there are a large number of independent events. These
 
+\ref{tab:multiple_origins_table} summarises other Pango recombinants which
+we infer to have multiple origins. [TODO: needs more detail]
+As with XD, none of the samples in the long ARG are identified as XE by GISAID.
 
 \subsubsection{Complex origins} 
 \begin{figure} \centering
@@ -857,9 +860,9 @@ various non-recombinant pre-Alpha lineages (blue).}
 As well as cases where single recombination events explain an X lineage,
 such as the examples in Figure~\ref{fig:pango-simple-origin-graph}, many of the
 Pango X lineages involve more complex origins,
-in which additional recombination events are nested inside the earliest shared
-recombination. Frequently, the descendants of the original recombination
-also include samples which have not been previously identified as recombinants.
+in which multiple non-independent (``nested'') recombination events are involved.
+In these cases, the descendants of the original recombination
+frequently include samples which have not been previously identified as recombinants.
 An example is XB in the long ARG,
 plotted in Figure~\ref{fig:complex_origins_graph}. Here, a recombination
 between a B.1 sample and B.1.627 sample leads both to the XB samples and to a
@@ -871,7 +874,7 @@ XB sample (pink upper left, with 7 mutations above it); moreover, this sample is
 not identified as XB by GISAID (Supplementary Figure~\ref{fig:pango_XB_gisaid_graph})
 indicating some uncertainty in lineage assignment in this part of the ARG.
 Investigating examples of complex recombinant origins, and identifying which
-(if any) of the nested recombination events may be artifactual, is an important
+(if any) of the nested recombination events may be artefactual, is an important
 area of future research.
 
 % JK: removing this for now
@@ -1155,7 +1158,7 @@ Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
 
 \subsection{The Li and Stephens model}
 \label{sec:ls}
-The Li and Stephens (LS) model\citep{Li2003-ib}  is an approximation of the
+The Li and Stephens (LS) model \citep{Li2003-ib}  is an approximation of the
 coalescent with recombination~\citep{Hudson1983-properties}, which captures
 many of the important features of the joint processes of mutation and
 recombination. It is a Hidden Markov Model (HMM) in which a focal genome is a
@@ -1417,7 +1420,7 @@ These left- and rightmost positions
 are the recombination intervals reported throughout.
 Ultimately all the recombination intervals mean is that the parent sequences
 are identical within that interval, and there is therefore no information
-about where the recombination occured. There are many different processes
+about where the recombination occurred. There are many different processes
 that can contribute to the size of these intervals, and therefore
 understanding how these processes interact to produce wider or narrower
 intervals is an important avenue for future work.
@@ -1593,7 +1596,7 @@ the appropriate GISAID data access.
 \section*{Supplementary}
 \subsection*{Supplementary methods}
 \subsubsection*{Derivation of relation between recombination probability and mismatch probability conditional on mismatch ratio}
-Without loss of generality, consider a region of length $m$. Up until this region, two paths are equally likely, so we can re-scale by the likelihood up to the site before the region starts.
+Without loss of generality, consider a region of length $m$. Up until this region, two paths are equally likely, so we can re-scale by the likelihood up to the site before the region starts, $c$.
 
 For a MMR of $k$, we only need to consider two of the $n$ members of the reference panel. One; $\rho_1$, for which there are no mismatches, but we need to recombine in, and a second; $\rho_2$, for which there are $k$ (randomly chosen) mismatches in the region.
 
@@ -1668,6 +1671,8 @@ QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
 
 \begin{table}
 % \begin{footnotesize}
+%% FIXME - commas and braces are confusing - I suggest separating by "+". The code to
+%% produce this table is in Pango-recombinant-analysis.ipynb
 \begin{tabular}{lllrl}
 \toprule
 lineage & ARG parents & Official Pango parents & n & Other descendants \\
@@ -1710,10 +1715,12 @@ Summary of the Pango X-lineages in the long ARG that are inferred to have a sing
 \caption{\label{fig:pango_XA_gisaid_graph}
 Detailed version of Figure~\ref{fig:pango-simple-origin-graph}A. All single nucleotide mutations are listed
 with the initial nucleotide state, followed by the reference genome position, followed by the derived
-nucleotide state (after mutation). Sample nodes are shown with \emph{tskit} IDs, which can be mapped to
-GISAID EPI ISL identifiers and strain names using supplementary file XXX. In contrast to
-Figure~\ref{fig:pango-simple-origin-graph}A, Pango lineages shown here are those assigned by GISAID
-rather than Nextclade. In the case of XA, Nextclade and GISAID agree completely on the lineage designations.
+nucleotide state (after mutation). If an ancestral (``parent'') mutation exists at the same site in the path
+to the root, it is possible for a mutation to be a ``reversion'' to the initial state of the parent mutation:
+such reversions are indicated by lowercase nucleotide letters. Sample nodes are shown with \emph{tskit} IDs,
+which can be mapped to GISAID EPI ISL identifiers and strain names using supplementary file \protect\path{Pango_X_graph_sample_maps.txt}. In contrast to
+Figure~\ref{fig:pango-simple-origin-graph}A, Pango lineages shown here are those assigned by GISAID rather
+than Nextclade; however, in the specific case of XA, Nextclade and GISAID exactly agree on the lineage designations.
 }
 \end{figure}
 
@@ -1721,7 +1728,8 @@ rather than Nextclade. In the case of XA, Nextclade and GISAID agree completely 
 \includegraphics[width=\textwidth]{figures/Pango_XAG_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XAG_gisaid_graph}
 Detailed version of Figure~\ref{fig:pango-simple-origin-graph}B, with node and mutation labels as in
-Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file XXX to map tskID to EPI\_ISL and strain name).
+Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Pango_X_graph_sample_maps.txt}
+to map tskID to EPI\_ISL and strain name).
 Note that GISAID Pango designations assign an extra 2 samples to XAG, which are labelled as XAB
 by Nextclade in Figure~\ref{fig:pango-simple-origin-graph}B. This renders XAG fully monophyletic.
 However, unlike Nextclade, the GISAID designations also mark many of the samples in this subgraph
@@ -1734,7 +1742,8 @@ agree more with our ARG structure than GISAID assignments.
 \includegraphics[width=0.6\textwidth]{figures/Pango_XD_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XD_gisaid_graph}
 Detailed version of Figure~\ref{fig:pango-simple-origin-graph}C, with node and mutation labels as in
-Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file XXX to map tskID to EPI\_ISL and strain name).
+Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Pango_X_graph_sample_maps.txt}
+to map tskID to EPI\_ISL and strain name).
 Note that GISAID does not designate any nodes as XD in the long ARG, hence no recmbninant Pango designations
 are marked in this plot. From inspection of the samples, we believe the GISAID designations to be erroneous
 in this case.
@@ -1745,11 +1754,16 @@ in this case.
 \includegraphics[width=\textwidth]{figures/Pango_XB_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XB_gisaid_graph}
 Detailed version of Figure~\ref{fig:complex_origins_graph}, with node and mutation labels as in
-Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file XXX to map tskID to EPI\_ISL and strain name).
+Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Pango_X_graph_sample_maps.txt}
+to map tskID to EPI\_ISL and strain name).
 The GISAID XB designations agree with the Nextclade ones except in two cases: an unplotted
 singleton recombinant nested within the main grouping, and the tsk285180 node marked BA.1 in this plot,
 but which is labelled XB by Nextstrain.
 }
 \end{sidewaysfigure}
+
+%% Could insert the Pango_X_graph_sample_maps.txt with something like this
+%% but maybe best to leave it as a separate file?
+%% \lstinputlisting[caption={XXX}]{data/Pango_X_graph_sample_maps.txt}
 
 \end{document}
