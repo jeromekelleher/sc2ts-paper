@@ -169,7 +169,7 @@ class Figure:
 
 class Cophylogeny(Figure):
     name = None
-    pos = 0  # Position along tree seq to plot trees
+    pos = 14952  # Position along tree seq to plot trees: 14952 is halfway along
     sc2ts_filename = None
     nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
 
