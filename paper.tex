@@ -294,22 +294,22 @@ enable inferences at the full pandemic scale
 \label{sec:backbone_phylogeny}
 For validation purposes, we compare the genetic
 relationships in our ARGs with phylogenetic relationships
-inferred by the NextStrain project \citep{Hadfield2018-ef}. 
+inferred by the NextStrain project \citep{Hadfield2018-ef}.
 The NextStrain
 trees consist of a relatively small set of SARS-CoV-2 genomes, which over the time period
-of our ARGs are almost entirely restricted to non-recombinant lineages. 
-To enable this comparison, we ``simplified''~\citep{Kelleher2018-xc} 
-the ARGs to  retain only samples that are in a 
+of our ARGs are almost entirely restricted to non-recombinant lineages.
+To enable this comparison, we ``simplified''~\citep{Kelleher2018-xc}
+the ARGs to  retain only samples that are in a
 specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very
 little recombination (6 and 5 trees across the genome for the Wide and Long
-ARGs, respectively). 
+ARGs, respectively).
 % JK: This leaves a big question hanging - why do we ahave recombination
 % in here at all? It's probably just artefactual, right?
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
 \caption{\label{fig:cophylogeny}
-Tanglegram comparing the leftmost local tree in the Wide ARG 
+Tanglegram comparing the leftmost local tree in the Wide ARG
 (sampled to mid-2021)
 and an ``all-time'' global NextStrain tree (sampled to January 21, 2023). The
 trees are pruned down to the samples present in both the trees. Light grey
@@ -325,9 +325,9 @@ cophylogeny for the Long ARG.}
 
 Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared
 between the wide ARG and a GISAID global ``all-time'' tree from NextStrain
-(downloaded on January 21, 2023). 
+(downloaded on January 21, 2023).
 To reduce the ARG to a single tree, we show
-the left-most tree (covering the genome interval 0--64) in the Wide ARG; 
+the left-most tree (covering the genome interval 0--64) in the Wide ARG;
 however, the five other trees in this
 simplified ARG show near-identical patterns. Supplementary
 Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG.
@@ -343,15 +343,15 @@ particularly in early 2020 when sampling density was much lower than
 later in the pandemic.
 Secondly, there are non-identical sample partitions
 near the tips (e.g., in the Alpha clade).
-Finally, and most noticably, the branch lengths differ. 
-As discussed in Section~\ref{sec:node_dating}, the dating of nodes 
-other than samples in \texttt{sc2ts} is currently quite crude, and 
-it is likely that branches not ``anchored'' by samples will be 
+Finally, and most noticably, the branch lengths differ.
+As discussed in Section~\ref{sec:node_dating}, the dating of nodes
+other than samples in \texttt{sc2ts} is currently quite crude, and
+it is likely that branches not ``anchored'' by samples will be
 poorly calibrated. See [SOMEWHERE ELSE] for a discussion of how
 these issues may be alleviated in future versions of \texttt{sc2ts}.
 
-% JK: I don't think this is the place to get into discussing the benefits 
-% of an ARG, and I don't want to get bogged down in explaining what it 
+% JK: I don't think this is the place to get into discussing the benefits
+% of an ARG, and I don't want to get bogged down in explaining what it
 % means to have 1500 trees along the genome.
 
 % Although the simplified backbone ARGs have few local trees, all of which show
@@ -375,10 +375,31 @@ G-to-U mutations occur more frequently than U-to-C and U-to-G mutations,
 respectively.
 
 \begin{figure} \centering
-\includegraphics[width=0.4\textwidth]{figures/mutational_spectra.pdf}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\begin{tabularx}{\textwidth}{Yc}
+
+\begin{tabular}[b]{llrlr}\toprule
+            & \multicolumn{2}{l}{Wide ARG} & \multicolumn{2}{l}{Long ARG} \\
+% \midrule
+    \cmidrule{2-5}
+Total      & \multicolumn{2}{l}{1,213,193} & \multicolumn{2}{l}{1,062,072} \\
+Transitions & 873,487   & (72.00\%) & 783,773  & (73.80\%) \\
+Transversions & 326,053 & (26.88\%) & 270,333  & (25.45\%) \\
+Insertions  & 6191  & (0.51\%) & 2814   & (0.26\%) \\
+Deletions   & 7462  & (0.62\%) & 5152   & (0.49\%) \\
+Recurrent   & 74,719 & (6.16\%) & 50,099 & (4.72\%) \\
+Reversions  & 72,617 & (5.99\%) & 48,226 & (4.54\%) \\
+Private     & 758,903 & (62.55\%) &  767,111 & (72.23\%)\\
+\bottomrule
+\end{tabular}
+&
+\includegraphics[width=0.35\textwidth]{figures/mutational_spectra.pdf}\\
+(A) & (B)\\
+\end{tabularx}
 \caption{\label{fig:mutational_spectra}
-Mutational spectrum of SARS-CoV-2 in
-the wide ARG (sampled to mid-2021) compared to \cite{Yi2021-sc}. Mutations are
+(A) Summary of mutations in the Long and Wide ARGs.
+(B) Mutational spectrum of SARS-CoV-2 in
+the wide ARG compared to \cite{Yi2021-sc}. Mutations are
 categorised by type (i.e., ancestral state $>$ derived state). The percentages
 of each mutation type from the wide ARG are represented by blue bars and the
 percentages from Yi et al. by orange bars, with the darker colours representing
@@ -797,7 +818,8 @@ as BA.2, and XAG becomes fully monophyletic (supplementary figure
 sample nodes, convertable to EPI\_ISL identifiers using
 Supplementary table XXX )
 
-\subsubsection{Multiple origins} The ARG inference has no pre-defined knowledge
+\subsubsection{Multiple origins}
+The ARG inference has no pre-defined knowledge
 of Pango X lineage assignments, and there is therefore no particular
 requirement that all the samples assigned to a given lineage must trace back to
 a single recombination event. In this section we examine the Pango X lineage
@@ -883,17 +905,7 @@ there are a large number of independent events. These
 we infer to have multiple origins. [TODO: needs more detail]
 As with XD, none of the samples in the long ARG are identified as XE by GISAID.
 
-\subsubsection{Complex origins} 
-\begin{figure} \centering
-\includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
-\caption{\label{fig:complex_origins_graph}  A Pango lineage subgraph showing
-complex origins of the recombinant lineage XB. All XB samples in the long ARG
-trace to a single recombination node (top centre), but three further recombinations
-also descend from this node. The samples descending from these nested
-recombinations include 9 that are assigned by Nextclade to
-various non-recombinant pre-Alpha lineages (blue).}
-\end{figure}
-
+\subsubsection{Complex origins}
 As well as cases where single recombination events explain an X lineage,
 such as the examples in Figure~\ref{fig:pango-simple-origin-graph}, many of the
 Pango X lineages involve more complex origins,
@@ -913,6 +925,16 @@ indicating some uncertainty in lineage assignment in this part of the ARG.
 Investigating examples of complex recombinant origins, and identifying which
 (if any) of the nested recombination events may be artefactual, is an important
 area of future research.
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
+\caption{\label{fig:complex_origins_graph}  A Pango lineage subgraph showing
+complex origins of the recombinant lineage XB. All XB samples in the long ARG
+trace to a single recombination node (top centre), but three further recombinations
+also descend from this node. The samples descending from these nested
+recombinations include 9 that are assigned by Nextclade to
+various non-recombinant pre-Alpha lineages (blue).}
+\end{figure}
 
 % JK: removing this for now
 
