@@ -301,7 +301,8 @@ class Cophylogeny(Figure):
         )
 
         logging.info(
-            f"{self.sc2ts.ts.num_trees} trees in the simplified 'backbone' ARG"
+            f"{self.sc2ts.ts.num_trees} trees in the simplified 'backbone' ARG. Using the one " +
+            f"between pos {self.sc2ts.tree.interval.left} and {self.sc2ts.tree.interval.right}."
         )
 
     def plot(self, args):
@@ -1495,8 +1496,17 @@ def print_sample_map(ts, nodes):
                 md["gisaid_epi_isl"] if "gisaid_epi_isl" in md else "EPI_ISL_unknown",
                 md["strain"] if "strain" in md else "Strain_unknown",
             )
+    # Find the nodes that descend from a recombinant node
+    ts, node_map = ts.simplify(nodes, map_nodes=True)
+    new_nodes = node_map[nodes]
+    re_nodes = np.flatnonzero(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT)
+    recombinant_samples = set()
+    for tree in ts.trees():
+        for u in re_nodes:
+            recombinant_samples.update(tree.samples(u))
     for k in sorted(isl_map.keys()):
-        print(f"tsk{k}: {isl_map[k][0]}, {isl_map[k][1]}")
+        prefix = "*tsk" if node_map[k] in recombinant_samples else "tsk"
+        print(f"{prefix}{k}: {isl_map[k][0]}, {isl_map[k][1]}")
 
 
 class Pango_XA_gisaid_large_graph(Pango_XA_nxcld_tight_graph):
