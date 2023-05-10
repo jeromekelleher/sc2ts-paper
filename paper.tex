@@ -1599,35 +1599,38 @@ back to the ARG, allowing an automated assessment of collection date discrepanci
 % and the concrete implementation?
 \begin{figure} \centering
 \includegraphics[width=.7\textwidth]{figures/imputation.pdf}
-\caption{\label{fig:imputation}A schematic of the two-step procedure to impute
+\caption{\label{fig:imputation}A schematic of the iterative procedure to impute
 Pango lineage for inserted, non-sample nodes. Here, three nodes (question
-marks) have unknown Pango lineage (A). Because the parent of node 1 is
-available (i.e., L2) and there is no mutation occurring on the edge connecting
-the two nodes, the Pango lineage of the parent is directly propagated to node 1
-(B). However, if there is a mutation (red X’s), then the Pango lineage is
-inferred by comparison to the set of lineage-defining mutations from
-COVID-CG\citep{Chen2021-zc}, as in case (C). Finally, the inferred status is
-propagated to any non-mutant child nodes, as in case (D).
-}
+marks) have unknown Pango lineage (A). The lineage for node N1 can be directly 
+copied from its parent (L2). The lineage for node N2 must be inferred from 
+that of the parent (L2) plus the lineage-defining mutation (red X) 
+on the connecting edge. The lineage for node N3 can then be copied from 
+that of node N2.}
 \end{figure}
-For many applications it is helpful to infer the Pango lineage status
-of the internal ARG nodes estimated by \texttt{sc2ts}.
-% Initially, only sample nodes have Pango lineage assignments.
-% For analysis of recombinant parents, it is also helpful to assign
-% Pango lineages to non-sample nodes.
-We do this using a two-step procedure (Figure~\ref{fig:imputation}).
-Initially, only sample nodes have Pango lineage assignments.
-For a given non-sample node $u$, if the Pango lineage of its parent is
-available and there are no intervening mutations,
-then we impute that $u$'s Pango lineage is the same as its parent.
-Otherwise, the Pango lineage of the
-non-sample node is inferred by matching its full set of mutations against the
-Pango lineage-defining mutations (based on 90\% consensus of the sequences
-analysed) from the COVID-CG website \citep{Chen2021-zc};
-\url{https://covidcg.org/}; accessed on November 04, 2022).
+While the Pango lineages of sample nodes are imported directly from 
+GISAID metadata, the lineage status of internal nodes inserted into 
+the \texttt{sc2ts} ARG must be imputed. We do this using 
+the list of lineage-defining mutations (based on 90\% consensus 
+of the sequences analysed) from the COVID-CG website \citep[][\url{https://covidcg.org/}; accessed on 4 November 2022]{Chen2021-zc}.
 
-[TODO how accurate is this approach? We should probably discuss it somewhere
-in the Results, and refer back from here? ]
+For a given non-sample node $u$, if the Pango lineage of its parent or 
+one of its children is already known, and there are no lineage-defining mutations
+on the connecting edge, then $u$ copies this Pango lineage exactly.
+Otherwise, the lineage for $u$ is inferred by 
+matching its full set of mutations against the COVID-CG list. 
+We apply these two steps to the internal nodes of the ARG iteratively,
+as illustrated in Figure~\ref{fig:imputation}, until all internal nodes 
+are assigned a lineage (where possible---note that sometimes a lineage cannot
+be assigned to the children of a recombination node).
+
+This method is fast, as the lineages for most of the internal nodes can be 
+imputed by copying from the surrounding nodes (66\% of nodes for the Long ARG, 
+80\% of nodes for the Wide ARG). The accuracy depends on
+the quality of the list of lineage-defining mutations; we find that when
+masking the lineages of sample nodes one-by-one and re-imputing these using
+the remaining information results in 98\% (resp.~99\%) of lineages being
+imputed correctly.
+
 
 \section{Acknowledgements}
 We gratefully acknowledge all data contributors, i.e., the Authors and their
