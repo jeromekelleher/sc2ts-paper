@@ -160,7 +160,7 @@ For this preliminary study our goals are to illustrate the utility of
 \texttt{sc2ts}, and to closely study the properties of the
 inferred ARGs to inform subsequent development. Rather
 than attempting to be comprehensive we chose to work with a
-representative subset of the available data, and limited to
+representative subset of the available data, limited to
 inferences that could be performed on a single server in
 a few weeks (see below for further details on timings and
 computer hardware used). The cut-off dates for sampling were chosen
@@ -252,7 +252,7 @@ Despite this, however, the number of mutations per node
 is small. In the Wide ARG, for example, we have a mean of 0.77
 mutations per sample, demonstrating that new samples are generally
 well represented by the it. See Section~\ref{sec:mutation_spectrum}
-for more analyis on the patterns of mutations inferred.
+for more analysis of the patterns of inferred mutations.
 Recombination plays a relatively minor role, with $<0.3\%$
 of nodes in the ARGs representing inferred recombination events.
 We analyse these events in Sections~\ref{sec:jackson_recombs},
@@ -264,7 +264,7 @@ properties of the inferred ARGs.
 The ARGs are encoded as a ``succinct tree sequence'' using
 the \texttt{tskit} library, which provides an extensive
 suite of operations for constructing and analysing ARGs
-(Section~\ref{sec:args}). For exampl, the Wide ARG
+(Section~\ref{sec:args}). For example, the Wide ARG
 which contains complete genomes (with imputed missing data)
 for around 1.2 million samples, along with extensive sample
 and debugging metadata, requires only 58MB of space (compressed
@@ -295,12 +295,13 @@ enable inferences at the full pandemic scale
 For validation purposes, we compare the genetic
 relationships in our ARGs with phylogenetic relationships
 inferred by the NextStrain project \citep{Hadfield2018-ef}.
-The NextStrain
-trees consist of a relatively small set of SARS-CoV-2 genomes, which over the time period
-of our ARGs are almost entirely restricted to non-recombinant lineages.
 To enable this comparison, we ``simplified''~\citep{Kelleher2018-xc}
-the ARGs to  retain only samples that are in a
-specific NextStrain tree. These simplified ``backbone'' ARGs exhibit very
+the sc2ts ARGs to a ``backbone'' containing only samples present
+in a specific NextStrain tree. For this purpose, we picked an
+``all-data''  NextStrain tree restricted to the time period covered
+by the appropriate ARG. This results in a relatively small
+set of shared samples, almost entirely restricted to non-recombinant lineages.
+These simplified backbone ARGs exhibit very
 little recombination (6 and 5 trees across the genome for the Wide and Long
 ARGs, respectively).
 % JK: This leaves a big question hanging - why do we ahave recombination
@@ -327,7 +328,8 @@ Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared
 between the wide ARG and a GISAID global ``all-time'' tree from NextStrain
 (downloaded on January 21, 2023).
 To reduce the ARG to a single tree, we show
-the left-most tree (covering the genome interval 0--64) in the Wide ARG;
+the tree in the middle of the viral genome (covering the genome interval 8393 to 21618)
+in the Wide ARG;
 however, the five other trees in this
 simplified ARG show near-identical patterns. Supplementary
 Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG.
@@ -1157,7 +1159,7 @@ not be immediately reverted, respectively.}
 \label{sec:args}
 The term ``Ancestral Recombination Graph'' was introduced by
 Griffiths and colleagues~\citep{Griffiths1991-two,Griffiths1998-ancestral}
-and originally defined an alternative formulation of the coalescent
+and originally defined as an alternative formulation of the coalescent
 with recombination stochastic process~\citep{Hudson1983-properties}.
 Subsequently, the term ARG came to be used in a more general way to
 describe not just realisations of this model, but to any
@@ -1165,7 +1167,7 @@ recombinant genetic ancestry~\citep{Minichiello2006-mapping}.
 While there is some subtlety in the details~\citep{Wong2023-efficient},
 we can think of an ARG as being any graph that encodes the
 reticulate genetic ancestry of a sample of sequences under
-the influence of recombination.
+the influence of recombination. This definition encompasses various types of graphs traditionally described using the broader term of phylogenetic networks.
 
 The ``succinct tree sequence'' is an ARG data structure
 that is both general (in terms of the types of ancestry that can
@@ -1186,13 +1188,13 @@ child node $c$ inherited its genome from parent node $p$
 from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
 defines the genomic position at which some variation occurs,
 and a \emph{mutation} defines the site, node and derived state
-that generates variation.
+that generates variation (note that this required that the sequences can be aligned and phased).
 Given these tables, we can then efficiently construct the local
 genealogical trees along the genome (arising from recombination),
 and also perform a range of calculations efficiently by
 reasoning about the differences between these local
 trees~\citep{Kelleher2016-wk,Ralph2020-efficiently}. These
-algorithms have led to peformance increases of several orders
+algorithms have led to performance increases of several orders
 of magnitude over the state-of-the-art in a range of
 applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,
 Ralph2020-efficiently,Baumdicker2022-ep}.
@@ -1214,7 +1216,7 @@ has been incorporated into several downstream
 applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
 Terasaki2021-geonomics,
 Fan2022-genealogical,Korfmann2022-weak,
-Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
+Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}. We emphasise that this ecosystem for storing and manipulating ARGs can generally be used to efficiently record and analyse SARS-CoV-2 genealogies reconstructed using other methods, not only the new approach that we describe here.
 
 \subsection{The Li and Stephens model}
 \label{sec:ls}
