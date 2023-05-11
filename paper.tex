@@ -828,65 +828,6 @@ a single recombination event. In this section we examine the Pango X lineage
 samples that are inferred to have multiple recombinant origins (i.e., trace
 back to independent recombination nodes in the ARG).
 
-% \begin{frame}
-% \begin{block}{Multiple origin Pango X lineages}
-% \begin{itemize}
-% \item For the remaining 18, the story is more complicated.
-% \item XJ, XU and XV each have 3 samples and 3 recombinants
-% \item One recombinant shared among 5 lineages (XAA, XAB, XAG, XQ, XU)
-% \item XE has 170 samples and 12 recombinants; some are very similar
-% (Official: BA.1* \& BA.2, 10448--11287):
-% \\
-% \vspace{1em}
-% \begin{tabular}{llll}
-% \toprule
-% Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
-% \midrule
-% BA.1.15 & BA.2  &9867  &10198\\
-% BA.1.15 & BA.2  &9867  &10198\\
-% BA.1.1  &BA.2  &10451  &11537\\
-% BA.1.1.5 & BA.2 &10448 & 11537\\
-% BA.1.15 & BA.2  &10448  &12880\\
-% BA.1.17 & BA.2  &10448 & 11537\\
-% BA.1  &BA.2.9  &10448 & 11537\\
-% BA.1  &BA.2  &12764  &13195\\
-% \bottomrule
-% \end{tabular}
-% % BA.3  &BA.1.17  &22674  &22674\\
-% % BA.1.1.15 Recombinant 10448 11537
-% % BA.1.1 Recombinant 10030 10447
-% % Recombinant BA.2 17411 19955
-% \end{itemize}
-% \end{block}
-% \end{frame}
-
-
-\begin{figure}
-\centering
-\begin{tabular}{llll}
-\toprule
-Left parent & Right parent & \multicolumn{2}{l}{Breakpoint interval}\\
-\midrule
-BA.1.15  & BA.2   & 9,867  & 10,198 \\
-BA.1.15  & BA.2   & 9,867  & 10,198 \\
-BA.1.1   & BA.2   & 10,451 & 11,537 \\
-BA.1.1.5 & BA.2   & 10,448 & 11,537 \\
-BA.1.15  & BA.2   & 10,448 & 12,880 \\
-BA.1.17  & BA.2   & 10,448 & 11,537 \\
-BA.1     & BA.2.9 & 10,448 & 11,537 \\
-BA.1     & BA.2   & 12,764 & 13,195 \\
-\bottomrule
-\end{tabular}
-% BA.3  &BA.1.17  &22674  &22674\\
-% BA.1.1.15 Recombinant 10448 11537
-% BA.1.1 Recombinant 10030 10447
-% Recombinant BA.2 17411 19955
-\caption{\label{tab:multiple_origins_table}
-Details of inferred
-breakpoints for different recombination events inferred for XE samples (170
-samples and 12 inferred recombination nodes; some are very similar (Official:
-BA.1* \& BA.2, 10448–11287)}
-\end{figure}
 
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple example, consisting of
 the 4 samples labelled XD by Nextclade in the long ARG. The left hand subgraph
@@ -1599,43 +1540,41 @@ back to the ARG, allowing an automated assessment of collection date discrepanci
 \includegraphics[width=.7\textwidth]{figures/imputation.pdf}
 \caption{\label{fig:imputation}A schematic of the iterative procedure to impute
 Pango lineage for inserted, non-sample nodes. Here, three nodes (question
-marks) have unknown Pango lineage (A). The lineage for node N1 can be directly 
-copied from its parent (L2). The lineage for node N2 must be inferred from 
-that of the parent (L2) plus the lineage-defining mutation (red X) 
-on the connecting edge. The lineage for node N3 can then be copied from 
+marks) have unknown Pango lineage (A). The lineage for node N1 can be directly
+copied from its parent (L2). The lineage for node N2 must be inferred from
+that of the parent (L2) plus the lineage-defining mutation (red X)
+on the connecting edge. The lineage for node N3 can then be copied from
 that of node N2.}
 \end{figure}
-While the Pango lineages of sample nodes are imported directly from 
-GISAID metadata, the lineage status of internal nodes inserted into 
-the \texttt{sc2ts} ARG must be imputed. We do this using 
-the list of lineage-defining mutations (based on 90\% consensus 
-of the sequences analysed) from the COVID-CG website 
-\citep[][\url{https://covidcg.org/}; accessed on 4 November 2022]{Chen2021-zc}.
+While the Pango lineages of sample nodes are imported directly from
+GISAID metadata, the lineage status of internal nodes inserted into
+the \texttt{sc2ts} ARG must be imputed. We do this using
+the list of lineage-defining mutations (based on 90\% consensus
+of the sequences analysed) from the COVID-CG website \citep[][\url{https://covidcg.org/}; accessed on 4 November 2022]{Chen2021-zc}.
 
-For a given non-sample node $u$, if the Pango lineage of its parent or 
+For a given non-sample node $u$, if the Pango lineage of its parent or
 one of its children is already known, and there are no lineage-defining mutations
 on the connecting edge, then $u$ copies this Pango lineage exactly.
-Otherwise, the lineage for $u$ is inferred by 
-matching its full set of mutations against the COVID-CG list. 
+Otherwise, the lineage for $u$ is inferred by
+matching its full set of mutations against the COVID-CG list.
 We apply these two steps to the internal nodes of the ARG iteratively,
-as illustrated in Figure~\ref{fig:imputation}, until all internal nodes 
+as illustrated in Figure~\ref{fig:imputation}, until all internal nodes
 are assigned a lineage (where possible---note that sometimes a lineage cannot
 be assigned to the children of a recombination node).
 
-This method is fast, as the lineages for most of the internal nodes can be 
-imputed by copying from the surrounding nodes (66\% of nodes for the long ARG, 
+This method is fast, as the lineages for most of the internal nodes can be
+imputed by copying from the surrounding nodes (66\% of nodes for the long ARG,
 80\% of nodes for the wide ARG), and significantly more efficient than extracting
-the haplotypes for each internal node and using existing Pangolin assignment tools 
-\citep{OToole2021-assignment}. The 
-accuracy depends on the quality of the list of lineage-defining mutations, 
-as well as the source of lineage designation for the sample nodes: we obtain 
-slightly different results when using those recorded on GISAID (which uses 
+the haplotypes for each internal node and using existing Pangolin assignment tools
+\citep{OToole2021-assignment}. The
+accuracy depends on the quality of the list of lineage-defining mutations,
+as well as the source of lineage designation for the sample nodes: we obtain
+slightly different results when using those recorded on GISAID (which uses
 pangoLEARN), and those assigned by Nextclade. To gauge the accuracy of
-imputation, we have used our method to re-impute the lineage designations of each 
-sample node using the surrounding information; this results in 98\% (resp.~99\%) of 
-nodes being assigned the same lineage as per the source metadata in the long 
+imputation, we have used our method to re-impute the lineage designations of each
+sample node using the surrounding information; this results in 98\% (resp.~99\%) of
+nodes being assigned the same lineage as per the source metadata in the long
 (resp.~wide) ARG.
-
 
 \section{Acknowledgements}
 We gratefully acknowledge all data contributors, i.e., the Authors and their
@@ -1779,8 +1718,32 @@ XY      &               [BA.1.1, BA.2] &         [BA.1*, BA.2*] &   6 & XY: 6, X
 \bottomrule
 \end{tabular}
 \caption{\label{tab:pango-single-origin}
-Summary of the Pango X-lineages in the long ARG that are inferred to have a single recombinant origin based on the NextClade Pango lineage assignments. Parent lineages from the ARG (as designated by Nextclade and, where relevant and also to parent lineages as defined by the official Pango designation alias key. (TODO: explain the asterisks) FIXME: if we like this table then we can reformat it so that lists at the end are spread over multiple lines rather than using Python dict notation }
+Summary of the Pango X-lineages in the long ARG that are inferred to have a
+single recombinant origin based on the NextClade Pango lineage assignments.
+Parent lineages from the ARG (as designated by Nextclade and, where relevant
+and also to parent lineages as defined by the official Pango designation alias
+key. (TODO: explain the asterisks) FIXME: if we like this table then we can
+reformat it so that lists at the end are spread over multiple lines rather than
+using Python dict notation }
 \end{table}
+
+\begin{table}
+\begin{tabular}{llll}
+\toprule
+ interval &                 causal & parent &                                descendant\_lineages \\
+\midrule
+ (9867, 10198) &             XE  & [BA.1, BA.2] &                                          \{'XE': 3\} \\
+(10448, 11537) &             XH  & [BA.1.20, BA.2.9] &  \{'XAF': 34, 'XH': 11, 'B.1.1.529': 3, 'XE': 3,... \\
+(10448, 11537) &             XE  & [BA.1.1.15, Unknown (R)] & \{'XE': 2\} \\
+(10448, 11537) &             XE  & [BA.1.17.2, BA.2] &                                        \{'XE': 155\} \\
+\bottomrule
+\end{tabular}
+\caption{\label{tab:multiple_origins_table}
+Details of inferred
+breakpoints for different recombination events inferred for XE samples
+(Official: BA.1* \& BA.2, 10448–11287). TODO ELABORATE}
+\end{table}
+
 
 \begin{figure} \centering
 \includegraphics[width=0.5\textwidth]{figures/Pango_XA_gisaid_large_graph.pdf}
