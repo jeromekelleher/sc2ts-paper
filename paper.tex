@@ -1586,17 +1586,15 @@ the time delay between the collection date and submission date.
 After some preliminary analysis we settled on a maximum submission delay
 of 30 days when building the ARGs described here as a reasonable compromise.
 
-As the results of \texttt{sc2ts} are sensitive to the existance of
-time-travellers, an imporant aspect of future work is to find better ways
+As the results of \texttt{sc2ts} are sensitive to the existence of
+time-travellers, an important aspect of future work is to find better ways
 to identify them. One possibility is to use the LS HMM itself to flag
 overly divergent sequences, and to exclude them from attachment to the ARG.
 We might also estimate collection dates by adding these potential time travellers
 back to the ARG, allowing an automated assessment of collection date discrepancies.
 
 \subsection{Imputation of Pango lineage for non-sample nodes}
-% FIXME the caption and the text are basically saying the same thing here. Can
-% we streamline, and maybe give a bit more detail in the text about iteration,
-% and the concrete implementation?
+
 \begin{figure} \centering
 \includegraphics[width=.7\textwidth]{figures/imputation.pdf}
 \caption{\label{fig:imputation}A schematic of the iterative procedure to impute
@@ -1611,7 +1609,8 @@ While the Pango lineages of sample nodes are imported directly from
 GISAID metadata, the lineage status of internal nodes inserted into 
 the \texttt{sc2ts} ARG must be imputed. We do this using 
 the list of lineage-defining mutations (based on 90\% consensus 
-of the sequences analysed) from the COVID-CG website \citep[][\url{https://covidcg.org/}; accessed on 4 November 2022]{Chen2021-zc}.
+of the sequences analysed) from the COVID-CG website 
+\citep[][\url{https://covidcg.org/}; accessed on 4 November 2022]{Chen2021-zc}.
 
 For a given non-sample node $u$, if the Pango lineage of its parent or 
 one of its children is already known, and there are no lineage-defining mutations
@@ -1624,12 +1623,18 @@ are assigned a lineage (where possible---note that sometimes a lineage cannot
 be assigned to the children of a recombination node).
 
 This method is fast, as the lineages for most of the internal nodes can be 
-imputed by copying from the surrounding nodes (66\% of nodes for the Long ARG, 
-80\% of nodes for the Wide ARG). The accuracy depends on
-the quality of the list of lineage-defining mutations; we find that when
-masking the lineages of sample nodes one-by-one and re-imputing these using
-the remaining information results in 98\% (resp.~99\%) of lineages being
-imputed correctly.
+imputed by copying from the surrounding nodes (66\% of nodes for the long ARG, 
+80\% of nodes for the wide ARG), and significantly more efficient than extracting
+the haplotypes for each internal node and using existing Pangolin assignment tools 
+\citep{OToole2021-assignment}. The 
+accuracy depends on the quality of the list of lineage-defining mutations, 
+as well as the source of lineage designation for the sample nodes: we obtain 
+slightly different results when using those recorded on GISAID (which uses 
+pangoLEARN), and those assigned by Nextclade. To gauge the accuracy of
+imputation, we have used our method to re-impute the lineage designations of each 
+sample node using the surrounding information; this results in 98\% (resp.~99\%) of 
+nodes being assigned the same lineage as per the source metadata in the long 
+(resp.~wide) ARG.
 
 
 \section{Acknowledgements}
