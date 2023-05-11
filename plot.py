@@ -1797,6 +1797,14 @@ class RecombinationIntervals(Figure):
             ScalarMappable(norm=norm, cmap=cmap), cax=axins1, orientation="vertical"
         )
 
+        axins2 = inset_axes(
+            ax1,
+            width="20%",
+            height="50%",
+            loc="upper center",
+        )
+        axins2.hist(length)
+
         covers = np.zeros(df_sites.position.max())
         for left, right in intervals:
             covers[left:right] += 1
