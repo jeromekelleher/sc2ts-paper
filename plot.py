@@ -1877,7 +1877,7 @@ def main():
     parser.add_argument(
         "-o",
         "--outtype",
-        choices=["pdf", "svg"],
+        choices=["pdf", "png", "svg"],
         default="pdf",
         help="The format of the output file",
     )
