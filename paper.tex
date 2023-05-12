@@ -294,27 +294,30 @@ enable inferences at the full pandemic scale
 \label{sec:backbone_phylogeny}
 %% The ARG is mostly tree-like
 Compared to organisms like humans which recombine every generation,
-SARS-CoV2 shows little recombination, with recombination nodes accounting
+in SARS-CoV2 recombination is rare, with recombination nodes accounting
 for <0.3\% of our inferred ancestry (Table~\ref{tab:args}). As a result,
-relationships between strains can often be adequately represented by a
-single tree, particularly early in the pandemic, or when looking at
+relationships between strains can often be represented by a
+single phylogenetic tree, particularly when looking at
 a subset of sampled genomes e.g. restricted by time or limited to close
-relatives.
+relatives. We expect the ARG to be particularly tree-like
+early in the pandemic, when co-infection was less likely.
 
-For validation purposes, we compare the genetic
-relationships in our ARGs with phylogenetic relationships
-inferred by the NextStrain project \citep{Hadfield2018-ef}.
-To enable this comparison, we ``simplified''~\citep{Kelleher2018-xc}
+A classic tree-based summary of SARS-CoV2 ancestry is provided
+by the NextStrain project \citep{Hadfield2018-ef}. The trees
+available from Nextstrain are based on small subsamples of the
+dataset, and early in the pandemic tend to be restricted to
+a sample of strains which are not thought to be recombinants.
+For validation purposes, we our compare our ARGs with
+a downloaded ``all-data'' NextStrain tree, restricted to the time period
+covered by each ARG. To enable this, we ``simplified''~\citep{Kelleher2018-xc}
 the sc2ts ARGs to a ``backbone'' containing only samples present
-in a specific NextStrain tree. For this purpose, we picked an
-``all-data''  NextStrain tree restricted to the time period covered
-by the appropriate ARG. This results in a relatively small
-set of shared samples, almost entirely restricted to non-recombinant lineages.
-These simplified backbone ARGs exhibit very
-little recombination (6 and 5 trees across the genome for the Wide and Long
-ARGs, respectively).
-% JK: This leaves a big question hanging - why do we ahave recombination
-% in here at all? It's probably just artefactual, right?
+the NextStrain tree. This results in a small set of shared
+samples (180 for the wide ARG, 88 for the long ARG), none of which are
+designated as Pango recombinant lineages by Nextclade (see subsection
+\ref{sec:pango_x_lineages}).
+
+These sc2ts backbone phylogenies do contain small amounts of recombination
+
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
