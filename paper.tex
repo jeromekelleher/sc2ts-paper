@@ -689,8 +689,9 @@ ${\sim}3 \%$ in Figure ~\ref{fig:recomb_mrcas}B) will be represented by several 
 As a check on the reliability of these identified recombinations,
 Figure~\ref{fig:recomb_mrcas}B  plots only those breakpoints which are
 HMM-consistent. This reduces both the number of recombination nodes \&
-breakpoints in the long ARG from 763 \& 851 to 347 \& 358 (
-and from from 1522 \&  to C / D in the wide ARG, see Supplementary Tables 1 and 2).
+breakpoints in the long ARG from 763 \& 851 to 347 \& 358
+(and in the wide ARG from 1522 \& 1769 to XXX \& YYY , see
+Supplementary Tables 1 and 2).
 
 The date of common ancestry for the two parents of recombinant lineages is
 concentrated in several banded rows in Figure~\ref{fig:recomb_mrcas}. These are
@@ -705,7 +706,7 @@ trace frequently represent very large polytomies in the tree (at the extreme,
 2,872 immediate children). This is likely to indicate a rapid and under-sampled
 expansion of a clade in the SARS-CoV-2 genealogy.
 
-Finally, it is clear from Supplementary Figure 4 that of the recombinant
+Finally, it is clear from Supplementary Figure\ref{fig:recomb_mrcas_voc_breakdown} that of the recombinant
 parents that fall into the Alpha, Delta, and Omicron VoC classes, the majority
 are within-Delta and within-Omicron recombinants, and that Omicron followed by
 Delta, are the variants associated with the most recombination. This may
@@ -772,18 +773,17 @@ XC by Nextclade are designated as XC by GISAID, these patterns could be due to
 mistaken labelling, hence we do not examine XC further.
 
 \subsubsection{Long ARG}
-[high level summary of the pango recombinant lineages
-and samples in the Long ARG]
+%% high level summary of the pango recombinant lineages and samples in the Long ARG
 The long ARG (subsampled to mid-2022) contains 33
 Nextclade-designated Pango recombinant lineages (XA to XAK; Supplementary Table
-XXX) comprising 749 samples (711 when singleton recombinants are removed). If
-the GISAID designations are used, 38 Pango lineages exist in the long ARG,
+XXX) comprising 749 samples (711 when singleton recombinants are removed). In
+contrast, GISAID designates 38 Pango recombinant lineages in the long ARG,
 comprising only 515 samples. In the analyses below, we mainly focus on the
 larger number of Nextclade designated samples.
 
-Of the 749 Nextclade recombinant samples, all but 2 are inferred to descend
+Of the 749 Nextclade-designated recombinants, we infer that all but two descend
 from a recombination node. These two samples are designated XP, and a likely
-explanation for their not have an inferred recombinant origin in the long ARG
+explanation for the absence of a corresponding recombination event in the long ARG
 is that the characteristic multibase deletion for XP
 (\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
 during preprocessing. An improved masking pipeline is an important avenue for
@@ -803,7 +803,7 @@ Understanding the origin of this and other similar nodes, is an important
 direction for future work (see Discussion). For simplicity, we exclude these
 samples from further analyses in this section.
 
-The remaining remaining 630 Pango X designated sequences trace back to 50
+The remaining remaining 630 Pango recombinant samples trace back to 50
 different recombination nodes. We examine the inferred inheritance structure in
 the following subsections.
 
@@ -856,23 +856,20 @@ the following subsections.
 % recombinants may indeed trace to a single origin.
 
 \subsubsection{Single origin}
-We would usually assume that all sequences
+In the absence of genealogical information, a reasonable initial assumption is
+that all sequences
 assigned to a given Pango X lineage are descendants of a single recombinant
 sequence, arising as a result of a mixed infection followed by onward
-transmission. Thus, we would also expect our ARG to reflect this evolutionary
-history, where we have a all the samples assigned to this recombinant lineage
-tracing back to a single recombination node, representing this original
+transmission. We would expect our ARG to reveal evolutionary histories of this
+nature, where all the samples assigned to a given recombinant lineage
+trace back to one recombination node, representing a single originating
 recombination event.
 
 \begin{figure}
-\begin{tabularx}{\textwidth}{c}
-
-% \end{footnotesize}
-% \\
-
+\centering
 \includegraphics[width=\textwidth]{figures/Pango_XA_XAG_XD_nxcld_tight_graph.pdf}
-% }
-\end{tabularx} \caption{\label{fig:pango-simple-origin-graph} Simple origin
+
+\caption{\label{fig:pango-simple-origin-graph} Simple origin
 Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all five samples designated
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
 sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
@@ -881,21 +878,16 @@ imputed Pango status. (B) Equivalent plot for the 17 XAG samples in the long ARG
 (C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
 } \end{figure}
 
-In Figure~\ref{fig:pango-simple-origin-graph}A we illustrate the case of XA. We construct a small subgraph of the long ARG, tracing routes from Nextclade-identified XA samples to the closest other sample strains in our dataset. Where a route passes upwards through a recombination node, we only show the continuing parental lineages to the most recent sample ancestors, rather than descending the ARG downward to cousins of the recombinant parents. Dotted lines show where this subgraph links to other nodes within the ARG. It is clear from the subgraph that all the XA samples trace to a single originating recombination node.
+A simple example is the case of XA, illustrated in Figure~\ref{fig:pango-simple-origin-graph}A.
+This shows a subgraph of the long ARG, in which paths have been traced above all
+Nextclade-identified XA samples to the closest other sample strains in our dataset.
+Dotted lines show where this subgraph links to other nodes within the ARG, and above
+recombination nodes only
+ancestral nodes are shown (i.e. cousins of the recombinant parents are omitted).
+It is clear from the subgraph that all the XA samples trace to a single originating
+recombination node (plotted in black), with a breakpoint position around 22227bp.
 
-Table~\ref{tab:pango-single-origin} summarises the sequences of all 16 of the
-Pango recombinant lineages that trace back to a single recombination node in
-the long ARG. [FIXME UPDATE THESE] We can see that XA, XAC, XAE, and XF form
-monophyletic clades, in which all of the samples given that Pango designation
-descend from a single recombination node.
-
-[Discuss remaining]
-
-There is generally good agreement on the imputed parental lineages from the ARG
-and the official Pango designations. [Discuss more]
-
-[Discuss panel B where XAG shares a common recombinant origin with samples from
-several other X lineages]
+%% Discuss panel B where XAG shares a common recombinant origin with samples from several other X lineages
 
 Figure~\ref{fig:pango-simple-origin-graph}B shows a case of another
 Pango lineage, XAG, whose Nextclade-designated samples also trace to a
@@ -907,6 +899,19 @@ as BA.2, and XAG becomes fully monophyletic (supplementary figure
 \ref{fig:pango_XAG_gisaid_graph}, which also gives identifying labels to the
 sample nodes, convertable to EPI\_ISL identifiers using
 Supplementary table XXX )
+
+Supplementary Table~\ref{tab:pango-single-origin} summarises the sequences of all 16 of the
+Pango recombinant lineages that trace back to a single recombination node in
+the long ARG. [FIXME UPDATE THESE] We can see that XA, XAC, XAE, and XF form
+monophyletic clades, in which all of the samples given that Pango designation
+descend from a single recombination node.
+
+
+[Discuss remaining]
+
+There is generally good agreement on the imputed parental lineages from the ARG
+and the official Pango designations. [Discuss more]
+
 
 \subsubsection{Multiple origins}
 The ARG inference has no pre-defined knowledge
