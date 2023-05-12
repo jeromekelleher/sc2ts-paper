@@ -16,7 +16,7 @@ import matplotlib as mpl
 
 mpl.use("Agg")  # NOQA
 from matplotlib.colors import rgb2hex
-from matplotlib.cm import get_cmap, ScalarMappable
+from matplotlib.cm import ScalarMappable
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 from matplotlib import collections as mc
@@ -267,13 +267,15 @@ class Cophylogeny(Figure):
         # Change the random seed here to change the untangling start point
         # rng = np.random.default_rng(777)
         # keep = rng.shuffle(keep)
-        sc2ts_tip = sc2ts_simp_its.simplify(keep)
+        sc2ts_tip = sc2ts_simp_its.simplify(keep, keep_unary=True)
+        logging.info(
+            f"Removed samples that are internal in tree at pos {self.pos}. "
+            f"Trees now have {sc2ts_tip.num_samples} leaf samples and "
+            f"{(sc2ts_tip.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0).sum()} recmb nodes"
+        )
+        sc2ts_tip = sc2ts_tip.simplify() # remove unary nodes (e.g. recmb nodes)
         assert nxstr_its.num_trees == 1
         nxstr_tip = nxstr_its.simplify(keep)
-        logging.info(
-            "Removed internal samples in first tree. Trees now have "
-            f"{sc2ts_tip.num_samples} leaf samples"
-        )
 
         # Call the java untangling program
         sc2ts_order, nxstr_order = self.run_nnet_untangle(
@@ -312,7 +314,7 @@ class Cophylogeny(Figure):
         }
 
         # A few color schemes to try
-        cmap = get_cmap("tab20b", 50)
+        cmap = plt.get_cmap("tab20b", 50)
         pango = Nextstrain.pango_names(self.nxstr.ts)
         colours = {
             # Name in ns comment metadata, colour scheme
@@ -551,11 +553,8 @@ class Cophylogeny(Figure):
 
         global_styles += nxstr_styles
         global_styles += sc2ts_styles
-        sc2ts_str = f"Sc2ts {self.name[-4:]} ARG: "
-        if self.sc2ts.pos == 0:
-            sc2ts_str += "first tree"
-        else:
-            sc2ts_str += f"tree @ position {self.sc2ts.pos}"
+        sc2ts_str = f"Sc2ts {self.name[-4:]} ARG: genomic positions "
+        sc2ts_str += f"{self.sc2ts.tree.interval.left:.0f} to {self.sc2ts.tree.interval.right:.0f}"
         w, h = 900, 800
         mar_in = 0.05
         w_in = w / 96 + mar_in * 2
