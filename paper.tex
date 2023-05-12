@@ -380,13 +380,18 @@ these issues may be alleviated in future versions of \texttt{sc2ts}.
 
 \subsection{Mutational spectrum}
 \label{sec:mutation_spectrum}
- In addition to recombination events, the ARGs record mutation events along the
-SARS-CoV-2 phylogeny. \cite{Yi2021-sc} reconstructed a SARS-CoV-2 phylogeny of
-over 350,000 genomes sampled globally from December 24, 2019, to January 12,
-2021, and systematically catalogued all the mutations occurring along the
-phylogeny. Notably, they described a mutational spectrum in which C-to-U and
-G-to-U mutations occur more frequently than U-to-C and U-to-G mutations,
-respectively.
+The ARGs inferred by \texttt{sc2ts} and represented using the \texttt{tskit}
+library (Section~\ref{sec:args}) are a joint estimate of the processes
+of inheritance, recombination and mutation. Unlike most approaches to
+phylogenetic analysis, mutations are included in the \texttt{tskit}
+data model alongside
+the topological representation of genetic inheritance.
+This has many
+advantages, for example allowing us to compute statistics of the observed
+sequences efficiently~\citep{Kelleher2016-wk,Ralph2020-efficiently} and
+to provide high-levels of data compression~\citep{Kelleher2019-ba}.
+The same idea has recently been used to represent
+SARS-CoV-2 data in UShER's ``mutation annotated tree'' format~\citep{Turakhia2022-it}.
 
 \begin{figure} \centering
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
@@ -397,13 +402,16 @@ respectively.
 % \midrule
     \cmidrule{2-5}
 Total      & \multicolumn{2}{l}{1,213,193} & \multicolumn{2}{l}{1,062,072} \\
+Private     & 758,903 & (62.55\%) &  767,111 & (72.23\%)\\
+    \cmidrule{2-5}
 Transitions & 873,487   & (72.00\%) & 783,773  & (73.80\%) \\
 Transversions & 326,053 & (26.88\%) & 270,333  & (25.45\%) \\
+    \cmidrule{2-5}
 Insertions  & 6191  & (0.51\%) & 2814   & (0.26\%) \\
 Deletions   & 7462  & (0.62\%) & 5152   & (0.49\%) \\
+    \cmidrule{2-5}
 Recurrent   & 74,719 & (6.16\%) & 50,099 & (4.72\%) \\
 Reversions  & 72,617 & (5.99\%) & 48,226 & (4.54\%) \\
-Private     & 758,903 & (62.55\%) &  767,111 & (72.23\%)\\
 \bottomrule
 \end{tabular}
 &
@@ -411,33 +419,62 @@ Private     & 758,903 & (62.55\%) &  767,111 & (72.23\%)\\
 (A) & (B)\\
 \end{tabularx}
 \caption{\label{fig:mutational_spectra}
-(A) Summary of mutations in the Long and Wide ARGs.
-(B) Mutational spectrum of SARS-CoV-2 in
-the wide ARG compared to \cite{Yi2021-sc}. Mutations are
-categorised by type (i.e., ancestral state $>$ derived state). The percentages
+(A) Summary of mutations in the Long and Wide ARGs. Private mutations
+occur on terminal branches. Insertions are mutations in which the
+inherited state is the gap state ``-'' and the derived state is a
+nucleotide, and vice versa for deletions. Recurrent mutations are
+those that inherit from at least one other mutation (at that site),
+and a reversion is a recurrent mutation that reverses the state change
+of the mutation immediately ancestral to it.
+(B) Mutational spectrum in
+the Wide ARG compared to \cite{Yi2021-sc}. Mutations are
+categorised by type (i.e., inherited state $>$ derived state). The percentages
 of each mutation type from the wide ARG are represented by blue bars and the
 percentages from Yi et al. by orange bars, with the darker colours representing
 one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).}
 \end{figure}
 
-For validation purposes, we compare the mutational spectrum from the wide ARG
-with the mutational spectrum of \citet{Yi2021-sc}. We categorised all of the
-single nucleotide mutations by type (defined by the ancestral state and derived
-state), excluded mutations inherited by only a single sample (which are
-enriched for sequencing errors and artefacts), and tallied them up by type.
+The properties of the mutations inferred in the Wide and Long
+ARGs are summarised in Figure~\ref{fig:mutational_spectra}A. In both
+cases we have a large number of mutations, and a majority of these
+(Wide ARG: 62.55\%, Long ARG: 72.23) are private to a single
+sample, i.e.\ on terminal branches.
+Although the average number
+of mutations per sample is small
+(Wide ARG: 0.77, Long ARG: 1.38; c.f.\ Table~\ref{tab:args}), the average number per site
+is large (Wide ARG: 41.23, Long ARG: 36.10; c.f.\ Table~\ref{tab:args}). This is
+partly driven by some highly mutagenic sites (e.g., site 28271 has over 7,000
+mutations in the Wide ARG, c.f.\ Figure~\ref{fig:breakpoint-distribution}), which
+may be artefactual.
+The main weakness of the current version of \texttt{sc2ts} is an excess
+of inferred reversion mutations, with 5.99\% of all mutations in the Wide
+ARG (Long ARG: 4.54\%) reverting the state change of the immediately
+ancestral mutation. The majority of these mutations are likely to be
+artefactual, and a key goal of future development is to improve
+our parsimony heuristics (Section~\ref{sec:parsimony-heuristics}) to
+address this issue.
+
+Despite the presence of some artefactual mutations,
+the properties of the mutations inferred by \texttt{sc2ts} largely follow
+established results.
+In Figure~\ref{fig:mutational_spectra}B we compare the mutational spectrum
+in the Wide ARG to the results of \cite{Yi2021-sc},
+who reconstructed a SARS-CoV-2 phylogeny of
+over 350,000 genomes sampled globally from December 24, 2019, to January 12,
+2021, and classified the mutations occurring along the phylogeny.
+We categorised all of single nucleotide
+mutations in the Wide ARG by type (defined by the inherited and derived states),
+excluded mutations inherited by only a single sample (which are
+enriched for sequencing errors and artefacts).
 Similarly, we took the data for single nucleotide mutations from
-\url{https://github.com/ju-lab/SC2_evol_signature} \citep{Yi2021-sc}, excluded
+\citep[][\url{https://github.com/ju-lab/SC2_evol_signature}]{Yi2021-sc}, excluded
 mutations occurring along terminal branches, and tallied them up by type.
-Figure~\ref{fig:mutational_spectra} shows that the mutational spectrum from the
+Figure~\ref{fig:mutational_spectra}B shows that the mutational spectrum from the
 wide ARG (based on 448,825 mutations) matches that reported by \citet[based on
 92,344 mutations]{Yi2021-sc}. In both spectra, C-to-U mutations and G-to-U
 mutations occur more frequently than U-to-C and U-to-G, respectively. Similar
 results are obtained when including the mutations inherited by only a single
 sample or those occurring on terminal branches (data not shown).
-
-% If we do this, goes here
-% \subsection{Mutations under selection}
-% XX
 
 \subsection{Early recombinants reported by Jackson et al. (2021)}
 \label{sec:jackson_recombs}
