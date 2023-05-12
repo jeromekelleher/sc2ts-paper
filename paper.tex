@@ -301,13 +301,14 @@ single phylogenetic tree, particularly when looking at
 a subset of sampled genomes e.g. restricted by time or limited to close
 relatives. We expect the ARG to be particularly tree-like
 early in the pandemic, when co-infection was less likely.
+
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
 \caption{\label{fig:cophylogeny}
-Tanglegram comparing the leftmost local tree in the Wide ARG
-(sampled to mid-2021)
-and an ``all-time'' global NextStrain tree (sampled to January 21, 2023). The
-trees are pruned down to the samples present in both the trees. Light grey
+Tanglegram comparing a local tree from the Wide ARG
+(sampled to mid-2021) and an ``all-time'' global NextStrain tree
+(downloaded on January 21, 2023).
+Phylogenies are pruned down to those samples present as tips in both datasets. Light grey
 lines match the corresponding samples between the two trees; black circles
 indicate identical sample partitions between the two trees. Terminal branches
 are colour-coded according to the Pango lineage status assigned to the tip
@@ -335,23 +336,27 @@ assigned to Pango recombinant lineages by Nextclade (see Section
 Our \texttt{sc2ts} backbone phylogenies do contain small amounts of recombination:
 there are 7 recombination nodes in the backbone of the Wide ARG and 8 in the backbone
 of the Long ARG. However, the backbones remain extremely tree-like, as these
-recombination events involve minor, local topological rearrangements.
-All involve recombination between closely related lineages (e.g.\ sibling lineages)
+recombination events involve minor, local topological rearrangements. In particular,
+all involve recombination between closely related lineages (e.g.\ sibling lineages)
 and a number even represent recombination within a single lineage, in which the parent
 lineages above a recombination event coalesce with each other before coalescing
 with any other lineages in the phylogeny. These could either represent true
 recombination events between closely related strains, which have previously gone unnoticed,
-or could be artefacts of the current \texttt{sc2ts} method and its parameterization.
+or could be artifacts of the current \texttt{sc2ts} method and its parameterization.
 
 Figure~\ref{fig:cophylogeny} compares the backbone phylogeny of the Wide ARG with
-a GISAID global ``all-time'' tree from NextStrain (downloaded on January 21, 2023).
-We illustrate the backbone phylogeny by visualising
+a GISAID global ``all-time'' tree from NextStrain
+% We give the date below in the caption - we could probably remove if either from there
+% or from here (I suggest from here)
+(downloaded on January 21, 2023).
+We illustrate the backbone phylogeny by visualizing
 a single tree in the middle of the viral genome
-(covering the interval 8393--21618), since other regions of the 
+%% (covering the interval 8393--21618),  % removed as interval now in the figure title
+since other regions of the 
 genome show almost identical topologies.
 It is clear that the backbone topology of the \texttt{sc2ts} tree shows very close
 agreement with the NextStrain tree. The sample genomes cluster by their
-assigned Pango lineage status, and many variants and their descendents form
+assigned Pango lineage status, and many variants and their descendants form
 identical monophyletic clades in both the trees (e.g., the Alpha and Delta VoC
 clades, labelled).
 Supplementary Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG, with similar results.
@@ -609,18 +614,18 @@ the breakpoint sequences.
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/recombination_node_mrcas.pdf}
 \caption{\label{fig:recomb_mrcas}
-Date of common ancestry between the parents either side of recombination
-breakpoints, as a function of degree of parental divergence. MRCAs of parents
-inferred to have produced a Pango designated recombinant (XA, XB, etc.) are
-identified in orange (A) Data after removing singleton recombinants (XXX parent
-pairs). Many recombinations involve parental strains that descend from the same
-MRCA: dates for the four most frequently identified MRCA nodes are indicated by
-horizontal dotted lines. These frequent MRCA nodes tend to be associated with
-major waves and commonly have many immediate children (i.e. are large
-polytomies, likely to indicate undersampled outbreaks) (B) Further filtered by
-removing HMM inconsistent breakpoints (YYY parent pairs). Note that
-Figure~\ref{fig:recomb_mrcas_voc_breakdown} shows the same data broken down by
-parental VoC classification.}
+Date of common ancestry between the parents on either side of recombination
+breakpoints, as a function of parental divergence. MRCAs of parents
+inferred to have caused a Pango designated recombinant (XA, XB, etc.)
+identified in orange (A) 851 parent pairs (singleton recombinants removed).
+Parental strains often descend from the same MRCA; each horizontal dotted line
+indicates a frequently found MRCA: these tend to be associated with major waves
+and often have many immediate children (i.e. are large
+polytomies, likely to indicate undersampled outbreaks) (B) Further filtered
+to 358 parent pairs by removing HMM inconsistent breakpoints. For equivalent
+plots broken down by parental VoC classification, see
+Figure~\ref{fig:recomb_mrcas_voc_breakdown}
+}
 \end{figure}
 
 Both the wide and long ARGs contain a large number of recombination nodes (4123
@@ -651,13 +656,21 @@ between very closely related lineages, providing a degree of resolution not
 available with other recombination detection methods.
 
 The histograms in Figure~\ref{fig:recomb_mrcas} show that
-majority of newly identified recombinants arise from parents that diverged 10 to 30 weeks previously. However, there is also a peak of recombinants that diverged ~95 weeks prior to the event: these correspond to recombinants whose parental common ancestor traces to early 2020, including both Delta-Delta and Delta-Omicron recombinants (Supplementary Figure~\ref{fig:recomb_mrcas_voc_breakdown}). Note that each point in these plots represents a breakpoint, so that recombination events with more than one breakpoint (e.g. with 3 or more parents, which comprise X \% of the recombination events) are represented by several plotted points.
+majority of newly identified recombinants arise from parents that diverged 10 to 30 weeks previously. 
+However, there is also a peak of recombinants that diverged ${\sim}95$ weeks prior to the event:
+these correspond to recombinants whose parental common ancestor traces to early 2020,
+including both Delta-Delta and Delta-Omicron recombinants
+(Supplementary Figure~\ref{fig:recomb_mrcas_voc_breakdown}).
+Note that each plotted point represents a breakpoint, so that a recombination
+event with more than one breakpoint (e.g. with 3 or more parents, comprising
+${\sim}10 \%$ of the recombination events in Figure ~\ref{fig:recomb_mrcas}A and
+${\sim}3 \%$ in Figure ~\ref{fig:recomb_mrcas}B) will be represented by several points.
 
-As a check on the reliability of these identified recombination events,
+As a check on the reliability of these identified recombinations,
 Figure~\ref{fig:recomb_mrcas}B  plots only those breakpoints which are
-HMM-consistent. This reduces both the number of recombination nodes /
-breakpoints from 1522 / B to C / D in the wide ARG and from 763 / 806 to 459 in
-the long ARG (Supplementary Tables 1 and 2).
+HMM-consistent. This reduces both the number of recombination nodes \&
+breakpoints in the long ARG from 763 \& 851 to 347 \& 358 (
+and from from 1522 \&  to C / D in the wide ARG, see Supplementary Tables 1 and 2).
 
 The date of common ancestry for the two parents of recombinant lineages is
 concentrated in several banded rows in Figure~\ref{fig:recomb_mrcas}. These are
@@ -693,7 +706,7 @@ the long ARG. As in previous sections, we exclude singleton recombinants where
 possible.
 
 \subsubsection{Wide ARG}
-[Quick overview of the wide ARG.]
+%% Quick overview of the wide ARG.
 In the wide ARG, 44
 samples are designated as XA by both Nextclade and GISAID, 237 are designated
 as XB by Nextclade (231 by GISAID), and 6 as XC by Nextclade (none by GISAID).
@@ -702,6 +715,7 @@ reduced to 235 (229) and XC to 4 (0). We correctly identify that all samples
 designated as XB by any method have one or more recombination nodes in their
 ancestry.
 
+%% Textual description of the 3 recombinant lineages present in the wide ARG
 The simplest Pango recombinant genealogy is XA: all XA samples trace back to a
 unique originating recombination node. This is the product of a recombination
 between a B.1.177.18 sample (specifically the strain Wales/ALDP-115BF41/2021,
@@ -720,17 +734,17 @@ UPGMA nodes with imputed Pango lineages B.1.627 (up to a maximum position of
 27389bp) and B.1.36.8 (the remaining fragment of the genome). As described
 later, in the long ARG the equivalent recombination node has only 2 parents,
 with no involvement of  B.1.36.8, and it is possible that the third parent in
-the wide ARG is artifactual. Additional complications arise because additional
+the wide ARG is artefactual. Additional complications arise because additional
 non-X-designated samples such as B.1.634 also descend from this recombination
 (also true in the long ARG, see below), and there are also a small number of
 further recombination nodes nested within the XB ``clade''. However, all but
-one of these nested recombinations are ancestral to only a negligible fractions
+one of these nested recombinations are ancestral to negligible fractions
 of the designated XB samples. The exception accounts for about 17\% of the
 designated XB nodes, and involves a recombination between descendants of the
 originating XB recombination. More specifically strain
 USA/TX-HMH-MCoV-43092/2021 (EPI\_ISL 2224652) is inferred to be a recombination
 between an XB grandparent and its XB grandchild. This could well be
-artifactual.
+artefactual.
 
 For XC, the wide ARG identifies more than one originating recombination node
 (see "multiple origins" below). However, as none of the samples designated as
