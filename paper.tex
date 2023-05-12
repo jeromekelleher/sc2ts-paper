@@ -295,7 +295,7 @@ enable inferences at the full pandemic scale
 %% The ARG is mostly tree-like
 Compared to organisms like humans which recombine every generation,
 in SARS-CoV2 recombination is rare, with recombination nodes accounting
-for <0.3\% of our inferred ancestry (Table~\ref{tab:args}). As a result,
+for $<$0.3\% of our inferred ancestry (Table~\ref{tab:args}). As a result,
 relationships between strains can often be represented by a
 single phylogenetic tree, particularly when looking at
 a subset of sampled genomes e.g. restricted by time or limited to close
@@ -324,39 +324,37 @@ available from Nextstrain are based on small subsamples of the
 dataset, and early in the pandemic tend to be restricted to
 a sample of strains which are not thought to be recombinants.
 For validation purposes, we our compare our ARGs with
-a downloaded ``all-data'' NextStrain tree, restricted to the time period
+a downloaded NextStrain tree, restricted to the time period
 covered by each ARG. To enable this, we ``simplified''~\citep{Kelleher2018-xc}
-the sc2ts ARGs to a ``backbone'' containing only samples present
+the \texttt{sc2ts} ARGs to a ``backbone'' containing only samples present
 the NextStrain tree. This results in a small set of shared
-samples (180 for the wide ARG, 88 for the long ARG), none of which are
-designated as Pango recombinant lineages by Nextclade (see subsection
+samples (180 for the Wide ARG, 88 for the Long ARG), none of which are
+assigned to Pango recombinant lineages by Nextclade (see Section
 \ref{sec:pango_x_lineages}).
 
-Our sc2ts backbone phylogenies do contain small amounts of recombination:
-7 recombination nodes in the backbone of the wide ARG and 8 in the backbone
-of the long ARG. However, the backbones remain extremely tree-like, as these
-recombination events only involve minor and local topological rearrangements:
-for instance recombination between two sibling lineages, or even recombination
-within a single lineage (in which the parent lineages above a recombination event
-coalesce with each other before coalescing with any other lineages in
-the phylogeny
+Our \texttt{sc2ts} backbone phylogenies do contain small amounts of recombination:
+there are 7 recombination nodes in the backbone of the Wide ARG and 8 in the backbone
+of the Long ARG. However, the backbones remain extremely tree-like, as these
+recombination events involve minor, local topological rearrangements.
+All involve recombination between closely related lineages (e.g.\ sibling lineages)
+and a number even represent recombination within a single lineage, in which the parent
+lineages above a recombination event coalesce with each other before coalescing
+with any other lineages in the phylogeny. These could either represent true
+recombination events between closely related strains, which have previously gone unnoticed,
+or could be artefacts of the current \texttt{sc2ts} method and its parameterization.
 
-
-
-Figure~\ref{fig:cophylogeny} shows a co-phylogeny of the 88 samples shared
-between the wide ARG and a GISAID global ``all-time'' tree from NextStrain
-(downloaded on January 21, 2023).
-To reduce the ARG to a single tree, we show
-the tree in the middle of the viral genome (covering the genome interval 8393 to 21618)
-in the Wide ARG;
-however, the five other trees in this
-simplified ARG show near-identical patterns. Supplementary
-Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG.
-It is clear that the backbone topology of the sc2ts tree shows very close
+Figure~\ref{fig:cophylogeny} compares the backbone phylogeny of the Wide ARG with
+a GISAID global ``all-time'' tree from NextStrain (downloaded on January 21, 2023).
+We illustrate the backbone phylogeny by visualising
+a single tree in the middle of the viral genome
+(covering the interval 8393--21618), since other regions of the 
+genome show almost identical topologies.
+It is clear that the backbone topology of the \texttt{sc2ts} tree shows very close
 agreement with the NextStrain tree. The sample genomes cluster by their
 assigned Pango lineage status, and many variants and their descendents form
 identical monophyletic clades in both the trees (e.g., the Alpha and Delta VoC
 clades, labelled).
+Supplementary Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG, with similar results.
 
 Figure~\ref{fig:cophylogeny} also reveals some notable differences between the
 trees. Firstly, the \texttt{sc2ts} tree is generally less well resolved,
@@ -364,7 +362,7 @@ particularly in early 2020 when sampling density was much lower than
 later in the pandemic.
 Secondly, there are non-identical sample partitions
 near the tips (e.g., in the Alpha clade).
-Finally, and most noticably, the branch lengths differ.
+Finally, and most noticeably, the branch lengths differ.
 As discussed in Section~\ref{sec:node_dating}, the dating of nodes
 other than samples in \texttt{sc2ts} is currently quite crude, and
 it is likely that branches not ``anchored'' by samples will be
