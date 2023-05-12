@@ -566,6 +566,16 @@ The recombination node for group A forms a monophyletic clade of all
 
 \subsection{Distribution of recombination breakpoint intervals}
 \label{sec:breakpoint_intervals}
+It is rarely possible to be precise about the position on the genome at which
+a recombinant sequence switches from inheriting from one parent to another.
+Even if we observe the recombinant sequence before signficant
+divergence occurs (during onward transmission), if the two parent sequences
+are similar there is no way to distinguish them. Here we define the
+interval for a particular breakpoint as the interval over which the
+sequences for the left and right parent nodes are identical. The right-hand
+extreme of the interval is chosen by the LS HMM Viterbi algorithm
+(Section~\ref{sec:ls}, and the left bound can then be derived by
+sequence comparison of the parents.
 
 % - Distribution of breakpoint intervals
 %     Study the breakpoint intervals in the Wide ARG. Because we are interested
