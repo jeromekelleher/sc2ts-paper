@@ -273,7 +273,7 @@ class Cophylogeny(Figure):
             f"Trees now have {sc2ts_tip.num_samples} leaf samples and "
             f"{(sc2ts_tip.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0).sum()} recmb nodes"
         )
-        sc2ts_tip = sc2ts_tip.simplify() # remove unary nodes (e.g. recmb nodes)
+        sc2ts_tip = sc2ts_tip.simplify()  # remove unary nodes (e.g. recmb nodes)
         assert nxstr_its.num_trees == 1
         nxstr_tip = nxstr_its.simplify(keep)
 
@@ -1763,10 +1763,11 @@ class RecombinationIntervals(Figure):
     def plot_breakpoints(
         self, df, df_sites, mutations_threshold=0.9, unique_only=False
     ):
-        dfs = df.sort_values(["interval_left", "interval_right"])
-        length = dfs.interval_right - dfs.interval_left
+        dfs = df.sort_values(["breakpoint_interval_left", "breakpoint_interval_right"])
+        length = dfs.breakpoint_interval_right - dfs.breakpoint_interval_left
         intervals = [
-            (row.interval_left, row.interval_right) for (_, row) in dfs.iterrows()
+            (row.breakpoint_interval_left, row.breakpoint_interval_right)
+            for (_, row) in dfs.iterrows()
         ]
         if unique_only:
             unique = set(intervals)
@@ -1851,7 +1852,8 @@ class RecombinationIntervals(Figure):
 
     def plot(self, args):
         df_sites = pd.read_csv("data/site_info.csv")
-        df_recombs = pd.read_csv("data/single_break_recombs.csv")
+        df_recombs = pd.read_csv("data/wide_arg_recombinants.csv")
+        df_recombs = df_recombs[df_recombs.max_descendant_samples > 1]
         self.plot_breakpoints(
             df_recombs, df_sites, mutations_threshold=0.25, unique_only=False
         )
