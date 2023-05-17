@@ -1758,9 +1758,7 @@ class MutationalSpectra(Figure):
 
 
 class RecombinationIntervals(Figure):
-    def plot_breakpoints(
-        self, df, df_sites, mutations_threshold=0.9, unique_only=False
-    ):
+    def plot_breakpoints(self, df, df_sites, unique_only=False):
         dfs = df.sort_values(["breakpoint_interval_left", "breakpoint_interval_right"])
         length = dfs.breakpoint_interval_right - dfs.breakpoint_interval_left
         intervals = [
@@ -1809,7 +1807,9 @@ class RecombinationIntervals(Figure):
         axins2.set_xlabel("Width of interval")
         axins2.set_ylabel("Count")
 
-        print("Unique recombs = ", len(df.node.unique()))
+        print("Recombination nodes = ", len(df.node.unique()))
+        print("Num intervals:", len(intervals))
+        print("Unique intervals:", len(set(intervals)))
         print(length.describe())
 
         covers = np.zeros(df_sites.position.max())
@@ -1831,8 +1831,8 @@ class RecombinationIntervals(Figure):
 
         ax2.set_xlabel("Genome position")
 
-        threshold = np.max(count) * mutations_threshold
-        top_sites = np.where(count > threshold)[0]
+        top_count = 10
+        top_sites = np.argsort(count)[-top_count:]
         for site in top_sites:
             ax3.annotate(
                 f"{int(pos[site])}", xy=(pos[site], count[site]), xycoords="data"
@@ -1865,9 +1865,7 @@ class WideRecombinationIntervals(RecombinationIntervals):
         df_sites = pd.read_csv("data/wide_arg_site_info.csv")
         df_recombs = pd.read_csv("data/wide_arg_recombinants.csv")
         df_recombs = df_recombs[df_recombs.max_descendant_samples > 1]
-        self.plot_breakpoints(
-            df_recombs, df_sites, mutations_threshold=0.25, unique_only=False
-        )
+        self.plot_breakpoints(df_recombs, df_sites, unique_only=False)
         prefix = os.path.join("figures", self.name)
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
@@ -1879,9 +1877,7 @@ class LongRecombinationIntervals(RecombinationIntervals):
         df_sites = pd.read_csv("data/long_arg_site_info.csv")
         df_recombs = pd.read_csv("data/long_arg_recombinants.csv")
         df_recombs = df_recombs[df_recombs.max_descendant_samples > 1]
-        self.plot_breakpoints(
-            df_recombs, df_sites, mutations_threshold=0.40, unique_only=False
-        )
+        self.plot_breakpoints(df_recombs, df_sites, unique_only=False)
         prefix = os.path.join("figures", self.name)
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
