@@ -584,7 +584,7 @@ are similar there is no way to distinguish them. Here we define the
 interval for a particular breakpoint as the genome coordinates over which the
 sequences for the left and right parent nodes are identical. The right-hand
 extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
-(Section~\ref{sec:ls}) and the left bound can then be derived by
+(Section~\ref{sec:ls}) and the left bound is then derived by
 sequence comparison of the parents.
 
 % - Distribution of breakpoint intervals
@@ -607,9 +607,12 @@ precisely determined given the observed genetic variation.
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/recombination_intervals.pdf}
+\includegraphics[width=\textwidth]{figures/wide_arg_recombination_intervals.pdf}
 \caption{\label{fig:breakpoint-distribution}
-Distribution of recombination breakpoints and mutations along the genome.}
+Distribution of recombination breakpoints and mutations along the genome in
+the Wide ARG.
+See Figure~\ref{fig:long_arg_breakpoint_distribution} for the equivalent plot
+for the Long ARG.}
 \end{figure}
 
 There is a preponderance of breakpoint intervals spanning the 3’ end of the
@@ -1842,6 +1845,15 @@ QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
 \end{tabular}
 \caption{\label{tab:jackson_supplement}Recombinant sequences involving the Alpha (B.1.1.7) variant reported by \cite{Jackson2021-ik} have recombinant ancestry in the wide ARG. The breakpoint intervals and Pango lineage assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et al., except the Pango lineage assignment of the parents of group B recombinants, which were taken from Table 1 (motif-based results).}
 \end{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/long_arg_recombination_intervals.pdf}
+\caption{\label{fig:long_arg_breakpoint_distribution}
+Distribution of recombination breakpoints and mutations along the genome in
+the Long ARG.}
+\end{figure}
+
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/supp_recombination_node_mrcas.pdf}

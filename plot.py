@@ -1758,8 +1758,6 @@ class MutationalSpectra(Figure):
 
 
 class RecombinationIntervals(Figure):
-    name = "recombination_intervals"
-
     def plot_breakpoints(
         self, df, df_sites, mutations_threshold=0.9, unique_only=False
     ):
@@ -1850,12 +1848,30 @@ class RecombinationIntervals(Figure):
             axs.set_xticklabels(["" for _ in genes.keys()], rotation="vertical")
         axs.set_xticklabels(list(genes.keys()), rotation="vertical")
 
+
+class WideRecombinationIntervals(RecombinationIntervals):
+    name = "wide_arg_recombination_intervals"
+
     def plot(self, args):
-        df_sites = pd.read_csv("data/site_info.csv")
+        df_sites = pd.read_csv("data/wide_arg_site_info.csv")
         df_recombs = pd.read_csv("data/wide_arg_recombinants.csv")
         df_recombs = df_recombs[df_recombs.max_descendant_samples > 1]
         self.plot_breakpoints(
             df_recombs, df_sites, mutations_threshold=0.25, unique_only=False
+        )
+        prefix = os.path.join("figures", self.name)
+        plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
+
+
+class LongRecombinationIntervals(RecombinationIntervals):
+    name = "long_arg_recombination_intervals"
+
+    def plot(self, args):
+        df_sites = pd.read_csv("data/long_arg_site_info.csv")
+        df_recombs = pd.read_csv("data/long_arg_recombinants.csv")
+        df_recombs = df_recombs[df_recombs.max_descendant_samples > 1]
+        self.plot_breakpoints(
+            df_recombs, df_sites, mutations_threshold=0.40, unique_only=False
         )
         prefix = os.path.join("figures", self.name)
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
