@@ -970,22 +970,26 @@ Indeed, GISAID does not label any of these samples XD (see Supplementary
 Figure~\ref{fig:pango_XD_gisaid_graph} which gives exact mutations and sample identifiers).
 
 A similar pattern is seen for several of the origins inferred for the Pango
-XE lineage, which was originally defined on the basis of sequences from the UK and Ireland. The
+XE lineage (originally defined on the basis of sequences from the UK and Ireland). The
 Long ARG infers five independent origins for nonsingleton Nextclade-designated XE
 samples (Supplementary Table~\ref{tab:multiple_origins_table}). One of the recombinant origins,
 caused in our ARG by an English sample, accounts for 155 out of 164 XE samples
 (primarily UK and Irish, but with a few northern European and north American strains).
-This certainly represents the canonical XE recombinant lineage. The other recombination nodes
+This certainly represents the XE recombinant lineage as originally defined. The other recombination nodes
 only give rise for one, two, or three XE samples. Three of these recombination
 nodes are likely to represent Nextclade mislabelling: they either have different
 inferred breakpoint positions or (in the case of the earliest recombination node),
 descendants that are primarily labelled as other Pango X-lineages. Additional support
 for the suggestion that they result from incorrect labelling comes from the fact that
 none of their XE-labelled descendant samples are from the UK or Ireland.
-However, the most recently derived XE cluster, consisting
-of two samples (one from Canada and one from England) may not be due to mislabelling: not
-only does it contain an English sample but it has exactly the same breakpoint interval as
-the canonical XE clade. It is possible that instead, this is a case where the \texttt{sc2ts} algorithm
+It is less clear if the most recent XE cluster is a mislabelling or a case of \texttt{sc2ts}
+inferring multiple recombinations when there should be just one. This cluster of 2 samples
+(one of which is English) has exactly the same breakpoint estimates as the
+main cluster. If the only samples available are rather genetically distant from an originating
+recombinant, we might expect sc2ts to infer multiple similar recombination events
+(rather than a single event with extra reversions)
+
+a recombinant outbreak
 has taken a "true" XE sample and mistakenly inferred an additional, spurious origin. [WHY? - this
 is presumably because it has changed too much from the nearest in the main XE cluster - need to discuss the
 weighting of 3 mutations for one recombination here. NB: the number
@@ -994,24 +998,28 @@ Pango-recombinant-analysis workbook]
 
 \subsubsection{Nested recombinant origins}
 As well as cases where single recombination events explain an X lineage,
-such as the examples in Figure~\ref{fig:pango-simple-origin-graph}, many of the
-Pango X lineages involve more complex origins,
-in which multiple non-independent (``nested'') recombination events are involved.
-In these cases, the descendants of the original recombination
-frequently include samples which have not been previously identified as recombinants.
-An example is XB in the long ARG,
+such as the examples in Figure~\ref{fig:pango-simple-origin-graph}, four of the
+Pango X lineages (XB, XE, XAB, and XAJ) have Nextclade-designated samples which
+are related in a more complex manner, where multiple non-independent (``nested'')
+recombination events occur. An example is XB in the long ARG,
 plotted in Figure~\ref{fig:complex_origins_graph}. Here, a recombination
 between a B.1 sample and B.1.627 sample leads both to the XB samples and to a
-``hairball'' of further recombination nodes whose descendants are mostly not
+``hairball'' of further recombination nodes whose descendants are often not
 identified as recombinants by Nextclade (plotted in blue). A similar
 pattern is seen when examining XB in the wide ARG (discussion above, plot not shown).
+Similarly, XE and XAJ
 Note that the descendants of nested recombination events include only one
 XB sample (pink upper left, with 7 mutations above it); moreover, this sample is
 not identified as XB by GISAID (Supplementary Figure~\ref{fig:pango_XB_gisaid_graph})
 indicating some uncertainty in lineage assignment in this part of the ARG.
-Investigating examples of nested recombinant origins, and identifying which
-(if any) of the nested recombination events may be artefactual, is an important
-area of future research.
+Also note that the number of mutations on the lineages immediately above and
+below the recombination node (totalling 18+2) is rather large, suggesting
+that the sampled recombinant which induced the recombination node in the Long ARG
+is only distantly related to the true originating recombinant. This could account
+for complex and potentially artefactual relationships around these nodes, and
+is likely to be due to undersampling of the XB outbreak. Investigating examples
+of nested recombinant origins, and identifying which (if any) of the nested
+recombination events may be artefactual, is an important area of future research.
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
@@ -1843,55 +1851,66 @@ QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
 \begin{sidewaystable}
 % \begin{footnotesize}
 \centering
-\begin{tabular}{lllrl}
+\begin{tabular}{p{1cm}p{1.2cm}p{4.2cm}lll}
 \toprule
-Pango & Sc2ts inferred parents & Official Pango parents & $n$ & Other descendants \\
+Focal Pango  & Num origins & Num focal samples (further split by origin, *=nested) & Official Pango parents & \textbf{Main clade}: sc2ts parents & \textbf{Main clade}: other descendants \\
 \midrule
-\bfseries XA & B.1.1.7 + B.1.177.18 & B.1.1.7 + B.1.177 & 5 & – \\
-\bfseries XAA & BA.1 + BA.2.9 & BA.1* + BA.2* & 8 & XAB:~38/48, XAG:~17/17, XU:~1/3, XQ:~2/12 \\
-\bfseries XAC & BA.1.17.2 + BA.2.3 & BA.1* + BA.2* & 27 & – \\
-\bfseries XAE & BA.1 + BA.2 & BA.1* + BA.2* & 9 & – \\
-\bfseries XAG & BA.1 + BA.2.9 & BA.1* + BA.2* & 17 & XAB:~38/48, XAA:~8/8, XU:~1/3, XQ:~2/12 \\
-\bfseries XF & AY.4 + BA.1 & B.1.617.2* + BA.1* & 2 & – \\
-\bfseries XG & BA.1.17 + BA.2 & BA.1* + BA.2* & 32 & XAB:~1/48 \\
-\bfseries XH & BA.1.20 + BA.2.9 & BA.1* + BA.2* & 11 & XAF:~34/35, B.1.1.529:~2, XE:~3/163 \\
-\bfseries XK & BA.1.1.1 + BA.2 & BA.1* + BA.2* & 3 & – \\
-\bfseries XL & BA.1.17.2 + BA.2 & BA.1* + BA.2* & 10 & XAB:~1/48, XU:~1/3 \\
-\bfseries XR & BA.1.1 + BA.2 & BA.1.1* + BA.2* & 8 & XQ:~9/12, XAB:~2/48 \\
-\bfseries XS & AY.36 + BA.1.1 & B.1.617.2* + BA.1.1* & 4 & – \\
-\bfseries XT & BA.2.23 + Unknown & BA.1* + BA.2* & 1 & BA.2.23:~1 \\
-\bfseries XV & BA.1.1 + BA.2 + Unknown & BA.1* + BA.2* & 1 & BA.2:~8 \\
-\bfseries XW & BA.1.1.15 + BA.2 & BA.1* + BA.2* & 11 & XN:~2/13 \\
-\bfseries XY & BA.1.1 + BA.2 & BA.1* + BA.2* & 6 & XAF:~1/35 \\
+\bfseries XA & 1 & \textbf{5} & B.1.1.7 + B.1.177 & B.1.1.7 + B.1.177.18 &  \\
+\bfseries XF & 1 & \textbf{2} & B.1.617.2* + BA.1* & AY.4 + BA.1 &  \\
+\bfseries XG & 1 & \textbf{32} & BA.1* + BA.2* & BA.1.17 + BA.2 & XAB: 1/48 \\
+\bfseries XH & 1 & \textbf{11} & BA.1* + BA.2* & BA.1.20 + BA.2.9 & XAF: 34/35, B.1.1.529: 2, XE: 3/163 \\
+\bfseries XK & 1 & \textbf{3} & BA.1* + BA.2* & BA.1.1.1 + BA.2 &  \\
+\bfseries XL & 1 & \textbf{10} & BA.1* + BA.2* & BA.1.17.2 + BA.2 & XAB: 1/48, XU: 1/3 \\
+\bfseries XR & 1 & \textbf{8} & BA.1.1* + BA.2* & BA.1.1 + BA.2 & XQ: 9/12, XAB: 2/48 \\
+\bfseries XS & 1 & \textbf{4} & B.1.617.2* + BA.1.1* & AY.36 + BA.1.1 &  \\
+\bfseries XT & 1 & \textbf{1} & BA.1* + BA.2* & BA.2.23 + Unknown & BA.2.23: 1 \\
+\bfseries XV & 1 & \textbf{1} & BA.1* + BA.2* & BA.1.1 + BA.2 + Unknown & BA.2: 8 \\
+\bfseries XW & 1 & \textbf{11} & BA.1* + BA.2* & BA.1.1.15 + BA.2 & XN: 2/13 \\
+\bfseries XY & 1 & \textbf{6} & BA.1* + BA.2* & BA.1.1 + BA.2 & XAF: 1/35 \\
+\bfseries XAA & 1 & \textbf{8} & BA.1* + BA.2* & BA.1 + BA.2.9 & XAB: 38/48, XAG: 17/17, XU: 1/3, XQ: 2/12 \\
+\bfseries XAC & 1 & \textbf{27} & BA.1* + BA.2* & BA.1.17.2 + BA.2.3 &  \\
+\bfseries XAE & 1 & \textbf{9} & BA.1* + BA.2* & BA.1 + BA.2 &  \\
+\bfseries XAG & 1 & \textbf{17} & BA.1* + BA.2* & BA.1 + BA.2.9 & XAB: 38/48, XAA: 8/8, XU: 1/3, XQ: 2/12 \\
+\bfseries XB & 2 & 57 (\textbf{57}, 1)* & B.1.631 + B.1.634 & B.1 + B.1.627 & B.1.634: 3, B.1.631: 7 \\
+\bfseries XC & 2 & 3 (1, \textbf{2}) & AY.29 + B.1.1.7 & AY.103 + B.1.1.7 &  \\
+\bfseries XD & 2 & 4 (1, \textbf{3}) & B.1.617.2* + BA.1* & AY.4 + BA.1.15 &  \\
+\bfseries XJ & 2 & 2 (1, 1) & BA.1* + BA.2* & No main clade & No main clade \\
+\bfseries XAD & 2 & 5 (1, \textbf{4}) & BA.1* + BA.2* & BA.1.1 + BA.2 &  \\
+\bfseries XAF & 2 & 35 (\textbf{34}, 1) & BA.1* + BA.2* & BA.1.20 + BA.2.9 & XH: 11/11, B.1.1.529: 2, XE: 3/163 \\
+\bfseries XAH & 2 & 12 (\textbf{10}, 2) & BA.1* + BA.2* & BA.1 + BA.2.10 & XZ: 61/66, XAD: 1/5 \\
+\bfseries XQ & 3 & 12 (2, \textbf{9}, 1) & BA.1.1* + BA.2* & BA.1.1 + BA.2 & XR: 8/8, XAB: 2/48 \\
+\bfseries XU & 3 & 3 (1, 1, 1) & BA.1* + BA.2* & No main clade & No main clade \\
+\bfseries XM & 4 & 47 (2, 1, \textbf{40}, 4) & BA.1.1* + BA.2* & BA.1.1 + BA.2 &  \\
+\bfseries XN & 4 & 13 (2, 2, \textbf{7}, 2) & BA.1* + BA.2* & BA.1 + BA.2 &  \\
+\bfseries XAJ & 4 & 5 (1, 1, \textbf{3}, 1)* & BA.2.12.1* + BA.4* & Unknown & BA.5: 1 \\
+\bfseries XE & 5 & 163 (3, \textbf{155}, 1, 3, 2)* & BA.1* + BA.2* & BA.1.17.2 + BA.2 &  \\
+\bfseries XZ & 5 & 66 (1, 1, \textbf{61}, 2, 1) & BA.1* + BA.2* & BA.1 + BA.2.10 & XAH: 10/12, XAD: 1/5 \\
+\bfseries XAB & 8 & 48 (1, \textbf{38}, 1, 2, 2, 2, 18, 2)* & BA.1* + BA.2* & BA.1 + BA.2.9 & XAA: 8/8, XAG: 17/17, XU: 1/3, XQ: 2/12 \\
 \bottomrule
 \end{tabular}
 \caption{\label{tab:pango-single-origin}
-Summary of the Pango X-lineages in the long ARG that are inferred to have a
-single recombinant origin based on the NextClade Pango lineage assignments.
-Sc2ts inferred parents are based on imputed NextClade Pango lineages. Official parents
-are taken from Pango designation alias key (TODO: explain the asterisks). The final column
-list other inferred descendants of the originating recombination event, summarised
-by NextClade Pango designation and sample count / total ARG count (total count in the ARG
-is omitted for non-recombinant samples).
+Summary of all Pango X-lineages in the long ARG. In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold). 
+Sc2ts inferred parents for the main clade are based on imputed NextClade Pango lineages. Official parents
+are taken from Pango designation alias key (TODO: explain the asterisks). Other inferred samples within the main clade are listed, grouped by NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
 }
 \end{sidewaystable}
 
 \begin{sidewaystable}
-\begin{tabular}{llp{1.5cm}llrl}
+\centering
+\begin{tabular}{llp{1.2cm}llrl}
 \toprule
-Causal date & Breakpoint & Causal lineage & Causal strain & Sc2ts inferred parents & $n_{XE}$ & Other descendants \\
+Causal date & Sc2ts inferred parents & Causal lineage & Causal strain & Breakpoint & $n_{XE}$ & Other descendants \\
 \midrule
-2022-01-06 & \{10448-11537\} & XH & Denmark/DCGC-323778/2022 & BA.1.20 + BA.2.9 & 3 & XAF: 34/35, XH: 11/11, B.1.1.529: 2 \\
-2022-02-11 & {10448-11537} & XE & England/MILK-3674F1A/2022 & BA.1.17.2 + BA.2 & 155 &  \\
-2022-02-17 & \{17411-19955\} & XE & Turkey/HSGM-G2220/2022 & Unknown + BA.2 & 1 & B.1.1.529: 1 \\
-2022-04-09 & \{9867-10198\} & XE & Belgium/ULG-25782/2022 & BA.1 + BA.2 & 3 &  \\
-2022-04-20 & \{10448-11537\} & XE & Canada/BC-BCCDC-424071/2022 & BA.1.1.15 + Unknown & 2 &  \\
+2022-01-06 & BA.1.20 + BA.2.9 & XH & Denmark/DCGC-323778/2022 & (10448,11538) & 3 & XAF: 34/35, XH: 11/11, B.1.1.529: 2 \\
+2022-02-11 & BA.1.17.2 + BA.2 & XE & England/MILK-3674F1A/2022 & (10448,11538) & 155 &  \\
+2022-02-17 & Unknown + BA.2 & XE & Turkey/HSGM-G2220/2022 & (17411,19956) & 1 & B.1.1.529: 1 \\
+2022-04-09 & BA.1 + BA.2 & XE & Belgium/ULG-25782/2022 & (9867,10199) & 3 &  \\
+2022-04-20 & BA.1.1.15 + Unknown & XE & Canada/BC-BCCDC-424071/2022 & (10448,11538) & 2 &  \\
 \bottomrule
-\end{tabular}
-\caption{\label{tab:multiple_origins_table}
+\end{tabular}\caption{\label{tab:multiple_origins_table}
 Summary of inferred multiple ``origins'' for Nextclade-designated XE samples
 (Official: BA.1* \& BA.2, 10448–11287, defined from UK and Irish strains, earliest
-on 2022/1/16;  see \url{https://github.com/cov-lineages/pango-designation/issues/454}).
+on 2022/1/16;  see \protect\url{https://github.com/cov-lineages/pango-designation/issues/454}).
 XE samples are grouped by their most recent ancestral recombination node;
 Details are also provided for the ``causal strain'' that led to the recombination
 being proposed by \texttt{sc2ts}.
