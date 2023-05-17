@@ -739,16 +739,16 @@ recombination probabilities among lineages.
 
 In this section we focus on the detailed genealogy of samples that have been
 previously identified as recombinants, i.e. given a Pango designation that
-starts with an ``X''. Since the wide ARG is restricted to data collected prior
+starts with an ``X''. Since the Wide ARG is restricted to data collected prior
 to mid-2021, it contains samples from only three Pango-designated recombinant
 lineages: XA, XB, and XC. To investigate the diversity of genealogies
 associated with recombinants, we therefore devote more analysis to patterns in
-the long ARG. As in previous sections, we exclude singleton recombinants where
+the Long ARG. As in previous sections, we exclude singleton recombinants where
 possible.
 
 \subsubsection{Wide ARG}
 %% Quick overview of the wide ARG.
-In the wide ARG, 44
+In the Wide ARG, 44
 samples are designated as XA by both Nextclade and GISAID, 237 are designated
 as XB by Nextclade (231 by GISAID), and 6 as XC by Nextclade (none by GISAID).
 After removing singleton recombinants, XA numbers remain unchanged, but XB is
@@ -787,16 +787,15 @@ USA/TX-HMH-MCoV-43092/2021 (EPI\_ISL 2224652) is inferred to be a recombination
 between an XB grandparent and its XB grandchild. This could well be
 artefactual.
 
-For XC, the wide ARG identifies more than one originating recombination node
+For XC, the Wide ARG identifies more than one originating recombination node
 (see "multiple origins" below). However, as none of the samples designated as
 XC by Nextclade are designated as XC by GISAID, these patterns could be due to
 mistaken labelling, hence we do not examine XC further.
 
 \subsubsection{Long ARG}
 %% high level summary of the pango recombinant lineages and samples in the Long ARG
-The long ARG (subsampled to mid-2022) contains 33
-Nextclade-designated Pango recombinant lineages (XA to XAK; Supplementary Table
-XXX) comprising 749 samples (711 when singleton recombinants are removed). In
+The Long ARG (subsampled to mid-2022) contains 33
+Nextclade-designated Pango recombinant lineages comprising 749 samples (711 when singleton recombinants are removed). In
 contrast, GISAID designates 38 Pango recombinant lineages in the long ARG,
 comprising only 515 samples. In the analyses below, we mainly focus on the
 larger number of Nextclade designated samples.
@@ -932,7 +931,7 @@ see supplementary figure \ref{fig:pango_XAG_gisaid_graph}). This is an
 independent confirmation of the uncertainty in designation of these XAG-related
 samples.
 
-In total out of the 31 Pango recombinant lineages in the long ARG we identify 16 as
+In total out of the 31 Pango recombinant lineages in the Long ARG we identify 16 as
 having a single origin. Supplementary Table~\ref{tab:pango-single-origin} summarises these
 together with their inferred parents, showing good agreement between \texttt{sc2ts} and
 the official Pango designated parents, with \texttt{sc2ts} providing more a precise
@@ -1889,33 +1888,34 @@ Focal Pango  & Num origins & Num focal samples (further split by origin, *=neste
 \bottomrule
 \end{tabular}
 \caption{\label{tab:pango-single-origin}
-Summary of all Pango X-lineages in the long ARG. In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold). 
+Summary of the Pango X-lineages in the long ARG (excluding XP and XAK whose samples are entirely filtered out, see text). In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold). 
 Sc2ts inferred parents for the main clade are based on imputed NextClade Pango lineages. Official parents
 are taken from Pango designation alias key (TODO: explain the asterisks). Other inferred samples within the main clade are listed, grouped by NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
 }
 \end{sidewaystable}
 
-\begin{sidewaystable}
+\begin{table}
+\small
 \centering
-\begin{tabular}{llp{1.2cm}llrl}
+\begin{tabular}{lp{0.2cm}p{0.8cm}lp{0.9cm}ll}
 \toprule
-Causal date & Sc2ts inferred parents & Causal lineage & Causal strain & Breakpoint & $n_{XE}$ & Other descendants \\
+Date & $n$ & Causal Pango & Causal strain & Causal \#muts & Sc2ts parents & Breakpoint \\
 \midrule
-2022-01-06 & BA.1.20 + BA.2.9 & XH & Denmark/DCGC-323778/2022 & (10448,11538) & 3 & XAF: 34/35, XH: 11/11, B.1.1.529: 2 \\
-2022-02-11 & BA.1.17.2 + BA.2 & XE & England/MILK-3674F1A/2022 & (10448,11538) & 155 &  \\
-2022-02-17 & Unknown + BA.2 & XE & Turkey/HSGM-G2220/2022 & (17411,19956) & 1 & B.1.1.529: 1 \\
-2022-04-09 & BA.1 + BA.2 & XE & Belgium/ULG-25782/2022 & (9867,10199) & 3 &  \\
-2022-04-20 & BA.1.1.15 + Unknown & XE & Canada/BC-BCCDC-424071/2022 & (10448,11538) & 2 &  \\
+2022-03-24 & 2 & XN & Germany/BY-RKI-I-674341/2022 & 3 & Unknown + BA.2 & (2833,9867) \\
+2022-03-29 & 2 & XN & Spain/AB-HGUA-26086757/2022 & 2 & BA.1.1 + BA.2.9 & (2833,4185) \\
+2022-04-23 & 7 & XN & Spain/MD-HRYC-12296321/2022 & 2 & BA.1 + BA.2 & (4185,4322) \\
+2022-05-17 & 2 & XN & USA/TX-HMH-MCoV-97903/2022 & 5 & BA.2 + BA.2 & (22776,22787) \\
 \bottomrule
-\end{tabular}\caption{\label{tab:multiple_origins_table}
-Summary of inferred multiple ``origins'' for Nextclade-designated XE samples
-(Official: BA.1* \& BA.2, 10448–11287, defined from UK and Irish strains, earliest
-on 2022/1/16;  see \protect\url{https://github.com/cov-lineages/pango-designation/issues/454}).
-XE samples are grouped by their most recent ancestral recombination node;
+\end{tabular}
+\caption{\label{tab:multiple_origins_table}
+Summary of inferred multiple ``origins'' for Nextclade-designated XN samples after filtering
+(Official: BA.1* \& BA.2*, breakpoint between 2834 \& 4183, defined from UK strains, earliest
+on 2022-02-01;  see \protect\url{https://github.com/cov-lineages/pango-designation/issues/480}).
+XN samples are grouped into rows based on their most recent ancestral recombination node;
 Details are also provided for the ``causal strain'' that led to the recombination
-being proposed by \texttt{sc2ts}.
+being proposed by \texttt{sc2ts}. Note that a large number of XN samples were previously removed by filtering. When undersampling causes three or more mutations to lie immediately above the causal strain, \texttt{sc2ts} may mistakenly propose multiple independent origins rather than one.
 }
-\end{sidewaystable}
+\end{table}
 
 
 \begin{figure} \centering
