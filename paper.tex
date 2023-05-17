@@ -487,17 +487,17 @@ sample or those occurring on terminal branches (data not shown).
 \subsection{Early recombinants}
 \label{sec:jackson_recombs}
 % FIXME: this is rubbish, can someone do better?
-RNA viruses are known to recombine at high rates 
-\citep{Simon2011-rna}, and recombination has been widely 
-documented to be commonplace in animal and human coronaviruses 
-\citep{Su2016-epidemiology}. While recombination in SARS-CoV-2 
-was shown early on to be frequent \emph{in-vitro} 
-\citep{Gribble2021-coronavirus}, the relatively slow accumulation 
+RNA viruses are known to recombine at high rates
+\citep{Simon2011-rna}, and recombination has been widely
+documented to be commonplace in animal and human coronaviruses
+\citep{Su2016-epidemiology}. While recombination in SARS-CoV-2
+was shown early on to be frequent \emph{in-vitro}
+\citep{Gribble2021-coronavirus}, the relatively slow accumulation
 of genetic diversity early on in the pandemic hampered efforts to
-detect recombinant strains. A number of early studies relying on 
-analysing patterns of linkage disequilibrium and searching for 
+detect recombinant strains. A number of early studies relying on
+analysing patterns of linkage disequilibrium and searching for
 mosaic genomes carrying characteristic mutations of different
-lineages either failed to detect recombination or posited 
+lineages either failed to detect recombination or posited
 that this occurred at low rates \citep[e.g.~][]{Nie2020-phylogenetic,Tang2020-origin,VanInsberghe2021-eu,Varabyou2021-rw}.
 The first clear evidence of recombinant lineages was presented by
 \citet{Jackson2021-ik}, who performed a careful analysis of sequences
@@ -516,16 +516,16 @@ These findings are closely replicated in both the Wide and Long ARGs.
 Group        & Sequences & Method & Interval & Parents \\
 \midrule
 A (XA)       & 4   & Jackson        &  21,256--21,613 & B.1.177/B.1.1.7 \\
-             &     &\texttt{sc2ts} &  21,256--22,227 & B.1.177.18/B.1.1.7 \\
+             &     &\texttt{sc2ts} &  21,256--22,228 & B.1.177.18/B.1.1.7 \\
 \cmidrule{3-5}
-B            & 2   & Jackson        &  6,529--6,953 & B.1.36/B.1.1.7  \\
-             &     &\texttt{sc2ts} &  6,529--6,954 & B.1.36/B.1.1.7  \\
+B            & 2   & Jackson        &  6,529--6,954 & B.1.36/B.1.1.7  \\
+             &     &\texttt{sc2ts} &  6,529--6,955 & B.1.36/B.1.1.7  \\
 \cmidrule{3-5}
 C            & 3   &Jackson        &  25,997--27,441 &  B.1.1.7/B.1.221 \\
-             &     & \texttt{sc2ts} &  25,997--27,972 &  B.1.1.7/B.1.221 \\
+             &     & \texttt{sc2ts} &  25,997--27,973 &  B.1.1.7/B.1.221 \\
 \cmidrule{3-5}
 D            & 3   & Jackson        &  21,576--23,063 &  B.1.36.17/B.1.1.7 \\
-             &     & \texttt{sc2ts} &  22,445--23,063 &  B.1.36.39/B.1.1.7 \\
+             &     & \texttt{sc2ts} &  22,445--23,064 &  B.1.36.39/B.1.1.7 \\
 \bottomrule
 \end{tabular}
 \caption{\label{tab:jackson}Comparison of recombination breakpoint
@@ -533,7 +533,8 @@ intervals and parent lineages for Groups A-D
 reported by \cite{Jackson2021-ik} with the corresponding
 recombination events in the Wide ARG.
 The second column gives the number of sequences in the group.
-Intervals are given in left-inclusive, right-exclusive form.
+Intervals are half-closed, so that for an interval $\ell$--$r$
+the breakpoint $x$ can be $\ell \leq x < r$.
 Details for all 16 sequences are
 given in Table~\ref{tab:jackson_supplement}.}
 \end{table}
@@ -894,7 +895,7 @@ Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all five sample
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
 sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
 Pango designation; smaller symbols are non-sample nodes inserted by sc2ts, with
-imputed Pango status. Genomic regions inherited by the recombination node use 
+imputed Pango status. Genomic regions inherited by the recombination node use
 breakpoint positions in the ARG, corresponding to the maximum inferred breakpoint position
 (B) Equivalent plot for the 17 XAG samples in the long ARG, with abbreviated labelling.
 (C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
@@ -917,7 +918,7 @@ position of ${\sim}22227$ basepairs) and a B.1.1.7 lineage for the remainder of 
 
 A more complex single-origin case is XAG, illustrated in
 Figure~\ref{fig:pango-simple-origin-graph}B. Here, the XAG samples
-all trace back to the same most recent common recombination node 
+all trace back to the same most recent common recombination node
 (combining BA.1 on the left and BA.2.9 on the right), but
 we infer this recombination event to also be the originating event for
 all the recombinant samples designated XAA,
@@ -1378,23 +1379,23 @@ occur with mutation probability $\frac{\mu_\ell}{a_\ell-1}$ (Figure~\ref{fig:ls_
 We use the Viterbi algorithm
 \citep{Viterbi1967-ol} to find the most likely copying path through the
 sequences, given a set of reference sequences, $Q$, and $E$. Throughout, we refer to the probabilities of mismatching to a member of the reference panel at site $\ell$; $\mu_\ell$,
-and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$; $r_\ell$). $\mu_\ell$ is often referred to as the 
-`mutation probability' for convenience, but we note that this probability of 
+and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$; $r_\ell$). $\mu_\ell$ is often referred to as the
+`mutation probability' for convenience, but we note that this probability of
 mismatch also encompasses various other error modes which result in a mismatch
 (such as sequencing and alignment errors). Note also that it is these probabilities,
 not the rates of mutation and recombination, that are required to fully define the HMM.
 That said, we can approximately relate these probabilities to the coalescent with recombination process which LS is approximating. In the case of recombination,
 suppose that there is some constant underlying recombination rate, $\rho$.
-Assuming that recombination events occur as a Poisson process, 
+Assuming that recombination events occur as a Poisson process,
 then the probability of recombining between adjacent sites is:
 \begin{align*}
     r_\ell = 1 - \exp\left(-\frac{\rho\left(m_{i-1} - m_{i}\right)}{n}\right),
 \end{align*}
-where $m_j$ is the nucleotide position of variant $j$. Similarly, we may consider the probability of mutation to represent to the 
+where $m_j$ is the nucleotide position of variant $j$. Similarly, we may consider the probability of mutation to represent to the
 probability of mutation along the branch joining the focal sequence to a coalescent
 tree containing a reference panel with $n$ members, assuming a Poisson process
-along the branch. The expected length of this branch is $\frac{4}{n}$, and so the mismatch 
-probability represents the probability of observing a mutation or error mode, 
+along the branch. The expected length of this branch is $\frac{4}{n}$, and so the mismatch
+probability represents the probability of observing a mutation or error mode,
 along this branch. We can then approximate the probability of observing a mismatch as:
 \begin{align}
     \mu_\ell \approx 1 - \exp{\left(-\frac{4\nu}{n}\right)}
@@ -1402,15 +1403,15 @@ along this branch. We can then approximate the probability of observing a mismat
 where $\nu$ is the mutation rate per $\mathit{ploidy} \times N_e$ generations. The probabilities of these competing process of mismatch and recombination are usually controlled by the site-specific parameters $\mu_\ell$ and $r_\ell$, respectively.
 For this work we used a slightly different formulation, which uses a parameter, the mismatch ratio (MMR), to control the relative importance of mutation
 and recombination in the HMM. Specifically, an MMR value of $k$ will
-prefer $k$ mismatches (mutations) to a single recombination which results in copying from a template with no mismatches. 
+prefer $k$ mismatches (mutations) to a single recombination which results in copying from a template with no mismatches.
 To map between recombination probability and mutation probability for a particular mismatch
-ratio, we simply consider the two paths which we wish to be equally likely, and rearrange 
-for the mutation or recombination probability. Consider the simple case when we assume 
-$\mu_l=\mu$ and $r_l=r$. Without loss of generality, consider a region of length $m$. Up 
-until this region, two paths are equally likely, so we can re-scale by the likelihood of 
+ratio, we simply consider the two paths which we wish to be equally likely, and rearrange
+for the mutation or recombination probability. Consider the simple case when we assume
+$\mu_l=\mu$ and $r_l=r$. Without loss of generality, consider a region of length $m$. Up
+until this region, two paths are equally likely, so we can re-scale by the likelihood of
 observing the focal sequence up to the site before the region starts, $c$. For a MMR of $k$,
-we only need to consider two of the $n$ members of the reference panel. One; 
-$\mathcal{P}_1$, for which there are no mismatches, but we need to recombine in, and a 
+we only need to consider two of the $n$ members of the reference panel. One;
+$\mathcal{P}_1$, for which there are no mismatches, but we need to recombine in, and a
 second; $\mathcal{P}_2$, for which there are $k$ (randomly chosen) mismatches in the region.
 Now, follow the probability of tracking along each of those paths:
 \begin{align*}
@@ -1430,13 +1431,13 @@ focal genome more likely spans at least two ancestral genomes (i.e,. the focal
 genome is a putative recombinant) than a single ancestral genome. Here, the MMR
 was set to three in all the HMM runs.
 
-A varying degree of missingness is present in the genetic data, that is, for a given sample, 
+A varying degree of missingness is present in the genetic data, that is, for a given sample,
 a subset of nucleotides coded as `unknown' at a set of positions. As a result, we had to
 consider missingness in our implementation of LS Viterbi. One approach would be to `impute'
-all missing data beforehand using external software to hard-call or define a 
+all missing data beforehand using external software to hard-call or define a
 distribution over the possible missing nucleotides, and use that in the determination of path
-probabilities. Another is to not attempt to estimate the true nucleotide, but rather to 
-consider such sites as uninformative to the path probability, but to impute missing data 
+probabilities. Another is to not attempt to estimate the true nucleotide, but rather to
+consider such sites as uninformative to the path probability, but to impute missing data
 within that path on the fly, placing them within the reference panel iteratively. We chose the latter. To do this, we simply encode the emission
 probability where the underlying nucleotide transition is $\mathit{unknown}\rightarrow \{A,C,G,T\}$ as 1.
 
@@ -1807,37 +1808,37 @@ interval(s)} &
 \textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
 \hline ALDP-11CF93B & A
     & \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,227 \\
+21,256–22,228 \\
     ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\
+    \thead{B.1.177.18 \\ Alpha} & 21,256–22,228 \\
 ALDP-130BB95 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\
+    \thead{B.1.177.18 \\ Alpha} & 21,256–22,228 \\
 LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256–22,227 \\
+    \thead{B.1.177.18 \\ Alpha} & 21,256–22,228 \\
 QEUH-CCCB30 & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-    \thead{B.1.36 \\ Alpha} & 6,529–6,954 \\
+    \thead{B.1.36 \\ Alpha} & 6,529–6,955 \\
 QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-    \thead{B.1.36 \\ Alpha} & 6,529–6,954 \\
+    \thead{B.1.36 \\ Alpha} & 6,529–6,955 \\
 MILK-1166F52 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
-    \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+    \thead{Alpha \\ B.1.221} & 25,997–27,973 \\
 MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
-    \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+    \thead{Alpha \\ B.1.221} & 25,997–27,973 \\
 QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
-    \thead{Alpha \\ B.1.221} & 25,997–27,972 \\
+    \thead{Alpha \\ B.1.221} & 25,997–27,973 \\
 MILK-126FE1F & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\
+    \thead{B.1.36.39 \\ Alpha} & 22,445–23,064 \\
 RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\
+    \thead{B.1.36.39 \\ Alpha} & 22,445–23,064 \\
 RAND-128FA33 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445–23,063 \\
+    \thead{B.1.36.39 \\ Alpha} & 22,445–23,064 \\
 CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
-    \thead{B.1.177 \\ Alpha} & 16,177–21,255 \\
+    \thead{B.1.177 \\ Alpha} & 17,616--21,256 \\
 CAMC-CB7AB3 & n/a & \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} &
-     \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,268–5,388 \\ 16,177–21,255} \\
+     \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3268--5389\\17,616--21,256} \\
 MILK-103C712 & n/a & \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} &
     n/a & n/a \\
 QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
-    \thead{Alpha \\ B.1.177} & 7,729–10,870 \\ \hline
+    \thead{Alpha \\ B.1.177} & 7729--10871 \\ \hline
 \end{tabular}
 \caption{\label{tab:jackson_supplement}Recombinant sequences involving the Alpha (B.1.1.7) variant reported by \cite{Jackson2021-ik} have recombinant ancestry in the wide ARG. The breakpoint intervals and Pango lineage assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et al., except the Pango lineage assignment of the parents of group B recombinants, which were taken from Table 1 (motif-based results).}
 \end{table}
@@ -1888,7 +1889,7 @@ Focal Pango  & Num origins & Num focal samples (further split by origin, *=neste
 \bottomrule
 \end{tabular}
 \caption{\label{tab:pango-single-origin}
-Summary of the Pango X-lineages in the long ARG (excluding XP and XAK whose samples are entirely filtered out, see text). In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold). 
+Summary of the Pango X-lineages in the long ARG (excluding XP and XAK whose samples are entirely filtered out, see text). In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold).
 Sc2ts inferred parents for the main clade are based on imputed NextClade Pango lineages. Official parents
 are taken from Pango designation alias key (TODO: explain the asterisks). Other inferred samples within the main clade are listed, grouped by NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
 }
