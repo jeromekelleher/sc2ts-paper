@@ -587,69 +587,78 @@ extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
 (Section~\ref{sec:ls}) and the left bound is then derived by
 sequence comparison of the parents.
 
-% - Distribution of breakpoint intervals
-%     Study the breakpoint intervals in the Wide ARG. Because we are interested
-% in the intervals, we want to be sure that these are robustly reported by the
-% HMM. Hence, we focus on those that have two parents in the mirrored and
-% unmirrored HMM runs, the same set of mutations, and the left and right parents
-% are consistently imputed for Pango lineage status.
-%     We focus on the Wide ARG here because it covers (roughly?) the same time
-% period as the RIPPLES analysis.
-
-We explore recombination signals across the SARS-CoV-2 genome by inspecting the
-breakpoint intervals of the filtered recombination nodes from the wide ARG
-(sampled to mid-2021) in Figure~\ref{fig:breakpoint-distribution}. The length
-of a breakpoint interval reflects uncertainty in the estimated location of a
-breakpoint. On average, the length of the breakpoint intervals is 2,895 bases
-(median, 1,670 bases; range, 1 to 23,666 bases). This broad distribution of
-interval length indicates that the location of a breakpoint often could not be
-precisely determined given the observed genetic variation.
-
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/wide_arg_recombination_intervals.pdf}
 \caption{\label{fig:breakpoint-distribution}
 Distribution of recombination breakpoints and mutations along the genome in
-the Wide ARG. Top panel shows the intervals for 1769 breakpoints associated
-with 1522 recombination nodes $>1$ descending samples plotted along the genome
-as line segments, coloured by interval width. The inset histogram shows the
+the Wide ARG. Top panel shows the intervals for 1,769 breakpoints associated
+with 1,522 recombination nodes with at least two descending samples, plotted along the genome
+as line segments (coloured by interval width). The inset histogram shows the
 distribution of these interval widths.
 The bottom panel shows the number of intervals that intersect with
 each site along the genome (left axis, orange), and the number of mutations
 per site (right axis, blue).
-TODO describe mutation threshold.
+The top-ten sites by mutation count are annotated.
 See Figure~\ref{fig:long_arg_breakpoint_distribution} for the equivalent plot
 for the Long ARG.}
 \end{figure}
 
-There is a preponderance of breakpoint intervals spanning the 3’ end of the
-genome (Figure 4A), as noted previously by \cite{Turakhia2022-it}. Inspecting
-more closely, we find an enrichment in the number of intersecting intervals in
-the E gene, ORF8, ORF8-N intergenic region, and 3’ untranslated region (Figure
-4B). Markedly, there is an abrupt drop in the number of intersecting intervals
-in the N gene following the peak in ORF8 towards the 3’ end.
+Figure~\ref{fig:breakpoint-distribution} shows the distribution of breakpoint
+intervals and patterns of recurrent mutation along the genome in the Wide ARG
+(see Figure~\ref{fig:long_arg_breakpoint_distribution} for the same information
+of the Long ARG). We focus on the Wide ARG here as it covers roughly the same time
+period as the analyses of \cite{Turakhia2022-it}, facilitating comparisons
+of the results. To reduce the effect of artefactual recombinants, we
+consider only the breakpoints associated with the 1,522 recombination nodes
+that are ancestral to more than one sample. The mean length of these intervals
+is 1,685 bases (median 962), and the length distribution is summarised in the
+inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-Next, we investigate the potential recombination signals alongside the number
-of mutations across the genome (Figure 4C). Regions with a higher density of
-mutations contain more genetic variation, increasing the power to detect
-recombination events. The position 28,271 (located in the ORF8-N intergenic
-region) has a particularly high number of mutations in the samples (Figure 5).
-At this position, mutations (n = 7,572), insertions (n = 5,782), and deletions
-(n = 1,605) appear to occur frequently. One possible explanation is that this
-homopolymeric region is prone to sequencing errors, giving rise to an
-artifactual recombination signal. At the upstream position 27,972, numerous
-mutations also occur. This position has been reported to be hypermutable
-\citep{Jungreis2021-dh}.
+While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
+requires further study, a few key properties stand out.[TODO, write this
+better. ] Firstly, in several cases there is a clear relationship between
+gene boundaries and the breakpoint intervals. For example, ORF7a and OR7b
+show sharp differences in the number of intersecting intervals within
+these genes. This could be due to a number of factors, such as [BIOLOGY]
+or the presence of sites with artefactually high numbers of mutations
+in the intergenic regions (see the next paragraph for more discussion).
+Secondly, we see substantially fewer intervals intersecting with the N
+gene than other regions, in agreement with the results of
+\cite{Turakhia2022-it}.
 
-We further consider the breakpoint intervals within the context of
-recombination breakpoint sequence motifs. It is hypothesised that certain
-palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
-template switching during replication in SARS-CoV-2 via formation of
-base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
-are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
-reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
-breakpoint intervals of the HMM-consistent recombinants span at least one of
-the breakpoint sequences.
+It is important to note that the exact endpoints of intervals can be
+somewhat arbitrary, since they are defined by exact comparisons
+of a recombinant's parents. The presence of problematic sites that are enriched
+for errors will therefore tend to artificially truncate breakpoint intervals
+at these sites.
+It is therefore helpful to compare the number of interecting intervals
+with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
+For example, position 28,271 (located in the ORF8-N intergenic
+region) has the largest number of mutatations and corresponds to the
+left endpoint of 9 intervals and the right of 57.
+The 7,572 mutations  (including 5,782 insertions and 1,605 deletions)
+at this site are a likely indicator that this
+homopolymeric region is prone to sequencing errors
+and should be included in the list of ``problematic sites'' that
+are excluded from analysis (Section~\ref{sec:data_preprocessing}).
+% There can be good biological reasons for this too though
+However, hypermutable sites such as 27,972 \citep{Jungreis2021-dh}
+have the same effect of truncating intervals. At this site we have
+770 mutations (including 425 C$>$T, 314 T$>$C) with potential signals
+of polymorphism maintained by selection [FIXME!!], and 58 intervals
+with endpoints within one base of this site.
+
+% JK Dropping this for now:
+% We further consider the breakpoint intervals within the context of
+% recombination breakpoint sequence motifs. It is hypothesised that certain
+% palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
+% template switching during replication in SARS-CoV-2 via formation of
+% base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
+% are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
+% reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
+% breakpoint intervals of the HMM-consistent recombinants span at least one of
+% the breakpoint sequences.
 
 \subsection{Divergence between recombinant parents}
 \label{sec:parent_divergence}
@@ -946,12 +955,12 @@ independent confirmation of the uncertainty in designation of these XAG-related
 samples.
 
 Six of the 16 lineages (XA, XAC, XAE, XF, XK, and XS) are of the
-simple-origin (XA) type with no other Pango designations among their descendants. 
+simple-origin (XA) type with no other Pango designations among their descendants.
 The remaining 10 are of the XAG type with multiple Pango
 designated lineages as additional descendants of the originating recombination event. In some cases,
 these may be, however, be a result of erroneous Pango designations. Supplementary Table~\ref{tab:pango-recombinants} also shows the official Pango designated parent lineages for
 each recombinant lineage. The parent lineages in the Long ARG agree to a great extent with these, although \texttt{sc2ts} provides more a precise
-parent designation.  
+parent designation.
 
 \subsubsection{Independent multiple origins}
 The \texttt{sc2ts} inference process has no pre-defined knowledge
@@ -1868,13 +1877,28 @@ QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
 \includegraphics[width=\textwidth]{figures/long_arg_recombination_intervals.pdf}
 \caption{\label{fig:long_arg_breakpoint_distribution}
 Distribution of recombination breakpoints and mutations along the genome in
-the Long ARG.}
+the Long ARG.
+Top panel shows the intervals for 851 breakpoints associated
+with 763 recombination nodes with at least two descending samples, plotted along the genome
+as line segments (coloured by interval width).
+Other details as described in Figure~\ref{fig:breakpoint-distribution}.}
 \end{figure}
 
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/supp_recombination_node_mrcas.pdf}
-\caption{\label{fig:recomb_mrcas_voc_breakdown}  Divergence between parent lineages for recombination events within and among different VoC categories. HMM-consistent recombinants are shown in green, HMM-inconsistent in blue (including many of the named Delta-Omicron recombinants). We find 69 HMM consistent (77 inconsistent) Alpha-Alpha recombination breakpoints = 13\% (10\%) of the total; 84 HMM consistent (143 inconsistent) Delta-Delta recombination breakpoints = 18\% (18\%) of the total; 99 HMM consistent (155 inconsistent) Omicron-Omicron recombination breakpoints = 22\% (19\%) of the total; and 2 HMM consistent (20 inconsistent) Delta-Omicron recombination breakpoints = 2\% (< 1\%) of the total. These plots do not include recombination breakpoints involved lineages that were not classified into these VoC categories}
+\caption{\label{fig:recomb_mrcas_voc_breakdown}  Divergence between parent
+lineages for recombination events within and among different VoC categories.
+HMM-consistent recombinants are shown in green, HMM-inconsistent in blue
+(including many of the named Delta-Omicron recombinants). We find 69 HMM
+consistent (77 inconsistent) Alpha-Alpha recombination breakpoints = 13\%
+(10\%) of the total; 84 HMM consistent (143 inconsistent) Delta-Delta
+recombination breakpoints = 18\% (18\%) of the total; 99 HMM consistent (155
+inconsistent) Omicron-Omicron recombination breakpoints = 22\% (19\%) of the
+total; and 2 HMM consistent (20 inconsistent) Delta-Omicron recombination
+breakpoints = 2\% (< 1\%) of the total. These plots do not include
+recombination breakpoints involved lineages that were not classified into these
+VoC categories}
 \end{figure}
 
 \begin{sidewaystable}
