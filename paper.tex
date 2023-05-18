@@ -833,10 +833,12 @@ Understanding the origin of this and other similar nodes, is an important
 direction for future work (see Discussion). For simplicity, we exclude these
 samples from further analyses in this section.
 
-The remaining remaining 630 Pango recombinant samples, representing 31
-Nextclade-designated Pango lineages, trace back to 50 different most recent
-recombination nodes.
-We examine the inferred inheritance structure in the following subsections.
+The remaining remaining 630 Pango recombinant samples trace back to 50 different
+most recent recombination nodes, representing 31
+Nextclade-designated Pango lineages. These are summarised
+in Supplementary Table~\ref{tab:pango-recombinants}, and fall
+into three classes: single origin, multiple origin,
+and multiple nested origins.
 
 % The sequences of 28 Pango recombinants trace back
 % to some recombinant node(s); however, the sequences of the five Pango
@@ -894,7 +896,8 @@ sequence, arising as a result of a mixed infection followed by onward
 transmission. We would expect our ARG to reveal evolutionary histories of this
 nature, where all the samples assigned to a given recombinant lineage
 trace back to one recombination node, representing a single originating
-recombination event.
+recombination event. In the Long ARG, 16 of the 31 Pango recombinants lineages identified by Nextclade
+ fall into this category (Supplementary Table~\ref{tab:pango-recombinants})
 
 \begin{figure}
 \centering
@@ -905,22 +908,22 @@ Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all five sample
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
 sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
 Pango designation; smaller symbols are non-sample nodes inserted by sc2ts, with
-imputed Pango status. Genomic regions inherited by the recombination node use
-breakpoint positions in the ARG, corresponding to the maximum inferred breakpoint position
+imputed Pango status. Genomic regions inherited by the recombination node are shown
+corresponding to the maximum inferred breakpoint position from the HMM process.
 (B) Equivalent plot for the 17 XAG samples in the long ARG, with abbreviated labelling.
 (C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
 } \end{figure}
 
-A simple example is the case of XA, illustrated in Figure~\ref{fig:pango-simple-origin-graph}A.
-This shows a subgraph of the long ARG, in which paths have been traced from all
+One of the simplest examples is the case of XA, illustrated in Figure~\ref{fig:pango-simple-origin-graph}A.
+Here, a subgraph of the long ARG has been plotted, where paths have been traced from all
 Nextclade-identified XA samples (in red) to the closest other sample nodes in our dataset.
 Sample nodes are plotted as larger circles, but the subgraph also includes intermediate,
 non-sample nodes: i.e. inserted nodes such as UPGMA, recombination, mutation collapse, and
 reversion push nodes, plotted as smaller circles. Dotted lines show where this subgraph links
 to the rest of the ARG. Above recombination nodes, only ancestral nodes are shown, meaning
-that the subgraph is not extended to show other descendants of recombinant parents. It is clear
-from the subgraph that all the XA
-samples trace to a single originating recombination node,
+that the subgraph is not extended to show additional descendants of recombinant parents.
+
+It is clear from the XA subgraph that all the samples labelled XA by Nextclade trace to a single originating recombination node,
 whose genome is a composite of a B.1.177.18 lineage on the left of the genome (up to a maximum
 position of ${\sim}22227$ basepairs) and a B.1.1.7 lineage for the remainder of the genome.
 
@@ -928,7 +931,7 @@ position of ${\sim}22227$ basepairs) and a B.1.1.7 lineage for the remainder of 
 
 A more complex single-origin case is XAG, illustrated in
 Figure~\ref{fig:pango-simple-origin-graph}B. Here, the XAG samples
-all trace back to the same most recent common recombination node
+all trace back to the same most recent recombination node
 (combining BA.1 on the left and BA.2.9 on the right), but
 we infer this recombination event to also be the originating event for
 all the recombinant samples designated XAA,
@@ -942,22 +945,25 @@ see supplementary figure \ref{fig:pango_XAG_gisaid_graph}). This is an
 independent confirmation of the uncertainty in designation of these XAG-related
 samples.
 
-In total out of the 31 Pango recombinant lineages in the Long ARG we identify 16 as
-having a single origin. Supplementary Table~\ref{tab:pango-single-origin} summarises these
-together with their inferred parents, showing good agreement between \texttt{sc2ts} and
-the official Pango designated parents, with \texttt{sc2ts} providing more a precise
-parent designation. Six of the 16 lineages (XA, XAC, XAE, XF, XK, and XS) are of the
-simple-origin (XA) type, whereas the rest are of the XAG type, and include multiple Pango
-designated lineages as descendants of the originating recombination event. In some cases,
-these may be, however, be a result of erroneous Pango designations.
+Six of the 16 lineages (XA, XAC, XAE, XF, XK, and XS) are of the
+simple-origin (XA) type with no other Pango designations among their descendants. 
+The remaining 10 are of the XAG type with multiple Pango
+designated lineages as additional descendants of the originating recombination event. In some cases,
+these may be, however, be a result of erroneous Pango designations. Supplementary Table~\ref{tab:pango-recombinants} also shows the official Pango designated parent lineages for
+each recombinant lineage. The parent lineages in the Long ARG agree to a great extent with these, although \texttt{sc2ts} provides more a precise
+parent designation.  
 
-\subsubsection{Multiple origins}
+\subsubsection{Independent multiple origins}
 The ARG inference has no pre-defined knowledge
 of Pango X lineage assignments, and there is therefore no particular
 requirement that all the samples assigned to a given lineage must trace back to
-a single recombination event. In this section we examine several Pango X lineage
-samples that are inferred to have multiple recombinant origins (i.e. trace
-back to independent recombination nodes in the ARG).
+a single recombination event. 15 Pango X lineages are inferred to have multiple
+recombinant origins, such that their samples trace to more than one most recent
+recombination node in the ARG. Of these, 11 are cases where none of the
+recombinants are nested (i.e. there is no overlap between the descendant samples
+of each recombination node). In 9 of these 11, there is a single ``main''
+recombination event from which the majority of the corresponding recombinant samples
+descend. In other two, there are too few Pango X samples to decide on a ``main'' clade.
 
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple example, consisting of
 the 4 samples labelled XD by Nextclade in the long ARG. The left hand subgraph
@@ -1872,7 +1878,7 @@ the Long ARG.}
 \centering
 \begin{tabular}{p{1cm}p{1.2cm}p{4.2cm}lll}
 \toprule
-Focal Pango  & Num origins & Num focal samples (further split by origin, *=nested) & Official Pango parents & \textbf{Main clade}: sc2ts parents & \textbf{Main clade}: other descendants \\
+Focal Pango  & Num origins & Num focal samples (further split by origin, *=nested) & Official Pango parents & \textbf{Main clade}: sc2ts parents & \textbf{Main clade}: additional descendants \\
 \midrule
 \bfseries XA & 1 & \textbf{5} & B.1.1.7 + B.1.177 & B.1.1.7 + B.1.177.18 &  \\
 \bfseries XF & 1 & \textbf{2} & B.1.617.2* + BA.1* & AY.4 + BA.1 &  \\
@@ -1907,7 +1913,7 @@ Focal Pango  & Num origins & Num focal samples (further split by origin, *=neste
 \bfseries XAB & 8 & 48 (1, \textbf{38}, 1, 2, 2, 2, 18, 2)* & BA.1* + BA.2* & BA.1 + BA.2.9 & XAA: 8/8, XAG: 17/17, XU: 1/3, XQ: 2/12 \\
 \bottomrule
 \end{tabular}
-\caption{\label{tab:pango-single-origin}
+\caption{\label{tab:pango-recombinants}
 Summary of the Pango X-lineages in the long ARG (excluding XP and XAK whose samples are entirely filtered out, see text). In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold).
 Sc2ts inferred parents for the main clade are based on imputed NextClade Pango lineages. Official parents
 are taken from Pango designation alias key (TODO: explain the asterisks). Other inferred samples within the main clade are listed, grouped by NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
