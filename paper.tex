@@ -612,42 +612,53 @@ period as the analyses of \cite{Turakhia2022-it}, facilitating comparisons
 of the results. To reduce the effect of artefactual recombinants, we
 consider only the breakpoints associated with the 1,522 recombination nodes
 that are ancestral to more than one sample. The mean length of these intervals
-is 1,685 bases (median 962); the length distribution is summarised in the
+is 1,685 bases (median 962), and the length distribution is summarised in the
 inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-Figure~\ref{fig:breakpoint-distribution} [ TODO what can we really say here?
-Other than the boundaries happen to lie on gene breaks, not an awful lot I
-think?]
+While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
+requires further study, a few key properties stand out.[TODO, write this
+better. ] Firstly, in several cases there is a clear relationship between
+gene boundaries and the breakpoint intervals. For example, ORF7a and OR7b
+show sharp differences in the number of intersecting intervals within
+these genes. This could be due to a number of factors, such as [BIOLOGY]
+or the presence of sites with artefactually high numbers of mutations
+in the intergenic regions (see the next paragraph for more discussion).
+Secondly, we see substantially fewer intervals intersecting with the N
+gene than other regions, in agreement with the results of
+\cite{Turakhia2022-it}.
 
-% This isn't really true any more, is it?
-% There is a preponderance of breakpoint intervals spanning the 3’ end of the
-% genome (Figure 4A), as noted previously by \cite{Turakhia2022-it}. Inspecting
-% more closely, we find an enrichment in the number of intersecting intervals in
-% the E gene, ORF8, ORF8-N intergenic region, and 3’ untranslated region (Figure
-% 4B). Markedly, there is an abrupt drop in the number of intersecting intervals
-% in the N gene following the peak in ORF8 towards the 3’ end.
+It is important to note that the exact endpoints of intervals can be
+somewhat arbitrary, since they are defined by exact comparisons
+of a recombinant's parents. The presence of problematic sites that are enriched
+for errors will therefore tend to artificially truncate breakpoint intervals
+at these sites.
+It is therefore helpful to compare the number of interecting intervals
+with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
+For example, position 28,271 (located in the ORF8-N intergenic
+region) has the largest number of mutatations and corresponds to the
+left endpoint of 9 intervals and the right of 57.
+The 7,572 mutations  (including 5,782 insertions and 1,605 deletions)
+at this site are a likely indicator that this
+homopolymeric region is prone to sequencing errors
+and should be included in the list of ``problematic sites'' that
+are excluded from analysis (Section~\ref{sec:data_preprocessing}).
+% There can be good biological reasons for this too though
+However, hypermutable sites such as 27,972 \citep{Jungreis2021-dh}
+have the same effect of truncating intervals. At this site we have
+770 mutations (including 425 C$>$T, 314 T$>$C) with potential signals
+of polymorphism maintained by selection [FIXME!!], and 58 intervals
+with endpoints within one base of this site.
 
-Next, we investigate the potential recombination signals alongside the number
-of mutations across the genome (Figure 4C). Regions with a higher density of
-mutations contain more genetic variation, increasing the power to detect
-recombination events. The position 28,271 (located in the ORF8-N intergenic
-region) has a particularly high number of mutations in the samples (Figure 5).
-At this position, mutations (n = 7,572), insertions (n = 5,782), and deletions
-(n = 1,605) appear to occur frequently. One possible explanation is that this
-homopolymeric region is prone to sequencing errors, giving rise to an
-artifactual recombination signal. At the upstream position 27,972, numerous
-mutations also occur. This position has been reported to be hypermutable
-\citep{Jungreis2021-dh}.
-
-We further consider the breakpoint intervals within the context of
-recombination breakpoint sequence motifs. It is hypothesised that certain
-palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
-template switching during replication in SARS-CoV-2 via formation of
-base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
-are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
-reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
-breakpoint intervals of the HMM-consistent recombinants span at least one of
-the breakpoint sequences.
+% JK Dropping this for now:
+% We further consider the breakpoint intervals within the context of
+% recombination breakpoint sequence motifs. It is hypothesised that certain
+% palindromic breakpoint sequences (specifically, CAGAC and CAGAT) promote
+% template switching during replication in SARS-CoV-2 via formation of
+% base-paired stem loops in the genome structure \citep{Gallaher2020-lb}. There
+% are 87 occurrences of these two breakpoint sequences in the Wuhan-Hu-1/2019
+% reference sequence (Supplementary Table 5). We observe that XX (XX\%) of the
+% breakpoint intervals of the HMM-consistent recombinants span at least one of
+% the breakpoint sequences.
 
 \subsection{Divergence between recombinant parents}
 \label{sec:parent_divergence}
@@ -944,12 +955,12 @@ independent confirmation of the uncertainty in designation of these XAG-related
 samples.
 
 Six of the 16 lineages (XA, XAC, XAE, XF, XK, and XS) are of the
-simple-origin (XA) type with no other Pango designations among their descendants. 
+simple-origin (XA) type with no other Pango designations among their descendants.
 The remaining 10 are of the XAG type with multiple Pango
 designated lineages as additional descendants of the originating recombination event. In some cases,
 these may be, however, be a result of erroneous Pango designations. Supplementary Table~\ref{tab:pango-recombinants} also shows the official Pango designated parent lineages for
 each recombinant lineage. The parent lineages in the Long ARG agree to a great extent with these, although \texttt{sc2ts} provides more a precise
-parent designation.  
+parent designation.
 
 \subsubsection{Independent multiple origins}
 The \texttt{sc2ts} inference process has no pre-defined knowledge
