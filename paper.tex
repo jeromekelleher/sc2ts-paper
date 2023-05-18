@@ -705,7 +705,8 @@ represents a breakpoint, so that a recombination node with more than one
 breakpoint (e.g. with 3 or more parents, comprising ${\sim}10 \%$ of the
 recombination nodes in Figure ~\ref{fig:recomb_mrcas}A and ${\sim}3 \%$ in
 Figure ~\ref{fig:recomb_mrcas}B) will be represented by several points.
-It is important to note here that time estimates in these figures may be unreliable,
+It is important to note here that some of the time estimates in these figures
+come with a substantial degree of uncertainly,
 since nodes other than samples are dated somewhat crudely in the current version
 of \texttt{sc2ts} (Section~\ref{sec:node_dating}).
 
@@ -741,7 +742,7 @@ indicating a rapid and under-sampled expansion of a clade.
 
 % Paragraph 4, what do we say about the divergence times?
 The histograms in Figure~\ref{fig:recomb_mrcas} show that there is a
-broad range in divergance times among recombinant parents.
+broad range in divergence times among recombinant parents.
 We can also see that the majority of recombinants arise
 from parents that diverged 10 to 30 weeks
 previously. However, there is also a peak of recombinants that diverged
@@ -924,7 +925,7 @@ Pango designation; smaller symbols are non-sample nodes inserted by sc2ts, with
 imputed Pango status. Genomic regions inherited by the recombination node are shown
 corresponding to the maximum inferred breakpoint position from the HMM process.
 (B) Equivalent plot for the 17 XAG samples in the long ARG, with abbreviated labelling.
-(C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
+(C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
 } \end{figure}
 
 One of the simplest examples is the case of XA, illustrated in Figure~\ref{fig:pango-simple-origin-graph}A.
@@ -954,7 +955,7 @@ The classification of originating recombination events is dependent on
 accurate designation of Pango lineages to samples. It is therefore important
 to note that if the GISAID Pango designations are used, many of the samples
 marked here as XAB are reclassified as BA.2 (and XAG becomes fully monophyletic,
-see supplementary figure \ref{fig:pango_XAG_gisaid_graph}). This is an
+see supplementary Figure \ref{fig:pango_XAG_gisaid_graph}). This is an
 independent confirmation of the uncertainty in designation of these XAG-related
 samples.
 
@@ -974,7 +975,7 @@ The \texttt{sc2ts} inference process has no pre-defined knowledge
 of Pango X lineage assignments, and there is therefore no particular
 requirement that all the samples assigned to a given lineage must trace back to
 a single recombination event. 15 Pango X lineages are inferred to have multiple
-recombinant origins, such that their samples trace to >1 most recent
+recombinant origins, such that their samples trace to $>$1 most recent
 recombination node in the ARG. Of these, 11 are cases where the
 recombinants are independent rather than nested (i.e. there is no overlap in the list
 of descendant samples for each recombination node). Most have a single ``main''
@@ -983,7 +984,7 @@ descend (but in XJ and XU there are too few Pango X samples to decide on a ``mai
 see Supplementary Table~\ref{tab:pango-recombinants}).
 
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple multiple-origin example, consisting of
-the 4 samples labelled XD by Nextclade in the long ARG. The left hand subgraph
+the 4 samples labelled XD by Nextclade in the Long ARG. The left hand subgraph
 (the origin of three XD samples, all sampled in France) has an earliest
 sample with EPI\_ISL: 11222324 (dated 2022-02-26), while the right hand
 subgraph has a single sample with EPI\_ISL~8514045 (sampled in Turkey and dated 2021-12-30).
@@ -1011,7 +1012,7 @@ samples (Supplementary Table~\ref{tab:multiple_origins_table}). The oldest
 of these four origins has 3 mutations above the sample that caused the
 recombination to be inferred. It therefore seems likely that we have not managed
 to sample an XN strain that is very close to the true recombinant. This may
-lead to `texttt{sc2ts} mistakenly inferring multiple recombination events when there
+lead to \texttt{sc2ts} mistakenly inferring multiple recombination events when there
 
 
 If the only samples available are rather genetically distant from an originating
@@ -1019,24 +1020,13 @@ recombinant, we might expect sc2ts to infer multiple similar recombination event
 (rather than a single event with extra reversions)
 
 a recombinant outbreak
-has taken a "true" XE sample and mistakenly inferred an additional, spurious origin. [WHY? - this
+has taken a ``true'' XE sample and mistakenly inferred an additional, spurious origin. [WHY? - this
 is presumably because it has changed too much from the nearest in the main XE cluster - need to discuss the
 weighting of 3 mutations for one recombination here. NB: the number
 of nucleotide differences between the closest XE in the two clusters is 11: see the
 Pango-recombinant-analysis workbook]
 
 \subsubsection{Nested recombinant origins}
-
-\begin{figure} \centering
-\includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
-\caption{\label{fig:complex_origins_graph}  A subgraph of the Long ARG showing
-nested recombination events involving Pango lineage XB. All XB samples
-trace to a single recombination node (top centre), but three further recombinations
-also descend from this node. The samples descending from these nested
-recombinations include 9 that are assigned by Nextclade to
-various non-recombinant pre-Alpha lineages (blue).}
-\end{figure}
-
 As well as cases where Pango X lineage origins are attributed to independent
 recombination events, four Pango X lineages in the Long ARG have Nextclade-designated
 samples whose ancestry involves multiple non-independent (``nested'') recombination events
@@ -1049,6 +1039,16 @@ identified as recombinants by Nextclade (plotted in blue). A similar
 pattern is seen when examining XB in the Wide ARG (but as discussed previously,
 in the Wide ARG, XB exhibits multiple nested recombinations, some with many XB
 descendants).
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
+\caption{\label{fig:complex_origins_graph}  A subgraph of the Long ARG showing
+nested recombination events involving Pango lineage XB. All XB samples
+trace to a single recombination node (top centre), but three further recombinations
+also descend from this node. The samples descending from these nested
+recombinations include 9 that are assigned by Nextclade to
+various non-recombinant pre-Alpha lineages (blue).}
+\end{figure}
 
 Note that in the Long ARG, the nested recombination events account for only one
 XB sample (pink upper left, with 7 mutations above it); moreover, this sample is
