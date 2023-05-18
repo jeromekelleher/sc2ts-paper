@@ -729,7 +729,7 @@ class RecombinationNodeMrcas(Figure):
         main_ax.scatter(plot_df.tmrca_delta / 7, plot_df.tmrca, c="orange", s=8)
 
         if xlab:
-            hist_ax.set_xlabel("Estimated divergence between lineage pairs (weeks)")
+            hist_ax.set_xlabel("Estimated divergence between parents (weeks)")
         if ylab:
             main_ax.set_ylabel(f"Estimated MRCA date")
         main_ax.set_title(title)
