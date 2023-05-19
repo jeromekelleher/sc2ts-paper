@@ -55,9 +55,8 @@ in real-time and to fully integrate them into a cohesive joint
 model of mutation, recombination and genetic inheritance known
 as an Ancestral Recombination Graph (ARG). We infer two ARGs under
 different sampling strategies, and study their properties.
-One is densely sampled, and includes 1.27 million sequences
-sampled up to June 30, 2021.
-The second is more sparsely sampled,
+One contains 1.27 million sequences
+sampled up to June 30, 2021, and the second is more sparsely sampled,
 consisting of 784K sequences sampled up to June 30, 2022.
 We find that both ARGs are
 % better words?
@@ -65,11 +64,11 @@ highly consistent with
 known features of SARS-CoV-2 evolution, recovering the basic
 backbone phylogeny, mutational spectra, and recapitulating
 details on the majority of known recombinant lineages.
-Using the well-established and featured-rich \texttt{tskit} library,
+Using the well-established and feature-rich \texttt{tskit} library,
 the ARGs can also be stored concisely and processed efficiently
 using standard Python tools. For example, the ARG for 1.27 million
 sequences---encoding the inferred reticulate ancestry,
-full alignments, and extensive metadata---requires
+genetic variation, and extensive metadata---requires
 58MB of storage,
 and loads in less than a second.
 %JK Not sure if we'd actually say it like this, but this is the
@@ -92,118 +91,134 @@ together mutations carried by different lineages, recombination plays an
 important role in generating genomic diversity, with recombinant lineages
 associated with adaptation to new host species and with the production of more
 immune evasive variants~\citep{Graham2010-xe,De_Klerk2022-tt}.
-The lack of genetic variation made recombination challenging to detect early in the SARS-CoV-2 pandemic. In late 2020, the appearance and
+Early in the SARS-CoV-2 pandemic, the lack of genetic variation
+meant that recombination had little effect.
+In late 2020, the appearance and
 spread of variants of concern (VoC), designated into classes such as Alpha and
-Delta which harboured multiple characteristic mutations, increased the
-detectability of recombination.
+Delta which harboured multiple characteristic mutations,
+created the conditions required for recombination to occur
+and recombinant strains with onward transmission were detected at
+low frequency~\citep{Jackson2021-ik}.
 More recently, the high prevalence of Omicron,
 with multiple co-circulating deeply divergent lineages (BA.1 to BA.5), has
 accelerated the rate of coinfection and the potential for
 recombination~\citep{Bal2022-hq}.
-[FIXME say this better and add citation.]
-Multiple recombinant lineages have successfully
-established and spread to high frequency.
+In early 2023, multiple recombinant lineages have successfully
+established and spread to high frequency, and accounting for recombinant
+ancestry is now essential in understanding the evolution of the SARS-CoV-2
+virus.
 
-[PARA 2: recombination is hard to detect. Quick overview of state-of-the-art.
-Finish with phylogeny-based method, RIPPLES.]
-
-[PARA 3: but you can't use a phylogeny when there's recomb. Need a joint
-model of mutation and recomb. ARGs, tskit, forward refs to ARG section for
-details.]
-
-[PARA 4: we present sc2ts based on these recent advances. Summarise
-results, with forward refs to Results sections.]
-
-% By searching for genomes containing segments
-% from different VoC designations, multiple recombinant lineages have been
-% detected, for example, between Alpha and pre-VoC \citep{Jackson2021-ik}, Alpha
-% and Epsilon \citep{Wertheim2022-hj}, and Alpha and
-% Delta~\citep{Sekizuka2022-xz}.
-
-% Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
-% combine specific subsets of mutations from different lineages
-% \citep[e.g.][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}.
-% This approach only identifies those inter-lineage recombination events
-% resulting in the patterns investigated.
+% Recombination is hard to detect
+Detecting recombination in SARS-CoV-2 is difficult, and identifying new
+recombinant strains is a time-consuming, often manual process [Citation?].
+Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
+combine specific subsets of mutations from different lineages
+\citep[e.g.][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz},
+which can only identify inter-lineage recombination events specific to those motifs.
+% % JK: I've left this out because I felt it broke the narrative up a bit, but
+% % happy to put back in. (We're still citing the paper in a few places).
 % Others have inferred recombinant
 % genealogies to disentangle recombination from recurrent mutation, without
 % having to pre-specify characteristic mutations for each lineage
-% \citep{Ignatieva2021-rg}. More recently, \cite{Turakhia2022-it} presented a
-% phylogeny-based approach (``RIPPLES'') to identify putative recombinants among
-% over ten million SARS-CoV-2 genomes, without pre-specifying motifs. To find
-% candidate recombinants, RIPPLES first builds a phylogeny without assuming
-% recombination and then scans for long branches (i.e., carrying many mutations)
-% and then determines if these candidates would be better explained by
-% recombination. Specifically, RIPPLES exhaustively breaks each candidate
-% sequence into segments and attempts to find more parsimonious placements for
-% each segment on the phylogeny. If such placements are found, the sequence is
-% identified as a putative recombinant. Although it enables rapid searches for
-% genomic evidence of recombinants, RIPPLES relies on a SARS-CoV-2 phylogeny that
-% accounts for only mutations, treats recombinants \textit{post hoc}, and is an
-% incomplete representation of the reticulate evolutionary history of SARS-CoV-2.
-% As noted by the authors, a \textit{post hoc} treatment of recombination is
-% possible when recombinant lineages are rare and leave few descendants. However,
-% this is becoming increasingly untenable with the proliferation of recombinant
-% lineages; for example, more than half of the sequences sampled in February 2023
-% are from XBB and its descendants~\citep{Chen2022-pz}. This also means that
-% future evolution of SARS-CoV-2 is likely to involve multiple sequential
-% recombination events on top of existing recombinant lineages, creating a highly
-% reticulated genealogy.
+% \citep{Ignatieva2021-rg}.
+More recently, \cite{Turakhia2022-it} presented a
+phylogeny-based approach (``RIPPLES'') to identify putative recombinants among
+over ten million SARS-CoV-2 genomes, without pre-specifying motifs. To find
+candidate recombinants, RIPPLES first builds a phylogeny without assuming
+recombination and then scans for long branches (i.e., carrying many mutations)
+and then determines if these candidates would be better explained by
+recombination. Specifically, RIPPLES exhaustively breaks each candidate
+sequence into segments and attempts to find more parsimonious placements for
+each segment on the phylogeny. If such placements are found, the sequence is
+identified as a putative recombinant. Although it enables rapid searches for
+genomic evidence of recombinants, RIPPLES relies on a SARS-CoV-2 phylogeny that
+accounts for only mutations, treats recombinants \textit{post hoc}, and is an
+incomplete representation of the reticulate evolutionary history of SARS-CoV-2.
+As noted by the authors, a \textit{post hoc} treatment of recombination is
+possible when recombinant lineages are rare and leave few descendants. However,
+the proliferation of recombinant lineages is making this increasingly
+untenable; for example, more than half of the sequences sampled in February 2023
+are from XBB and its descendants~\citep{Chen2022-pz}. This also means that
+future evolution of SARS-CoV-2 is likely to involve multiple sequential
+recombination events on top of existing recombinant lineages, creating a highly
+reticulated ancestry.
 
-% %% ARGs are good for *representing* viral genealogies
+% PARA 3: but you can't use a phylogeny when there's recomb. Need a joint
+% model of mutation and recomb. ARGs, tskit, forward refs to ARG section for
+% details.
 
-% It is well known that recombination distorts phylogenies \citep{Schierup2000-fg}
-% and affects the results of downstream analysis, e.g., inference of
-% selection~\citep{Anisimova2003-vr}. However, standard phylogenetic methods do
-% not account for recombination
-% \citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}. Instead,
-% genetic ancestries of recombining lineages can be represented by ancestral
-% recombination graphs (ARGs)~\citep{Griffiths1981-lw,Hudson1983-properties}, which
-% capture network-like phylogenetic relationships \citep{Gusfield2014-qw}. Recently,
-% development of the ``succinct tree sequence'' data
-% structure \citep{Kelleher2018-xc}  has enabled compact yet flexible
-% encoding of large ARGs. This representation should be well-suited to storing
-% large recombinant viral genealogies such as SARS-CoV-2,
-% which currently encompasses over 15 million sequences in the GISAID database
-% \citep{Shu2017-hp}). Moreover the \texttt{tskit} software library, which implements this
-% data structure, enables efficient manipulation of the stored genealogies and is
-% integrated with a suite of open-source software tools to simulate, analyse, and
-% infer them \citep{Baumdicker2022-ep,Kelleher2018-xc,Kelleher2019-ba,Wohns2022-th}.
+It is well known that recombination distorts phylogenies \citep{Schierup2000-fg}
+and affects the results of downstream analysis, e.g., inference of
+selection~\citep{Anisimova2003-vr}. Standard phylogenetic methods do
+not account for recombination
+\citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}, and there is
+no standard method for incorporating the effects of recombination into
+phylogenetic analysis.
+Ancestral Recombination Graphs (ARGs) are a means of describing such
+network-like ancestry~\citep{Griffiths1981-lw,Gusfield2014-qw}, but
+until recently lacked software support and sufficiently scalable
+inference methods to be of practical use.
+However, approaches to infer ARGs now exist that can scale to tens of
+thousands of human genomes and beyond
+\citep{Speidel2019-yh,Kelleher2019-ba,Schaefer2021-yg,Zhang2023-lf}, and which
+deal with levels of repeated recombination far in excess of those seen in viral
+phylogenies. The ``succinct tree sequence'' is an ARG data structure
+which has led to significant computational advances across a range
+of
+applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,Ralph2020-efficiently,
+Wohns2022-th}, and the supporting \texttt{tskit} software library is now widely
+is now widely used in population genetic applications.
+The methods in \texttt{tskit} have been developed to support millions of
+whole human genomes~\citep{Kelleher2019-ba}, and so it is particularly well suited
+to representing large SARS-CoV-2 genealogies,
+which currently encompasses over 15 million sequences in the GISAID database
+\citep{Shu2017-hp}.
+See Section~\ref{sec:args} for more details on ARGs and the succinct
+tree sequence data structure.
 
-% %% ARG inference is hard
-
-% Inferring recombinant phylogenies has been a long-standing computational challenge.
-% However, approaches to infer ARGs now exist that can scale to tens of
-% thousands of human genomes and beyond
-% \citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}, and which
-% deal with levels of repeated recombination far in excess of those seen in viral
-% phylogenies. For example, using over 90 million variable sites
-% \citet{Wohns2022-th} reconstructed a unified whole-genome genealogy of thousands
-% of modern and ancient human genomes, accounting for millions of recombination
-% events (over 5 million ``local trees''). To achieve this, \cite{Wohns2022-th}
-% took advantage of a highly efficient Hidden Markov Model (HMM) implementation
-% of the Li and Stephens (LS) model \citep{Li2003-ib} to infer copying paths between
-% genomes \citep{Kelleher2019-ba}.
-
-% % What is new here?
-
-% Here, we present a preliminary version of a novel scalable methodology
-% (\texttt{sc2ts}, optionally pronounced ``scoots'') that builds on the advances above
-% and additionally takes advantage of known collection dates to infer ARGs from millions
-% of full-length SARS-CoV-2 genomes. Using publicly available SARS-CoV-2 genome sequences,
-% we demonstrate that \texttt{sc2ts} can be used to simultaneously (1) detect putative SARS-CoV-2
-% recombinants; (2) infer the phylogenetic relationships of the major SARS-CoV-2 lineages;
-% (3) reconstruct the mutational spectrum of SARS-CoV-2; and (4) provide a compact record
-% of evolutionary information about SARS-CoV-2 that can be efficiently accessed using
-% \texttt{tskit} (tree sequence toolkit) software library \citep{Kelleher2018-xc}.
-% \texttt{Sc2ts} is a promising method to automate detection of SARS-CoV-2 recombinants
-% and to jointly model recombinational and mutational processes shaping the genomic
-% diversity of SARS-CoV-2 at scale.
-
+% [PARA 4: we present sc2ts based on these recent advances. Summarise
+% results, with forward refs to Results sections.]
+Here we present a preliminary version of \texttt{sc2ts}, a novel method
+for inferring ARGs for SARS-CoV-2 at pandemic scale in real-time.
+Building on the open-source \texttt{tskit} library, the method infers
+a joint model of mutation, genetic inheritance and recombination, which
+can be conveniently and efficiently analysed using standard data science
+tools. Inference is based on incrementally adding batches of sequences
+based on their collection dates, and proceeds in three phases. Firstly,
+likely attachment nodes in the current ARG
+(or paths, if inferred to be a recombinant) are
+chosen for each of the samples in the daily batch using the
+Li and Stephen's model (Section~\ref{sec:ls}). Then, since many samples
+in a daily batch can share an attachment path,
+we infer trees for each of the clusters separately using standard
+methods (Section~\ref{sec:sample-cluster-tree-inference}).
+Finally, we attach the trees for these sample-clusters to the current
+ARG, and apply some parsimony heuristics to address issues
+introduced by the inherent greediness of the strategy
+(Section~\ref{sec:parsimony-heuristics}).
+Using the current preliminary version of \texttt{sc2ts} we infer two
+large ARGs (1,265,685 and 657,239 samples, respectively), and study
+the properties of these ARGs to illustrate the power of the method
+and to inform subsequent development. We find that these
+ARGs accurately reflect known patterns of phylogenetic relationships
+between samples (Section~\ref{sec:backbone_phylogeny}),
+and mutational spectra (Section~\ref{sec:mutation_spectrum})
+while simultaneously identifying the majority of known recombinant
+lineages (Sections~\ref{sec:jackson_recombs} and \ref{sec:pango_x_lineages}),
+with an unprecedented degree of precision in the
+genomic location of recombination breakpoints
+(Section~\ref{sec:breakpoint_intervals})
+and the relationship between parental sequences
+(Section~\ref{sec:parent_divergence}).
+We hope that these benefits of an accurate joint model of
+mutation, genetic inheritance and recombination, will generate community
+interest and development of the \texttt{sc2ts} method, and
+more generally in applying the efficient and mature software
+of the \texttt{tskit} ecosystem to pandemic-scale SARS-CoV-2 data.
 
 \section{Results}
 \subsection{Inferred ARGs}
-For this preliminary study our goals are to illustrate the utility of
+The goals of this preliminary study are to illustrate the utility of
 \texttt{sc2ts}, and to closely study the properties of the
 inferred ARGs to inform subsequent development. Rather
 than attempting to be comprehensive we chose to work with a
@@ -320,7 +335,8 @@ space is used by metadata, which when discarded results in
 an encoding that requires an average of only 8.29 bytes per
 SARS-CoV-2 genome stored.
 Loading these ARGs takes less than a second, and they can be interactively
-analysed using Jupyter notebooks on a standard laptop. The majority
+analysed using Jupyter notebooks~\citep{Kluyver2016-jupyter}
+on a standard laptop. The majority
 of the analyses in this preprint can be carried out in seconds
 with the \texttt{tskit} Python API, using a few gigabytes of RAM.
 
@@ -1220,7 +1236,8 @@ preparedness for potential future pandemics.
 later sections and to add the appropriate signposts
 when they are done(ish)]
 
-Sc2ts is a method for inferring ARGs from densely sampled pandemic-scale data
+Sc2ts (pronounced ``scoots'', optionally) is a method for inferring
+ARGs from densely sampled pandemic-scale data
 in real time, in which recombination occurs at a low but significant rate.
 The essential idea is to incrementally update the ARG each day
 with the sequences collected on that day. These updates are performed by
@@ -1338,11 +1355,13 @@ and originally defined as an alternative formulation of the coalescent
 with recombination stochastic process~\citep{Hudson1983-properties}.
 Subsequently, the term ARG came to be used in a more general way to
 describe not just realisations of this model, but to any
-recombinant genetic ancestry~\citep{Minichiello2006-mapping}.
+recombinant genetic ancestry~\citep{Minichiello2006-mapping,Zhang2023-lf}.
 While there is some subtlety in the details~\citep{Wong2023-efficient},
 we can think of an ARG as being any graph that encodes the
 reticulate genetic ancestry of a sample of sequences under
-the influence of recombination. This definition encompasses various types of graphs traditionally described using the broader term of phylogenetic networks.
+the influence of recombination.
+This definition encompasses various types of graphs traditionally
+described using the broader term of phylogenetic networks.
 
 The ``succinct tree sequence'' is an ARG data structure
 that is both general (in terms of the types of ancestry that can
@@ -1386,12 +1405,20 @@ is based on NumPy~\citep{Harris2020-array}, and provides a convenient
 platform for interactive analysis of large-scale data using, for
 example, Jupyter notebooks~\citep{Kluyver2016-jupyter} and taking
 advantage of the analysis tools in the burgeoning PyData ecosystem.
+(It is possible to access the toolkit from R via the \texttt{reticulate}
+package, and the \texttt{slendr} library~\citep{Petr2022-slendr}
+also provides some native R support. A full R interface would be a
+valuable addition to the ecosystem.)
 Tskit is mature software, widely used in population genetics, and
 has been incorporated into several downstream
 applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
 Terasaki2021-geonomics,
 Fan2022-genealogical,Korfmann2022-weak,
-Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}. We emphasise that this ecosystem for storing and manipulating ARGs can generally be used to efficiently record and analyse SARS-CoV-2 genealogies reconstructed using other methods, not only the new approach that we describe here.
+Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
+It is important to note that
+this ecosystem for storing and manipulating ARGs can
+generally be used to efficiently record and analyse SARS-CoV-2 genealogies reconstructed
+using other methods, not only the new approach that we describe here.
 
 \subsection{The Li and Stephens model}
 \label{sec:ls}
