@@ -65,7 +65,7 @@ highly consistent with
 known features of SARS-CoV-2 evolution, recovering the basic
 backbone phylogeny, mutational spectra, and recapitulating
 details on the majority of known recombinant lineages.
-Using the well-established and fully-featured \texttt{tskit} library,
+Using the well-established and featured-rich \texttt{tskit} library,
 the ARGs can also be stored concisely and processed efficiently
 using standard Python tools. For example, the ARG for 1.27 million
 sequences---encoding the inferred reticulate ancestry,
@@ -290,7 +290,7 @@ categorised by parent node type, and demonstrates that each
 of these contributes significantly to the overall topology.
 In particular, we can see that approximately 40\% of the edges
 in both ARGs involve inheriting directly from sampled genomes.
-Both ARGs contain 29,422 sites (\ref{sec:data_preprocessing}),
+Both ARGs contain 29,422 sites (Section \ref{sec:data_preprocessing}),
 and a large number of mutations.
 The average number of mutations per-site is high, although much
 of this may be explained by outlier sites with artefactually high
@@ -342,11 +342,11 @@ enable inferences at the full pandemic scale
 %% The ARG is mostly tree-like
 Compared to organisms like humans which recombine every generation,
 in SARS-CoV2 recombination is rare, with recombination nodes accounting
-for $<$0.3\% of our inferred ancestry (Table~\ref{tab:args}). As a result,
+for $<$0.3\% of the inferred ancestry (Table~\ref{tab:args}). As a result,
 relationships between strains can often be represented by a
 single phylogenetic tree, particularly when looking at
-a subset of sampled genomes e.g. restricted by time or limited to close
-relatives. We expect the ARG to be particularly tree-like
+a subset of sampled genomes, e.g.\ restricted by time or limited to close
+relatives. We expect ARGs to be particularly tree-like
 early in the pandemic, when co-infection was less likely.
 
 \begin{figure} \centering
@@ -380,16 +380,17 @@ samples (180 for the Wide ARG, 88 for the Long ARG), none of which are
 assigned to Pango recombinant lineages by Nextclade (see Section
 \ref{sec:pango_x_lineages}).
 
-Our \texttt{sc2ts} backbone phylogenies do contain small amounts of recombination:
-there are 7 recombination nodes in the backbone of the Wide ARG and 8 in the backbone
-of the Long ARG. However, the backbones remain extremely tree-like, as these
-recombination events involve minor, local topological rearrangements. In particular,
-recombination in the backbone phylogenies only occurs between close relatives
-(e.g.\ sibling lineages), sometimes even within a single lineage such that the parent
-lineages above a recombination event coalesce with each other before involvement with
-any other part of the phylogeny. These local reticulations could either represent
+The \texttt{sc2ts} backbone phylogenies contain small amounts of recombination,
+with 7 recombination nodes in the Wide ARG backbone (8 for the Long ARG
+backbone). However, the backbones are highly tree-like, as these
+recombination events involve minor, local topological rearrangements
+where recombination only occurs between close relatives.
+% sometimes even within a single lineage such that the parent
+% lineages above a recombination event coalesce with each other before involvement with
+% any other part of the phylogeny.
+These local reticulations could either represent
 real but previously unobserved recombination events between closely related strains,
-or could be artifacts of the current \texttt{sc2ts} method and its parameterization.
+or could be artefacts of the current \texttt{sc2ts} method and its parameterization.
 
 Figure~\ref{fig:cophylogeny} compares the backbone phylogeny of the Wide ARG with
 a GISAID global ``all-time'' tree from Nextstrain
@@ -438,7 +439,7 @@ these issues may be alleviated in future versions of \texttt{sc2ts}.
 \label{sec:mutation_spectrum}
 The ARGs inferred by \texttt{sc2ts} and represented using the \texttt{tskit}
 library (Section~\ref{sec:args}) are a joint estimate of the processes
-of inheritance, recombination and mutation. Unlike most approaches to
+of genetic inheritance, recombination and mutation. Unlike most approaches to
 phylogenetic analysis, mutations are included in the \texttt{tskit}
 data model alongside
 the topological representation of genetic inheritance.
@@ -447,7 +448,8 @@ advantages, for example allowing us to compute statistics of the observed
 sequences efficiently~\citep{Kelleher2016-wk,Ralph2020-efficiently} and
 to provide high-levels of data compression~\citep{Kelleher2019-ba}.
 The same idea has recently been used to represent
-SARS-CoV-2 data in UShER's ``mutation annotated tree'' format~\citep{Turakhia2022-it}.
+SARS-CoV-2 data in UShER's ``mutation annotated tree''
+format~\citep{Turakhia2021-ur}.
 
 \begin{figure} \centering
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
@@ -493,7 +495,7 @@ one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).}
 The properties of the mutations inferred in the Wide and Long
 ARGs are summarised in Figure~\ref{fig:mutational_spectra}A. In both
 cases we have a large number of mutations, and a majority of these
-(Wide ARG: 62.55\%, Long ARG: 72.23) are private to a single
+(Wide ARG: 62.55\%, Long ARG: 72.23\%) are private to a single
 sample, i.e.\ on terminal branches.
 Although the average number
 of mutations per sample is small
@@ -502,7 +504,7 @@ is large (Wide ARG: 41.23, Long ARG: 36.10; c.f.\ Table~\ref{tab:args}). This is
 partly driven by some highly mutagenic sites (e.g., site 28271 has over 7,000
 mutations in the Wide ARG, c.f.\ Figure~\ref{fig:breakpoint-distribution}), which
 may be artefactual.
-The main weakness of the current version of \texttt{sc2ts} is an excess
+A significant issue with the current version of \texttt{sc2ts} is an excess
 of inferred reversion mutations, with 5.99\% of all mutations in the Wide
 ARG (Long ARG: 4.54\%) reverting the state change of the immediately
 ancestral mutation. The majority of these mutations are likely to be
@@ -518,7 +520,7 @@ in the Wide ARG to the results of \cite{Yi2021-sc},
 who reconstructed a SARS-CoV-2 phylogeny of
 over 350,000 genomes sampled globally from December 24, 2019, to January 12,
 2021, and classified the mutations occurring along the phylogeny.
-We categorised all of single nucleotide
+We categorised all single nucleotide
 mutations in the Wide ARG by type (defined by the inherited and derived states),
 excluded mutations inherited by only a single sample (which are
 enriched for sequencing errors and artefacts).
@@ -526,7 +528,7 @@ Similarly, we took the data for single nucleotide mutations from
 \citep[][\url{https://github.com/ju-lab/SC2_evol_signature}]{Yi2021-sc}, excluded
 mutations occurring along terminal branches, and tallied them up by type.
 Figure~\ref{fig:mutational_spectra}B shows that the mutational spectrum from the
-wide ARG (based on 448,825 mutations) matches that reported by \citet[based on
+Wide ARG (based on 448,825 mutations) matches that reported by \citet[based on
 92,344 mutations]{Yi2021-sc}. In both spectra, C-to-U mutations and G-to-U
 mutations occur more frequently than U-to-C and U-to-G, respectively. Similar
 results are obtained when including the mutations inherited by only a single
