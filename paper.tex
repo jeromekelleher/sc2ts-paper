@@ -176,45 +176,49 @@ which currently encompasses over 15 million sequences in the GISAID database
 See Section~\ref{sec:args} for more details on ARGs and the succinct
 tree sequence data structure.
 
-[PARA 4: we present sc2ts based on these recent advances. Summarise
-results, with forward refs to Results sections.]
-
-% %% ARGs are good for *representing* viral genealogies
-
-% %% ARG inference is hard
-
-% Inferring recombinant phylogenies has been a long-standing computational challenge.
-% However, approaches to infer ARGs now exist that can scale to tens of
-% thousands of human genomes and beyond
-% \citep{Speidel2019-yh,Kelleher2019-ba,Zhang2021-lf,Schaefer2021-yg}, and which
-% deal with levels of repeated recombination far in excess of those seen in viral
-% phylogenies. For example, using over 90 million variable sites
-% \citet{Wohns2022-th} reconstructed a unified whole-genome genealogy of thousands
-% of modern and ancient human genomes, accounting for millions of recombination
-% events (over 5 million ``local trees''). To achieve this, \cite{Wohns2022-th}
-% took advantage of a highly efficient Hidden Markov Model (HMM) implementation
-% of the Li and Stephens (LS) model \citep{Li2003-ib} to infer copying paths between
-% genomes \citep{Kelleher2019-ba}.
-
-% % What is new here?
-
-% Here, we present a preliminary version of a novel scalable methodology
-% (\texttt{sc2ts}, optionally pronounced ``scoots'') that builds on the advances above
-% and additionally takes advantage of known collection dates to infer ARGs from millions
-% of full-length SARS-CoV-2 genomes. Using publicly available SARS-CoV-2 genome sequences,
-% we demonstrate that \texttt{sc2ts} can be used to simultaneously (1) detect putative SARS-CoV-2
-% recombinants; (2) infer the phylogenetic relationships of the major SARS-CoV-2 lineages;
-% (3) reconstruct the mutational spectrum of SARS-CoV-2; and (4) provide a compact record
-% of evolutionary information about SARS-CoV-2 that can be efficiently accessed using
-% \texttt{tskit} (tree sequence toolkit) software library \citep{Kelleher2018-xc}.
-% \texttt{Sc2ts} is a promising method to automate detection of SARS-CoV-2 recombinants
-% and to jointly model recombinational and mutational processes shaping the genomic
-% diversity of SARS-CoV-2 at scale.
-
+% [PARA 4: we present sc2ts based on these recent advances. Summarise
+% results, with forward refs to Results sections.]
+Here we present a preliminary version of \texttt{sc2ts}, a novel method
+for inferring ARGs for SARS-CoV-2 at pandemic scale in real-time.
+Building on the open-source \texttt{tskit} library, the method infers
+a joint model of mutation, genetic inheritance and recombination, which
+can be conveniently and efficiently analysed using standard data science
+tools. Inference is based on incrementally adding batches of sequences
+based on their collection dates, and proceeds in three phases. Firstly,
+likely attachment nodes in the current ARG
+(or paths, if inferred to be a recombinant) are
+chosen for each of the samples in the daily batch using the
+Li and Stephen's model (Section~\ref{sec:ls}). Then, since many samples
+in a daily batch can share an attachment path,
+we infer trees for each of the clusters separately using standard
+methods (Section~\ref{sec:sample-cluster-tree-inference}).
+Finally, we attach the trees for these sample-clusters to the current
+ARG, and apply some parsimony heuristics to address issues
+introduced by the inherent greediness of the strategy
+(Section~\ref{sec:parsimony-heuristics}).
+Using the current preliminary version of \texttt{sc2ts} we infer two
+large ARGs (1,265,685 and 657,239 samples, respectively), and study
+the properties of these ARGs to illustrate the power of the method
+and to inform subsequent development. We find that these
+ARGs accurately reflect known patterns of phylogenetic relationships
+between samples (Section~\ref{sec:backbone_phylogeny}),
+and mutational spectra (Section~\ref{sec:mutation_spectrum})
+while simultaneously identifying the majority of known recombinant
+lineages (Sections~\ref{sec:jackson_recombs} and \ref{sec:pango_x_lineages}),
+with an unprecedented degree of precision in the
+genomic location of recombination breakpoints
+(Section~\ref{sec:breakpoint_intervals})
+and the relationship between parental sequences
+(Section~\ref{sec:parent_divergence}).
+We hope that these benefits of an accurate joint model of
+mutation, genetic inheritance and recombination, will generate community
+interest and development of the \texttt{sc2ts} method, and
+more generally in applying the efficient and mature software
+of the \texttt{tskit} ecosystem to pandemic-scale SARS-CoV-2 data.
 
 \section{Results}
 \subsection{Inferred ARGs}
-For this preliminary study our goals are to illustrate the utility of
+The goals of this preliminary study are to illustrate the utility of
 \texttt{sc2ts}, and to closely study the properties of the
 inferred ARGs to inform subsequent development. Rather
 than attempting to be comprehensive we chose to work with a
@@ -1232,7 +1236,8 @@ preparedness for potential future pandemics.
 later sections and to add the appropriate signposts
 when they are done(ish)]
 
-Sc2ts is a method for inferring ARGs from densely sampled pandemic-scale data
+Sc2ts (pronounced ``scoots'', optionally) is a method for inferring
+ARGs from densely sampled pandemic-scale data
 in real time, in which recombination occurs at a low but significant rate.
 The essential idea is to incrementally update the ARG each day
 with the sequences collected on that day. These updates are performed by
@@ -1400,13 +1405,18 @@ is based on NumPy~\citep{Harris2020-array}, and provides a convenient
 platform for interactive analysis of large-scale data using, for
 example, Jupyter notebooks~\citep{Kluyver2016-jupyter} and taking
 advantage of the analysis tools in the burgeoning PyData ecosystem.
+(It is possible to access the toolkit from R via the \texttt{reticulate}
+package, and the \texttt{slendr} library~\citep{Petr2022-slendr}
+also provides some native R support. A full R interface would be a
+valuable addition to the ecosystem.)
 Tskit is mature software, widely used in population genetics, and
 has been incorporated into several downstream
 applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
 Terasaki2021-geonomics,
 Fan2022-genealogical,Korfmann2022-weak,
 Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
-This ecosystem for storing and manipulating ARGs can
+It is important to note that
+this ecosystem for storing and manipulating ARGs can
 generally be used to efficiently record and analyse SARS-CoV-2 genealogies reconstructed
 using other methods, not only the new approach that we describe here.
 
