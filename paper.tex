@@ -1147,88 +1147,212 @@ recombination events may be artefactual, is an important area of future research
 % sister clade of XAC, and annotated as ``miscBA2BA1PostSpike''.
 
 \section{Discussion}
-The COVID-19 pandemic continues to be a global emergency,
+% PARA 1. SARS-CoV-2 is still important, and the vast hordes of data provide an
+% unprecedented opportunity to study the evolution of a virus. Even if the
+% public health emergency is officially over, it doesn't mean it's not coming
+% back and we should be prepared. Recombination is now a vital factor, and
+% present a way in which it can be incorporated. Our results are accurate.
+
+The COVID-19 pandemic continues to be a global emergency [DOES IT? Didn't the
+WHO downgrade recently?]
 with persistent high levels of infection. This high prevalence has allowed the
 proliferation of many variants, with more than 600 Pango-designated lineages
 circulating globally in the last three months (January to March, 2023;
 https://gisaid.org/; access on March 27, 2023). High prevalence also brings a
 higher risk of coinfection, increasing opportunities for new phenotypically
 distinct recombinants to emerge and spread.
+[Handling recombination properly as an ongoing process is vital. Our results
+here show that recombination can be incorporated into a cohesive joint
+model of viral evolution. We basically recapitulate what is known, plus
+there's a whole bunch of other stuff that we haven't explored because
+we're in the validation stage.]
 
-In this proof-of-concept study, we demonstrate the feasibility of
-reconstructing a large ARG from over one million SARS-CoV-2 genomes, a feat
-that is simply not possible using other available ARG inference methods
-\citep{Rasmussen2014-el,Ignatieva2021-rg, Speidel2019-yh}. We have accomplished
-this feat by building on top of recent advances in storing and processing large
-ARGs (tskit) and inferring genealogical relationships efficiently at scale
-(tsinfer). The highly compact representation of the ARGs as succinct tree
-sequences, coupled with vectorised computing technologies, enables the large
-SARS-CoV-2 ARGs to be loaded in less than one second in a Jupyter notebook and
-allows for each SARS-CoV-2 genome to be stored in less than eleven bytes of
-data. We believe that further development of the sc2ts methodology and software
-can create a powerful tool (1) to efficiently detect emerging or previously
-overlooked recombinants in SARS-CoV-2; (2) to jointly model the mutational and
-recombinational processes shaping global SARS-CoV-2 genomic diversity; and (3)
-to perform a broad variety of evolutionary analyses of SARS-CoV-2 genomes with
-unprecedented global sequencing coverage.
+% PARA 2. Here are things that could be improved in the short term. Here's a
+% few more, longer term ideas.
+Nonetheless, \texttt{sc2ts} is currently ``alpha'' quality software, and
+there are some relatively straightforward changes that could be made to
+improve inference quality. Firstly, the pipeline used to identify and
+mask erroneous sites in the input alignments is simplistic, and, among
+other issues, results in multi-base indels being marked as missing data
+(Section~\ref{sec:data_preprocessing}). A more sophisticated
+approach~\citep[e.g.][]{Aksamentov2021-hj} would
+likely yield significant improvements, and reduce the effect sites with
+artefactually high levels of mutation (e.g., site 28271;
+Section~\ref{sec:breakpoint_intervals}).
+Using a pre-existing tree built using state-of-the-art phylogenetics methods
+for the early stages of the pandemic (Section~\ref{sec:backbone_phylogeny}),
+and minor adaptations to standard node-dating methods
+(Section~\ref{sec:node_dating}) should help resolve the most notable issues with
+the inferred backbone phylogeny (Figure~\ref{fig:cophylogeny}).
+Trees constructed from daily sample clusters have a surprisingly large
+influence on the overall ARG topology
+(Section~\ref{sec:sample-cluster-tree-inference}), and so using a more
+sophisticated tree building approach should yield clear improvements.
+The unrealistically large number of reversion mutations
+(Section~\ref{sec:mutation_spectrum}) may be reduced by
+improvements to the current parsimony
+hueristics (Section~\ref{sec:parsimony-heuristics}).
+A major source of errors are the ``time-traveller'' samples, whose
+provided collection dates are months (or years) too early
+(Section~\ref{sec:filtering_time_travellers}).
+% Hmm, not sure about this. Wouldn't this also rule out new major lineages
+% also (which tend to show up with a bunch of new mutations?) I guess it
+% depends on the threshold, and we could set it according to previous
+% experience with new lineages?
+While it is unclear how
+we might solve this problem in general, some simple expedients such
+as filtering out sequences that exceed a given cost in the LS HMM
+(i.e., number of mutations and recombination switches) may work well
+in practise. Such an approach would also reduce the impact of sequences
+with high levels of sequencing error (which contribute a large number of
+mutations, currently).
+Taken together, these and other relatively minor improvements should
+enable inference over much larger subsets of the dataset, and
+give a clearer picture of the combined processes of recombination and
+mutation over the pandemic so far.
 
-ARGs are rich genealogical structures that contain information about the
-genetic relationships among sampled genomes in the presence of recombination.
-Here, we have conducted several analyses of the preliminary ARGs to show that
-the ARGs built using sc2ts can (1) recapitulate the phylogenetic relationships
-among major SARS-CoV-2 lineages; (2) recover biologically plausible
-recombination signals in SARS-CoV-2 genomes; and (3) model mutation events in
-SARS-CoV-2 evolutionary history.
+% What are the more blue-sky type things? Basically these are things we don't
+% really want to do for the first "real" version of sc2ts.
+An attractive feature of \texttt{sc2ts} is that the most difficult part of
+the inference problem---finding likely recombinant paths through the existing ARG
+for new samples---is solved exactly under a well-defined statistical model,
+using established HMM methodology (Section~\ref{sec:ls}).
+The implementation currently uses
+a single, arbitrarily chosen, maximum likelihood path via the
+Viterbi algorithm, but there are numerous ways in which the HMM machinery
+could be extended in order to explore the set of possible paths, or to
+quantify the uncertainty around it. Similarly, the current parameterisation
+of the HMM with a single mismatch ratio is simplistic, and it would
+be straightforward to condition on per-site mutation rates. (Per nucleotide
+state transition, is also possible, with some additional development.)
+Recombination breakpoints for the ARG are currently inserted at the
+right-most extent of the possible interval
+(Section~\ref{sec:breakpoint_intervals}). More likely locations for the
+breakpoint could be chosen within the interval, for example based
+on the sequence motifs.
 
-ARGs reconstructed using sc2ts capture the phylogenetic relationships of major
-SARS-CoV-2 lineages. Our results show that the backbone topology of a densely
-sampled wide ARG inferred using sc2ts agrees well with the backbone topology of
-a NextStrain tree inferred using IQ-Tree2, a widely used phylogenetic inference
-package. However, we have noted several areas of differences (e.g., poorly
-calibrated branch lengths), which are the focus of future development of sc2ts.
-We believe that some of these differences can be reduced by improving and
-refining our approach and strategy to handle samples with erroneously reported
-collection dates (i.e., time travellers that have passed the maximum submission
-delay of 30 days) and to modify the topology of daily trees.
+% PARA 3. Handling the data is hard, so methods for making this easier
+% are important. Classical phylo approaches don't scale to millions.
+% The ability to quickly develop new analyses, at scale, will be crucial.
+% Sc2ts is largely composed of other parts being reused, with mainly being
+% concerned with masking input alignments. We wrote no C at all. This kind
+% of code reuse and ease of analysis is a major bonus.
+The vast volumes of whole genome sequence data generated during the pandemic
+has presented classical phylogenetics methods and software with major difficulties.
+Standard interchange formats such as FASTA, Newick and VCF were simply not designed
+to deal with millions of samples, and their limitations have come sharply
+into focus~\citep{Turakhia2021-ur,de2023maximum}.
+[Finish this up with a discussion of how easy it is to do stuff with our
+ARGS, how awesome tskit is, and how little code there is in sc2ts.
+Being able to quickly develop new methods by putting together high
+performance, high quality components is an essential element of
+preparedness for futture pandemics.]
 
-Our results show that sc2ts identifies the early recombinants (pre-2022)
-previously identified by \cite{Jackson2021-ik}. Sc2ts also identifies many
-Pango recombinants, which are designated after community perusal of supporting
-genomic evidence. We have found several previously unreported and overlooked
-recombinant sequences in the wide ARG. After further improvements and
-enhancements, we will use sc2ts to build a comprehensive ARG to search for
-recombination signals among all the 15 million and counting SARS-CoV-2 genomes
-available.
+% The COVID-19 pandemic continues to be a global emergency,
+% with persistent high levels of infection. This high prevalence has allowed the
+% proliferation of many variants, with more than 600 Pango-designated lineages
+% circulating globally in the last three months (January to March, 2023;
+% https://gisaid.org/; access on March 27, 2023). High prevalence also brings a
+% higher risk of coinfection, increasing opportunities for new phenotypically
+% distinct recombinants to emerge and spread.
 
-``The rate of putative recombination breakpoints is about three times higher towards the 3' of the change point than the 5' interval.'' Consistent with this, the breakpoint intervals of the putative recombinants identified here tend to occur on the 3’ end of the SARS-CoV-2 genome.
+% In this proof-of-concept study, we demonstrate the feasibility of
+% reconstructing a large ARG from over one million SARS-CoV-2 genomes, a feat
+% that is simply not possible using other available ARG inference methods
+% \citep{Rasmussen2014-el,Ignatieva2021-rg, Speidel2019-yh}. We have accomplished
+% this feat by building on top of recent advances in storing and processing large
+% ARGs (tskit) and inferring genealogical relationships efficiently at scale
+% (tsinfer). The highly compact representation of the ARGs as succinct tree
+% sequences, coupled with vectorised computing technologies, enables the large
+% SARS-CoV-2 ARGs to be loaded in less than one second in a Jupyter notebook and
+% allows for each SARS-CoV-2 genome to be stored in less than eleven bytes of
+% data. We believe that further development of the sc2ts methodology and software
+% can create a powerful tool (1) to efficiently detect emerging or previously
+% overlooked recombinants in SARS-CoV-2; (2) to jointly model the mutational and
+% recombinational processes shaping global SARS-CoV-2 genomic diversity; and (3)
+% to perform a broad variety of evolutionary analyses of SARS-CoV-2 genomes with
+% unprecedented global sequencing coverage.
 
-\section{Improvements}
-Currently, sc2ts is in development. Below, we propose several ways to potentially improve or enhance sc2ts. We welcome suggestions and ideas from experts.
+% ARGs are rich genealogical structures that contain information about the
+% genetic relationships among sampled genomes in the presence of recombination.
+% Here, we have conducted several analyses of the preliminary ARGs to show that
+% the ARGs built using sc2ts can (1) recapitulate the phylogenetic relationships
+% among major SARS-CoV-2 lineages; (2) recover biologically plausible
+% recombination signals in SARS-CoV-2 genomes; and (3) model mutation events in
+% SARS-CoV-2 evolutionary history.
 
-\begin{itemize}
-\item A potential source of error in sc2ts ARGs comes from incorrectly reported collection dates of the samples, which can cause sample genomes to be attached to the wrong parts of the ARGs. Thus far, we have attempted to correct the most offending errors in the ARGs by filtering out ``time travellers'', but the sampling time can still be wrong by days or tens of days. ***describe possible approaches to correct this?***
-\item To avoid time travellers, we used a maximum submission delay, but this will systematically bias against submissions from countries with greater submission delays (Kalia et al.). An area of future work is to add back the excluded sequences to a built ARG to assess which ones are likely true time travellers.
-\item We have used a single mismatch value in all the HMM runs, set so that having three mutations is as likely as having a single recombination. This parameter choice is arbitrary, and higher values may reduce the number of origins for those Pango lineages that were inferred to descend from more than one recombinant ancestor. In addition, because both the mutation rate and recombination rate varies across the SARS-CoV-2 genome, it may be helpful to allow the mismatch value to vary along the genome.
-\item By treating mutations equally in the current HMM implementation, we implicitly assume that the rates of different types of mutations are identical. However, as reported previously \citep{Yi2021-sc}, there is a high degree of mutational asymmetry in SARS-CoV-2. To account for mutational biases, more sophisticated nucleotide substitution models (e.g., allowing for different rates of transition and transversion) can be incorporated into HMM likelihood calculations.
-\item Our current masking strategy handles indels as missing data. Doing this can remove information helpful to detect recombinants. For example, sequences of the Pango recombinant XP were not identified as recombinants, because XP’s characteristic multibase deletion was masked.
-\item Daily trees are built using the UPGMA algorithm. This entails an extra step to ``un-resolve'' daily trees in parts of the trees with no phylogenetic resolution. Using a maximum-parsimony algorithm to build daily trees would leave these "soft polytomies" in, removing the need for the un-resolving step.
-\end{itemize}
+% ARGs reconstructed using sc2ts capture the phylogenetic relationships of major
+% SARS-CoV-2 lineages. Our results show that the backbone topology of a densely
+% sampled wide ARG inferred using sc2ts agrees well with the backbone topology of
+% a NextStrain tree inferred using IQ-Tree2, a widely used phylogenetic inference
+% package. However, we have noted several areas of differences (e.g., poorly
+% calibrated branch lengths), which are the focus of future development of sc2ts.
+% We believe that some of these differences can be reduced by improving and
+% refining our approach and strategy to handle samples with erroneously reported
+% collection dates (i.e., time travellers that have passed the maximum submission
+% delay of 30 days) and to modify the topology of daily trees.
 
-\section{Conclusions}
-The global understanding of viral evolution during the COVID-19 pandemic is
-unprecedented, with over 15 million sequences shared to date. We envisage that
-once fully developed and tested, sc2ts methodology and software may provide a
-unified computational framework to study the evolution and epidemiology of
-SARS-CoV-2 at pandemic scale. The evolutionary analyses presented herein
-exemplify the numerous applications possible using the ancestral recombination
-graph inferred by sc2ts. We invite bioinformaticians, evolutionary biologists,
-and virologists to join us and the broader tskit community to build the most
-complete representation of the evolutionary history of SARS-CoV-2. Moreover,
-while we have focussed on the particular application to SARS-CoV-2, the methods
-we describe are readily applicable to the analysis of many other viral
-pathogens. Solving the challenges in building and analysing large viral
-genealogies would therefore contribute to the important goal of improving
-preparedness for potential future pandemics.
+% Our results show that sc2ts identifies the early recombinants (pre-2022)
+% previously identified by \cite{Jackson2021-ik}. Sc2ts also identifies many
+% Pango recombinants, which are designated after community perusal of supporting
+% genomic evidence. We have found several previously unreported and overlooked
+% recombinant sequences in the wide ARG. After further improvements and
+% enhancements, we will use sc2ts to build a comprehensive ARG to search for
+% recombination signals among all the 15 million and counting SARS-CoV-2 genomes
+% available.
+
+% ``The rate of putative recombination breakpoints is about three times higher towards the 3' of the change point than the 5' interval.'' Consistent with this, the breakpoint intervals of the putative recombinants identified here tend to occur on the 3’ end of the SARS-CoV-2 genome.
+
+% \section{Improvements}
+% Currently, sc2ts is in development. Below, we propose several ways to potentially improve or enhance sc2ts. We welcome suggestions and ideas from experts.
+
+% \begin{itemize} \item A potential source of error in sc2ts ARGs comes from
+% incorrectly reported collection dates of the samples, which can cause sample
+% genomes to be attached to the wrong parts of the ARGs. Thus far, we have
+% attempted to correct the most offending errors in the ARGs by filtering out
+% ``time travellers'', but the sampling time can still be wrong by days or tens
+% of days. ***describe possible approaches to correct this?*** \item To avoid
+% time travellers, we used a maximum submission delay, but this will
+% systematically bias against submissions from countries with greater submission
+% delays (Kalia et al.). An area of future work is to add back the excluded
+% sequences to a built ARG to assess which ones are likely true time travellers.
+% \item We have used a single mismatch value in all the HMM runs, set so that
+% having three mutations is as likely as having a single recombination. This
+% parameter choice is arbitrary, and higher values may reduce the number of
+% origins for those Pango lineages that were inferred to descend from more than
+% one recombinant ancestor. In addition, because both the mutation rate and
+% recombination rate varies across the SARS-CoV-2 genome, it may be helpful to
+% allow the mismatch value to vary along the genome. \item By treating mutations
+% equally in the current HMM implementation, we implicitly assume that the rates
+% of different types of mutations are identical. However, as reported previously
+% \citep{Yi2021-sc}, there is a high degree of mutational asymmetry in
+% SARS-CoV-2. To account for mutational biases, more sophisticated nucleotide
+% substitution models (e.g., allowing for different rates of transition and
+% transversion) can be incorporated into HMM likelihood calculations. \item Our
+% current masking strategy handles indels as missing data. Doing this can remove
+% information helpful to detect recombinants. For example, sequences of the Pango
+% recombinant XP were not identified as recombinants, because XP’s characteristic
+% multibase deletion was masked. \item Daily trees are built using the UPGMA
+% algorithm. This entails an extra step to ``un-resolve'' daily trees in parts of
+% the trees with no phylogenetic resolution. Using a maximum-parsimony algorithm
+% to build daily trees would leave these "soft polytomies" in, removing the need
+% for the un-resolving step. \end{itemize}
+
+% \section{Conclusions}
+% The global understanding of viral evolution during the COVID-19 pandemic is
+% unprecedented, with over 15 million sequences shared to date. We envisage that
+% once fully developed and tested, sc2ts methodology and software may provide a
+% unified computational framework to study the evolution and epidemiology of
+% SARS-CoV-2 at pandemic scale. The evolutionary analyses presented herein
+% exemplify the numerous applications possible using the ancestral recombination
+% graph inferred by sc2ts. We invite bioinformaticians, evolutionary biologists,
+% and virologists to join us and the broader tskit community to build the most
+% complete representation of the evolutionary history of SARS-CoV-2. Moreover,
+% while we have focussed on the particular application to SARS-CoV-2, the methods
+% we describe are readily applicable to the analysis of many other viral
+% pathogens. Solving the challenges in building and analysing large viral
+% genealogies would therefore contribute to the important goal of improving
+% preparedness for potential future pandemics.
 
 \section{Methods}
 
@@ -1578,16 +1702,25 @@ scalability, and here allows us to find closely matching
 sequences and recombination paths among millions of SARS-CoV-2
 genomes exactly under a well-defined statistical model.
 
-It is important to note that the Viterbi algorithm only returns
-\emph{one of} the copying paths that maximise the likelihood under
- the given mutation and recombination parameters. There may be many
-such paths, from which we choose one arbitrarily. Also, the
-present choice of using a single mismatch-ratio parameter to control
-the likelihood of recombination vs mutation may lead to relatively
-flat likelihood spaces where many different paths have equal likelihood.
-There are many possibilities in using established HMM methodology
-to reason about and explore the space of possible matches, which may
-be a fruitful avenue for future work. Examples include a stochastic traceback through the collection of paths at the global optimum to glean further information about our the likelihood surface, and determine whether there are downstream implications for our conclusions. Here, we have considered the Viterbi algorithm to make statements about the most likely paths through the data. The machinery used here can be modified to run the forwards and backwards algorithms which determine the probability of observing a focal sequence, integrating over all possible paths through the data, under LS model [cite D-Palms]. This presents an opportunity to estimate parameters of interest while exploiting the tree-structure to gain log based speed-ups in exact their exact implementation.
+It is important to note that the Viterbi algorithm only returns \emph{one of}
+the copying paths that maximise the likelihood under the given mutation and
+recombination parameters. There may be many such paths, from which we choose
+one arbitrarily. Also, the present choice of using a single mismatch-ratio
+parameter to control the likelihood of recombination vs mutation may lead to
+relatively flat likelihood spaces where many different paths have equal
+likelihood. There are many possibilities in using established HMM methodology
+to reason about and explore the space of possible matches, which may be a
+fruitful avenue for future work. Examples include a stochastic traceback
+through the collection of paths at the global optimum to glean further
+information about our the likelihood surface, and determine whether there are
+downstream implications for our conclusions. Here, we have considered the
+Viterbi algorithm to make statements about the most likely paths through the
+data. The machinery used here can be modified to run the forwards and backwards
+algorithms which determine the probability of observing a focal sequence,
+integrating over all possible paths through the data, under LS model [cite
+D-Palms]. This presents an opportunity to estimate parameters of interest while
+exploiting the tree-structure to gain log based speed-ups in exact their exact
+implementation.
 
 \subsection{Tree inference from HMM daily sample clusters}
 \label{sec:sample-cluster-tree-inference}
