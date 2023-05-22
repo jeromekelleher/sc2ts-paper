@@ -646,12 +646,15 @@ It is rarely possible to be precise about the position on the genome at which
 a recombinant sequence switches from inheriting from one parent to another.
 Even if we observe the recombinant sequence before signficant
 divergence occurs (during onward transmission), if the two parent sequences
-are similar there is no way to distinguish them. Here we define the
-interval for a particular breakpoint as the genome coordinates over which the
+are similar there is no way to 
+% distinguish them. 
+accurately specify the breakpoint.
+Here we define the
+interval around a particular breakpoint as the genome coordinates over which the
 sequences for the left and right parent nodes are identical. The right-hand
 extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
-(Section~\ref{sec:ls}) and the left bound is then derived by
-sequence comparison of the parents.
+(Section~\ref{sec:ls}), and the left endpoint is then derived by directly
+comparing the parent sequences.
 
 \begin{figure}
 \centering
@@ -681,9 +684,14 @@ that are ancestral to more than one sample. The mean length of these intervals
 is 1,685 bases (median 962), and the length distribution is summarised in the
 inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
-requires further study, a few key properties stand out.[TODO, write this
-better. ] Firstly, in several cases there is a clear relationship between
+Emphasising that further work is required to filter out spuriously inferred
+recombination events and improve the accuracy of the inferred breakpoint
+intervals, we can draw two preliminary conclusions from 
+Figure~\ref{fig:breakpoint-distribution}.
+% While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
+% requires further study, a few key properties stand out.[TODO, write this
+% better. ] 
+Firstly, in several cases there is a clear relationship between
 gene boundaries and the breakpoint intervals. For example, ORF7a and OR7b
 show sharp differences in the number of intersecting intervals within
 these genes. This could be due to a number of factors, such as [BIOLOGY]
@@ -693,27 +701,48 @@ Secondly, we see substantially fewer intervals intersecting with the N
 gene than other regions, in agreement with the results of
 \cite{Turakhia2022-it}.
 
-It is important to note that the exact endpoints of intervals can be
+It is important to note that the precise endpoints of intervals can be
 somewhat arbitrary, since they are defined by exact comparisons
-of a recombinant's parents. The presence of problematic sites that are enriched
-for errors will therefore tend to artificially truncate breakpoint intervals
-at these sites.
-It is therefore helpful to compare the number of interecting intervals
+of a recombinant's parents. 
+% The presence of problematic sites that are enriched
+% for errors will therefore tend to artificially truncate breakpoint intervals
+% at these sites.
+% It is therefore helpful to compare the number of interecting intervals
+% with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
+% For example, position 28,271 (located in the ORF8-N intergenic
+% region) has the largest number of mutations and corresponds to the
+% left endpoint of 9 intervals and the right of 57.
+% The 7,572 mutations  (including 5,782 insertions and 1,605 deletions)
+% at this site are a likely indicator that this
+% homopolymeric region is prone to sequencing errors
+% and should be included in the list of ``problematic sites'' that
+% are excluded from analysis (Section~\ref{sec:data_preprocessing}).
+% There can be good biological reasons for this too though
+% However, hypermutable sites such as 27,972 \citep{Jungreis2021-dh}
+% have the same effect of truncating intervals. At this site we have
+% 770 mutations (including 425 C$>$T, 314 T$>$C) with potential signals
+% of polymorphism maintained by selection [FIXME!!], and 58 intervals
+% with endpoints within one base of this site.
+Thus, breakpoint intervals will tend to be truncated at sites which are
+hypermutable, either due to being prone to sequencing errors or
+for biological reasons such as selection pressure.
+It is therefore helpful to compare the number of intersecting intervals
 with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
-For example, position 28,271 (located in the ORF8-N intergenic
-region) has the largest number of mutations and corresponds to the
-left endpoint of 9 intervals and the right of 57.
-The 7,572 mutations  (including 5,782 insertions and 1,605 deletions)
-at this site are a likely indicator that this
-homopolymeric region is prone to sequencing errors
+For instance, position 28,271 (located in the ORF8-N intergenic
+region) has the largest number of mutations and appears as an endpoint
+of 66 intervals.
+The 7,572 mutations (including 5,782 insertions and 1,605 deletions)
+at this site are an indicator that this
+homopolymeric region may be prone to sequencing errors
 and should be included in the list of ``problematic sites'' that
 are excluded from analysis (Section~\ref{sec:data_preprocessing}).
-% There can be good biological reasons for this too though
-However, hypermutable sites such as 27,972 \citep{Jungreis2021-dh}
-have the same effect of truncating intervals. At this site we have
-770 mutations (including 425 C$>$T, 314 T$>$C) with potential signals
-of polymorphism maintained by selection [FIXME!!], and 58 intervals
-with endpoints within one base of this site.
+On the other hand, 58 of the breakpoint intervals have endpoints
+within one base of site 27,972, which has undergone 770 mutation events 
+(including 425 C$>$T, 314 T$>$C). The C$>$T mutation has the effect of
+truncating ORF8, and it has been posited that the truncation is neutral
+or advantageous for transmission, and disadvantageous within-host 
+\citep{Jungreis2021-dh}, suggesting that the high rate of recurrent mutation 
+at this site is due to selection. 
 
 % JK Dropping this for now:
 % We further consider the breakpoint intervals within the context of
