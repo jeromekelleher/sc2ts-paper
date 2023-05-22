@@ -223,10 +223,10 @@ of the \texttt{tskit} ecosystem to pandemic-scale SARS-CoV-2 data.
 \subsection{Inferred ARGs}
 The goals of this preliminary study are to illustrate the utility of
 \texttt{sc2ts}, and to closely study the properties of the
-inferred ARGs to inform subsequent development. Rather
-than attempting to be comprehensive we chose to work with a
+inferred ARGs to inform subsequent development. 
+We work with a 
 representative subset of the available data, limited to
-inferences that could be performed on a single server in
+inferences that can be performed on a single server in
 a few weeks (see below for further details on timings and
 computer hardware used). The cut-off dates for sampling were chosen
 arbitrarily.
@@ -320,7 +320,9 @@ well represented by it. See Section~\ref{sec:mutation_spectrum}
 for more analysis of the patterns of inferred mutations.
 Recombination plays a relatively minor role, with $<0.3\%$
 of nodes in the ARGs representing inferred recombination events.
-We analyse these events in Sections~\ref{sec:jackson_recombs},
+Of these recombination nodes, the majority are ancestral 
+to only one sample (Wide ARG: FIXME\%, Long ARG: FIXME \%).
+We analyse signals of recombination in Sections~\ref{sec:jackson_recombs},
 \ref{sec:breakpoint_intervals}, \ref{sec:parent_divergence},
 and \ref{sec:pango_x_lineages}.
 
