@@ -91,8 +91,8 @@ together mutations carried by different lineages, recombination plays an
 important role in generating genomic diversity, with recombinant lineages
 associated with adaptation to new host species and with the production of more
 immune evasive variants~\citep{Graham2010-xe,De_Klerk2022-tt}.
-Early in the SARS-CoV-2 pandemic, the lack of genetic variation
-meant that recombination had little effect.
+Early in the SARS-CoV-2 pandemic there was insufficient 
+genetic variation for meaningful recombination.
 In late 2020, the appearance and
 spread of variants of concern (VoC), designated into classes such as Alpha and
 Delta which harboured multiple characteristic mutations,
@@ -110,7 +110,9 @@ virus.
 
 % Recombination is hard to detect
 Detecting recombination in SARS-CoV-2 is difficult, and identifying new
-recombinant strains is a time-consuming, often manual process [Citation?].
+recombinant strains is a time-consuming, manual process, subject 
+to biases [FIXME: have we a citation for how tedious this is? Also what 
+are the biases?]
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
 combine specific subsets of mutations from different lineages
 \citep[e.g.][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz},
@@ -121,14 +123,15 @@ which can only identify inter-lineage recombination events specific to those mot
 % genealogies to disentangle recombination from recurrent mutation, without
 % having to pre-specify characteristic mutations for each lineage
 % \citep{Ignatieva2021-rg}.
-More recently, \cite{Turakhia2022-it} presented a
+\cite{Turakhia2022-it} presented a
 phylogeny-based approach (``RIPPLES'') to identify putative recombinants among
-over ten million SARS-CoV-2 genomes, without pre-specifying motifs. To find
-candidate recombinants, RIPPLES first builds a phylogeny without assuming
-recombination and then scans for long branches (i.e., carrying many mutations)
-and then determines if these candidates would be better explained by
-recombination. Specifically, RIPPLES exhaustively breaks each candidate
-sequence into segments and attempts to find more parsimonious placements for
+over ten million SARS-CoV-2 genomes, without pre-specifying motifs. 
+RIPPLES finds candidate recombinants by using an existing phylogeny
+(built assuming no recombination), and finding potential recombinants
+by  scanning for branches containing many mutations.
+It then determines if these candidates would be better explained by
+recombination by exhaustively breaking each 
+sequence into segments and attempting to find more parsimonious placements for
 each segment on the phylogeny. If such placements are found, the sequence is
 identified as a putative recombinant. Although it enables rapid searches for
 genomic evidence of recombinants, RIPPLES relies on a SARS-CoV-2 phylogeny that
@@ -166,7 +169,7 @@ phylogenies. The ``succinct tree sequence'' is an ARG data structure
 which has led to significant computational advances across a range
 of
 applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,Ralph2020-efficiently,
-Wohns2022-th}, and the supporting \texttt{tskit} software library is now widely
+Wohns2022-th}, and the supporting \texttt{tskit} software library 
 is now widely used in population genetic applications.
 The methods in \texttt{tskit} have been developed to support millions of
 whole human genomes~\citep{Kelleher2019-ba}, and so it is particularly well suited
@@ -179,18 +182,18 @@ tree sequence data structure.
 % [PARA 4: we present sc2ts based on these recent advances. Summarise
 % results, with forward refs to Results sections.]
 Here we present a preliminary version of \texttt{sc2ts}, a novel method
-for inferring ARGs for SARS-CoV-2 at pandemic scale in real-time.
+for inferring ARGs for SARS-CoV-2 at pandemic scale, in real-time.
 Building on the open-source \texttt{tskit} library, the method infers
 a joint model of mutation, genetic inheritance and recombination, which
 can be conveniently and efficiently analysed using standard data science
 tools. Inference is based on incrementally adding batches of sequences
-based on their collection dates, and proceeds in three phases. Firstly,
-likely attachment nodes in the current ARG
+based on their collection dates, and proceeds in three phases. 
+First, likely attachment nodes in the current ARG
 (or paths, if inferred to be a recombinant) are
 chosen for each of the samples in the daily batch using the
-Li and Stephen's model (Section~\ref{sec:ls}). Then, since many samples
+Li and Stephens model (Section~\ref{sec:ls}). Then, since many samples
 in a daily batch can share an attachment path,
-we infer trees for each of the clusters separately using standard
+we infer phylogenetic trees for each of the clusters separately using standard
 methods (Section~\ref{sec:sample-cluster-tree-inference}).
 Finally, we attach the trees for these sample-clusters to the current
 ARG, and apply some parsimony heuristics to address issues
@@ -202,8 +205,8 @@ the properties of these ARGs to illustrate the power of the method
 and to inform subsequent development. We find that these
 ARGs accurately reflect known patterns of phylogenetic relationships
 between samples (Section~\ref{sec:backbone_phylogeny}),
-and mutational spectra (Section~\ref{sec:mutation_spectrum})
-while simultaneously identifying the majority of known recombinant
+mutational spectra (Section~\ref{sec:mutation_spectrum}),
+and automatically identify the majority of known recombinant
 lineages (Sections~\ref{sec:jackson_recombs} and \ref{sec:pango_x_lineages}),
 with an unprecedented degree of precision in the
 genomic location of recombination breakpoints
