@@ -1786,15 +1786,17 @@ class RecombinationIntervals(Figure):
 
         axins2 = inset_axes(
             ax1,
-            width=2.0,
+            width=2.7,
             height=1.5,
-            bbox_to_anchor=(0.15, 1.0),
+            bbox_to_anchor=(0.13, 1.0),
             bbox_transform=ax1.transAxes,
             loc="upper left",
         )
-        axins2.hist(length)
+        y, x, _ = axins2.hist(length, bins=np.arange(0, 15_000, 500))
         axins2.set_xlabel("Width of interval")
-        axins2.set_ylabel("Count")
+        axins2.set_ylabel("Interval count (100s)")
+        axins2.yaxis.set_ticks(np.arange(0, y.max() + 20, 100))
+        axins2.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(lambda y, pos: int(y/100)))
 
         print("Recombination nodes = ", len(df.node.unique()))
         print("Num intervals:", len(intervals))
