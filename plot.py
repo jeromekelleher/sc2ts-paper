@@ -158,8 +158,8 @@ class Figure:
 
     name = None
     ts_dir = "data"
-    wide_fn = "upgma-full-md-30-mm-3-2021-06-30-recinfo-gisaid-il.ts.tsz"
-    long_fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
+    wide_fn = "upgma-full-md-30-mm-3-2021-06-30-recinfo2-gisaid-il.ts.tsz"
+    long_fn = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
 
     def plot(self, args):
         raise NotImplementedError()
@@ -608,19 +608,19 @@ class Cophylogeny(Figure):
 
 class CophylogenyWide(Cophylogeny):
     name = "cophylogeny_wide"
-    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo-gisaid-il.ts.tsz"
+    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo2-gisaid-il.ts.tsz"
     use_colour = "Pango"
 
 
 class CophylogenyLong(Cophylogeny):
     name = "supp_cophylogeny_long"
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
     use_colour = "Pango"
 
 
 class RecombinationNodeMrcas(Figure):
     name = None
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo-gisaid-il.ts.tsz"
+    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
     csv_fn = "breakpoints_{}.csv"
     data_dir = "data"
 
@@ -628,9 +628,9 @@ class RecombinationNodeMrcas(Figure):
         self.ts, self.basetime = utils.load_tsz(self.data_dir, self.sc2ts_filename)
 
         prefix = utils.snip_tsz_suffix(self.sc2ts_filename)
-        df = pd.read_csv(os.path.join(self.data_dir, self.csv_fn.format(prefix)))
-        df["tmrca"] = self.ts.nodes_time[df.mrca.values]
-        df["tmrca_delta"] = df.tmrca - self.ts.nodes_time[df.node.values]
+        df = pd.read_csv(
+            os.path.join(self.data_dir, self.csv_fn.format(prefix)),
+            parse_dates=["causal_date", "mrca_date"])
         logging.info(f"{len(df)} breakpoints | {len(np.unique(df.node))} re nodes read")
         # Remove potential contaminents
         self.df = df[df.max_descendant_samples > 1]
@@ -640,29 +640,27 @@ class RecombinationNodeMrcas(Figure):
         )
 
     @staticmethod
-    def is_strict_HMM_consistent(df):
-        return np.logical_and(
-            df.fwd_bck_parents_max_mut_dist == 0, df.is_hmm_mutation_consistent
-        )
+    def filter_breaks(df):
+        # return np.logical_and(df.fwd_bck_parents_max_dist == 0, df.is_hmm_mutation_consistent)
+        return df.max_descendant_samples >= 10
 
     @staticmethod
     def add_common_lines(ax, num, ts, common_proportions):
         v_pos = {k: v for v, k in enumerate(common_proportions.keys())}
-        for i, (u, (pango, prop)) in enumerate(common_proportions.items()):
+        for i, (u, (pango, prop, date)) in enumerate(common_proportions.items()):
             n_children = len(np.unique(ts.edges_child[ts.edges_parent == u]))
             logging.info(
                 f"{ordinal(i+1)} most freq. parent MRCA has id {u} (imputed: {pango}) "
-                f"@ time={ts.node(u).time}; "
+                f"@ date={date}; "
                 f"num_children={n_children}"
             )
             # Find all samples of the focal lineage
-            t = ts.node(u).time
-            ax.axhline(t, ls=":", c="grey", lw=1)
+            ax.axhline(date, ls=":", c="grey", lw=1)
             sep = "\n" if v_pos[u] == 0 else " "
             most = "Most" if v_pos[u] == 0 else ordinal(i + 1) + " most"
             ax.text(
-                (t + 5) / 7,  # Hand tweaked to get nice label positions
-                ts.node(u).time,
+                (ts.node(u).time + 5) / 7,  # Hand tweaked to get nice label positions
+                date,
                 f"{most} freq. MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
                 fontsize=8,
                 va="center",
@@ -678,70 +676,60 @@ class RecombinationNodeMrcas(Figure):
         label_tweak,
         xlab=True,
         ylab=True,
-        HMM_consistent_col="green",  # or "" to not plot
-        HMM_inconsistent_col="blue",
+        filter_pass_colour="green",  # or "" to not plot
+        filter_fail_colour="blue",
     ):
         logging.info(f"Plotting {title}")
-        dates = [
-            datetime(y, m, 1)
-            for y in (2020, 2021, 2022)
-            for m in range(1, 13, 3)
-            if (self.basetime - datetime(y, m, 1)).days > -2
-        ]
-        HMM_cons = self.is_strict_HMM_consistent(df)
-        HMM_incons = ~self.is_strict_HMM_consistent(df)
+        filter_pass = (filter_pass_colour, self.filter_breaks(df), "# descendants >= 10")
+        filter_fail = (filter_fail_colour, ~self.filter_breaks(df), "# descendants < 10")
 
         points = []
         pangoX = []
         tmrca_delta = []
-        for col, use in zip(
-            [HMM_consistent_col, HMM_inconsistent_col], [HMM_cons, HMM_incons]
-        ):
-            if col:
+        for colour, use, label in (filter_pass, filter_fail):
+            if colour != "":
                 plot_df = df[use]
                 points.extend(plot_df.node.values)
-                tmrca_delta.extend(plot_df.tmrca_delta.values)
+                tmrca_delta.extend(plot_df.parents_dist_days.values)
                 is_pangoX = df.causal_lineage.str.startswith("X")
                 pangoX.extend(np.flatnonzero(np.logical_and(use, is_pangoX)))
                 main_ax.scatter(
-                    plot_df.tmrca_delta / 7,
-                    plot_df.tmrca,
+                    plot_df.parents_dist_days / 7,
+                    plot_df.mrca_date,
                     alpha=0.1,
-                    c=col,
-                    label="HMM consistent"
-                    if col == HMM_consistent_col
-                    else "HMM inconsistent",
+                    c=colour,
+                    label=label,
                 )
         tmrca_delta = np.array(tmrca_delta)
         logging.info(f" {len(points)} points, {len(np.unique(points))} rec nodes")
         logging.info(f" T diff: min={tmrca_delta.min()}, max={tmrca_delta.max()} days")
 
         label_tweak = np.array(label_tweak)  # Tweak so e.g. it is above the point
-        plot_df = df.iloc[pangoX]
-        for row in plot_df.itertuples():
+        df_X = df.iloc[pangoX]
+        for row in df_X.itertuples():
+            tweak_label_pos = [
+                row.parents_dist_days / 7 + label_tweak[0],
+                row.mrca_date + timedelta(days=float(label_tweak[1]))
+            ]
             main_ax.annotate(
                 row.causal_lineage,
-                label_tweak + [row.tmrca_delta / 7, row.tmrca],
+                tweak_label_pos,
                 size=6,
                 ha="center",
                 rotation=70,
             )
-        main_ax.scatter(plot_df.tmrca_delta / 7, plot_df.tmrca, c="orange", s=8)
+        main_ax.scatter(df_X.parents_dist_days / 7, df_X.mrca_date, c="orange", s=8)
 
         if xlab:
             hist_ax.set_xlabel("Estimated divergence between parents (weeks)")
         if ylab:
             main_ax.set_ylabel(f"Estimated MRCA date")
         main_ax.set_title(title)
-        main_ax.set_yticks(
-            ticks=[(self.basetime - d).days for d in dates],
-            labels=[str(d)[:7] for d in dates],
-        )
         hist_ax.spines["top"].set_visible(False)
         hist_ax.spines["right"].set_visible(False)
         hist_ax.spines["left"].set_visible(False)
         hist_ax.get_yaxis().set_visible(False)
-        hist_ax.hist(tmrca_delta / 7, bins=60, density=True)
+        hist_ax.hist(tmrca_delta / 7, bins=60, density=False)
 
 
 class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
@@ -769,7 +757,7 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
         focal_node_map[519829] = "BA.1"
         # 5868 is a common MRCA almost exactly contemporary with the most common node
         focal_node_map.pop(5868, None)
-        proportions = descendant_proportion(self.ts, focal_node_map)
+        proportions = descendant_proportion(self.ts, focal_node_map, {r.mrca: r.mrca_date for r in self.df.itertuples()})
         self.add_common_lines(axes[0][0], 5, self.ts, proportions)
         self.do_plot(
             axes[0][0],
@@ -777,19 +765,18 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
             self.df,
             "A. Recombinants with > 1 descendant sample",
             label_tweak=[1, -8],
-            HMM_consistent_col="tab:blue",
-            HMM_inconsistent_col="tab:blue",
+            filter_pass_colour="tab:blue",
+            filter_fail_colour="tab:blue",
         )
-        use = self.is_strict_HMM_consistent(self.df)
         self.do_plot(
             axes[0][1],
             axes[1][1],
             self.df,
-            "B. > 1 descendant sample and parents HMM consistent",
+            "B. Recombinants with $\geq$ 10 descendant samples",
             label_tweak=[1, -8],
             ylab=False,
-            HMM_consistent_col="tab:blue",
-            HMM_inconsistent_col="",  # Don't plot
+            filter_pass_colour="tab:blue",
+            filter_fail_colour="",  # Don't plot
         )
         axes[0][1].invert_yaxis()
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
@@ -818,12 +805,13 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             ncols=3,
             figsize=(18, 12),
             sharex=True,
+            sharey="row",
             gridspec_kw={"height_ratios": [4, 1, 4, 1]},
         )
         for row_idx in range(0, axes.shape[0], 2):
             for col_idx in range(axes.shape[1]):
                 axes[row_idx, col_idx].set_ylim(
-                    self.df.tmrca.min(), self.df.tmrca.max()
+                    self.df.mrca_date.min(), self.df.mrca_date.max()
                 )
 
         parent_variants = [
@@ -1656,13 +1644,14 @@ def ordinal(n):
     return ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh"][n - 1]
 
 
-def descendant_proportion(ts, focal_nodes_map):
+def descendant_proportion(ts, focal_nodes_map, dates):
     """
     Take each focal node which maps to an imputed lineage, and work out how many
     samples of that lineage type have the focal node in their ancestry. If
-    it maps to None, use the ts to get the imputed lineage of that node
+    it maps to None, use the ts to get the imputed lineage of that node.
+    Return a dict mapping focal node to (lineage, proportion, date) tuples.
     """
-    focal_lineages = {
+    focal_lin = {
         u: ts.node(u).metadata["Imputed_Nextclade_pango"] if lin is None else lin
         for u, lin in focal_nodes_map.items()
     }
@@ -1674,17 +1663,17 @@ def descendant_proportion(ts, focal_nodes_map):
     for nd in tqdm.tqdm(ts.nodes(), desc="Finding sample lists"):
         if nd.is_sample():
             lineage = nd.metadata.get("Nextclade_pango", "")
-            for k, v in focal_lineages.items():
+            for k, v in focal_lin.items():
                 if lineage == v:
                     sample_lists[k].append(nd.id)
-    for focal_node, samples in sample_lists.items():
+    for ancestor, samples in sample_lists.items():
         sts, node_map = ts.simplify(samples, map_nodes=True, keep_unary=True)
         ok = np.zeros(sts.num_samples, dtype=bool)
         assert sts.samples().max() == sts.num_samples - 1
         for tree in sts.trees():
-            for u in tree.samples(node_map[focal_node]):
+            for u in tree.samples(node_map[ancestor]):
                 ok[u] = True
-        ret[focal_node] = focal_lineages[focal_node], np.sum(ok) / len(ok)
+        ret[ancestor] = focal_lin[ancestor], np.sum(ok) / len(ok), dates[ancestor]
     return ret
 
 
