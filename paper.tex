@@ -779,27 +779,30 @@ recombinations between closely related lineages.
 % Paragraph 2, what do we plot, specifically?
 In this section we investigate the patterns of divergence between
 the parents of recombination nodes.
-We focus on the Long ARG because  it covers time
-periods where recombination is known to have had a significant
-impact, and includes
-[HOW MANY?]
-samples designated to [HOW MANY] Pango X lineages (i.e., those inferred
+We focus on the Long ARG because it covers time
+periods where recombination is known to have occurred
+a large number of times, for example it contains samples from over
+30 Pango X lineages (i.e., those inferred
 to have recombinant ancestry; see Section~\ref{sec:pango_x_lineages} for
 further analysis of Pango recombinant lineages in the Long and Wide ARGs).
 Figure~\ref{fig:recomb_mrcas} shows the estimated date of the most recent
 common ancestor (MRCA) of the parent nodes for each recombination breakpoint,
-plotted against the divergence between these parents (i.e., the
+plotted against the divergence between these parents (i.e. the
 total branch length from the parents to their MRCA in the trees to
 the immediate left and right of the breakpoint).
-As in Section~\ref{sec:breakpoint_intervals}, we exclude recombination nodes
-that are ancestral to only one sample from this analysis.
-Figure~\ref{fig:recomb_mrcas}A plots breakpoints for all recombinants that
-are ancestral to more than one sample, and
-Figure~\ref{fig:recomb_mrcas}B plots a subset which pass some further
-reliability filters. Specifically, only recombination nodes that
-[FILL ME IN].
+As in Section~\ref{sec:breakpoint_intervals}, in these plots we
+exclude ``singleton'' recombination nodes (those ancestral to only one sample).
+Figure~\ref{fig:recomb_mrcas}A plots breakpoints for all nonsingleton recombinants,
+and Figure~\ref{fig:recomb_mrcas}B plots a subset of potentially more
+reliable breakpoints that occur in nodes
+ancestral to 10 or more samples (note that this is one of the official criteria
+used when proposing Pango recombinant lineages [CITE]).
+% that we deem to be more reliable by the measure of ``HMM consistency''. 
+% We define an  in that when we compare the LS HMM results when run from
+% 5' to 3' versus 3' to 5', it gives the
+% same mutations patterns and sequence-identical 5' parents as when run 3' to 5'
 This reduces the number of recombination nodes
-to 347 and breakpoints to 358.
+to XXX and breakpoints to YYY.
 Note that each plotted point
 represents a breakpoint, so that a recombination node with more than one
 breakpoint (e.g. with 3 or more parents, comprising ${\sim}10 \%$ of the
@@ -808,7 +811,9 @@ Figure ~\ref{fig:recomb_mrcas}B) will be represented by several points.
 It is important to note here that some of the time estimates in these figures
 come with a substantial degree of uncertainly,
 since nodes other than samples are dated somewhat crudely in the current version
-of \texttt{sc2ts} (Section~\ref{sec:node_dating}).
+of \texttt{sc2ts} (Section~\ref{sec:node_dating}). Nevertheless, the histograms
+clearly show that \texttt{sc2ts} can identify recombination between lineages
+that are only a matter of weeks apart.
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/recombination_node_mrcas.pdf}
@@ -863,63 +868,14 @@ recombination probabilities among lineages.
 
 In this section we focus on the detailed genealogy of samples that have been
 previously identified as recombinants, i.e. given a Pango designation that
-starts with an ``X''. Since the Wide ARG is restricted to data collected prior
-to mid-2021, it contains samples from only three Pango-designated recombinant
-lineages: XA, XB, and XC. To investigate the diversity of genealogies
-associated with recombinants, we therefore devote more analysis to patterns in
-the Long ARG. As in previous sections, we exclude singleton recombinants where
-possible.
-
-\subsubsection{Wide ARG}
-%% Quick overview of the wide ARG.
-In the Wide ARG, 44
-samples are designated as XA by both Nextclade and GISAID, 237 are designated
-as XB by Nextclade (231 by GISAID), and 6 as XC by Nextclade (none by GISAID).
-After removing singleton recombinants, XA numbers remain unchanged, but XB is
-reduced to 235 (229) and XC to 4 (0). We correctly identify that all samples
-designated as XA, XB, or XC by any method have one or more recombination nodes
-in their ancestry.
-
-%% Textual description of the 3 recombinant lineages present in the wide ARG
-The simplest Pango recombinant genealogy is XA: all XA samples trace back to a
-unique originating recombination node. This is the product of a recombination
-between a B.1.177.18 sample (specifically the strain Wales/ALDP-115BF41/2021,
-EPI\_ISL: 1012804) which contributed the majority of the genome from the start
-to a maximum position of 22227bp, and an unknown (inserted) node with imputed
-Pango lineage B.1.1.7, which contributed the remaining right hand portion. The
-recombination node has five immediate children: four sample leaves (EPI\_ISLs:
-989697, 1019487, 1104468 and 1122630) and a UPGMA-inserted node which is the
-ancestor of all other XA samples in the dataset.
-
-For XB, all samples trace back to a originating node which is the product of a
-recombination between a B.1 sample (specifically the strain
-England/CAMB-7B47D/2020, EPI\_ISL\_433960, which contributed the majority of
-the genome from the start up to a maximum position of 23604bp), and two other
-UPGMA nodes with imputed Pango lineages B.1.627 (up to a maximum position of
-27389bp) and B.1.36.8 (the remaining fragment of the genome). As described
-later, in the long ARG the equivalent recombination node has only 2 parents,
-with no involvement of  B.1.36.8, and it is possible that the third parent in
-the wide ARG is artefactual. Additional complications arise because additional
-non-X-designated samples such as B.1.634 also descend from this recombination
-(also true in the long ARG, see below), and there are also a small number of
-further recombination nodes nested within the XB ``clade''. However, all but
-one of these nested recombinations are ancestral to negligible fractions
-of the designated XB samples. The exception accounts for about 17\% of the
-designated XB nodes, and involves a recombination between descendants of the
-originating XB recombination. More specifically strain
-USA/TX-HMH-MCoV-43092/2021 (EPI\_ISL 2224652) is inferred to be a recombination
-between an XB grandparent and its XB grandchild. This could well be
-artefactual.
-
-For XC, the Wide ARG identifies more than one originating recombination node
-(see "multiple origins" below). However, as none of the samples designated as
-XC by Nextclade are designated as XC by GISAID, these patterns could be due to
-mistaken labelling, hence we do not examine XC further.
+starts with an ``X''. As the Wide ARG was only sampled until mid 2021,
+the majority of these Pango X lineages are found only in the Long ARG.
 
 \subsubsection{Long ARG}
 %% high level summary of the pango recombinant lineages and samples in the Long ARG
 The Long ARG (subsampled to mid-2022) contains 33
-Nextclade-designated Pango recombinant lineages comprising 749 samples (711 when singleton recombinants are removed). In
+Nextclade-designated Pango recombinant lineages comprising 749 samples
+(711 when singleton recombinants are removed). In
 contrast, GISAID designates 38 Pango recombinant lineages in the long ARG,
 comprising only 515 samples. In the analyses below, we mainly focus on the
 larger number of Nextclade designated samples.
@@ -1028,18 +984,22 @@ corresponding to the maximum inferred breakpoint position from the HMM process.
 (C) Equivalent plot for both origination events involving the four XD samples in the long ARG. Details of the mutations and sample node identities for all three plots are provided in supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}.
 } \end{figure}
 
-One of the simplest examples is the case of XA, illustrated in Figure~\ref{fig:pango-simple-origin-graph}A.
-Here, a subgraph of the long ARG has been plotted, where paths have been traced from all
-Nextclade-identified XA samples (in red) to the closest other sample nodes in our dataset.
+One of the simplest examples is the case of XA, corresponding to group A
+of \citet{Jackson2021-ik} as discussed above. Figure~\ref{fig:pango-simple-origin-graph}A
+shows the exact relationships inferred by \texttt{sc2ts} as a subgraph of the Long ARG. 
+Here, paths have been traced from all
+Nextclade-identified XA samples (in red) to the closest other sample nodes in the ARG.
 Sample nodes are plotted as larger circles, but the subgraph also includes intermediate,
 non-sample nodes: i.e. inserted nodes such as UPGMA, recombination, mutation collapse, and
 reversion push nodes, plotted as smaller circles. Dotted lines show where this subgraph links
 to the rest of the ARG. Above recombination nodes, only ancestral nodes are shown, meaning
 that the subgraph is not extended to show additional descendants of recombinant parents.
 
-It is clear from the XA subgraph that all the samples labelled XA by Nextclade trace to a single originating recombination node,
-whose genome is a composite of a B.1.177.18 lineage on the left of the genome (up to a maximum
-position of ${\sim}22227$ basepairs) and a B.1.1.7 lineage for the remainder of the genome.
+It is clear from the XA subgraph that all the samples labelled XA by Nextclade trace to a
+single originating recombination node, whose genome is a composite of a B.1.177.18 lineage
+on the left of the genome and a B.1.1.7 lineage on the right. In the subgraph we show
+the maximum genomic position for the recombination breakpoint, here at 22227 basepairs
+(corresponding to a breakpoint strictly less than 22228, see Table~\ref{tab:jackson})
 
 %% Discuss panel B where XAG shares a common recombinant origin with samples from several other X lineages
 
@@ -1080,8 +1040,9 @@ recombination node in the ARG. Of these, 11 are cases where the
 recombinants are independent rather than nested (i.e. there is no overlap in the list
 of descendant samples for each recombination node). Most have a single ``main''
 recombination event from which the majority of the corresponding recombinant samples
-descend (but in XJ and XU there are too few Pango X samples to decide on a ``main'' clade:
-see Supplementary Table~\ref{tab:pango-recombinants}).
+descend, and which agrees with the offical Pango designated parent lineages
+(see Supplementary Table~\ref{tab:pango-recombinants}, but note that
+in XJ and XU there are too few Pango X samples to decide on a ``main'' clade).
 
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple multiple-origin example, consisting of
 the 4 samples labelled XD by Nextclade in the Long ARG. The left hand subgraph
@@ -1091,7 +1052,7 @@ subgraph has a single sample with EPI\_ISL~8514045 (sampled in Turkey and dated 
 Both involve an Omicron lineage being inserted into the middle of a Delta genome, but
 the breakpoints in each case are slightly different: the start of the Omicron insertion
 in the French samples has an estimated maximum position of 21641 basepairs
-(and minimum of 21619) with the insertion end occurring at a maximum position of 25584
+(and minimum of 21619, not shown) with the insertion end occurring at a maximum position of 25584
 (and a minimum of 25470). In contrast, the Omicron insertion in the Turkish sample
 is inferred to have occurred between positions 22578 (min 21619) and 24130 (min 23605).
 The breakpoint difference, the different geographical locations, the time between the
@@ -1102,43 +1063,20 @@ France (\url{https://github.com/cov-lineages/pango-designation/issues/444}) so i
 plausible that the earlier Turkish sample has been mislabelled XD by Nextclade.
 Indeed, GISAID does not label any of these samples XD (see Supplementary
 Figure~\ref{fig:pango_XD_gisaid_graph} which gives exact mutations and sample identifiers).
-
-A similar pattern is seen for several of the origins inferred for the Pango
-XN lineage (originally defined on the basis of sequences from the UK). After removing
-singleton recombinants and the descendants of the erroneously recombinant
-Denmark/DCGC-281594/2021 strain (which, however, includes 53 XN-designated samples)
-the Long ARG contains four independent origins for Nextclade-designated XN
-samples (Supplementary Table~\ref{tab:multiple_origins_table}). The oldest
-of these four origins has 3 mutations above the sample that caused the
-recombination to be inferred. It therefore seems likely that we have not managed
-to sample an XN strain that is very close to the true recombinant. This may
-lead to \texttt{sc2ts} mistakenly inferring multiple recombination events when there
-
-
-If the only samples available are rather genetically distant from an originating
-recombinant, we might expect sc2ts to infer multiple similar recombination events
-(rather than a single event with extra reversions)
-
-a recombinant outbreak
-has taken a ``true'' XE sample and mistakenly inferred an additional, spurious origin. [WHY? - this
-is presumably because it has changed too much from the nearest in the main XE cluster - need to discuss the
-weighting of 3 mutations for one recombination here. NB: the number
-of nucleotide differences between the closest XE in the two clusters is 11: see the
-Pango-recombinant-analysis workbook]
+Investigation of other multiple-origin examples reveals somewhat similar patterns,
+suggesting that most of the simple multiple origin examples are due to Nextclade mislabelling.
 
 \subsubsection{Nested recombinant origins}
 As well as cases where Pango X lineage origins are attributed to independent
 recombination events, four Pango X lineages in the Long ARG have Nextclade-designated
 samples whose ancestry involves multiple non-independent (``nested'') recombination events
 (marked with asterisks in Supplementary Table~\ref{tab:pango-recombinants}; the most
-extensive is for XAB). The earliest example, present in both the Wide and Long ARGs, is XB
-The Logn ARG subgraph is plotted in Figure~\ref{fig:complex_origins_graph}, showing a recombination
+extensive is for XAB). The earliest example (present in both the Wide and Long ARGs) is XB
+The Long ARG subgraph is plotted in Figure~\ref{fig:complex_origins_graph}, showing a recombination
 between a B.1 sample and B.1.627 sample that leads both to the XB samples and to a
 ``hairball'' of further recombination nodes whose descendants are often not
 identified as recombinants by Nextclade (plotted in blue). A similar
-pattern is seen when examining XB in the Wide ARG (but as discussed previously,
-in the Wide ARG, XB exhibits multiple nested recombinations, some with many XB
-descendants).
+pattern is seen when examining XB in the Wide ARG (see below).
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/Pango_XB_nxcld_tight_graph.pdf}
@@ -1162,6 +1100,55 @@ for complex and potentially artefactual relationships around these nodes, and
 is likely to be due to undersampling of the XB outbreak. Investigating examples
 of nested recombinant origins, and identifying which (if any) of the nested
 recombination events may be artefactual, is an important area of future research.
+
+\subsubsection{Wide ARG}
+%% Quick overview of the wide ARG.
+Since the Wide ARG is restricted to data collected prior
+to mid-2021, it contains samples from only three Pango-designated recombinant
+lineages: XA, XB, and XC. Both Nextclade and GISAID designate 44
+samples as XA, while 237 samples are designated
+as XB by Nextclade (231 by GISAID), and 6 as XC by Nextclade (none by GISAID).
+After removing singleton recombinants, XA numbers remain unchanged, but XB is
+reduced to 235 Nextclade-designated samples (229 GISAID) and XC is reduced to 4
+(none in the GISAID designations). We correctly identify that all samples
+designated as XA, XB, or XC by any method have one or more recombination nodes
+in their ancestry.
+
+%% Textual description of the 3 recombinant lineages present in the wide ARG
+As in the Long ARG, all XA samples in the wide ARG trace back to a
+unique originating recombination node. This is the product of a recombination
+between a B.1.177.18 sample (specifically the strain Wales/ALDP-115BF41/2021,
+EPI\_ISL: 1012804) which contributed the majority of the genome from the start
+to a maximum position of 22227, and an unknown (inserted) node with imputed
+Pango lineage B.1.1.7, which contributed the remaining right hand portion. The
+recombination node has five immediate children: four sample leaves (EPI\_ISLs:
+989697, 1019487, 1104468 and 1122630) and a UPGMA-inserted node which is the
+ancestor of all other XA samples in the dataset.
+
+For XB, all samples trace back to an originating node which is the product of a
+recombination between a B.1 sample (specifically the strain
+England/CAMB-7B47D/2020, EPI\_ISL\_433960, which contributed the majority of
+the genome from the start up to a maximum position of 23604bp), and two other
+UPGMA nodes with imputed Pango lineages B.1.627 (up to a maximum position of
+27389bp) and B.1.36.8 (the remaining fragment of the genome). Above, we noted that
+in the long ARG the equivalent recombination node has only 2 parents,
+with no involvement of  B.1.36.8; it is possible that the third parent in
+the wide ARG is artefactual. As in the Long ARG, additional
+non-X-designated samples such as B.1.634 also descend from this recombination,
+and there are also a small number of nested recombination nodes. However, all but
+one of these nested recombinations are unimportant, being ancestral to negligible fractions
+of the Nextclade-designated XB samples. The one exception accounts for about 17\% of the
+designated XB nodes, and involves a recombination between descendants of the
+originating XB recombination. More specifically strain
+USA/TX-HMH-MCoV-43092/2021 (EPI\_ISL 2224652) is inferred to be a recombination
+between an XB grandparent and its XB grandchild. This could well be
+artefactual.
+
+For the few XC-labelled samples, the Wide ARG identifies more than one
+originating recombination node. However, as none of the samples designated as
+XC by Nextclade are designated as XC by GISAID, these patterns could be due to
+mislabelling, and greater number of XC samples would be needed to draw reasonable
+conclusions.
 
 % JK: removing this for now
 
@@ -2049,8 +2036,8 @@ SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK,
 YW, and BJ are supported by the Robertson Foundation.
 
 \section{Data Availability}
-The source code for \texttt{sc2ts} is
-is available on GitHub
+The source code for \texttt{sc2ts} is 
+available on GitHub
 \url{https://github.com/jeromekelleher/sc2ts/}.
 The Jupyter notebooks and code used to produce the results described here are also
 available on GitHub \url{https://github.com/jeromekelleher/sc2ts-paper/}.
@@ -2153,7 +2140,7 @@ VoC categories}
 \centering
 \begin{tabular}{p{1cm}p{1.2cm}p{4.2cm}lll}
 \toprule
-Focal Pango  & Num origins & Num focal samples (further split by origin, *=nested) & Official Pango parents & \textbf{Main clade}: sc2ts parents & \textbf{Main clade}: additional descendants \\
+Focal Pango  & Num origins & Num focal samples (further split by origin, \textdagger=nested) & Official Pango parents & \textbf{Main clade}: sc2ts parents & \textbf{Main clade}: additional descendants \\
 \midrule
 \bfseries XA & 1 & \textbf{5} & B.1.1.7 + B.1.177 & B.1.1.7 + B.1.177.18 &  \\
 \bfseries XF & 1 & \textbf{2} & B.1.617.2* + BA.1* & AY.4 + BA.1 &  \\
@@ -2171,7 +2158,7 @@ Focal Pango  & Num origins & Num focal samples (further split by origin, *=neste
 \bfseries XAC & 1 & \textbf{27} & BA.1* + BA.2* & BA.1.17.2 + BA.2.3 &  \\
 \bfseries XAE & 1 & \textbf{9} & BA.1* + BA.2* & BA.1 + BA.2 &  \\
 \bfseries XAG & 1 & \textbf{17} & BA.1* + BA.2* & BA.1 + BA.2.9 & XAB: 38/48, XAA: 8/8, XU: 1/3, XQ: 2/12 \\
-\bfseries XB & 2 & 57 (\textbf{57}, 1)* & B.1.631 + B.1.634 & B.1 + B.1.627 & B.1.634: 3, B.1.631: 7 \\
+\bfseries XB & 2 & 57 (\textbf{57}, 1)\textdagger & B.1.631 + B.1.634 & B.1 + B.1.627 & B.1.634: 3, B.1.631: 7 \\
 \bfseries XC & 2 & 3 (1, \textbf{2}) & AY.29 + B.1.1.7 & AY.103 + B.1.1.7 &  \\
 \bfseries XD & 2 & 4 (1, \textbf{3}) & B.1.617.2* + BA.1* & AY.4 + BA.1.15 &  \\
 \bfseries XJ & 2 & 2 (1, 1) & BA.1* + BA.2* & No main clade & No main clade \\
@@ -2182,45 +2169,45 @@ Focal Pango  & Num origins & Num focal samples (further split by origin, *=neste
 \bfseries XU & 3 & 3 (1, 1, 1) & BA.1* + BA.2* & No main clade & No main clade \\
 \bfseries XM & 4 & 47 (2, 1, \textbf{40}, 4) & BA.1.1* + BA.2* & BA.1.1 + BA.2 &  \\
 \bfseries XN & 4 & 13 (2, 2, \textbf{7}, 2) & BA.1* + BA.2* & BA.1 + BA.2 &  \\
-\bfseries XAJ & 4 & 5 (1, 1, \textbf{3}, 1)* & BA.2.12.1* + BA.4* & Unknown & BA.5: 1 \\
-\bfseries XE & 5 & 163 (3, \textbf{155}, 1, 3, 2)* & BA.1* + BA.2* & BA.1.17.2 + BA.2 &  \\
+\bfseries XAJ & 4 & 5 (1, 1, \textbf{3}, 1)\textdagger & BA.2.12.1* + BA.4* & Unknown & BA.5: 1 \\
+\bfseries XE & 5 & 163 (3, \textbf{155}, 1, 3, 2)\textdagger & BA.1* + BA.2* & BA.1.17.2 + BA.2 &  \\
 \bfseries XZ & 5 & 66 (1, 1, \textbf{61}, 2, 1) & BA.1* + BA.2* & BA.1 + BA.2.10 & XAH: 10/12, XAD: 1/5 \\
-\bfseries XAB & 8 & 48 (1, \textbf{38}, 1, 2, 2, 2, 18, 2)* & BA.1* + BA.2* & BA.1 + BA.2.9 & XAA: 8/8, XAG: 17/17, XU: 1/3, XQ: 2/12 \\
+\bfseries XAB & 8 & 48 (1, \textbf{38}, 1, 2, 2, 2, 18, 2)\textdagger & BA.1* + BA.2* & BA.1 + BA.2.9 & XAA: 8/8, XAG: 17/17, XU: 1/3, XQ: 2/12 \\
 \bottomrule
 \end{tabular}
 \caption{\label{tab:pango-recombinants}
 Summary of the Pango X-lineages in the long ARG (excluding XP and XAK whose samples are entirely filtered out, see text). In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold).
-Sc2ts inferred parents for the main clade are based on imputed NextClade Pango lineages. Official parents
-are taken from Pango designation alias key (TODO: explain the asterisks). Other inferred samples within the main clade are listed, grouped by NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
+Sc2ts inferred parents for the main clade are based on Nextclade designations, imputed where necessary.
+Official parents are taken from Pango designation alias key (TODO: explain the asterisks). Note that B.1.617.2 is the origin of the Delta VoC, which includes all AY.* classes. Additional descendants within the main clade are summarised giving their NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
 }
 \end{sidewaystable}
 
-\begin{table}
-\small
-\centering
-\begin{tabular}{lp{0.2cm}p{0.8cm}lp{0.9cm}ll}
-\toprule
-Date & $n$ & Causal Pango & Causal strain & Causal \#muts & Sc2ts parents & Breakpoint \\
-\midrule
-2022-03-24 & 2 & XN & Germany/BY-RKI-I-674341/2022 & 3 & Unknown + BA.2 & (2833,9867) \\
-2022-03-29 & 2 & XN & Spain/AB-HGUA-26086757/2022 & 2 & BA.1.1 + BA.2.9 & (2833,4185) \\
-2022-04-23 & 7 & XN & Spain/MD-HRYC-12296321/2022 & 2 & BA.1 + BA.2 & (4185,4322) \\
-2022-05-17 & 2 & XN & USA/TX-HMH-MCoV-97903/2022 & 5 & BA.2 + BA.2 & (22776,22787) \\
-\bottomrule
-\end{tabular}
-\caption{\label{tab:multiple_origins_table}
-Summary of inferred multiple ``origins'' for Nextclade-designated XN samples after filtering
-(Official: BA.1* \& BA.2*, breakpoint between 2834 \& 4183, defined from UK strains, earliest
-on 2022-02-01;  see \protect\url{https://github.com/cov-lineages/pango-designation/issues/480}).
-The 13 XN samples are grouped into rows based on their most recent ancestral recombination node;
-all the descendant samples of the four recombination nodes are designated XN by Nextclade.
-Details are also provided for the ``causal strain'' that led to the recombination
-being proposed by \texttt{sc2ts}. When undersampling causes three or more mutations to lie
-immediately above the causal strain, \texttt{sc2ts} may mistakenly propose multiple
-independent origins rather than one. Note that a large number of XN samples were previously
-removed by filtering.
-}
-\end{table}
+% \begin{table}
+% \small
+% \centering
+% \begin{tabular}{lp{0.2cm}p{0.8cm}lp{0.9cm}ll}
+% \toprule
+% Date & $n$ & Causal Pango & Causal strain & Causal \#muts & Sc2ts parents & Breakpoint \\
+% \midrule
+% 2022-03-24 & 2 & XN & Germany/BY-RKI-I-674341/2022 & 3 & Unknown + BA.2 & (2833,9867) \\
+% 2022-03-29 & 2 & XN & Spain/AB-HGUA-26086757/2022 & 2 & BA.1.1 + BA.2.9 & (2833,4185) \\
+% 2022-04-23 & 7 & XN & Spain/MD-HRYC-12296321/2022 & 2 & BA.1 + BA.2 & (4185,4322) \\
+% 2022-05-17 & 2 & XN & USA/TX-HMH-MCoV-97903/2022 & 5 & BA.2 + BA.2 & (22776,22787) \\
+% \bottomrule
+% \end{tabular}
+% \caption{\label{tab:multiple_origins_table}
+% Summary of inferred multiple ``origins'' for Nextclade-designated XN samples after filtering
+% (Official: BA.1* \& BA.2*, breakpoint between 2834 \& 4183, defined from UK strains, earliest
+% on 2022-02-01;  see \protect\url{https://github.com/cov-lineages/pango-designation/issues/480}).
+% The 13 XN samples are grouped into rows based on their most recent ancestral recombination node;
+% all the descendant samples of the four recombination nodes are designated XN by Nextclade.
+% Details are also provided for the ``causal strain'' that led to the recombination
+% being proposed by \texttt{sc2ts}. When undersampling causes three or more mutations to lie
+% immediately above the causal strain, \texttt{sc2ts} may mistakenly propose multiple
+% independent origins rather than one. Note that a large number of XN samples were previously
+% removed by filtering.
+% }
+% \end{table}
 
 
 \begin{figure} \centering
