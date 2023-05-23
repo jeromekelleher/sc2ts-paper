@@ -91,7 +91,7 @@ together mutations carried by different lineages, recombination plays an
 important role in generating genomic diversity, with recombinant lineages
 associated with adaptation to new host species and with the production of more
 immune evasive variants~\citep{Graham2010-xe,De_Klerk2022-tt}.
-% Early in the SARS-CoV-2 pandemic there was insufficient 
+% Early in the SARS-CoV-2 pandemic there was insufficient
 % genetic variation for meaningful recombination.
 Early on in the COVID-19 pandemic, the levels of genetic diversity
 were too low for the emergence of distinctive recombinant strains.
@@ -112,8 +112,8 @@ virus.
 
 % Recombination is hard to detect
 Detecting recombination in SARS-CoV-2 is difficult, and identifying new
-recombinant strains is a time-consuming, manual process, subject 
-to biases [FIXME: have we a citation for how tedious this is? Also what 
+recombinant strains is a time-consuming, manual process, subject
+to biases [FIXME: have we a citation for how tedious this is? Also what
 are the biases?]
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
 combine specific subsets of characteristic mutations from different lineages
@@ -134,7 +134,7 @@ RIPPLES finds candidate recombinants by using an existing phylogeny
 (built assuming no recombination), and finding potential recombinants
 by  scanning for branches containing many mutations.
 It then determines if these candidates would be better explained by
-recombination by exhaustively breaking each 
+recombination by exhaustively breaking each
 sequence into segments and attempting to find more parsimonious placements for
 each segment on the phylogeny. If such placements are found, the sequence is
 identified as a putative recombinant. Although it enables rapid searches for
@@ -173,7 +173,7 @@ phylogenies. The ``succinct tree sequence'' is an ARG data structure
 which has led to significant computational advances across a range
 of
 applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,Ralph2020-efficiently,
-Wohns2022-th}, and the supporting \texttt{tskit} software library 
+Wohns2022-th}, and the supporting \texttt{tskit} software library
 is now widely used in population genetic applications.
 The methods in \texttt{tskit} have been developed to support millions of
 whole human genomes~\citep{Kelleher2019-ba}, and so it is particularly well suited
@@ -191,7 +191,7 @@ Building on the open-source \texttt{tskit} library, the method infers
 a joint model of mutation, genetic inheritance and recombination, which
 can be conveniently and efficiently analysed using standard data science
 tools. Inference is based on incrementally adding batches of sequences
-based on their collection dates, and proceeds in three phases. 
+based on their collection dates, and proceeds in three phases.
 First, likely attachment nodes in the current ARG
 (or paths, if inferred to be a recombinant) are
 chosen for each of the samples in the daily batch using the
@@ -227,8 +227,8 @@ of the \texttt{tskit} ecosystem to pandemic-scale SARS-CoV-2 data.
 \subsection{Inferred ARGs}
 The goals of this preliminary study are to illustrate the utility of
 \texttt{sc2ts}, and to closely study the properties of the
-inferred ARGs to inform subsequent development. 
-We work with a 
+inferred ARGs to inform subsequent development.
+We work with a
 representative subset of the available data, limited to
 inferences that can be performed on a single server in
 a few weeks (see below for further details on timings and
@@ -326,7 +326,7 @@ well represented by it. See Section~\ref{sec:mutation_spectrum}
 for more analysis of the patterns of inferred mutations.
 Recombination plays a relatively minor role, with $<0.3\%$
 of nodes in the ARGs representing inferred recombination events.
-Of these recombination nodes, the majority are ancestral 
+Of these recombination nodes, the majority are ancestral
 to only one sample (Wide ARG: FIXME\%, Long ARG: FIXME \%).
 We analyse signals of recombination in Sections~\ref{sec:jackson_recombs},
 \ref{sec:breakpoint_intervals}, \ref{sec:parent_divergence},
@@ -803,7 +803,7 @@ and Figure~\ref{fig:recomb_mrcas}B plots a subset of potentially more
 reliable breakpoints that occur in nodes
 ancestral to 10 or more samples (note that this is one of the official criteria
 used when proposing Pango recombinant lineages [CITE]).
-% that we deem to be more reliable by the measure of ``HMM consistency''. 
+% that we deem to be more reliable by the measure of ``HMM consistency''.
 % We define an  in that when we compare the LS HMM results when run from
 % 5' to 3' versus 3' to 5', it gives the
 % same mutations patterns and sequence-identical 5' parents as when run 3' to 5'
@@ -874,27 +874,28 @@ recombination probabilities among lineages.
 
 In this section we focus on the detailed genealogy of samples that have been
 previously identified as recombinants, i.e. given a Pango designation that
-starts with an ``X''. As the Wide ARG was only sampled until mid 2021,
-the majority of these Pango X lineages are found only in the Long ARG.
+starts with an ``X''. We primarily focus on the Long ARG in this section
+since it contains many more recombinants, briefly summarising the status
+of Pango X lineages for the Wide ARG in Section~\ref{sec-pango_x_wide_arg}.
 
-\subsubsection{Long ARG}
-%% high level summary of the pango recombinant lineages and samples in the Long ARG
-The Long ARG (subsampled to mid-2022) contains 33
-Nextclade-designated Pango recombinant lineages comprising 749 samples
-(711 when singleton recombinants are removed). In
-contrast, GISAID designates 38 Pango recombinant lineages in the long ARG,
-comprising only 515 samples. In the analyses below, we mainly focus on the
-larger number of Nextclade designated samples.
+When using Nextclade Pango lineage designations, the
+Long ARG contains 749 samples from 33 recombinant lineages; this
+reduces toe 711 and XX when singleton recombinants (i.e., recombination
+nodes subtending only one sample) are removed.
+In contrast, when using GISAID Pango lineage assignments (for the same
+data) we have 515 samples from 38 Pango recombinant lineages,
+indicating that there is substantial uncertainty in the assignment of
+Pango X lineages to samples.
 
-Of the 749 Nextclade-designated recombinants, we infer that all but two descend
-from a recombination node. These two samples are designated XP, and a likely
+Of the 749 Nextclade-designated recombinant samples, all but two descend
+from a recombination node in the Long ARG.
+These two samples are designated XP, and a likely
 explanation for the absence of a corresponding recombination event in the long ARG
 is that the characteristic multibase deletion for XP
 (\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
-during preprocessing. An improved masking pipeline is an important avenue for
-future development (see the Discussion).
-
-38 of the remaining X designated samples are singleton recombinants, descending
+during preprocessing (See~\ref{sec:data_preprocessing} for details and potential
+improvements). 38 of the remaining X designated samples are singleton recombinants,
+descending
 from recombination nodes that are ancestral only to that sample (10 are XZ; 6
 are XE;  3 each from XN and XK; 2 each from XC, XS, XV, XQ and XAB; and 1
 sample from each of XB, XM, XJ, XAF, XAH and XAJ). Such samples are likely to
@@ -902,67 +903,21 @@ be enriched for sequencing errors and lineage designation artefacts, and so we
 exclude them from further analysis in this section.
 
 The most recent recombination node for 79 samples (XN: 53, XZ: 16, XAJ: 6, XE:
-1, XAD: 1, XAH: 1, XAK: 1) is the same. This node, caused by strain Denmark/DCGC-281594/2021,
-is ancestral to more than 127K samples, most of which are not designated as
-recombinants by any other method. It is highly likely to be a spuriously inferred recombination event.
-Understanding the origin of this and other similar nodes is an important
-direction for future work (see Discussion). For simplicity, we exclude these
-samples from further analyses in this section.
+1, XAD: 1, XAH: 1, XAK: 1) is the same. This node, caused by strain
+Denmark/DCGC-281594/2021, is ancestral to more than 127K samples,
+and is highly likely to be a spuriously inferred recombination event.
+Understanding the origin of this
+and other similar high-impact, but likely spurious recombination
+events is an important aspect of future work.
+For simplicity, we exclude these samples from further analyses in
+this section.
 
 The remaining remaining 630 Pango recombinant samples trace back to 50 different
-most recent recombination nodes, representing 31
+most recent recombination nodes, corresponding to 31
 Nextclade-designated Pango lineages. These are summarised
 in Supplementary Table~\ref{tab:pango-recombinants}, and fall
 into three classes: single origin, multiple origin,
-and multiple nested origins.
-
-% The sequences of 28 Pango recombinants trace back
-% to some recombinant node(s); however, the sequences of the five Pango
-% % jk: really? I thought it was just XP that wasn't inferred to be a
-% % recombinant.
-% recombinants XP, XU, XAA, XAG, and XAK do not.
-% A likely explanation for the XP
-% recombinant sequences not having a recombinant origin in the long ARG is that
-% its characteristic multibase deletion
-% (\url{https://github.com/cov-lineages/pango-designation/issues/481}) was masked
-% during preprocessing and therefore was not incorporated into the HMM.
-% % Eh?
-% Upon tracing the origin of XAG through the ARG, XAG might have been caused by
-% incorrect imputation of its parent nodes(?). XAK likely does not appear to have
-% a recombinant origin because of random subsampling, but it may with a more
-% complete tree.
-
-% [FIXME this isn't quite right - not all the sequences for a given pango
-% lineage trace back to the same recombination event, so won't have the same
-% intervals.]
-% The mosaic genome structure of all the 32 Pango recombinant lineages is concordant with
-% the structure determined by the Pango Lineage Designation Committee
-% (Supplementary Table 3). For example, the genome of XD (also known as
-% ``Deltacron'') is inferred to consist of B.1.617.2 (Delta) on the 5’ end, BA.1.17
-% (Omicron) in the middle, and B.1.617.2 (Delta) on the 3’ end.
-
-% For the long ARG, we examine the lineages in increasing complexity of the
-% inferred evolutionary relationships between samples assigned to Pango
-% X lineages.
-
-% - Recombinant Pango lineages
-%     How well do we recover recombinant Pango lineages? Work through the
-% examples in increasing compexity, using headings to split things up if
-% necessary. (i.e., Single origin, Multiple origin, Interellated lineages). We'd
-% need to be clear about what these terms mean, of course. We could include
-% lineage graphs for all of these examples?
-
-% OLD TEXT
-
-% The sequences of 14 Pango recombinants trace back to a single recombination
-% node. The sequences of the remaining 18 Pango recombinants trace back to
-% multiple recombination nodes, however. This may be a result of undersampling in
-% the long ARG, which was built by randomly subsampling at most 1,000 sequences
-% from each daily batch. Having extra recombination nodes in the long ARG
-% appeared to be a more parsimonious explanation for the 19 Pango recombinants
-% than having a single recombination node with many immediately ancestral
-% mutations (including recurrent mutations and reversions), despite that the
-% recombinants may indeed trace to a single origin.
+and multiple nested origins, which we discuss in the following sections.
 
 \subsubsection{Single origin}
 In the absence of genealogical information, a reasonable initial assumption is
@@ -983,7 +938,8 @@ fall into this category (Supplementary Table~\ref{tab:pango-recombinants})
 Nextclade Pango X lineages. (A) Subgraph for XA in the long ARG: all five samples designated
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
 sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
-Pango designation; smaller symbols are non-sample nodes inserted by sc2ts, with
+Pango designation; smaller symbols are non-sample nodes inserted by
+\texttt{sc2ts}, with
 imputed Pango status. Genomic regions inherited by the recombination node are shown
 corresponding to the maximum inferred breakpoint position from the HMM process.
 (B) Equivalent plot for the 17 XAG samples in the long ARG, with abbreviated labelling.
@@ -992,7 +948,7 @@ corresponding to the maximum inferred breakpoint position from the HMM process.
 
 One of the simplest examples is the case of XA, corresponding to group A
 of \citet{Jackson2021-ik} as discussed above. Figure~\ref{fig:pango-simple-origin-graph}A
-shows the exact relationships inferred by \texttt{sc2ts} as a subgraph of the Long ARG. 
+shows the exact relationships inferred by \texttt{sc2ts} as a subgraph of the Long ARG.
 Here, paths have been traced from all
 Nextclade-identified XA samples (in red) to the closest other sample nodes in the ARG.
 Sample nodes are plotted as larger circles, but the subgraph also includes intermediate,
@@ -1004,8 +960,8 @@ that the subgraph is not extended to show additional descendants of recombinant 
 It is clear from the XA subgraph that all the samples labelled XA by Nextclade trace to a
 single originating recombination node, whose genome is a composite of a B.1.177.18 lineage
 on the left of the genome and a B.1.1.7 lineage on the right. In the subgraph we show
-the maximum genomic position for the recombination breakpoint, here at 22227 basepairs
-(corresponding to a breakpoint strictly less than 22228, see Table~\ref{tab:jackson})
+the maximum genomic position for the recombination breakpoint, here at 22,227 basepairs
+(corresponding to a breakpoint strictly less than 22,228, see Table~\ref{tab:jackson})
 
 %% Discuss panel B where XAG shares a common recombinant origin with samples from several other X lineages
 
@@ -1108,6 +1064,7 @@ of nested recombinant origins, and identifying which (if any) of the nested
 recombination events may be artefactual, is an important area of future research.
 
 \subsubsection{Wide ARG}
+\label{sec-pango_x_wide_arg}.
 %% Quick overview of the wide ARG.
 Since the Wide ARG is restricted to data collected prior
 to mid-2021, it contains samples from only three Pango-designated recombinant
@@ -2065,7 +2022,7 @@ SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK,
 YW, and BJ are supported by the Robertson Foundation.
 
 \section{Data Availability}
-The source code for \texttt{sc2ts} is 
+The source code for \texttt{sc2ts} is
 available on GitHub
 \url{https://github.com/jeromekelleher/sc2ts/}.
 The Jupyter notebooks and code used to produce the results described here are also
