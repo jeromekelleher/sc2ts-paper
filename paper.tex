@@ -84,23 +84,23 @@ further investment and development.
 % Recombination is an important force in SARS-CoV-2, recombinants
 % have arisen and they have spread to high frequencies
 Recombination via template switching is a common feature
-in the evolution of coronaviruses~\citep{Graham2010-xe,De_Klerk2022-tt},
+of the evolution of coronaviruses~\citep{Graham2010-xe,De_Klerk2022-tt},
 including SARS-CoV-2
 \citep{VanInsberghe2021-eu,Jackson2021-ik,Ignatieva2021-rg}. By bringing
 together mutations carried by different lineages, recombination plays an
-important role in generating genomic diversity, with recombinant lineages
+important role in generating genetic diversity, with recombinant lineages
 associated with adaptation to new host species and with the production of more
 immune evasive variants~\citep{Graham2010-xe,De_Klerk2022-tt}.
 % Early in the SARS-CoV-2 pandemic there was insufficient
 % genetic variation for meaningful recombination.
 Early on in the COVID-19 pandemic, the levels of genetic diversity
-were too low for the emergence of distinctive recombinant strains.
+were too low to precipitate the emergence of distinctive recombinant strains.
 By late 2020, however, the appearance and
 spread of variants of concern (VoC), designated into classes such as Alpha and
 Delta which harboured multiple characteristic mutations,
-created the conditions required for recombination to occur
-and recombinant strains with onward transmission were detected at
-low frequency~\citep{Jackson2021-ik}.
+created the conditions required for recombination to occur,
+and recombinant strains with onward transmission became detectable at
+low frequencies~\citep{Jackson2021-ik}.
 More recently, the high prevalence of Omicron,
 with multiple co-circulating deeply divergent lineages (BA.1 to BA.5), has
 accelerated the rate of coinfection and the potential for
@@ -148,14 +148,14 @@ untenable; for example, more than half of the sequences sampled in February 2023
 are from XBB and its descendants~\citep{Chen2022-pz}. This also means that
 future evolution of SARS-CoV-2 is likely to involve multiple sequential
 recombination events on top of existing recombinant lineages, creating a highly
-reticulated ancestry.
+reticulated genealogy.
 
 % PARA 3: but you can't use a phylogeny when there's recomb. Need a joint
 % model of mutation and recomb. ARGs, tskit, forward refs to ARG section for
 % details.
 
 It is well known that recombination distorts phylogenies \citep{Schierup2000-fg}
-and affects the results of downstream analyses, e.g., inference of
+and affects the results of downstream analyses, such as inference of
 selection~\citep{Anisimova2003-vr}. Standard phylogenetic methods do
 not account for recombination
 \citep[e.g.][]{Ronquist2012-zw,Minh2020-lr,Guindon2003-zd}, and there is
@@ -174,7 +174,7 @@ which has led to significant computational advances across a range
 of
 applications~\citep{Kelleher2016-wk,Kelleher2018-xc,Kelleher2019-ba,Ralph2020-efficiently,
 Wohns2022-th}, and the supporting \texttt{tskit} software library
-is now widely used in population genetic applications.
+is now widely used in population genetics applications.
 The methods in \texttt{tskit} have been developed to support millions of
 whole human genomes~\citep{Kelleher2019-ba}, and so it is particularly well suited
 to representing large SARS-CoV-2 genealogies,
@@ -192,16 +192,18 @@ a joint model of mutation, genetic inheritance and recombination, which
 can be conveniently and efficiently analysed using standard data science
 tools. Inference is based on incrementally adding batches of sequences
 based on their collection dates, and proceeds in three phases.
-First, likely attachment nodes in the current ARG
-(or paths, if inferred to be a recombinant) are
-chosen for each of the samples in the daily batch using the
-Li and Stephens model (Section~\ref{sec:ls}). Then, since many samples
-in a daily batch can share an attachment path,
+% First, likely attachment nodes in the current ARG
+% (or paths, if inferred to be a recombinant) are
+First, possible paths connecting each sample to the current ARG
+are inferred (allowing for recombination) using the
+% chosen for each of the samples in the daily batch using the
+Li and Stephens (LS) model (Section~\ref{sec:ls}). Then, since many samples
+in the batch can share an attachment path,
 we infer phylogenetic trees for each of the clusters separately using standard
 methods (Section~\ref{sec:sample-cluster-tree-inference}).
 Finally, we attach the trees for these sample-clusters to the current
-ARG, and apply some parsimony heuristics to address issues
-introduced by the inherent greediness of the strategy
+ARG, and apply some parsimony-based heuristics to address issues
+introduced by the inherent greediness of this strategy
 (Section~\ref{sec:parsimony-heuristics}).
 Using the current preliminary version of \texttt{sc2ts}, we infer two
 large ARGs (1,265,685 and 657,239 samples, respectively), and study
@@ -226,7 +228,7 @@ of the \texttt{tskit} ecosystem to pandemic-scale SARS-CoV-2 data.
 \section{Results}
 \subsection{Inferred ARGs}
 The goals of this preliminary study are to illustrate the utility of
-\texttt{sc2ts}, and to closely study the properties of the
+\texttt{sc2ts}, and to investigate the properties of the
 inferred ARGs to inform subsequent development.
 We work with a
 representative subset of the available data, limited to
@@ -342,7 +344,7 @@ which contains complete genomes (with imputed missing data)
 for around 1.2 million samples, along with extensive sample
 and debugging metadata, requires only 58MB of space (compressed
 using the \texttt{tszip} utility). The majority of this
-space is used by metadata, which when discarded results in
+space is used by the metadata, which when discarded results in
 an encoding that requires an average of only 8.29 bytes per
 SARS-CoV-2 genome stored.
 Loading these ARGs takes less than a second, and they can be interactively
@@ -367,14 +369,15 @@ enable inferences at the full pandemic scale
 \subsection{Backbone phylogeny}
 \label{sec:backbone_phylogeny}
 %% The ARG is mostly tree-like
-Compared to organisms like humans which recombine every generation,
-in SARS-CoV2 recombination is rare, with recombination nodes accounting
+Compared to organisms like humans which recombine in every generation,
+in SARS-CoV-2 recombination is relatively rare, with recombination nodes accounting
 for $<$0.3\% of the inferred ancestry (Table~\ref{tab:args}). As a result,
 relationships between strains can often be represented by a
 single phylogenetic tree, particularly when looking at
 a subset of sampled genomes, e.g.\ restricted by time or limited to close
 relatives. We expect ARGs to be particularly tree-like
-early in the pandemic, when co-infection was less likely.
+early in the pandemic, when co-infection was less likely and divergence between
+lineages relatively low.
 
 \begin{figure} \centering
 \includegraphics[width=\textwidth]{figures/cophylogeny_wide.pdf}
@@ -393,7 +396,7 @@ The tanglegram was generated using the Neighbor-Net algorithm
 cophylogeny for the Long ARG.}
 \end{figure}
 
-A classic tree-based summary of SARS-CoV2 ancestry is provided
+A classic tree-based summary of SARS-CoV-2 ancestry is provided
 by the Nextstrain project \citep{Hadfield2018-ef}. The trees
 available from Nextstrain are based on small subsamples of the
 dataset, and early in the pandemic tend to be restricted to
@@ -441,7 +444,7 @@ particularly in early 2020 when sampling density was much lower than
 later in the pandemic.
 Secondly, there are non-identical sample partitions
 near the tips (e.g., in the Alpha clade).
-Finally, and most noticeably, the branch lengths differ.
+Finally, and most noticeably, some branch lengths differ substantially.
 As discussed in Section~\ref{sec:node_dating}, the dating of nodes
 other than samples in \texttt{sc2ts} is currently quite crude, and
 it is likely that branches not ``anchored'' by samples will be
@@ -473,7 +476,7 @@ the topological representation of genetic inheritance.
 This has many
 advantages, for example allowing us to compute statistics of the observed
 sequences efficiently~\citep{Kelleher2016-wk,Ralph2020-efficiently} and
-to provide high-levels of data compression~\citep{Kelleher2019-ba}.
+to provide high levels of data compression~\citep{Kelleher2019-ba}.
 The same idea has recently been used to represent
 SARS-CoV-2 data in UShER's ``mutation annotated tree''
 format~\citep{Turakhia2021-ur}.
@@ -549,10 +552,10 @@ over 350,000 genomes sampled globally from December 24, 2019, to January 12,
 2021, and classified the mutations occurring along the phylogeny.
 We categorised all single nucleotide
 mutations in the Wide ARG by type (defined by the inherited and derived states),
-excluded mutations inherited by only a single sample (which are
-enriched for sequencing errors and artefacts).
+excluding mutations inherited by only a single sample (which are
+more likely to be sequencing errors).
 Similarly, we took the data for single nucleotide mutations from
-\citep[][\url{https://github.com/ju-lab/SC2_evol_signature}]{Yi2021-sc}, excluded
+\citet[][\url{https://github.com/ju-lab/SC2_evol_signature}]{Yi2021-sc}, excluding
 mutations occurring along terminal branches, and tallied them up by type.
 Figure~\ref{fig:mutational_spectra}B shows that the mutational spectrum from the
 Wide ARG (based on 448,825 mutations) matches that reported by \citet[based on
@@ -638,14 +641,14 @@ node forms a monophyletic clade of these 44 samples.
 Table~\ref{tab:jackson_supplement} shows the details for each of the
 16 sequences individually, and showing generally a strong concordance
 in mosaic structure and parent lineages
-(including CAMC-CB7AB3 which is inferred to have two breakpoints under both
+(including sample CAMC-CB7AB3, which is inferred to have two breakpoints under both
 methods).
 
 The Long ARG contains 5 of the sequences: two each from groups A and B
-and QEUH-1067DEF. These cluster under three recombination nodes, as expected,
+and sample QEUH-1067DEF. These cluster under three recombination nodes, as expected,
 and have identical breakpoint intervals and parental lineage assignments
 to those of Wide ARG.
-The recombination nodes for Group B and QEUH-1067DEF are ancestral only
+The recombination nodes for Group B and sample QEUH-1067DEF are ancestral only
 to the sequences involved.
 The recombination node for group A forms a monophyletic clade of all
 5 XA samples present in the Long ARG
@@ -880,7 +883,7 @@ of Pango X lineages for the Wide ARG in Section~\ref{sec-pango_x_wide_arg}.
 
 When using Nextclade Pango lineage designations, the
 Long ARG contains 749 samples from 33 recombinant lineages; this
-reduces toe 711 and XX when singleton recombinants (i.e., recombination
+reduces to 711 and FIXMEXX when singleton recombinants (i.e., recombination
 nodes subtending only one sample) are removed.
 In contrast, when using GISAID Pango lineage assignments (for the same
 data) we have 515 samples from 38 Pango recombinant lineages,
