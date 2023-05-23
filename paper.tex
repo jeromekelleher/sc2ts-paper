@@ -655,8 +655,8 @@ It is rarely possible to be precise about the position on the genome at which
 a recombinant sequence switches from inheriting from one parent to another.
 Even if we observe the recombinant sequence before signficant
 divergence occurs (during onward transmission), if the two parent sequences
-are similar there is no way to 
-% distinguish them. 
+are similar there is no way to
+% distinguish them.
 accurately specify the breakpoint.
 Here we define the
 interval around a particular breakpoint as the genome coordinates over which the
@@ -695,11 +695,11 @@ inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
 Emphasising that further work is required to filter out spuriously inferred
 recombination events and improve the accuracy of the inferred breakpoint
-intervals, we can draw two preliminary conclusions from 
+intervals, we can draw two preliminary conclusions from
 Figure~\ref{fig:breakpoint-distribution}.
 % While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
 % requires further study, a few key properties stand out.[TODO, write this
-% better. ] 
+% better. ]
 Firstly, in several cases there is a clear relationship between
 gene boundaries and the breakpoint intervals. For example, ORF7a and OR7b
 show sharp differences in the number of intersecting intervals within
@@ -712,7 +712,7 @@ gene than other regions, in agreement with the results of
 
 It is important to note that the precise endpoints of intervals can be
 somewhat arbitrary, since they are defined by exact comparisons
-of a recombinant's parents. 
+of a recombinant's parents.
 % The presence of problematic sites that are enriched
 % for errors will therefore tend to artificially truncate breakpoint intervals
 % at these sites.
@@ -746,12 +746,12 @@ homopolymeric region may be prone to sequencing errors
 and should be included in the list of ``problematic sites'' that
 are excluded from analysis (Section~\ref{sec:data_preprocessing}).
 On the other hand, 58 of the breakpoint intervals have endpoints
-within one base of site 27,972, which has undergone 770 mutation events 
+within one base of site 27,972, which has undergone 770 mutation events
 (including 425 C$>$T, 314 T$>$C). The C$>$T mutation has the effect of
 truncating ORF8, and it has been posited that the truncation is neutral
-or advantageous for transmission, and disadvantageous within-host 
-\citep{Jungreis2021-dh}, suggesting that the high rate of recurrent mutation 
-at this site is due to selection. 
+or advantageous for transmission, and disadvantageous within-host
+\citep{Jungreis2021-dh}, suggesting that the high rate of recurrent mutation
+at this site is due to selection.
 
 % JK Dropping this for now:
 % We further consider the breakpoint intervals within the context of
@@ -1185,23 +1185,30 @@ proliferation of many variants, with more than 600 Pango-designated lineages
 circulating globally in the last three months (January to March, 2023;
 https://gisaid.org/; access on March 27, 2023). High prevalence also brings a
 higher risk of coinfection, increasing opportunities for new phenotypically
-distinct recombinants to emerge and spread.
-[Handling recombination properly as an ongoing process is vital. Our results
-here show that recombination can be incorporated into a cohesive joint
-model of viral evolution. We basically recapitulate what is known, plus
-there's a whole bunch of other stuff that we haven't explored because
-we're in the validation stage.]
+distinct recombinants to emerge and spread. Phylogenetic approaches have
+been central to pandemic responses thus far [TODO: Examples and citations].
+However, as recombinant lineages are now endemic and it is clear that
+recombination is a major feature of ongoing SARS-CoV-2 evolution,
+it is imperative that these methods are updated to incorporate the
+effects of recombination, and future public health interventions are
+not based on incomplete and potentially biased evolutionary models.
+Here we have introduced the first method to infer an evolutionary
+history that jointly models genetic inheritance, mutation and
+recombination at pandemic scale, and illustrated how this single
+structure accurately captures results derived by many different means.
 
 % PARA 2. Here are things that could be improved in the short term. Here's a
 % few more, longer term ideas.
 Nonetheless, \texttt{sc2ts} is currently ``alpha'' quality software, and
-there are some relatively straightforward changes that could be made to
-improve inference quality. Firstly, the pipeline used to identify and
+we caution against overinterpreting current results. As we have sought
+to illustrate throughout, there are some clear areas for improvement
+and some relatively straightforward changes that could be made to
+improve inference. The pipeline used to identify and
 mask erroneous sites in the input alignments is simplistic, and, among
 other issues, results in multi-base indels being marked as missing data
 (Section~\ref{sec:data_preprocessing}). A more sophisticated
 approach~\citep[e.g.][]{Aksamentov2021-hj} would
-likely yield significant improvements, and reduce the effect sites with
+likely yield significant improvements, and reduce the effect of sites with
 artefactually high levels of mutation (e.g., site 28271;
 Section~\ref{sec:breakpoint_intervals}).
 Using a pre-existing tree built using state-of-the-art phylogenetics methods
@@ -1248,13 +1255,17 @@ Viterbi algorithm, but there are numerous ways in which the HMM machinery
 could be extended in order to explore the set of possible paths, or to
 quantify the uncertainty around it. Similarly, the current parameterisation
 of the HMM with a single mismatch ratio is simplistic, and it would
-be straightforward to condition on per-site mutation rates. (Per nucleotide
-state transition, is also possible, with some additional development.)
+be straightforward to condition on per-site mutation rates (per nucleotide
+state transition, is also possible, with some additional development).
 Recombination breakpoints for the ARG are currently inserted at the
 right-most extent of the possible interval
 (Section~\ref{sec:breakpoint_intervals}). More likely locations for the
 breakpoint could be chosen within the interval, for example based
-on the sequence motifs.
+on sequence motifs [CITATION?].
+% Hint: there's probably a bunch of other stuff you could do with this
+It is likely that the basic machinery of finding matches and quantifying
+the undertainty around them under a well-defined statistic model
+in large ARGs would have many applications besides those explored here.
 
 % PARA 3. Handling the data is hard, so methods for making this easier
 % are important. Classical phylo approaches don't scale to millions.
@@ -1267,11 +1278,23 @@ has presented classical phylogenetics methods and software with major difficulti
 Standard interchange formats such as FASTA, Newick and VCF were simply not designed
 to deal with millions of samples, and their limitations have come sharply
 into focus~\citep{Turakhia2021-ur,de2023maximum}.
-[Finish this up with a discussion of how easy it is to do stuff with our
-ARGS, how awesome tskit is, and how little code there is in sc2ts.
-Being able to quickly develop new methods by putting together high
-performance, high quality components is an essential element of
-preparedness for futture pandemics.]
+Replacements that can scale to millions of genomes have had to be developed
+at speed, usually focusing on compiled programming languages to maximise
+performance. Here, however, we have developed a new method based on
+an existing data structure and library infrastructure, designed
+from the beginning to scale to millions of
+samples~\citep{Kelleher2016-wk,Kelleher2019-ba}.
+The \texttt{sc2ts} package is written entirely in Python,
+and by reusing existing high-performance components can infer
+recombinant viral ancestry at unprecedented scale.
+Similarly, all of the analyses shown here are written in Python,
+using the \texttt{tskit} API, mostly running in a few seconds
+on standard laptop computers (see the Code Availability
+section for details of the corresponding Jupyter notebooks).
+The ability to quickly and easily develop new methods and
+analyses, at scale, by using existing high-quality software
+components and data formats is an essential element of future
+pandemic preparedness.
 
 % The COVID-19 pandemic continues to be a global emergency,
 % with persistent high levels of infection. This high prevalence has allowed the
