@@ -1739,7 +1739,7 @@ optimum, under the LS model.
 We can solve this massive optimisation problem exactly because the ARG-based
 implementation of the LS HMM used in \texttt{tsinfer} scales approximately
 logarithmically with reference panel size (as opposed to linearly,
-for standard matrix-based approaches)~\citep{Kelleher2019-ba}.
+for standard matrix-based approaches).
 This efficient HMM algorithm is the main reason for \texttt{tsinfer}'s
 scalability, and here allows us to find closely matching
 sequences and recombination paths among millions of SARS-CoV-2
@@ -1758,7 +1758,7 @@ fruitful avenue for future work.
 % Could talk about running the HMM in reverse here, but is there much
 % point? It's confusing the main point which is that there lots of
 % ways in which this could be done properly.
-Examples include a stochastic traceback
+Examples include stochastic traceback~\citep[e.g.,][]{rasmussen2014genome}
 through the collection of paths at the global optimum to glean further
 information about our the likelihood surface, and determine whether there are
 downstream implications for our conclusions. Here, we have considered the
@@ -1961,19 +1961,22 @@ and the chosen parent nodes equally (in the case of
 trees inferred from daily sample clusters,
 Section~\ref{sec:sample-cluster-tree-inference}) or by adding arbitrary
 small values when creating new nodes using parsimony rules
-(Section~\ref{sec:parsimony-heuristics}). Substantial improvements could
-likely be made using simple node dating methods.
+(Section~\ref{sec:parsimony-heuristics}). Since the ARGs here are
+very treelike, with recombination nodes consituting a tiny fraction
+of the overall topology (Table~\ref{tab:args}), existing methods
+\cite[e.g.,][]{to2016fast} could likely be adapted to accurately
+date the vast majority of the nodes.
 
 \subsection{Data preprocessing}
 \label{sec:data_preprocessing}
 The findings of this study are
 based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
-up to Aug 22, 2022 and accessible at
-\url{https://doi.org/10.55876/gis8.230329cd} (Supplementary Table 1).
+up to 2022-08-22 and accessible at
+% Do we need to upload a separate Table or is this DOI sufficient?
+\url{https://doi.org/10.55876/gis8.230329cd}.
 We removed sequences
-if they (1) had ambiguous collection dates;
-(2) were collected before January 1, 2020 or after June 30, 2022; or
-(3) were isolated from a non-human host.
+if they had ambiguous collection dates, were collected before 2020-01-01
+or were isolated from a non-human host.
 We aligned sequences to the Wuhan-Hu-1/2019 reference sequence
 (GenBank: MN908947.3) using Nextclade v2.3.0~\citep{Aksamentov2021-hj} (dataset tag
 2022-07-26T12:00:00Z). We also excluded sequences if they had a
@@ -1986,7 +1989,7 @@ not A, C, G, T, or a gap) in the pairwise genome alignments as missing data
 (N). Problematic bases in the alignments, which had two or more Ns or
 gaps within a distance of seven bases, are masked as missing data following
 the approach used in the ``faToVCF'' tool used by
-UShER~\citep{Turakhia2022-it}.
+UShER~\citep{Turakhia2021-ur}.
 Sites that are masked by this process are
 treated as missing data by the LS HMM (Section~\ref{sec:ls}).
 In addition, we exclude 481 problematic sites flagged as prone to
@@ -2009,18 +2012,19 @@ before Alpha appeared in the United Kingdom (USA/MN-Mayo-1563/2020),
 produced significant topological distortions in
 inferred ARGs.
 Hence, to exclude such potential ``time travellers'' we employ two filters.
-The first is to remove any sequence with a collection date that pre-dates the
-time to the most recent common ancestor (tMRCA) of its corresponding clade.
-We obtained the tMRCA for each clade from a Nextstrain GISAID reference tree
-(downloaded on August 22, 2022), and we used the lower bound of the 95\%
-confidence interval of each clade as the minimum date cut-off.
-This removed NN [Katherine can you fill in please?] sequences.
 
-This filter removes the most egregious time travellers, but many still
-remain. We thus employed a second filter which is a simple threshold on
+The first filter is a simple threshold on
 the time delay between the collection date and submission date.
 After some preliminary analysis we settled on a maximum submission delay
-of 30 days when building the ARGs described here as a reasonable compromise.
+of 30 days when building the ARGs described here.
+The second filter is to remove any sequence with a collection date that
+pre-dates the
+time to the most recent common ancestor (tMRCA) of its corresponding clade.
+We obtained the tMRCA for each clade from a Nextstrain GISAID reference tree
+(downloaded on 2022-08-22), and we used the lower bound of the 95\%
+confidence interval of each clade as the minimum date cut-off.
+This excludes a further 618 samples not covered by the maximum submission
+delay filter.
 
 As the results of \texttt{sc2ts} are sensitive to the existence of
 time-travellers, an important aspect of future work is to find better ways
@@ -2045,7 +2049,9 @@ While the Pango lineages of sample nodes are imported directly from
 GISAID metadata, the lineage status of internal nodes inserted into
 the \texttt{sc2ts} ARG must be imputed. We do this using
 the list of lineage-defining mutations (based on 90\% consensus
-of the sequences analysed) from the COVID-CG website \citep[][\url{https://covidcg.org/}; accessed on 4 November 2022]{Chen2021-zc}.
+of the sequences analysed) from the
+COVID-CG website \citep[][\url{https://covidcg.org/};
+accessed on 2022-11-04]{Chen2021-zc}.
 
 For a given non-sample node $u$, if the Pango lineage of its parent or
 one of its children is already known, and there are no lineage-defining mutations
@@ -2058,8 +2064,10 @@ are assigned a lineage (where possible---note that sometimes a lineage cannot
 be assigned to the children of a recombination node).
 
 This method is fast, as the lineages for most of the internal nodes can be
-imputed by copying from the surrounding nodes (66\% of nodes for the Long ARG,
-80\% of nodes for the Wide ARG), and significantly more efficient than extracting
+imputed by copying from the surrounding nodes
+(Wide ARG: 80\% of nodes,
+Long ARG: 66\%),
+and significantly more efficient than extracting
 the haplotypes for each internal node and using existing Pangolin assignment tools
 \citep{OToole2021-assignment}. The
 accuracy depends on the quality of the list of lineage-defining mutations,
@@ -2067,17 +2075,19 @@ as well as the source of lineage designation for the sample nodes: we obtain
 slightly different results when using those recorded on GISAID (which uses
 pangoLEARN), and those assigned by Nextclade. To gauge the accuracy of
 imputation, we have used our method to re-impute the lineage designations of each
-sample node using the surrounding information; this results in 98\% (resp.~99\%) of
-nodes being assigned the same lineage as per the source metadata in the long
-(resp.~wide) ARG.
+sample node using the surrounding information; this results in
+99\% of nodes being assigned the same lineage as per the source metadata in the
+Wide ARG, and 98\% in the Long ARG.
 
 \section{Acknowledgements}
 We gratefully acknowledge all data contributors, i.e., the Authors and their
 Originating laboratories responsible for obtaining the specimens, and their
 Submitting laboratories for generating the genetic sequence and metadata and
-sharing via the GISAID Initiative, on which this research is based. Also, we
-thank Dr. Morag Graham (the National Microbiology Laboratory, Winnipeg, Canada)
-for kindly providing the genomic coordinates of the breakpoint sequence motifs.
+sharing via the GISAID Initiative, on which this research is based.
+% Not using these now:
+% Also, we
+% thank Dr. Morag Graham (the National Microbiology Laboratory, Winnipeg, Canada)
+% for kindly providing the genomic coordinates of the breakpoint sequence motifs.
 SHZ is supported by the Janssen-Oxford Translational Genomics Fellowship. JK,
 YW, and BJ are supported by the Robertson Foundation.
 
