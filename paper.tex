@@ -306,7 +306,7 @@ The properties of the inferred ARGs are summarised in Table~\ref{tab:args}.
 % obvious.
 The majority of the nodes in the ARGs represent sample genomes
 (Wide ARG: 87\%, Long ARG: 84\%), with the remainder mostly representing
-the ancestral sequences inferred by UPGMA 
+the ancestral sequences inferred by UPGMA
 from daily sample clusters (Section~\ref{sec:sample-cluster-tree-inference})
 and parsimony heuristics (Section~\ref{sec:parsimony-heuristics}).
 Table~\ref{tab:args} shows the counts of edges (see
@@ -1359,46 +1359,47 @@ pandemic preparedness.
 % preparedness for potential future pandemics.
 
 \section{Methods}
-
-[TODO update this summary para to avoid duplications with
-later sections and to add the appropriate signposts
-when they are done(ish)]
-
 Sc2ts (pronounced ``scoots'', optionally) is a method for inferring
-ARGs from densely sampled pandemic-scale data
+Ancestral Recombination Graphs (ARGs; see Section~\ref{sec:args})
+from densely sampled pandemic-scale data
 in real time, in which recombination occurs at a low but significant rate.
-The essential idea is to incrementally update the ARG each day
-with the sequences collected on that day. These updates are performed by
-first finding likely ``copying paths'' for each sequence in the daily
-batch to the current ARG, using the ARG-based implementation of
-the Li and Stephens model~\citep{Li2003-ib} introduced
-in \texttt{tsinfer}~\citep{Kelleher2019-ba}.
+% The overall algorithm is summarised in Figure~\ref{fig:overview_sc2ts},
+% and with further details in subsequent subsections.
+The basic idea is to incrementally update an ARG each day
+with the sequences collected on that day (Figure~\ref{fig:overview_sc2ts}).
+The first step is to find likely ``copying paths'' under the Li and Stephens model
+for each sequence in the daily batch to the current ARG (Section~\ref{sec:ls}).
 These copying paths
 will mostly consist of a new sample sequence copying from a node in the ARG
 with a small number of mutations, and often many samples
-from a daily batch will copy from the same ARG node. The second
-step is then to ``resolve'' these implied polytomies by using
-standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C).
+from a daily batch will copy from the same ARG node.
+The second step is then to ``resolve'' these implied polytomies by using
+standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C;
+Section~\ref{sec:sample-cluster-tree-inference}).
 This greedy update strategy inevitably leads to unparsimonious
 topologies, and the third step is to then increase the
 overall parsimony of the inferred ARG by making some simple topological
-updates (Figure~\ref{fig:overview_sc2ts}C and D).
-The operations are carried out efficiently using the well-established
+updates (Figure~\ref{fig:overview_sc2ts}C,D;
+Section~\ref{sec:parsimony-heuristics}).
+Recombination is inferred as an integral and ongoing part of this
+process, requiring only a few additional steps to facilitate
+later analysis (Section~\ref{sec:treatment_recombinants}).
+The results of inference for a given day is then
+a joint model of mutation, genetic inheritance and recombination
+for all of the sequences inserted into the ARG up to that day,
+which can be conveniently and efficiently analysed using the
+mature and feature-rich
 \texttt{tskit}
-library~\citep{Kelleher2018-xc,Ralph2020-efficiently,Tskit2023-tskit},
-and the resulting structure can be conveniently and interactively
-analysed using the many features provided by \texttt{tskit}.
-
+library~\citep{Kelleher2018-xc,Ralph2020-efficiently,Tskit2023-tskit}.
 
 \begin{figure} \centering
 \includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
 \caption{\label{fig:overview_sc2ts}
-A schematic of the sc2ts method. Sc2ts reconstructs the genetic relationships
+A schematic of the \texttt{sc2ts} method.
+Sc2ts reconstructs the genetic relationships
 among SARS-CoV-2 genomes by copying samples to all possible ancestors collected
-at earlier time points (curved arrows). An ARG is built by attaching new sample
-genomes grouped by collection date to an existing ARG rooted at the Wuhan-Hu-1
-reference genome, day by day. Each iteration involves three stages: (1)
-attachment of new samples to the growing ARG (A, B); (2) reconstruction of
+at earlier time points (curved arrows). Each daily iteration involves three stages:
+(1) attachment of new samples to the growing ARG (A, B); (2) reconstruction of
 trees relating the samples under each attachment node (C); and parsimony-based
 tree topology adjustments (D, E). In the absence of  recombination, sc2ts
 infers an ARG that is a single tree relating the samples (A). However, in the
@@ -1486,9 +1487,9 @@ describe not just realisations of this model, but to any
 recombinant genetic ancestry~\citep{Minichiello2006-mapping,Zhang2023-lf}.
 While there is some subtlety in the details~\citep{Wong2023-efficient},
 we can think of an ARG as being any graph that encodes the
-reticulate genetic ancestry of a sample of sequences under
+reticulate genetic ancestry of a sample of colinear sequences under
 the influence of recombination.
-This definition encompasses various types of graphs traditionally
+This definition encompasses various types of graphs often
 described using the broader term of phylogenetic networks.
 
 The ``succinct tree sequence'' is an ARG data structure
@@ -1510,7 +1511,10 @@ child node $c$ inherited its genome from parent node $p$
 from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
 defines the genomic position at which some variation occurs,
 and a \emph{mutation} defines the site, node and derived state
-that generates variation (note that this requires that the sequences can be aligned and phased).
+that generates variation.
+% JK: Note sure this clarifies much at the representational level?
+% (note that this requires that the sequences can be aligned and phased).
+
 Given these tables, we can then efficiently construct the local
 genealogical trees along the genome (arising from recombination),
 and also perform a range of calculations efficiently by
@@ -1542,11 +1546,14 @@ has been incorporated into several downstream
 applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
 Terasaki2021-geonomics,
 Fan2022-genealogical,Korfmann2022-weak,
-Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
+Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier,
+Zhang2023-lf}.
 It is important to note that
 this ecosystem for storing and manipulating ARGs can
 generally be used to efficiently record and analyse SARS-CoV-2 genealogies reconstructed
 using other methods, not only the \texttt{sc2ts} approach that we describe here.
+Note also that there is no requirement that recombination be present,
+and the methods are also very efficient when working with a single tree.
 
 \subsection{The Li and Stephens model}
 \label{sec:ls}
@@ -1821,6 +1828,7 @@ is room for improvement, and that further parsimony-increasing
 heuristics would likely be of benefit.
 
 \subsection{Treatment of recombinants}
+\label{sec:treatment_recombinants}
 A sample sequence is designated as a recombinant if the most likely
 path inferred by the LS HMM for that sample contains at least
 one switch between parents. Recombinant sequences are mostly treated
