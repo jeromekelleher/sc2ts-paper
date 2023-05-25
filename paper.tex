@@ -1648,9 +1648,9 @@ tree containing a reference panel with $n$ members, assuming a Poisson process
 along the branch. The expected length of this branch is $4/n$, and so the mismatch
 probability represents the probability of observing a mutation or error mode,
 along this branch. We can then approximate the probability of observing a mismatch as:
-\begin{align}
+\begin{align*}
     \mu_\ell \approx 1 - \exp{\left(-\frac{4\nu}{n}\right)}
-\end{align}
+\end{align*}
 where $\nu$ is the mutation rate per $\mbox{ploidy} \times N_e$ generations.
 
 The probabilities of these competing process of mismatch and recombination are
@@ -2105,12 +2105,14 @@ the appropriate GISAID data access.
 \bibliographystyle{plainnat}
 \bibliography{paper}
 
+\clearpage
 \renewcommand\thefigure{S\arabic{figure}}
 \setcounter{figure}{0}
 \renewcommand\thetable{S\arabic{table}}
 \setcounter{table}{0}
 \section*{Supplementary}
-\begin{figure} \centering
+
+\begin{figure}[h] \centering
 \includegraphics[width=\textwidth]{figures/supp_cophylogeny_long.pdf}
 \caption{\label{fig:cophylogeny_long}Tanglegram equivalent to that in Figure~\ref{fig:cophylogeny},
 but for the Long ARG (i.e. subsampled to mid-2022).}
@@ -2187,7 +2189,7 @@ consistent (77 inconsistent) Alpha-Alpha recombination breakpoints = 13\%
 recombination breakpoints = 18\% (18\%) of the total; 99 HMM consistent (155
 inconsistent) Omicron-Omicron recombination breakpoints = 22\% (19\%) of the
 total; and 2 HMM consistent (20 inconsistent) Delta-Omicron recombination
-breakpoints = 2\% (< 1\%) of the total. These plots do not include
+breakpoints = 2\% ($<1$\%) of the total. These plots do not include
 recombination breakpoints involved lineages that were not classified into these
 VoC categories}
 \end{figure}
