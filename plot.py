@@ -640,11 +640,6 @@ class RecombinationNodeMrcas(Figure):
         )
 
     @staticmethod
-    def filter_breaks(df):
-        # return np.logical_and(df.fwd_bck_parents_max_dist == 0, df.is_hmm_mutation_consistent)
-        return df.max_descendant_samples >= 10
-
-    @staticmethod
     def add_common_lines(ax, num, ts, common_proportions):
         v_pos = {k: v for v, k in enumerate(common_proportions.keys())}
         for i, (u, (pango, prop, date)) in enumerate(common_proportions.items()):
@@ -660,9 +655,9 @@ class RecombinationNodeMrcas(Figure):
             most = "Most" if v_pos[u] == 0 else ordinal(i + 1) + " most"
             ax.text(
                 (ts.node(u).time + 5) / 7,  # Hand tweaked to get nice label positions
-                date,
-                f"{most} freq. MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
-                fontsize=8,
+                date if i !=2 else date - timedelta(days=7),  # Push apart the 2nd and 3rd labels
+                f"{most} frequent{sep}MRCA,{sep}{n_children} children,{sep}{prop * 100:.1f} % of {pango}",
+                fontsize=10,
                 va="center",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0),
             )
@@ -676,60 +671,80 @@ class RecombinationNodeMrcas(Figure):
         label_tweak,
         xlab=True,
         ylab=True,
-        filter_pass_colour="green",  # or "" to not plot
-        filter_fail_colour="blue",
+        filter_pass_size=20,
+        filter_fail_size=5,
+        filter_num_desc = 5
     ):
-        logging.info(f"Plotting {title}")
-        filter_pass = (filter_pass_colour, self.filter_breaks(df), "# descendants >= 10")
-        filter_fail = (filter_fail_colour, ~self.filter_breaks(df), "# descendants < 10")
 
-        points = []
-        pangoX = []
-        tmrca_delta = []
-        for colour, use, label in (filter_pass, filter_fail):
-            if colour != "":
-                plot_df = df[use]
-                points.extend(plot_df.node.values)
-                tmrca_delta.extend(plot_df.parents_dist_days.values)
-                is_pangoX = df.causal_lineage.str.startswith("X")
-                pangoX.extend(np.flatnonzero(np.logical_and(use, is_pangoX)))
-                main_ax.scatter(
-                    plot_df.parents_dist_days / 7,
-                    plot_df.mrca_date,
-                    alpha=0.1,
-                    c=colour,
+        def filter_breaks(df_in, inverse=False):
+            # NB previously we used HMM consistency, commented out below for reference
+            # return np.logical_and(df.fwd_bck_parents_max_dist == 0, df.is_hmm_mutation_consistent)
+            use = df_in.max_descendant_samples >= 5
+            return df_in[~use] if inverse else df_in[use]
+
+        logging.info(f"Plotting {title}")
+        filter_pass = (
+            filter_pass_size,
+            filter_breaks(df),
+            f"descendant samples $\\geq$ {filter_num_desc}")
+        filter_fail = (
+            filter_fail_size,
+            filter_breaks(df, inverse=True),
+            f"1 $<$ descendant samples $<$ {filter_num_desc}")
+        self.hist_legend_elements = []
+        for size, _df, label in (filter_pass, filter_fail):
+            self.hist_legend_elements.append(
+                Patch(
+                    facecolor='tab:blue',
+                    edgecolor='none',
+                    alpha=0.5 if size == filter_fail_size else 0.75,
                     label=label,
                 )
-        tmrca_delta = np.array(tmrca_delta)
-        logging.info(f" {len(points)} points, {len(np.unique(points))} rec nodes")
-        logging.info(f" T diff: min={tmrca_delta.min()}, max={tmrca_delta.max()} days")
-
-        label_tweak = np.array(label_tweak)  # Tweak so e.g. it is above the point
-        df_X = df.iloc[pangoX]
-        for row in df_X.itertuples():
-            tweak_label_pos = [
-                row.parents_dist_days / 7 + label_tweak[0],
-                row.mrca_date + timedelta(days=float(label_tweak[1]))
-            ]
-            main_ax.annotate(
-                row.causal_lineage,
-                tweak_label_pos,
-                size=6,
-                ha="center",
-                rotation=70,
             )
-        main_ax.scatter(df_X.parents_dist_days / 7, df_X.mrca_date, c="orange", s=8)
+            main_ax.scatter(
+                _df.parents_dist_days / 7,
+                _df.mrca_date,
+                alpha=0.2,
+                s=size,
+                color="tab:blue",
+                label=label,
+            )
+        delta_T = df.parents_dist_days
+        logging.info(f" {len(df)} points ({len(filter_pass[1])} filtered)")
+        logging.info(f" {len(np.unique(df.node))} rec nodes ({len(np.unique(filter_pass[1].node))} filtered)")
+        logging.info(f" T diff: min={min(delta_T)}, max={max(delta_T)} days")
+        df_X = df[df.causal_lineage.str.startswith("X")]
 
+        filter_fail = (filter_fail_size, filter_breaks(df_X, inverse=True), "< 10")
+        filter_pass = (filter_pass_size, filter_breaks(df_X), "$geq$ 10")
+        for size, _df, label in (filter_fail, filter_pass):
+            for row in _df.itertuples():
+                if size == filter_pass_size:
+                    lab = f" {row.causal_lineage}"
+                    ha = "left"
+                    sz=8
+                else:
+                    lab = f"{row.causal_lineage} "
+                    ha = "right"
+                    sz = 6
+                pos = [row.parents_dist_days / 7 + label_tweak[0], row.mrca_date]
+                va = "center_baseline"
+                main_ax.annotate(
+                    lab, pos, size=sz, ha=ha, va=va, rotation=70, rotation_mode='anchor')
+            main_ax.scatter(_df.parents_dist_days / 7, _df.mrca_date, c="orange", s=size, alpha=0.8)
         if xlab:
             hist_ax.set_xlabel("Estimated divergence between parents (weeks)")
         if ylab:
             main_ax.set_ylabel(f"Estimated MRCA date")
+            hist_ax.set_ylabel("# breakpoints")
         main_ax.set_title(title)
         hist_ax.spines["top"].set_visible(False)
         hist_ax.spines["right"].set_visible(False)
-        hist_ax.spines["left"].set_visible(False)
-        hist_ax.get_yaxis().set_visible(False)
-        hist_ax.hist(tmrca_delta / 7, bins=60, density=False)
+        hist_ax.yaxis.set_tick_params(labelleft=True)
+        hist_params = dict(density=False, alpha=0.5, color="tab:blue")
+        _, bins, _ = hist_ax.hist(df.parents_dist_days / 7, bins=60, **hist_params)
+        hist_ax.hist(filter_breaks(df).parents_dist_days / 7, bins=bins, **hist_params)
+        
 
 
 class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
@@ -738,15 +753,9 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
 
     def plot(self, args):
         prefix = os.path.join("figures", self.name)
+        gridspec = {"height_ratios": [3.5, 1]}
+        _, axes = plt.subplots(2, 1, figsize=(14, 8), sharex=True, gridspec_kw=gridspec)
 
-        fig, axes = plt.subplots(
-            2,
-            2,
-            figsize=(14, 8),
-            sharex=True,
-            sharey="row",
-            gridspec_kw={"height_ratios": [4, 1]},
-        )
         mrca_counts = collections.Counter(self.df.mrca)
         common_mrcas = mrca_counts.most_common(self.num_common_lines)
         logging.info(
@@ -757,28 +766,14 @@ class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
         focal_node_map[519829] = "BA.1"
         # 5868 is a common MRCA almost exactly contemporary with the most common node
         focal_node_map.pop(5868, None)
-        proportions = descendant_proportion(self.ts, focal_node_map, {r.mrca: r.mrca_date for r in self.df.itertuples()})
-        self.add_common_lines(axes[0][0], 5, self.ts, proportions)
-        self.do_plot(
-            axes[0][0],
-            axes[1][0],
-            self.df,
-            "A. Recombinants with > 1 descendant sample",
-            label_tweak=[1, -8],
-            filter_pass_colour="tab:blue",
-            filter_fail_colour="tab:blue",
-        )
-        self.do_plot(
-            axes[0][1],
-            axes[1][1],
-            self.df,
-            "B. Recombinants with $\geq$ 10 descendant samples",
-            label_tweak=[1, -8],
-            ylab=False,
-            filter_pass_colour="tab:blue",
-            filter_fail_colour="",  # Don't plot
-        )
-        axes[0][1].invert_yaxis()
+        dates_for_mrcas = {r.mrca: r.mrca_date for r in self.df.itertuples()}
+        proportions = descendant_proportion(self.ts, focal_node_map, dates_for_mrcas)
+        self.add_common_lines(axes[0], 5, self.ts, proportions)
+        title = ""  # "Breakpoints from nonsingleton recombination nodes in the Long ARG"
+        self.do_plot(*axes, self.df, title, label_tweak=[0.1, 0])
+        axes[0].legend()
+        axes[1].legend(handles=self.hist_legend_elements, loc='upper right')
+        plt.subplots_adjust(hspace=0.1)
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
 
@@ -792,8 +787,8 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             ax_main,
             ax_hist,
             self.df[[v == set(restrict) for v in parent_variants]],
-            f"{'|'.join(restrict)} breakpoints in the “long” ARG",
-            label_tweak=[1.3, -13],
+            f"{'|'.join(restrict)} breakpoints",
+            label_tweak=[0.2, 0],
             **kwargs,
         )
 
@@ -801,18 +796,16 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         prefix = os.path.join("figures", self.name)
 
         fig, axes = plt.subplots(
-            nrows=4,
+            nrows=5,  # include an extra row to hack some space
             ncols=3,
             figsize=(18, 12),
             sharex=True,
             sharey="row",
-            gridspec_kw={"height_ratios": [4, 1, 4, 1]},
+            gridspec_kw={"height_ratios": [3.5, 1, 0.2, 3.5, 1]},
         )
-        for row_idx in range(0, axes.shape[0], 2):
-            for col_idx in range(axes.shape[1]):
-                axes[row_idx, col_idx].set_ylim(
-                    self.df.mrca_date.min(), self.df.mrca_date.max()
-                )
+        # Make sure the main plots have the same y-axis limits on different rows
+        for row in (0, 3):
+            axes[row, 0].set_ylim(self.df.mrca_date.min(), self.df.mrca_date.max())
 
         parent_variants = [
             frozenset(
@@ -837,16 +830,22 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
         self.subplot(
             axes[0][2], axes[1][2], ["Omicron", "Omicron"], parent_variants, labs=False
         )
-        axes[0][2].legend()
-        self.subplot(axes[2][0], axes[3][0], ["Alpha", "Delta"], parent_variants)
+        axes[2][0].axis('off')
+        axes[2][1].axis('off')
+        axes[2][2].axis('off')
+
         self.subplot(
-            axes[2][1], axes[3][1], ["Alpha", "Omicron"], parent_variants, ylab=False
+            axes[3][0], axes[4][0], ["Alpha", "Delta"], parent_variants)
+
+        self.subplot(
+            axes[3][1], axes[4][1], ["Alpha", "Omicron"], parent_variants, ylab=False
         )
         self.subplot(
-            axes[2][2], axes[3][2], ["Delta", "Omicron"], parent_variants, ylab=False
+            axes[3][2], axes[4][2], ["Delta", "Omicron"], parent_variants, ylab=False
         )
-        axes[0][-1].invert_yaxis()
-        axes[2][-1].invert_yaxis()
+        axes[0][0].legend()
+        axes[1][0].legend(handles=self.hist_legend_elements, loc='upper right')
+        plt.subplots_adjust(hspace=0.1)
 
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")
 
@@ -1786,15 +1785,17 @@ class RecombinationIntervals(Figure):
 
         axins2 = inset_axes(
             ax1,
-            width=2.0,
+            width=2.7,
             height=1.5,
-            bbox_to_anchor=(0.15, 1.0),
+            bbox_to_anchor=(0.13, 1.0),
             bbox_transform=ax1.transAxes,
             loc="upper left",
         )
-        axins2.hist(length)
+        y, x, _ = axins2.hist(length, bins=np.arange(0, 15_000, 500))
         axins2.set_xlabel("Width of interval")
-        axins2.set_ylabel("Count")
+        axins2.set_ylabel("Interval count (100s)")
+        axins2.yaxis.set_ticks(np.arange(0, y.max() + 20, 100))
+        axins2.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(lambda y, pos: int(y/100)))
 
         print("Recombination nodes = ", len(df.node.unique()))
         print("Num intervals:", len(intervals))
