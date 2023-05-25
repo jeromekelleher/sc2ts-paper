@@ -744,7 +744,7 @@ class RecombinationNodeMrcas(Figure):
         hist_params = dict(density=False, alpha=0.5, color="tab:blue")
         _, bins, _ = hist_ax.hist(df.parents_dist_days / 7, bins=60, **hist_params)
         hist_ax.hist(filter_breaks(df).parents_dist_days / 7, bins=bins, **hist_params)
-        
+
 
 
 class RecombinationNodeMrcas_all(RecombinationNodeMrcas):
@@ -1791,7 +1791,7 @@ class RecombinationIntervals(Figure):
             bbox_transform=ax1.transAxes,
             loc="upper left",
         )
-        y, x, _ = axins2.hist(length, bins=np.arange(0, 15_000, 500))
+        y, x, _ = axins2.hist(length, bins=np.arange(0, 10_000, 500))
         axins2.set_xlabel("Width of interval")
         axins2.set_ylabel("Interval count (100s)")
         axins2.yaxis.set_ticks(np.arange(0, y.max() + 20, 100))
