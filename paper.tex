@@ -8,6 +8,7 @@
 \usepackage{tabularx}
 \usepackage{authblk}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage{makecell}
 \usepackage{url}
@@ -306,7 +307,7 @@ The properties of the inferred ARGs are summarised in Table~\ref{tab:args}.
 % obvious.
 The majority of the nodes in the ARGs represent sample genomes
 (Wide ARG: 87\%, Long ARG: 84\%), with the remainder mostly representing
-the ancestral sequences inferred by UPGMA 
+the ancestral sequences inferred by UPGMA
 from daily sample clusters (Section~\ref{sec:sample-cluster-tree-inference})
 and parsimony heuristics (Section~\ref{sec:parsimony-heuristics}).
 Table~\ref{tab:args} shows the counts of edges (see
@@ -1359,46 +1360,47 @@ pandemic preparedness.
 % preparedness for potential future pandemics.
 
 \section{Methods}
-
-[TODO update this summary para to avoid duplications with
-later sections and to add the appropriate signposts
-when they are done(ish)]
-
 Sc2ts (pronounced ``scoots'', optionally) is a method for inferring
-ARGs from densely sampled pandemic-scale data
+Ancestral Recombination Graphs (ARGs; see Section~\ref{sec:args})
+from densely sampled pandemic-scale data
 in real time, in which recombination occurs at a low but significant rate.
-The essential idea is to incrementally update the ARG each day
-with the sequences collected on that day. These updates are performed by
-first finding likely ``copying paths'' for each sequence in the daily
-batch to the current ARG, using the ARG-based implementation of
-the Li and Stephens model~\citep{Li2003-ib} introduced
-in \texttt{tsinfer}~\citep{Kelleher2019-ba}.
+% The overall algorithm is summarised in Figure~\ref{fig:overview_sc2ts},
+% and with further details in subsequent subsections.
+The basic idea is to incrementally update an ARG each day
+with the sequences collected on that day (Figure~\ref{fig:overview_sc2ts}).
+The first step is to find likely ``copying paths'' under the Li and Stephens model
+for each sequence in the daily batch to the current ARG (Section~\ref{sec:ls}).
 These copying paths
 will mostly consist of a new sample sequence copying from a node in the ARG
 with a small number of mutations, and often many samples
-from a daily batch will copy from the same ARG node. The second
-step is then to ``resolve'' these implied polytomies by using
-standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C).
+from a daily batch will copy from the same ARG node.
+The second step is then to ``resolve'' these implied polytomies by using
+standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C;
+Section~\ref{sec:sample-cluster-tree-inference}).
 This greedy update strategy inevitably leads to unparsimonious
 topologies, and the third step is to then increase the
 overall parsimony of the inferred ARG by making some simple topological
-updates (Figure~\ref{fig:overview_sc2ts}C and D).
-The operations are carried out efficiently using the well-established
+updates (Figure~\ref{fig:overview_sc2ts}C,D;
+Section~\ref{sec:parsimony-heuristics}).
+Recombination is inferred as an integral and ongoing part of this
+process, requiring only a few additional steps to facilitate
+later analysis (Section~\ref{sec:treatment_recombinants}).
+The results of inference for a given day is then
+a joint model of mutation, genetic inheritance and recombination
+for all of the sequences inserted into the ARG up to that day,
+which can be conveniently and efficiently analysed using the
+mature and feature-rich
 \texttt{tskit}
-library~\citep{Kelleher2018-xc,Ralph2020-efficiently,Tskit2023-tskit},
-and the resulting structure can be conveniently and interactively
-analysed using the many features provided by \texttt{tskit}.
-
+library~\citep{Kelleher2018-xc,Ralph2020-efficiently,Tskit2023-tskit}.
 
 \begin{figure} \centering
 \includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
 \caption{\label{fig:overview_sc2ts}
-A schematic of the sc2ts method. Sc2ts reconstructs the genetic relationships
+A schematic of the \texttt{sc2ts} method.
+Sc2ts reconstructs the genetic relationships
 among SARS-CoV-2 genomes by copying samples to all possible ancestors collected
-at earlier time points (curved arrows). An ARG is built by attaching new sample
-genomes grouped by collection date to an existing ARG rooted at the Wuhan-Hu-1
-reference genome, day by day. Each iteration involves three stages: (1)
-attachment of new samples to the growing ARG (A, B); (2) reconstruction of
+at earlier time points (curved arrows). Each daily iteration involves three stages:
+(1) attachment of new samples to the growing ARG (A, B); (2) reconstruction of
 trees relating the samples under each attachment node (C); and parsimony-based
 tree topology adjustments (D, E). In the absence of  recombination, sc2ts
 infers an ARG that is a single tree relating the samples (A). However, in the
@@ -1486,9 +1488,9 @@ describe not just realisations of this model, but to any
 recombinant genetic ancestry~\citep{Minichiello2006-mapping,Zhang2023-lf}.
 While there is some subtlety in the details~\citep{Wong2023-efficient},
 we can think of an ARG as being any graph that encodes the
-reticulate genetic ancestry of a sample of sequences under
+reticulate genetic ancestry of a sample of colinear sequences under
 the influence of recombination.
-This definition encompasses various types of graphs traditionally
+This definition encompasses various types of graphs often
 described using the broader term of phylogenetic networks.
 
 The ``succinct tree sequence'' is an ARG data structure
@@ -1510,7 +1512,10 @@ child node $c$ inherited its genome from parent node $p$
 from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
 defines the genomic position at which some variation occurs,
 and a \emph{mutation} defines the site, node and derived state
-that generates variation (note that this requires that the sequences can be aligned and phased).
+that generates variation.
+% JK: Note sure this clarifies much at the representational level?
+% (note that this requires that the sequences can be aligned and phased).
+
 Given these tables, we can then efficiently construct the local
 genealogical trees along the genome (arising from recombination),
 and also perform a range of calculations efficiently by
@@ -1542,18 +1547,22 @@ has been incorporated into several downstream
 applications~\citep[e.g.][]{Haller2019-slim,Speidel2019-yh,
 Terasaki2021-geonomics,
 Fan2022-genealogical,Korfmann2022-weak,
-Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier}.
+Mahmoudi2022-bayesian,Petr2022-slendr,Rasmussen2022-espalier,
+Zhang2023-lf}.
 It is important to note that
 this ecosystem for storing and manipulating ARGs can
 generally be used to efficiently record and analyse SARS-CoV-2 genealogies reconstructed
 using other methods, not only the \texttt{sc2ts} approach that we describe here.
+Note also that there is no requirement that recombination be present,
+and the methods are also very efficient when working with a single tree.
 
 \subsection{The Li and Stephens model}
 \label{sec:ls}
 The Li and Stephens (LS) model \citep{Li2003-ib} is an approximation of the
 coalescent with recombination~\citep{Hudson1983-properties}, which captures
 many of the important features of the joint processes of mutation and
-recombination. It is a Hidden Markov Model (HMM) in which a focal genome is a
+recombination. It is a Hidden Markov Model (HMM) in which a focal genome
+is modelled as a
 sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
 (Figure~\ref{fig:ls_diagram}).
@@ -1573,7 +1582,7 @@ of the LS model.
 \caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
 model, in which a query sequence (bottom) is described as an
 imperfect mosaic of the sequences in a reference panel.
-Black crosses along the focal sequence show genotyping/sequencing
+Black crosses along the focal sequence show sequencing
 errors or mutations.
 In the standard formulation, at site $\ell$, the recombination probability is $r_\ell$,
 the mutation probability is $\mu_\ell$ and $n$
@@ -1606,16 +1615,20 @@ Figure~\ref{fig:ls_diagram}. Here, a transition matrix, $Q$, governs the
 process of switching (recombining) between members of the reference panel (the
 hidden states). An emission matrix, $E$, allows for differences between the
 focal sequence and the hidden state from which it is copied (due to mutation as
-well as genotyping or sequencing error). Both $E$ and $Q$ may be a function of the reference panel members,
-but transitions are generally assumed to be independent of the hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
+well as sequencing error).
+Both $E$ and $Q$ may be a function of the reference panel members,
+but transitions are generally assumed to be independent of the
+hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
 Emissions may also be a function of the nucleotide states, but in our
 case, we assume that all observed alleles (in both the reference panel and
 focal sequence, $a_\ell$) at the site under consideration are equally likely and
-occur with mutation probability $\frac{\mu_\ell}{a_\ell-1}$ (Figure~\ref{fig:ls_diagram}, blue panel).
-We use the Viterbi algorithm
-\citep{Viterbi1967-ol} to find the most likely copying path through the
-sequences, given a set of reference sequences, $Q$, and $E$. Throughout, we refer to the probabilities of mismatching to a member of the reference panel at site $\ell$ as $\mu_\ell$,
+occur with mutation probability $\mu_\ell/(a_\ell-1)$
+ (Figure~\ref{fig:ls_diagram}, blue panel).
+We use the Viterbi algorithm~\citep{Viterbi1967-ol}
+to find the most likely copying path, given a set of reference sequences, $Q$, and $E$.
+Throughout, we refer to the probabilities of mismatching to a
+member of the reference panel at site $\ell$ as $\mu_\ell$,
 and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$ as $r_\ell$. For convenience, $\mu_\ell$ is commonly referred to as the `mutation probability', but we note that this probability of
 mismatch also encompasses various other error modes which result in a mismatch
 (such as sequencing and alignment errors). Note also that it is these probabilities,
@@ -1623,59 +1636,82 @@ not the rates of mutation and recombination, that are required to fully define t
 That said, we can approximately relate these probabilities to the coalescent with recombination process which LS is approximating. In the case of recombination,
 suppose that there is some constant underlying recombination rate, $\rho$.
 Assuming that recombination events occur as a Poisson process,
-then the probability of recombining between adjacent sites is:
+then the probability of recombining between adjacent sites is
 \begin{align*}
     r_\ell = 1 - \exp\left(-\frac{\rho\left(m_{i-1} - m_{i}\right)}{n}\right),
 \end{align*}
-where $m_j$ is the nucleotide position of variant $j$. Similarly, we may consider the probability of mutation to represent to the
+where $m_j$ is the nucleotide position of variant $j$.
+Similarly, we may consider the probability of mutation to represent to the
 probability of mutation along the branch joining the focal sequence to a coalescent
 tree containing a reference panel with $n$ members, assuming a Poisson process
-along the branch. The expected length of this branch is $\frac{4}{n}$, and so the mismatch
+along the branch. The expected length of this branch is $4/n$, and so the mismatch
 probability represents the probability of observing a mutation or error mode,
 along this branch. We can then approximate the probability of observing a mismatch as:
 \begin{align}
     \mu_\ell \approx 1 - \exp{\left(-\frac{4\nu}{n}\right)}
 \end{align}
-where $\nu$ is the mutation rate per $\mathit{ploidy} \times N_e$ generations. The probabilities of these competing process of mismatch and recombination are usually controlled by the site-specific parameters $\mu_\ell$ and $r_\ell$, respectively.
-For this work we used a slightly different formulation, which uses a parameter, the mismatch ratio (MMR), to control the relative importance of mutation
-and recombination in the HMM. Specifically, an MMR value of $k$ will
-prefer $k$ mismatches (mutations) to a single recombination which results in copying from a template with no mismatches.
-To map between recombination probability and mutation probability for a particular mismatch
-ratio, we simply consider the two paths which we wish to be equally likely, and rearrange
-for the mutation or recombination probability. Consider the simple case when we assume
-$\mu_l=\mu$ and $r_l=r$. Without loss of generality, consider a region of length $m$. Up
-until this region, two paths are equally likely, so we can re-scale by the likelihood of
-observing the focal sequence up to the site before the region starts, $c$. For a MMR of $k$,
-we only need to consider two of the $n$ members of the reference panel. One,
-$\mathcal{P}_1$, for which there are no mismatches, but we need to recombine in, and a
-second, $\mathcal{P}_2$, for which there are $k$ (randomly chosen) mismatches in the region.
+where $\nu$ is the mutation rate per $\mbox{ploidy} \times N_e$ generations.
+
+The probabilities of these competing process of mismatch and recombination are
+usually controlled by the site-specific parameters $\mu_\ell$ and $r_\ell$,
+respectively. For this work we used a slightly different formulation, which
+uses one parameter, the mismatch ratio (MMR), to control the relative
+importance of mutation and recombination in the HMM. Specifically, an MMR value
+of $k$ will prefer $k$ mismatches (mutations) to a single recombination which
+results in copying from a template with no mismatches. To map between
+recombination probability and mutation probability for a particular mismatch
+ratio, we simply consider the two paths which we wish to be equally likely, and
+rearrange for the mutation or recombination probability. Consider the simple
+case when we assume $\mu_l=\mu$ and $r_l=r$. Without loss of generality,
+consider a region of length $m$. Up until this region, two paths are equally
+likely, so we can re-scale by the likelihood of observing the focal sequence up
+to the site before the region starts, $c$. For an MMR of $k$, we only need to
+consider two of the $n$ members of the reference panel.
+
+One, $\mathcal{P}_1$,
+for which there are no mismatches, but we need to recombine in, and a second,
+$\mathcal{P}_2$, for which there are $k$ (randomly chosen) mismatches in the
+region.
 Now, follow the probability of tracking along each of those paths:
 \begin{align*}
-P(\mathcal{P}_1) &= \frac{cr}{n} \left(\left(1-r\right)+\frac{r}{n}\right)^m\left(1-\mu\right)^m &\text{recombine to a template with no mismatches,}\\
-P(\mathcal{P}_2) &= c \left(\left(1-r\right) + \frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^m \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
+\mathbb{P}[\mathcal{P}_1] &= \frac{cr}{n}
+\left(\left(1-r\right)+\frac{r}{n}\right)^m\left(1-\mu\right)^m
+&\text{recombine to a template with no mismatches,}\\
+\mathbb{P}[\mathcal{P}_2] &= c
+\left(\left(1-r\right) +
+\frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^m
+\left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
 \end{align*}
-where $r$ is the recombination probability between adjacent variants, $\mu$ is the mismatch
-probability between a target sequence at a variant and a particular member of the reference
-panel, and $c$ is the likelihood of the path up to this point, which we assume to be equal.
-We then set these path probabilities to be equal, and rearrange to obtain:
-\begin{align*}
-r = \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k}, \quad\quad
-\mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}.
-\end{align*}
-Under a lower MMR value (for which recombinations are favoured over mutations), the maximum-likelihood HMM copying path of a
-focal genome more likely spans at least two ancestral genomes (i.e,. the focal
-genome is a putative recombinant) than a single ancestral genome. Here, the MMR
-was set to three in all the HMM runs.
+% where $r$ is the recombination probability between adjacent
+% variants, $\mu$ is the mismatch probability between a target sequence at a
+% variant and a particular member of the reference panel,
+where $c$ is the
+likelihood of the path up to this point, which are assumed to be
+equal by construction.
+We then
+set these path probabilities to be equal, and rearrange to obtain:
+\begin{align*} r = \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},
+\quad\quad \mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}. \end{align*}
+Thus, for lower MMR values ($k$ here),
+recombinations are favoured over mutations
+than a single ancestral genome. We use an MMR value of $k=3$ in this work,
+as it provided results that tallied well with empirical observations.
+Exploring different mismatch ratios, and more sophisticated parameterisations
+of the HMM are important avenues for future work.
 
-A varying degree of missingness is present in the genetic data, that is, for a given sample,
-a subset of nucleotides coded as `unknown' at a set of positions. As a result, we had to
-consider missingness in our implementation of the LS Viterbi algorithm. One approach would be to `impute'
-all missing data beforehand using external software to hard-call or define a
-distribution over the possible missing nucleotides, and use that in the determination of path
-probabilities. Another is to not attempt to estimate the true nucleotide, but rather to
-consider such sites as uninformative to the path probability, but to impute missing data
-within that path on the fly, placing them within the reference panel iteratively. We chose the latter. To do this, we simply encode the emission
-probability where the underlying nucleotide transition is $\mathit{unknown}\rightarrow \{A,C,G,T\}$ as 1.
+A varying degree of missingness is present in the genetic data, that is, for a
+given sample, a subset of nucleotides coded as `unknown' at a set of positions.
+As a result, we had to consider missingness in our implementation of the LS
+Viterbi algorithm. One approach would be to `impute' all missing data
+beforehand using external software to hard-call or define a distribution over
+the possible missing nucleotides, and use that in the determination of path
+probabilities. Another is to not attempt to estimate the true nucleotide, but
+rather to consider such sites as uninformative to the path probability, and
+impute missing data within that path on the fly, placing them within the
+the emission probability transition from unknown to
+the emission probability from unknown to
+to any other state as 1.
+% $\mbox{N} \rightarrow \star$ as 1.
 
 In \texttt{sc2ts}, we use the efficient ARG-based implementation of the
 LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
@@ -1694,8 +1730,11 @@ find a sequence that minimises the number of additional mutations required
 to incorporate a newly-added sample into the ARG.
 Recombination is then inferred when the most likely solution to the LS
 HMM is to copy from more than one ARG node along the genome, for a
-given sample sequence. This statement warrants emphasis: the Viterbi algorithm enables us to find a path through the reference panel from among the $n^m$ paths that is provably at the optimum, under the LS model.
+given sample sequence.
 
+The Viterbi algorithm enables us to find a path through
+the reference panel from among the $n^m$ paths that is provably at the
+optimum, under the LS model.
 We can solve this massive optimisation problem exactly because the ARG-based
 implementation of the LS HMM used in \texttt{tsinfer} scales approximately
 logarithmically with reference panel size (as opposed to linearly,
@@ -1711,9 +1750,14 @@ recombination parameters. There may be many such paths, from which we choose
 one arbitrarily. Also, the present choice of using a single mismatch-ratio
 parameter to control the likelihood of recombination vs mutation may lead to
 relatively flat likelihood spaces where many different paths have equal
-likelihood. There are many possibilities in using established HMM methodology
+likelihood.
+There are many possibilities in using established HMM methodology
 to reason about and explore the space of possible matches, which may be a
-fruitful avenue for future work. Examples include a stochastic traceback
+fruitful avenue for future work.
+% Could talk about running the HMM in reverse here, but is there much
+% point? It's confusing the main point which is that there lots of
+% ways in which this could be done properly.
+Examples include a stochastic traceback
 through the collection of paths at the global optimum to glean further
 information about our the likelihood surface, and determine whether there are
 downstream implications for our conclusions. Here, we have considered the
@@ -1821,6 +1865,7 @@ is room for improvement, and that further parsimony-increasing
 heuristics would likely be of benefit.
 
 \subsection{Treatment of recombinants}
+\label{sec:treatment_recombinants}
 A sample sequence is designated as a recombinant if the most likely
 path inferred by the LS HMM for that sample contains at least
 one switch between parents. Recombinant sequences are mostly treated
