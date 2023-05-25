@@ -1317,6 +1317,7 @@ pandemic preparedness.
 % attempted to correct the most offending errors in the ARGs by filtering out
 % ``time travellers'', but the sampling time can still be wrong by days or tens
 % of days. ***describe possible approaches to correct this?*** \item To avoid
+
 % time travellers, we used a maximum submission delay, but this will
 % systematically bias against submissions from countries with greater submission
 % delays (Kalia et al.). An area of future work is to add back the excluded
@@ -1764,10 +1765,10 @@ downstream implications for our conclusions. Here, we have considered the
 Viterbi algorithm to make statements about the most likely paths through the
 data. The machinery used here can be modified to run the forwards and backwards
 algorithms which determine the probability of observing a focal sequence,
-integrating over all possible paths through the data, under the LS model [cite
-D-Palms]. This presents an opportunity to estimate parameters of interest while
-exploiting the tree structure to gain log-based speed-ups in their exact
-implementation.
+integrating over all possible paths through the data, under the LS
+model~\citep{Palmer2023-efficient}.
+This presents an opportunity to estimate parameters of interest
+under the LS model at pandemic scale.
 
 \subsection{Tree inference from HMM daily sample clusters}
 \label{sec:sample-cluster-tree-inference}
@@ -1784,11 +1785,11 @@ In the majority of cases the copying path will consist of a single
 node (i.e., no recombination), and so for simplicity we will assume in the
 following discussion that all of the samples in a HMM-defined cluster
 attach to a single node. The special treatment afforded to
-newly-detected putative recombinants are discussed below
-in Section XXX.
+newly-detected putative recombinants are discussed
+in Section~\ref{sec:treatment_recombinants}.
 
 With tens of thousands of samples being added to the ARG per day,
-we can have clusters of hundreds of sequences attaching to the same node.
+there are often clusters of hundreds of sequences attaching to the same node.
 While some of these samples will require no extra mutations
 (because they are identical to the attachment node), in general there
 will be complex patterns of shared mutations among the samples
@@ -1800,38 +1801,42 @@ samples in a cluster independently of the other samples in a
 daily batch, and then attach the tree (and mutations)
 to the ARG at the node identified by the HMM.
 
-We currently use the implementation of the UPGMA algorithm~\citep{Michener1957-tr}
-from SciPy~\citep{Pauli2020-scipy} to build trees from sample
+We currently use the UPGMA algorithm~\citep{Michener1957-tr}
+as implemented in SciPy~\citep{Pauli2020-scipy} to build trees from sample
 clusters, and map mutations back to this topology using maximum parsimony.
 This approach was chosen mainly for simplicity and because of the
 speed and reliability of the implementation.
 An issue with the UPGMA algorithm is that it generates a strictly
 binary tree, creating internal nodes
 supported by no informative site (i.e., having no mutation immediately
-ancestral to them). To avoid such false precision we post-process
+ancestral to them). We avoid such false precision by post-processing
 to remove unsupported internal nodes, representing the relationship
-between $k$ identical descendants of the node as a polytomy of size $k$.
+between $k$ identical descendants of a node as a polytomy of size $k$.
 
 There are well-known issues with using such a simple algorithm for inferring
 evolutionary relationships~\citep{Felsenstein2004-inferring}.
-Since this within-cluster tree building has a significant influence on the
-overall ARG topology (see Results), implementing more sophisticated
-tree building methods which keep track of the location of the required mutations
+Table~\ref{tab:args} show that
+this within-cluster tree building has a significant influence on the
+overall ARG topology (Wide ARG: 7.05\% of nodes and parent of
+32.27\% of edges; Long ARG: 6.61\% and 19.97\%, respectively),
+and therefore applying more sophisticated
+tree building methods which keep track of the required mutations
 (rather then inferring post-hoc by parsimony), is a likely avenue
 for improvements in overall inference quality.
 
 \subsection{Parsimony-increasing heuristics}
 \label{sec:parsimony-heuristics}
 Attaching trees built from the clusters of samples that copy from
-a particular node (or path of nodes for recombinants, see the
-next section) under the HMM is an inherently greedy strategy,
+a particular node (or path of nodes for recombinants,
+see Section~\ref{sec:treatment_recombinants}) under the
+HMM is an inherently greedy strategy,
 and can produce inferences that are clearly unparsimonious.
 The final step in adding a daily batch of samples to the ARG
-is then to perform some local updates that target specific
+is therefore to perform some local updates that target specific
 types of parsimony violation in the just-updated regions of the
 ARG. There are currently two parsimony-increasing operations
 applied, which we refer to as ``mutation collapsing'' and ``reversion
-pushing''.
+pushing'' (Figure~\ref{fig:overview_sc2ts}D, E).
 
 Mutation collapsing inspects the siblings of a newly attached node
 to check if any of them share (a subset of) the mutations that
@@ -1841,8 +1846,12 @@ those shared mutations, and make that new node the parent of the
 siblings carrying those shared mutations. The patterns of
 shared mutations between siblings can be complex, and the current
 implementation uses a simple greedy strategy for choosing
-the particular mutations to collapse. [TODO back ref to the
-Results section to discuss how important these nodes are]
+the particular mutations to collapse.
+Table~\ref{tab:args} shows that
+while these nodes constitute a small fraction of the
+overall total (Wide ARG: 2.77\%, Long ARG: 4.82\%),
+they are parental to a much larger fraction of the
+edges (Wide ARG: 12.77\%, Long ARG: 20.47\%).
 
 The reversion push operation inspects a newly added node to see
 if any of its mutations are ``immediate reversions''; that is,
@@ -1851,12 +1860,19 @@ immediate parent. We increase the overall parsimony of the
 inference by ``pushing in'' a new node which descends from the
 original parent which carries all its mutations except those
 causing the reversions on the newly added node.
-[TODO back ref to the
-Results section to discuss how important these nodes are]
+Table~\ref{tab:args} shows that
+these nodes constitute a similar fraction of the
+overall numbers of nodes (Wide ARG: 2.79\%, Long ARG: 4.39\%)
+and edges (Wide ARG: 12.66\%, Long ARG: 18.46\%)
+as mutation collapsing.
 
 Together these operations substantially increase the overall parsimony
 of the inferred ARGs, most noticably in terms of the number of
-reversion mutations inferred. However, they are both simple
+reversion mutations inferred. These nodes are also being chosen by the
+LS HMM as likely choices of parent (as indicated by the node and edge
+counts quoted above), also demostrating that the hueristics are successfully
+capturing features of real sequences.
+However, they are both simple
 greedy operations, just examining the local parts of the
 ARG topology affected by newly added samples. Since the inferred
 ARGs still contain a large number of reversion mutations which
@@ -1873,7 +1889,7 @@ identically to non-recombinants, as we simply need to reason about
 a path of parent nodes along genome intervals rather than a
 single parent over the whole genome, which is naturally handled by
 the succinct tree sequence data structure and \texttt{tskit} library
-(see the Ancestral Recombination Graphs section above). To facilitate
+(Section~\ref{sec:args}). To facilitate
 analysis and to help understand the robustness of recombinants
 we perform some additional steps in \texttt{sc2ts}.
 
@@ -1885,31 +1901,34 @@ but makes it convenient to find recombinants for subsequent analysis.)
 Variation within a cluster
 of recombinant sequences is handled in the same way as non-recombinants
 (see Section~\ref{sec:sample-cluster-tree-inference} above for details).
-
 When the Viterbi algorithm implementation used by the LS HMM infers
 recombinant ancestry for a given genome, the point at which inheritance
 switches from one parent node to another is the last possible
-position.
-Thus, the breakpoints used in the ARG represent the rightmost end of the
-interval, within which the recombination event could have occurred. To obtain
-the leftmost end of this interval, we rerun the HMM using mirrored coordinates
-(i.e., from the 3’ end to the 5’ end) and store the information as
-metadata on the recombination node.
-These left- and rightmost positions
-are the recombination intervals reported throughout.
-Ultimately all the recombination intervals mean is that the parent sequences
-are identical within that interval, and there is therefore no information
-about where the recombination occurred. There are many different processes
-that can contribute to the size of these intervals, and therefore
-understanding how these processes interact to produce wider or narrower
-intervals is an important avenue for future work.
+position. The left-most extent of the breakpoint interval is derived
+by sequence comparison between the parents, as described in
+Section~\ref{sec:breakpoint_intervals}.
+
+% Thus, the breakpoints used in the ARG represent the rightmost end of the
+% interval, within which the recombination event could have occurred. To obtain
+% the leftmost end of this interval, we rerun the HMM using mirrored coordinates
+% (i.e., from the 3’ end to the 5’ end) and store the information as
+% metadata on the recombination node.
+% These left- and rightmost positions
+% are the recombination intervals reported throughout.
+% Ultimately all the recombination intervals mean is that the parent sequences
+% are identical within that interval, and there is therefore no information
+% about where the recombination occurred. There are many different processes
+% that can contribute to the size of these intervals, and therefore
+% understanding how these processes interact to produce wider or narrower
+% intervals is an important avenue for future work.
 
 The LS HMM machinery, and the interpretation of inferred recombinant paths and
 breakpoint intervals is a central part of \texttt{sc2ts}, and there are many
 ways to extend and improve. For example, the current parameterisation of using
-a single ``mismatch ratio'' is very simplistic (see section XXX), and likely
-results in a very flat likelihood space where many sequences have equal
-likelihood of being chosen. More sophisticated parameterisations where we
+a single ``mismatch ratio'' is very simplistic (Section~\ref{sec:ls}), and likely
+results in a flat likelihood space where many recombinant paths have equal
+probability of being chosen.
+More sophisticated parameterisations where we
 condition on known per-site mutation rates (and perhaps per-base subsitution
 rates) may lead to better results, although perhaps at the cost of some
 reduction in interpretability. Post-processing the match results to produce
