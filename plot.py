@@ -602,7 +602,7 @@ class CophylogenyLong(Cophylogeny):
 class RecombinationNodeMrcas(Figure):
     name = None
     sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
-    csv_fn = "breakpoints_{}.csv"
+    csv_fn = "long_arg_recombinants.csv"
     data_dir = "data"
 
     def __init__(self):
@@ -612,6 +612,9 @@ class RecombinationNodeMrcas(Figure):
         df = pd.read_csv(
             os.path.join(self.data_dir, self.csv_fn.format(prefix)),
             parse_dates=["causal_date", "mrca_date"])
+        df[f"parents_dist_{self.ts.time_units}"] = (
+            self.ts.nodes_time[df["mrca"]] - self.ts.nodes_time[df["node"]]
+        )
         logging.info(f"{len(df)} breakpoints | {len(np.unique(df.node))} re nodes read")
         # Remove potential contaminents
         self.df = df[df.max_descendant_samples > 1]
