@@ -552,7 +552,6 @@ sample or those occurring on terminal branches (data not shown).
 
 \subsection{Early recombinants}
 \label{sec:jackson_recombs}
-% FIXME: this is rubbish, can someone do better?
 RNA viruses are known to recombine at high rates
 \citep{Simon2011-rna}, and recombination has been widely
 documented to be commonplace in animal and human coronaviruses
@@ -581,8 +580,8 @@ These findings are closely replicated in both the Wide and Long ARGs.
 \toprule
 Group        & Sequences & Method & Interval & Parents \\
 \midrule
-A (XA)       & 4   & Jackson        &  21,256--21,615 & B.1.177+B.1.1.7 \\
-             &     &\texttt{sc2ts} &  21,256--22,228 & B.1.177.18+B.1.1.7 \\
+A (XA)       & 4   & Jackson        &  21,256--21,615 & B.1.177/B.1.1.7 \\
+             &     &\texttt{sc2ts} &  21,256--22,228 & B.1.177.18/B.1.1.7 \\
 \cmidrule{3-5}
 B            & 2   & Jackson        &  6,529--6,955 & B.1.36/B.1.1.7  \\
              &     &\texttt{sc2ts} &  6,529--6,955 & B.1.36/B.1.1.7  \\
@@ -599,8 +598,14 @@ intervals and parent lineages for Groups A-D
 reported by \cite{Jackson2021-ik} with the corresponding
 recombination events in the Wide ARG.
 The second column gives the number of sequences in the group.
-Intervals are half-closed, so that for an interval $\ell$--$r$
-the breakpoint $x$ can be $\ell \leq x < r$.
+The 3SEQ~\citep{boni2007exact} coordinates
+reported by Jackson et al.\ have been altered as follows: we
+add one to both left and right coordinates to correspond to the
+\texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals
+right-exclusive. See Section~\ref{sec:treatment_recombinants}
+for a precise definition of sequence inheritance at recombination
+events, and the corresponding breakpoint intervals.
 Details for all 16 sequences are
 given in Table~\ref{tab:jackson_supplement}.}
 \end{table}
@@ -1909,6 +1914,24 @@ position. The left-most extent of the breakpoint interval is derived
 by sequence comparison between the parents, as described in
 Section~\ref{sec:breakpoint_intervals}.
 
+For a particular recombination node in an ARG, a  breakpoint
+is defined as the location at which inheritance switches from one parent
+to another.
+In the \texttt{tskit} encoding (see Section~\ref{sec:args}) inheritance between
+nodes is defined by edges $(\ell, r, p, c)$, which state that child node $c$
+inherits from parent node $p$
+over the half-closed genome interval $[\ell, r)$.
+For simplicity, suppose that a recombination node $u$ inherits from two
+parents $p_1$ and $p_2$ with a breakpoint of $x$.
+In the ARG, this is defined by two edges
+$(0, x, p_1, u)$ and $(x, L, p_2, u)$ where $L$ is the length of the genome.
+Since inheritance intervals are half-closed,
+$u$ inherits all positions up to $x$ (exclusive) from parent $p_1$
+and all positions from $x$ (inclusive) to the end of the genome from parent
+$p_2$. We then define the breakpoint \emph{interval} $[b_\ell, b_r)$ as the
+half-closed interval defining the range of possible values for $x$, such
+that $b_\ell \leq x < b_r$.
+
 % Thus, the breakpoints used in the ARG represent the rightmost end of the
 % interval, within which the recombination event could have occurred. To obtain
 % the leftmost end of this interval, we rerun the HMM using mirrored coordinates
@@ -2184,7 +2207,9 @@ Alpha (B.1.1.7) variant reported by \cite{Jackson2021-ik} have recombinant
 ancestry in the Wide ARG. The breakpoint intervals and Pango lineage
 assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
 al., except the Pango lineage assignment of the parents of group B
-recombinants, which were taken from Table 1 (motif-based results).}
+recombinants, which were taken from Table 1 (motif-based results).
+3SEQ interval coordinate modifications are described in the caption for
+Table~\ref{tab:jackson}.}
 \end{table}
 
 \begin{figure}
