@@ -931,14 +931,15 @@ fall into this category (Supplementary Table~\ref{tab:pango-recombinants})
 \caption{\label{fig:pango-simple-origin-graph} Examples of non-nested
 Nextclade Pango X lineages. (A) Subgraph for XA in the Long ARG: all five samples designated
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
-sampled viral genome; dotted lines show ARG continuation. Nodes are coloured by Nextclade
+sampled viral genome; dotted lines show ARG continuation. Vertical position of nodes does not
+show absolute time, but simply relative rank (parents above children). Nodes are coloured by Nextclade
 Pango designation; smaller symbols are non-sample nodes inserted by \texttt{sc2ts}, whose
 Pango status is imputed. Genomic regions inherited by the recombination node are shown;
 breakpoints correspond to the maximum breakpoint position inferred by \texttt{sc2ts}.
-(B) Equivalent plot for the 17 XAG samples in the Long ARG, with abbreviated labelling. Where
+(B) Equivalent subgraph for the 17 XAG samples in the Long ARG, with abbreviated labelling. Where
 non-XAG samples are ancestral to other samples, the number of descendant samples is marked as ``+1'',
 ``+7'', etc.
-(C) Equivalent plot for both origination events involving the four XD samples in the Long ARG.
+(C) Equivalent subgraphs for both origination events involving the four XD samples in the Long ARG.
 Details of the mutations and sample node identities for all three plots are provided in
 supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}, which also provide alternative GISAID Pango designations.
 } \end{figure}
@@ -2182,16 +2183,15 @@ Other details as described in Figure~\ref{fig:breakpoint-distribution}.}
 \includegraphics[width=\textwidth]{figures/supp_recombination_node_mrcas.pdf}
 \caption{\label{fig:recomb_mrcas_voc_breakdown}  Divergence between parent
 lineages for recombination events within and among different VoC categories.
-HMM-consistent recombinants are shown in green, HMM-inconsistent in blue
-(including many of the named Delta-Omicron recombinants). We find 69 HMM
-consistent (77 inconsistent) Alpha-Alpha recombination breakpoints = 13\%
-(10\%) of the total; 84 HMM consistent (143 inconsistent) Delta-Delta
-recombination breakpoints = 18\% (18\%) of the total; 99 HMM consistent (155
-inconsistent) Omicron-Omicron recombination breakpoints = 22\% (19\%) of the
-total; and 2 HMM consistent (20 inconsistent) Delta-Omicron recombination
-breakpoints = 2\% ($<1$\%) of the total. These plots do not include
-recombination breakpoints involved lineages that were not classified into these
-VoC categories}
+There are 78 Alpha|Alpha recombination breakpoints corresponding to 75 recombination nodes 
+(25 breakpoints / 24 nodes with $\geq5$ descendant samples).
+148 breakpoints from 142 nodes are Delta|Delta recombinations (45 breakpoints / 45 nodes with  $\geq5$ descendants),
+and 148 breakpoints from 142 nodes are Omicron|Omicron (71 breakpoints / 68 nodes with $\geq5$ descendants).
+The equivalent figures for Alpha|Delta are 9 / 8 (3 / 2),
+for Alpha|Omicron are 2 / 1 (0 / 0),
+and for Delta|Omicron are 20 / 13 (6 / 3). 
+Note that these plots do not include recombination breakpoints involving lineages that were not classified into these VoC categories.
+}
 \end{figure}
 
 \begin{sidewaystable}
