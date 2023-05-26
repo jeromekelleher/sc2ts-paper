@@ -753,28 +753,48 @@ at this site is due to selection.
 \subsection{Divergence between recombinant parents}
 \label{sec:parent_divergence}
 % Paragraph 1, what does all this mean?
-
 % Purpose of this paragraph - remind the reader that we can only do this
 % sort of things because we have an ARG, and we can do  this at a far
 % greater level of granularity than existing methods.
-[ FIXME this is a rough outline of what an intro para might say]
 An important advantage of inferring a joint model of inheritance,
 mutation and recombination in an ARG (Section~\ref{sec:args})
 is that this allows us to precisely trace the origins of recombinants.
-[Katherine - need some input from you here to say this properly?]
-Existing methods only provide us with approximate estimates of
-the origins of recombination events, and are not able to distinguish
-recombinations between closely related lineages.
+Methods based on motifs among pre-specified lineages
+provide us with estimates of the origins of recombinants as
+parents belonging to one or other of these groups. Defining the
+groups requires care [FIXME and other fiddly things to mention Katherine?]
+RIPPLES~\citep{Turakhia2022-it} does provide precise estimates
+of the parental origins of a recombinant, but since it depends
+on an existing phylogenetic tree, cannot reason about
+nested recombinant origins.
+
+
+\begin{figure} \centering
+\includegraphics[width=\textwidth]{figures/recombination_node_mrcas.pdf}
+\caption{\label{fig:recomb_mrcas}
+Date of common ancestry between the parents on either side of recombination
+breakpoints, as a function of the divergence time between the parents.
+MRCAs of parents associated with Pango designated recombinants (XA, etc)
+are identified in orange. Larger symbols represent breakpoints in recombination
+nodes ancestral to five or more samples.
+Horizontal dotted lines show the four most common MRCA nodes,
+which tend to be associated with major outbreaks and with many immediate children.
+The stacked histogram shows the distribution of parental divergence times, ranging
+from parents that have diverged only a handful of days previously, to much more
+divergent parent lineages. See Figure~\ref{fig:recomb_mrcas_voc_breakdown}
+for equivalent plots broken down by parental VoC classification.
+}
+\end{figure}
 
 % Paragraph 2, what do we plot, specifically?
-In this section we investigate the patterns of divergence between
-the parents of recombination nodes.
+In this section we explore the detailed ancestral relationships between
+recombinant parents by investigate the patterns of divergence between
+them.
 We focus on the Long ARG because it covers time
-periods where recombination is known to have occurred
-a large number of times, for example it contains samples from over
-30 Pango X lineages (i.e., those inferred
+periods where substantial recombination is known to have occurred,
+and contains samples from 33 Pango X lineages (i.e., those inferred
 to have recombinant ancestry; see Section~\ref{sec:pango_x_lineages} for
-further analysis of Pango recombinant lineages in the Long and Wide ARGs).
+further analysis).
 Figure~\ref{fig:recomb_mrcas} shows the estimated date of the most recent
 common ancestor (MRCA) of the parent nodes for each recombination breakpoint,
 plotted against the divergence between these parents (i.e. the
@@ -787,73 +807,56 @@ Larger points distinguish those breakpoints which occur in nodes
 ancestral to 5 or more samples, comprising 316 breakpoints from
 291 recombination nodes. The criterion of 5 descendants matches the
 minimum number required to designate a new Pango recombinant lineage
-\citep{Rambaut2020-dw}, and serves to highlight those recombinants which
-have greater epidemiological significance.
-
-% that we deem to be more reliable by the measure of ``HMM consistency''.
-% We define an  in that when we compare the LS HMM results when run from
-% 5' to 3' versus 3' to 5', it gives the
-% same mutations patterns and sequence-identical 5' parents as when run 3' to 5'
+\citep{Rambaut2020-dw}.
 Note that as each plotted point represents a breakpoint, a recombination
 node with more than one breakpoint (e.g. with 3 or more parents,
 comprising ${\sim}10 \%$ of the
-recombination nodes in Figure ~\ref{fig:recomb_mrcas}) will be represented by several points.
-We caution that some of the time estimates in these figures
-come with a substantial degree of uncertainly,
-since non-sample nodes are dated somewhat crudely in the current version
-of \texttt{sc2ts} (Section~\ref{sec:node_dating}). Nevertheless, the histograms
-clearly show that \texttt{sc2ts} can identify recombination between lineages
-that are only a few weeks apart.
-
-\begin{figure} \centering
-\includegraphics[width=\textwidth]{figures/recombination_node_mrcas.pdf}
-\caption{\label{fig:recomb_mrcas}
-Most recent common ancestor (MRCA) date for pairs of parents on either side
-of a recombination breakpoint, as a function of the divergence time between parent
-pairs. Breakpoints from recombination events caused by Pango designated recombinants
-(XA, etc) are identified in orange. Larger symbols represent breakpoints from
-recombination nodes which are ancestral to five or more samples.
-Horizontal dotted lines show the four most common MRCA nodes; these
-tend to be associated with major outbreaks and with many immediate children.
-The stacked histogram shows the distribution of parental divergence times, ranging
-from parents that have diverged only a handful of days previously, to much more
-divergent parent lineages. See Figure~\ref{fig:recomb_mrcas_voc_breakdown}
-for equivalent plots broken down by parental VoC classification.
-}
-\end{figure}
+recombination nodes in
+Figure~\ref{fig:recomb_mrcas}) will be represented by several points.
 
 % Paragraph 3, what do we say about the dates/nodes of the MRCAs?
 The date of the MRCA of recombinant parents is
 concentrated in several banded rows in Figure~\ref{fig:recomb_mrcas}. These are
 largely due to a few MRCAs shared by many
-recombinants; the top four are indicated by dotted lines in the
-figure. These shared MRCAs lie near the root of large expansions
-(B.1: original variant, B.1.617.2: Delta, BA.1: first Omicron wave,
-and BA.2: second Omicron wave), as demonstrated by the number of samples with those
-Pango designations which trace back to each ancestral node (listed as
-percentages on the plot). The majority of these frequently-shared MRCAs
-are associated with large polytomies (at the extreme,
-the BA.2-linked node has 2,872 immediate children), likely
+recombinants (the top four are indicated in the figure).
+These shared MRCAs lie near the root of large expansions
+% Anyone reading this will know what these are
+% (B.1: original variant, B.1.617.2: Delta, BA.1: first Omicron wave,
+% and BA.2: second Omicron wave)
+% as demonstrated by the number of samples with those
+% Pango designations traback to each ancestral node.
+% The majority of these frequently-shared MRCAs
+and the majority are associated with large polytomies, likely
 indicating a rapid and under-sampled expansion of a clade.
 
 % Paragraph 4, what do we say about the divergence times?
-The histograms in Figure~\ref{fig:recomb_mrcas} show that there is a
+Figure~\ref{fig:recomb_mrcas} shows that there is a
 broad range in divergence times among recombinant parents.
-We can also see that the majority of recombinants arise
+We can see that the majority of recombinants arise
 from parents that diverged 10 to 30 weeks
-previously. However, there is also a peak of recombinants that diverged
-${\sim}95$ weeks prior to the event: these correspond to recombinants whose
+previously. There is also a peak of recombinants that diverged
+${\sim}95$ weeks prior to the event, which correspond to recombinants whose
 parental common ancestor traces to early 2020. We would expect, for example
 Delta-Omicron recombinants to fall into this group, hence it can be
 useful to classify the breakpoints further by the VoC combinations of their
 parent lineages. Considering only the Alpha, Delta, and Omicron VoC classes,
 such a classification reveals that the majority of breakpoints have two Delta or
 two Omicron parents, and that Omicron and Delta are the variants associated
-with the most recombination (Supplementary Figure~\ref{fig:recomb_mrcas_voc_breakdown}).
+with the most recombination (Figure~\ref{fig:recomb_mrcas_voc_breakdown}).
 This may reflect either sampling intensity, the
 prevalence of cases (which increases the
 chance of coinfection and recombination), or possible heterogeneity in
 recombination probabilities among lineages.
+
+The time estimates in these figures should be
+treated with a degree of caution,
+since non-sample nodes are crudely dated in the current version
+of \texttt{sc2ts} (see Section~\ref{sec:node_dating}, in particular
+for discussion of how these dates might be improved using existing
+methods).
+Nevertheless, it is clear
+that \texttt{sc2ts} can identify recombination between lineages
+that are only a few weeks diverged.
 
 \subsection{Recombinant Pango lineages}
 \label{sec:pango_x_lineages}
