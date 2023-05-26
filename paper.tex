@@ -294,10 +294,8 @@ and include an additional year worth of samples (to June 30, 2022).
 \caption{\label{tab:args}Summary of the inferred ARGs. Nodes are classified
 as either samples or by the inference process which produced them to aid
 understanding of the relative importance of these processes to the overall
-topology. Similarly, edges are classified by the type of the parent node,
-giving some insights into how often these nodes are subsequently
-copied from after insertion (although the relationship is more complicated
-for UPGMA inserted nodes). The mean and standard deviation ($\pm$)
+topology. Similarly, edges are classified by the type of the parent node.
+The mean and standard deviation ($\pm$)
 are reported for the number of mutations per node, sample and site.
 }
 \end{table}
@@ -363,8 +361,8 @@ path for each sequence, and the process
 is therefore highly amenable to distributing across multiple machines.
 We therefore anticipate that further development of the
 inference methods and scaling out across multiple servers will
-enable inferences at the full pandemic scale
-(see Discussion).
+enable inferences at the full pandemic scale.
+
 
 \subsection{Backbone phylogeny}
 \label{sec:backbone_phylogeny}
@@ -406,7 +404,7 @@ a downloaded Nextstrain tree, restricted to the time period
 covered by each ARG. To enable this, we ``simplify''~\citep{Kelleher2018-xc}
 the \texttt{sc2ts} ARGs to a backbone containing only those samples
 present in the Nextstrain tree. This results in a small set of shared
-samples (180 for the Wide ARG, 88 for the Long ARG), none of which are
+samples (Wide ARG: 180, Long ARG: 88), none of which are
 assigned to Pango recombinant lineages by Nextclade (see Section
 \ref{sec:pango_x_lineages}).
 
@@ -441,15 +439,29 @@ Supplementary Figure~\ref{fig:cophylogeny_long} shows the same comparison for th
 Figure~\ref{fig:cophylogeny} also reveals some notable differences between the
 trees. Firstly, the \texttt{sc2ts} tree is generally less well resolved,
 particularly in early 2020 when sampling density was much lower than
-later in the pandemic.
-Secondly, there are non-identical sample partitions
-near the tips (e.g. within the Alpha clade).
-Finally, and most noticeably, some branch lengths differ substantially.
+later in the pandemic. Resolution early in the pandemic could be improved
+by using a tree inferred using classical phylogenetic
+approaches for the first few months of the pandemic, before the scale of
+data began to overwhelm these methods. Indeed, this is the approach
+taken by UShER~\citep{Turakhia2021-ur}. Using a pre-existing tree for
+the early stages of the pandemic would be straightforward in \texttt{sc2ts},
+and the main reason we did not do this for the initial
+version under consideration here was to evaluate the algorithm's
+performance with sparse data. Given
+the simplicity of the algorithm, tree inference for the early pandemic
+is surprisingly good.
+The second difference between the \texttt{sc2ts} and Nextstrain trees
+we would like to highlight, are the non-identical sample partitions
+near the tips (e.g.\ within the Alpha clade). It is unclear what
+particular features of the \texttt{sc2ts} algorithm is driving these
+differences, and more study is required to characterise and address them.
+Finally, some branch lengths differ substantially between the \texttt{sc2ts}
+and Nextstrain trees.
 As discussed in Section~\ref{sec:node_dating}, the dating of nodes
-other than samples in \texttt{sc2ts} is currently quite crude, and
-it is likely that branches not ``anchored'' by samples will be
-poorly calibrated. See [SOMEWHERE ELSE] for a discussion of how
-these issues may be alleviated in future versions of \texttt{sc2ts}.
+other than samples in \texttt{sc2ts} is currently quite crude,
+but there are likely straightforward expedients that would yield
+substantial improvements.
+
 
 \subsection{Mutational spectrum}
 \label{sec:mutation_spectrum}
