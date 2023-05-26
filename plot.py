@@ -165,6 +165,19 @@ class Figure:
         raise NotImplementedError()
 
 
+def isomonths_iter(start):
+    """
+    start as 2020-01, 2021-07
+    yield each month as a YYYY-MM string
+    """
+    year, month = [int(x) for x in start.split("-")]
+    while True:
+        yield f"{year}-{month:02}"
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+
 class Cophylogeny(Figure):
     name = None
     pos = 14952  # Position along tree seq to plot trees: 14952 is halfway along
@@ -432,28 +445,8 @@ class Cophylogeny(Figure):
             symbol_size=1,
             y_axis=True,
             y_ticks={
-                self.sc2ts.timediff(isodate): (isodate[:7] if show else "")
-                for isodate, show in {
-                    "2020-01-01": True,
-                    "2020-02-01": False,
-                    "2020-03-01": False,
-                    "2020-04-01": True,
-                    "2020-05-01": False,
-                    "2020-06-01": False,
-                    "2020-07-01": True,
-                    "2020-08-01": False,
-                    "2020-09-01": False,
-                    "2020-10-01": True,
-                    "2020-11-01": False,
-                    "2020-12-01": False,
-                    "2021-01-01": True,
-                    "2021-02-01": False,
-                    "2021-03-01": False,
-                    "2021-04-01": True,
-                    "2021-05-01": False,
-                    "2021-06-01": False,
-                    "2021-07-01": True,
-                }.items()
+                self.sc2ts.timediff(date+"-01"): (date if show else "")
+                for date, show in self.x_axis_ticks.items()
             },
             y_label=" ",
         )
@@ -468,28 +461,8 @@ class Cophylogeny(Figure):
             symbol_size=1,
             y_axis=True,
             y_ticks={
-                self.nxstr.timediff(isodate): (isodate[:7] if show else "")
-                for isodate, show in {
-                    "2020-01-01": True,
-                    "2020-02-01": False,
-                    "2020-03-01": False,
-                    "2020-04-01": True,
-                    "2020-05-01": False,
-                    "2020-06-01": False,
-                    "2020-07-01": True,
-                    "2020-08-01": False,
-                    "2020-09-01": False,
-                    "2020-10-01": True,
-                    "2020-11-01": False,
-                    "2020-12-01": False,
-                    "2021-01-01": True,
-                    "2021-02-01": False,
-                    "2021-03-01": False,
-                    "2021-04-01": True,
-                    "2021-05-01": False,
-                    "2021-06-01": False,
-                    "2021-07-01": True,
-                }.items()
+                self.nxstr.timediff(date+"-01"): (date if show else "")
+                for date, show in self.x_axis_ticks.items()
             },
             y_label=" ",
         )
@@ -553,7 +526,7 @@ class Cophylogeny(Figure):
 
         global_styles += nxstr_styles
         global_styles += sc2ts_styles
-        sc2ts_str = f"Sc2ts {self.name[-4:]} ARG: genomic positions "
+        sc2ts_str = f"Sc2ts {self.name[-4:].capitalize()} ARG: genomic positions "
         sc2ts_str += f"{self.sc2ts.tree.interval.left:.0f} to {self.sc2ts.tree.interval.right:.0f}"
         w, h = 900, 800
         mar_in = 0.05
@@ -610,18 +583,26 @@ class CophylogenyWide(Cophylogeny):
     name = "cophylogeny_wide"
     sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo2-gisaid-il.ts.tsz"
     use_colour = "Pango"
+    x_axis_ticks = {
+        # show ticks for 19 months (up to 2021-07), with labels every 3 months
+        date: i % 3 == 0 for date, i in zip(isomonths_iter("2020-01"), range(19))
+    }
 
 
 class CophylogenyLong(Cophylogeny):
     name = "supp_cophylogeny_long"
     sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
     use_colour = "Pango"
+    x_axis_ticks = {
+        # show ticks for 31 months (up to 2022-07), with labels every 6 months
+        date: i % 4 == 0 for date, i in zip(isomonths_iter("2020-01"), range(29))
+    }
 
 
 class RecombinationNodeMrcas(Figure):
     name = None
     sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
-    csv_fn = "breakpoints_{}.csv"
+    csv_fn = "long_arg_recombinants.csv"
     data_dir = "data"
 
     def __init__(self):
@@ -631,6 +612,9 @@ class RecombinationNodeMrcas(Figure):
         df = pd.read_csv(
             os.path.join(self.data_dir, self.csv_fn.format(prefix)),
             parse_dates=["causal_date", "mrca_date"])
+        df[f"parents_dist_{self.ts.time_units}"] = (
+            self.ts.nodes_time[df["mrca"]] - self.ts.nodes_time[df["node"]]
+        )
         logging.info(f"{len(df)} breakpoints | {len(np.unique(df.node))} re nodes read")
         # Remove potential contaminents
         self.df = df[df.max_descendant_samples > 1]
@@ -787,7 +771,7 @@ class RecombinationNodeMrcas_subset(RecombinationNodeMrcas):
             ax_main,
             ax_hist,
             self.df[[v == set(restrict) for v in parent_variants]],
-            f"{'|'.join(restrict)} breakpoints",
+            f"{'+'.join(restrict)} breakpoints",
             label_tweak=[0.2, 0],
             **kwargs,
         )
@@ -1339,6 +1323,9 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
             345330,
             # 394058, # a singleton recombinant, prob worth not showing
         ]
+        basic_nodes += [n.id
+               for n in ts.nodes()
+               if n.metadata.get(cls.node_def_lineage) == "XB" and n.is_sample() and n.id not in basic_nodes]
         for n in basic_nodes:
             pango = ts.node(n).metadata.get("Imputed_" + cls.imputed_lineage)
             if pango != "XB":
@@ -1367,31 +1354,35 @@ class Pango_XB_nxcld_tight_graph(Pango_X_tight_graph):
         dy = pos[351074][1] - pos[341400][1]
 
         # All adjustments below found by tedious trial and error
-        change_pos(pos, 206466, dx=dx / 2)
-        change_pos(pos, 200603, dx=2 * dx)
-        change_pos(pos, 12108, dx=-dx)
+        # Root rec node
+        change_pos(pos, 206466, dx=3/4 * dx)
+        change_pos(pos, 200603, dx=2.5 * dx)
+        change_pos(pos, 12108, dx=-1 * dx)
 
-        change_pos(pos, 310013, dx=dx)
-        change_pos(pos, 295321, dx=dx)
-        change_pos(pos, 335988, dx=dx)
-        change_pos(pos, 325792, dx=dx)
-        change_pos(pos, 282861, dx=dx)
-        change_pos(pos, 282727, dx=2.5 * dx)
-        change_pos(pos, 265975, dx=3 * dx)
+        change_pos(pos, 274176, dx=dx)
+        change_pos(pos, 325792, dx=2 * dx)
+        change_pos(pos, 273897, dx=3 * dx)
+        #change_pos(pos, 295321, dx=dx)
+        change_pos(pos, 282861, dx= -3 * dx)
+        change_pos(pos, 282727, dx= -2 * dx)
+        #change_pos(pos, 265975, dx=3 * dx)
 
         change_pos(pos, 309252, dx=-2 * dx)  # Rec node
         change_pos(pos, 289479, dx=-dx / 2, dy=dy / 2)
-        change_pos(pos, 320601, dx=-dx)
+        change_pos(pos, 320601, dx=2 * dx) # Far left B.1.634 parent
+        change_pos(pos, 339521, dx=dx / 2)
+        change_pos(pos, 320394, dx=2.5 * dx)
         change_pos(pos, 179, dx=-2 * dx, dy=dy)
         change_pos(pos, 3940, dx=-3.5 * dx, dy=dy)
         change_pos(pos, 1165, dx=-dx, dy=dy)
+        change_pos(pos, 5731, dx=dx/3)
 
-        change_pos(pos, 285180, dx=dx)
-        change_pos(pos, 285181, dx=dx)
+
+        change_pos(pos, 285180, dx=2.5 * dx)
+        change_pos(pos, 285181, dx=2 * dx)
         change_pos(pos, 300560, dx=dx)
         change_pos(pos, 328838, dx=dx)
 
-        change_pos(pos, 339516, dx=dx)
 
     @classmethod
     def legend_key(cls, ax, nodes, ts):
