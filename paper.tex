@@ -382,7 +382,7 @@ lineages relatively low.
 \caption{\label{fig:cophylogeny}
 Tanglegram comparing a local tree from the Wide ARG
 (sampled to mid-2021) and an ``all-time'' global Nextstrain tree
-(downloaded on January 21, 2023).
+(downloaded on 2023-01-21).
 Phylogenies are pruned down to those samples present as tips in both datasets. Light grey
 lines match the corresponding samples between the two trees; black circles
 indicate identical sample partitions between the two trees. Terminal branches
@@ -421,10 +421,7 @@ real but previously unobserved recombination events between closely related stra
 or could be artefacts of the current \texttt{sc2ts} method and its parameterization.
 
 Figure~\ref{fig:cophylogeny} compares the backbone phylogeny of the Wide ARG with
-a GISAID global ``all-time'' tree from Nextstrain
-% We give the date below in the caption - we could probably remove if either from there
-% or from here (I suggest from here)
-(downloaded on January 21, 2023).
+a GISAID global ``all-time'' tree from Nextstrain.
 We illustrate the backbone phylogeny by visualizing
 a single tree in the middle of the viral genome
 since other regions of the
@@ -527,10 +524,10 @@ cases we have a large number of mutations, and a majority of these
 sample, i.e.\ on terminal branches.
 Although the average number
 of mutations per sample is small
-(Wide ARG: 0.77, Long ARG: 1.38; c.f.\ Table~\ref{tab:args}), the average number per site
-is large (Wide ARG: 41.23, Long ARG: 36.10; c.f.\ Table~\ref{tab:args}). This is
-partly driven by some highly mutagenic sites (e.g., site 28271 has over 7,000
-mutations in the Wide ARG, c.f.\ Figure~\ref{fig:breakpoint-distribution}), which
+(Wide ARG: 0.77, Long ARG: 1.38; Table~\ref{tab:args}), the average number per site
+is large (Wide ARG: 41.23, Long ARG: 36.10; Table~\ref{tab:args}). This is
+partly driven by some highly mutagenic sites (e.g., site 28,271 has over 7,000
+mutations in the Wide ARG, Figure~\ref{fig:breakpoint-distribution}), which
 may be artefactual.
 A significant issue with the current version of \texttt{sc2ts} is an excess
 of inferred reversion mutations, with 5.99\% of all mutations in the Wide
@@ -546,8 +543,8 @@ established results.
 In Figure~\ref{fig:mutational_spectra}B we compare the mutational spectrum
 in the Wide ARG to the results of \cite{Yi2021-sc},
 who reconstructed a SARS-CoV-2 phylogeny of
-over 350,000 genomes sampled globally from December 24, 2019, to January 12,
-2021, and classified the mutations occurring along the phylogeny.
+over 350,000 genomes sampled globally from 2019-12-24 to 2021-01-12
+and classified the mutations occurring along the phylogeny.
 We categorised all single nucleotide
 mutations in the Wide ARG by type (defined by the inherited and derived states),
 excluding mutations inherited by only a single sample (which are
@@ -570,7 +567,7 @@ documented to be commonplace in animal and human coronaviruses
 \citep{Su2016-epidemiology}. While recombination in SARS-CoV-2
 was shown early on to be frequent \emph{in-vitro}
 \citep{Gribble2021-coronavirus}, the relatively slow accumulation
-of genetic diversity early on in the pandemic hampered efforts to
+of genetic diversity early in the pandemic hampered efforts to
 detect recombinant strains. A number of early studies relying on
 analysing patterns of linkage disequilibrium and searching for
 mosaic genomes carrying characteristic mutations of different
@@ -665,14 +662,14 @@ a recombinant sequence switches from inheriting from one parent to another.
 Even if we observe the recombinant sequence before signficant
 divergence occurs (during onward transmission), if the two parent sequences
 are similar there is no way to
-% distinguish them.
-accurately specify the breakpoint.
+accurately identify the breakpoint.
 Here we define the
 interval around a particular breakpoint as the genome coordinates over which the
 sequences for the left and right parent nodes are identical. The right-hand
 extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
 (Section~\ref{sec:ls}), and the left endpoint is then derived by directly
-comparing the parent sequences.
+comparing the parent sequences. See Section~\ref{sec:treatment_recombinants} for
+a precise definition of breakpoints and their intervals.
 
 \begin{figure}
 \centering
@@ -694,7 +691,7 @@ for the Long ARG.}
 Figure~\ref{fig:breakpoint-distribution} shows the distribution of breakpoint
 intervals and patterns of recurrent mutation along the genome in the Wide ARG
 (see Figure~\ref{fig:long_arg_breakpoint_distribution} for the same information
-of the Long ARG). We focus on the Wide ARG here as it covers roughly the same time
+for the Long ARG). We focus on the Wide ARG here as it covers roughly the same time
 period as the analyses of \cite{Turakhia2022-it}, facilitating comparisons
 of the results. To reduce the effect of artefactual recombinants, we
 consider only the breakpoints associated with the 1,522 recombination nodes
@@ -702,9 +699,8 @@ that are ancestral to more than one sample. The mean length of these intervals
 is 1,685 bases (median 962), and the length distribution is summarised in the
 inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-Emphasising that further work is required to filter out spuriously inferred
-recombination events and improve the accuracy of the inferred breakpoint
-intervals, we can draw two preliminary conclusions from
+Although we emphasise that further work is required to filter out spuriously inferred
+recombination events, we can draw two preliminary conclusions from
 Figure~\ref{fig:breakpoint-distribution}.
 % While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
 % requires further study, a few key properties stand out.[TODO, write this
@@ -712,7 +708,7 @@ Figure~\ref{fig:breakpoint-distribution}.
 Firstly, in several cases there is a clear relationship between
 gene boundaries and the breakpoint intervals. For example, ORF7a and OR7b
 show sharp differences in the number of intersecting intervals within
-these genes. This could be due to a number of factors, such as [BIOLOGY]
+these genes. This could be due to a number of factors, such as [FIXME: BIOLOGY?]
 or the presence of sites with artefactually high numbers of mutations
 in the intergenic regions (see the next paragraph for more discussion).
 Secondly, we see substantially fewer intervals intersecting with the N
@@ -722,26 +718,7 @@ gene than other regions, in agreement with the results of
 It is important to note that the precise endpoints of intervals can be
 somewhat arbitrary, since they are defined by exact comparisons
 of a recombinant's parents.
-% The presence of problematic sites that are enriched
-% for errors will therefore tend to artificially truncate breakpoint intervals
-% at these sites.
-% It is therefore helpful to compare the number of interecting intervals
-% with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
-% For example, position 28,271 (located in the ORF8-N intergenic
-% region) has the largest number of mutations and corresponds to the
-% left endpoint of 9 intervals and the right of 57.
-% The 7,572 mutations  (including 5,782 insertions and 1,605 deletions)
-% at this site are a likely indicator that this
-% homopolymeric region is prone to sequencing errors
-% and should be included in the list of ``problematic sites'' that
-% are excluded from analysis (Section~\ref{sec:data_preprocessing}).
-% There can be good biological reasons for this too though
-% However, hypermutable sites such as 27,972 \citep{Jungreis2021-dh}
-% have the same effect of truncating intervals. At this site we have
-% 770 mutations (including 425 C$>$T, 314 T$>$C) with potential signals
-% of polymorphism maintained by selection [FIXME!!], and 58 intervals
-% with endpoints within one base of this site.
-Thus, breakpoint intervals will tend to be truncated at sites which are
+Thus, breakpoint intervals will tend to be truncated at sites that are
 hypermutable, either due to being prone to sequencing errors or
 for biological reasons such as selection pressure.
 It is therefore helpful to compare the number of intersecting intervals
