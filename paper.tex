@@ -431,7 +431,7 @@ agreement with the Nextstrain tree. The sample genomes cluster by their
 assigned Pango lineage status, and many variants and their descendants form
 identical monophyletic clades in both the trees (e.g., the Alpha and Delta VoC
 clades, labelled).
-Supplementary Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG, with similar results.
+Figure~\ref{fig:cophylogeny_long} shows the same comparison for the Long ARG, with similar results.
 
 Figure~\ref{fig:cophylogeny} also reveals some notable differences between the
 trees. Firstly, the \texttt{sc2ts} tree is generally less well resolved,
@@ -860,34 +860,36 @@ that are only a few weeks diverged.
 
 \subsection{Recombinant Pango lineages}
 \label{sec:pango_x_lineages}
-
-In this section we focus on the detailed genealogy of samples that have been
-previously identified as recombinants, i.e. given a Pango designation that
-starts with an ``X''. We focus primarily on the Long ARG
-since it contains many more recombinants. The status
+In this section we focus on the detailed ancestry of samples that have been
+previously identified as recombinants, i.e., designated as belonging
+to a Pango lineage with a name starting with an ``X''.
+We focus primarily on the Long ARG
+since it contains many more recombinants (the status
 of Pango X lineages in the Wide ARG is briefly
-summarised in Section~\ref{sec-pango_x_wide_arg}.
+summarised in Section~\ref{sec-pango_x_wide_arg}).
+Designation of samples to Pango lineages is not a straightforward task,
+and there can be significant variation between methods.
+Here, we consider two different assignments of Pango lineages to samples in
+the Long ARG, those provided by Nextclade and by GISAID.
+Using the Nextclade assignments, the Long ARG contains 749 samples from
+33 Pango X lineages (711 samples from 33 lineages when we
+remove singleton recombinants).
+In contrast, using the GISAID designations we
+have 515 samples from 38 X lineages
+[FIXME this doesn't make sense! How did we drop 1 sample and 3 lineages?]
+(514 samples from 35 lineages when we filter singletons).
+This variation in classifications highlights the uncertainty that exists when
+assigning Pango X lineages to samples, and is important to keep in mind
+when interpreting the results here.
 
-The Long ARG contains 749 samples designated by Nextclade [CITATION] as Pango
-recombinants, classed into 33 Pango lineages; this
-reduces to 711 samples from the same 33 lineages
-when singleton recombinants (i.e. recombination
-nodes subtending only one sample) are removed.
-In contrast, using the alternative GISAID designation process [CITATION], only
-515 samples in the Long ARG are labelled as Pango recombinants,
-which fall into 38 lineages (when singleton recombinants are excluded this
-drops to 514 samples from 35 lineages). The variation in Nextclade versus
-GISAID classifications highlights the frequent uncertainty that exists when
-assigning Pango X lineages to samples.
-
-Below we focus on the 749 Nextclade-designated recombinant samples, all
+We focus here on the 749 Nextclade-designated recombinant samples, all
 but two of which descend from a recombination node in the Long ARG.
 These two samples are designated XP, and a likely
 explanation for the absence of a corresponding recombination event in the Long ARG
 is that the characteristic multibase deletion for XP
 (\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
-during preprocessing (See~\ref{sec:data_preprocessing} for details and potential
-improvements). 38 of the remaining X designated samples are singleton recombinants,
+during preprocessing (See Section~\ref{sec:data_preprocessing} for details and potential
+improvements). Of the remaining X designated samples, 38 are singleton recombinants,
 descending
 from recombination nodes that are ancestral only to that sample (10 are XZ; 6
 are XE;  3 each from XN and XK; 2 each from XC, XS, XV, XQ and XAB; and 1
@@ -896,7 +898,8 @@ be enriched for sequencing errors and lineage designation artefacts, and so we
 exclude them from further analysis in this section.
 
 The most recent recombination node for 79 samples (XN: 53, XZ: 16, XAJ: 6, XE:
-1, XAD: 1, XAH: 1, XAK: 1) is the same. This node, caused by strain
+1, XAD: 1, XAH: 1, XAK: 1) is the same. This node, introduced as a
+result of adding strain
 Denmark/DCGC-281594/2021, is ancestral to more than 127K samples,
 and is highly likely to be a spuriously inferred recombination event.
 Understanding the origin of this
@@ -905,11 +908,10 @@ events is an important aspect of future work.
 For simplicity, we exclude these samples from further analyses in
 this section.
 
-The remaining remaining 630 Pango recombinant samples trace back to 50 different
-most recent recombination nodes, corresponding to 31
-Nextclade-designated Pango lineages. These are summarised
-in Supplementary Table~\ref{tab:pango-recombinants}, and fall
-into three classes: single origin, multiple origin,
+The remaining 630 samples (31 Pango lineages) trace back to 50 different
+most recent recombination nodes, summarised
+in Table~\ref{tab:pango-recombinants}.
+These fall into three classes: single origin, multiple origin,
 and multiple nested origins, which we discuss in the following sections.
 
 \subsubsection{Single origin}
@@ -921,7 +923,7 @@ transmission. We would expect our ARG to reveal evolutionary histories of this
 nature, where all the samples assigned to a given recombinant lineage
 trace back to one recombination node, representing a single originating
 recombination event. In the Long ARG, 16 of the 31 Pango recombinants lineages identified by Nextclade
-fall into this category (Supplementary Table~\ref{tab:pango-recombinants})
+fall into this category (Table~\ref{tab:pango-recombinants})
 
 \begin{figure}
 \centering
@@ -984,7 +986,7 @@ The remaining ten are of the XAG type with multiple Pango
 designated lineages as additional descendants of the originating recombination event.
 In some cases,
 these may be, however, be a result of erroneous Pango designations.
-Supplementary Table~\ref{tab:pango-recombinants} also shows the official
+Table~\ref{tab:pango-recombinants} also shows the official
 Pango designated parent lineages and \texttt{sc2ts} inferred parent lineages,
 which extensively agree (although \texttt{sc2ts} provides more a precise
 parent designation).
@@ -1001,7 +1003,7 @@ recombinants are independent rather than nested (i.e. there is no overlap in the
 of descendant samples for each recombination node). Most have a single ``main''
 recombination event from which the majority of the corresponding recombinant samples
 descend, and which agrees with the offical Pango designated parent lineages
-(see Supplementary Table~\ref{tab:pango-recombinants}, but note that
+(see Table~\ref{tab:pango-recombinants}, but note that
 in XJ and XU there are too few Pango X samples to decide on a ``main'' clade).
 
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple multiple-origin example, consisting of
@@ -1021,7 +1023,7 @@ suggests that these may indeed represent true independent Deltacron recombinants
 The canonical XD definition is based entirely on samples from northern Europe, particularly
 France (\url{https://github.com/cov-lineages/pango-designation/issues/444}) so it seems
 plausible that the earlier Turkish sample has been mislabelled XD by Nextclade.
-Indeed, GISAID does not label any of these samples XD (see Supplementary
+Indeed, GISAID does not label any of these samples XD (see
 Figure~\ref{fig:pango_XD_gisaid_graph} which gives exact mutations and sample identifiers).
 Investigation of other multiple-origin examples reveals somewhat similar patterns,
 suggesting that most of the simple multiple origin examples are due to incorrect
@@ -1031,7 +1033,7 @@ Pango labelling.
 As well as cases where Pango X lineage origins are attributed to independent
 recombination events, four Pango X lineages in the Long ARG have Nextclade-designated
 samples whose ancestry involves multiple non-independent (``nested'') recombination events
-(marked by~\textdagger ~in Supplementary Table~\ref{tab:pango-recombinants}; the most
+(marked by~\textdagger ~in Table~\ref{tab:pango-recombinants}; the most
 complex appears to be XAB). Figure~\ref{fig:complex_origins_graph} plots the earliest example,
 XB,  which is present in both the Wide and Long ARGs. The subgraph shows a recombination
 between a B.1 sample and B.1.627 sample that leads not only to all the XB-labelled samples
@@ -1051,7 +1053,7 @@ various non-recombinant pre-Alpha lineages (blue).}
 
 Note that in the Long ARG, the nested recombination events account for only one
 XB sample (pink upper left, with 7 mutations above it); moreover, this sample is
-not identified as XB by GISAID (Supplementary Figure~\ref{fig:pango_XB_gisaid_graph})
+not identified as XB by GISAID (Figure~\ref{fig:pango_XB_gisaid_graph})
 indicating some uncertainty in lineage assignment in this part of the ARG.
 Also note that the number of mutations on the lineages immediately above and
 below the recombination node (totalling 18+2) is rather large, suggesting
