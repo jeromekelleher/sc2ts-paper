@@ -552,7 +552,6 @@ sample or those occurring on terminal branches (data not shown).
 
 \subsection{Early recombinants}
 \label{sec:jackson_recombs}
-% FIXME: this is rubbish, can someone do better?
 RNA viruses are known to recombine at high rates
 \citep{Simon2011-rna}, and recombination has been widely
 documented to be commonplace in animal and human coronaviruses
@@ -581,16 +580,16 @@ These findings are closely replicated in both the Wide and Long ARGs.
 \toprule
 Group        & Sequences & Method & Interval & Parents \\
 \midrule
-A (XA)       & 4   & Jackson        &  21,256--21,613 & B.1.177/B.1.1.7 \\
+A (XA)       & 4   & Jackson        &  21,256--21,615 & B.1.177/B.1.1.7 \\
              &     &\texttt{sc2ts} &  21,256--22,228 & B.1.177.18/B.1.1.7 \\
 \cmidrule{3-5}
-B            & 2   & Jackson        &  6,529--6,954 & B.1.36/B.1.1.7  \\
+B            & 2   & Jackson        &  6,529--6,955 & B.1.36/B.1.1.7  \\
              &     &\texttt{sc2ts} &  6,529--6,955 & B.1.36/B.1.1.7  \\
 \cmidrule{3-5}
-C            & 3   &Jackson        &  25,997--27,441 &  B.1.1.7/B.1.221 \\
+C            & 3   &Jackson        &  25,997--27,443 &  B.1.1.7/B.1.221 \\
              &     & \texttt{sc2ts} &  25,997--27,973 &  B.1.1.7/B.1.221 \\
 \cmidrule{3-5}
-D            & 3   & Jackson        &  21,576--23,063 &  B.1.36.17/B.1.1.7 \\
+D            & 3   & Jackson        &  21,576--23,064 &  B.1.36.17/B.1.1.7 \\
              &     & \texttt{sc2ts} &  22,445--23,064 &  B.1.36.39/B.1.1.7 \\
 \bottomrule
 \end{tabular}
@@ -599,8 +598,14 @@ intervals and parent lineages for Groups A-D
 reported by \cite{Jackson2021-ik} with the corresponding
 recombination events in the Wide ARG.
 The second column gives the number of sequences in the group.
-Intervals are half-closed, so that for an interval $\ell$--$r$
-the breakpoint $x$ can be $\ell \leq x < r$.
+The 3SEQ~\citep{boni2007exact} coordinates
+reported by Jackson et al.\ have been altered as follows: we
+add one to both left and right coordinates to correspond to the
+\texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals
+right-exclusive. See Section~\ref{sec:treatment_recombinants}
+for a precise definition of sequence inheritance at recombination
+events, and the corresponding breakpoint intervals.
 Details for all 16 sequences are
 given in Table~\ref{tab:jackson_supplement}.}
 \end{table}
@@ -1909,6 +1914,24 @@ position. The left-most extent of the breakpoint interval is derived
 by sequence comparison between the parents, as described in
 Section~\ref{sec:breakpoint_intervals}.
 
+For a particular recombination node in an ARG, a  breakpoint
+is defined as the location at which inheritance switches from one parent
+to another.
+In the \texttt{tskit} encoding (see Section~\ref{sec:args}) inheritance between
+nodes is defined by edges $(\ell, r, p, c)$, which state that child node $c$
+inherits from parent node $p$
+over the half-closed genome interval $[\ell, r)$.
+For simplicity, suppose that a recombination node $u$ inherits from two
+parents $p_1$ and $p_2$ with a breakpoint of $x$.
+In the ARG, this is defined by two edges
+$(0, x, p_1, u)$ and $(x, L, p_2, u)$ where $L$ is the length of the genome.
+Since inheritance intervals are half-closed,
+$u$ inherits all positions up to $x$ (exclusive) from parent $p_1$
+and all positions from $x$ (inclusive) to the end of the genome from parent
+$p_2$. We then define the breakpoint \emph{interval} $[b_\ell, b_r)$ as the
+half-closed interval defining the range of possible values for $x$, such
+that $b_\ell \leq x < b_r$.
+
 % Thus, the breakpoints used in the ARG represent the rightmost end of the
 % interval, within which the recombination event could have occurred. To obtain
 % the leftmost end of this interval, we rerun the HMM using mirrored coordinates
@@ -2129,41 +2152,64 @@ but for the Long ARG (i.e. subsampled to mid-2022).}
 \textbf{Group} & \textbf{Parents} & \thead{Breakpoint \\
 interval(s)} &
 \textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
-\hline ALDP-11CF93B & A
-    & \thead{B.1.177 \\ Alpha} & 21,255–21,613 & \thead{B.1.177.18 \\ Alpha} &
-21,256–22,228 \\
-    ALDP-125C4D7 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256–22,228 \\
-ALDP-130BB95 & A & \thead{B.1.177 \\ Alpha} & 21,255–21,613 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256–22,228 \\
-LIVE-DFCFFE & A & \thead{B.1.177 \\ Alpha} & 18,998–20,294 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256–22,228 \\
-QEUH-CCCB30 & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-    \thead{B.1.36 \\ Alpha} & 6,529–6,955 \\
-QEUH-CD0F1F & B & \thead{B.1.36.28 \\ Alpha} & 6,528–6,953 &
-    \thead{B.1.36 \\ Alpha} & 6,529–6,955 \\
-MILK-1166F52 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
-    \thead{Alpha \\ B.1.221} & 25,997–27,973 \\
-MILK-11C95A6 & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
-    \thead{Alpha \\ B.1.221} & 25,997–27,973 \\
-QEUH-109B25C & C & \thead{Alpha \\ B.1.221.1} & 25,996–27,441 &
-    \thead{Alpha \\ B.1.221} & 25,997–27,973 \\
-MILK-126FE1F & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445–23,064 \\
-RAND-12671E1 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445–23,064 \\
-RAND-128FA33 & D & \thead{B.1.36.39 \\ Alpha} & 20,703–23,062 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445–23,064 \\
-CAMC-CBA018 & n/a & \thead{B.1.177 \\ Alpha} & 20,389–21,254 &
+\hline ALDP-11CF93B & A &
+    \thead{B.1.177 \\ Alpha} & 21,256--21,615 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
+ALDP-125C4D7 & A &
+    \thead{B.1.177 \\ Alpha} & 21,256--21,615 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
+ALDP-130BB95 & A &
+    \thead{B.1.177 \\ Alpha} & 21,256--21,615 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
+LIVE-DFCFFE & A &
+    \thead{B.1.177 \\ Alpha} & 18,999--20,296 &
+    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
+QEUH-CCCB30 & B &
+    \thead{B.1.36.28 \\ Alpha} & 6,529--6,955 &
+    \thead{B.1.36 \\ Alpha} & 6,529--6,955 \\
+QEUH-CD0F1F & B &
+    \thead{B.1.36.28 \\ Alpha} & 6,529--6,955 &
+    \thead{B.1.36 \\ Alpha} & 6,529--6,955 \\
+MILK-1166F52 & C &
+    \thead{Alpha \\ B.1.221.1} & 25,997--27,443 &
+    \thead{Alpha \\ B.1.221} & 25,997--27,973 \\
+MILK-11C95A6 & C &
+    \thead{Alpha \\ B.1.221.1} & 25,997--27,443 &
+    \thead{Alpha \\ B.1.221} & 25,997--27,973 \\
+QEUH-109B25C & C &
+    \thead{Alpha \\ B.1.221.1} & 25,997--27,443 &
+    \thead{Alpha \\ B.1.221} & 25,997--27,973 \\
+MILK-126FE1F & D &
+    \thead{B.1.36.39 \\ Alpha} & 20,704--23,064 &
+    \thead{B.1.36.39 \\ Alpha} & 22,445--23,064 \\
+RAND-12671E1 & D &
+    \thead{B.1.36.39 \\ Alpha} & 20,704--23,064 &
+    \thead{B.1.36.39 \\ Alpha} & 22,445--23,064 \\
+RAND-128FA33 & D &
+    \thead{B.1.36.39 \\ Alpha} & 20,704--23,064 &
+    \thead{B.1.36.39 \\ Alpha} & 22,445--23,064 \\
+CAMC-CBA018 & n/a &
+    \thead{B.1.177 \\ Alpha} & 20,390--21,256 &
     \thead{B.1.177 \\ Alpha} & 17,616--21,256 \\
-CAMC-CB7AB3 & n/a & \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,267–4,474 \\ 20,389–21,254} &
-     \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3268--5389\\17,616--21,256} \\
-MILK-103C712 & n/a & \thead{B.1.177.17 \\ Alpha} & \thead{408–444 \\ 26,801–27,876} &
+CAMC-CB7AB3 & n/a &
+    \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,268--4,476 \\ 20,390--21,256} &
+    \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,268--5,389\\17,616--21,256} \\
+MILK-103C712 & n/a &
+    \thead{B.1.177.17 \\ Alpha} & \thead{409--446 \\ 26,802--27,878} &
     n/a & n/a \\
-QEUH-1067DEF & n/a & \thead{Alpha \\ B.1.177.9} & 10,523–10,869 &
-    \thead{Alpha \\ B.1.177} & 7729--10871 \\ \hline
+QEUH-1067DEF & n/a &
+    \thead{Alpha \\ B.1.177.9} & 10,524--10,871 &
+    \thead{Alpha \\ B.1.177} & 7,729--10,871 \\ \hline
 \end{tabular}
-\caption{\label{tab:jackson_supplement}Recombinant sequences involving the Alpha (B.1.1.7) variant reported by \cite{Jackson2021-ik} have recombinant ancestry in the Wide ARG. The breakpoint intervals and Pango lineage assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et al., except the Pango lineage assignment of the parents of group B recombinants, which were taken from Table 1 (motif-based results).}
+\caption{\label{tab:jackson_supplement}
+Recombinant sequences involving the
+Alpha (B.1.1.7) variant reported by \cite{Jackson2021-ik} have recombinant
+ancestry in the Wide ARG. The breakpoint intervals and Pango lineage
+assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
+al., except the Pango lineage assignment of the parents of group B
+recombinants, which were taken from Table 1 (motif-based results).
+3SEQ interval coordinate modifications are described in the caption for
+Table~\ref{tab:jackson}.}
 \end{table}
 
 \begin{figure}
@@ -2183,13 +2229,13 @@ Other details as described in Figure~\ref{fig:breakpoint-distribution}.}
 \includegraphics[width=\textwidth]{figures/supp_recombination_node_mrcas.pdf}
 \caption{\label{fig:recomb_mrcas_voc_breakdown}  Divergence between parent
 lineages for recombination events within and among different VoC categories.
-There are 78 Alpha+Alpha recombination breakpoints corresponding to 75 recombination nodes 
+There are 78 Alpha+Alpha recombination breakpoints corresponding to 75 recombination nodes
 (25 breakpoints / 24 nodes with $\geq5$ descendant samples).
 148 breakpoints from 142 nodes are Delta+Delta recombinations (45 breakpoints / 45 nodes with  $\geq5$ descendants),
 and 148 breakpoints from 142 nodes are Omicron+Omicron (71 breakpoints / 68 nodes with $\geq5$ descendants).
 The equivalent figures for Alpha+Delta are 9 / 8 (3 / 2),
 for Alpha+Omicron are 2 / 1 (0 / 0),
-and for Delta+Omicron are 20 / 13 (6 / 3). 
+and for Delta+Omicron are 20 / 13 (6 / 3).
 Note that these plots do not include recombination breakpoints involving lineages that were not classified into these VoC categories.
 }
 \end{figure}
