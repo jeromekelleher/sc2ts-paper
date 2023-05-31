@@ -27,7 +27,7 @@ import tqdm
 import pandas as pd
 
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
-import sc2ts  # install with python -m pip install git+https://github.com/jeromekelleher/sc2ts
+import sc2ts
 
 import utils
 
