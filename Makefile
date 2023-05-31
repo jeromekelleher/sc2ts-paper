@@ -1,17 +1,13 @@
 DATA=
 FIGURES=
-ILLUSTRATIONS=
 
 all: paper.pdf
 
-paper.pdf: paper.tex paper.bib ${DATA} ${FIGURES} ${ILLUSTRATIONS}
+paper.pdf: paper.tex paper.bib ${DATA} ${FIGURES}
 	pdflatex -shell-escape paper.tex
 	bibtex paper
 	pdflatex paper.tex
 	pdflatex paper.tex
-
-illustrations/%.svg: illustrations.py
-	python3 illustrations.py $*
 
 %.pdf : %.svg
 	# Needs inkscape >= 1.0
