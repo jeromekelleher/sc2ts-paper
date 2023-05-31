@@ -1,4 +1,4 @@
-pandas
+pandas>=2.0.2
 tqdm
 sc2ts
 git+http://github.com/tskit-dev/tsconvert
