@@ -883,7 +883,8 @@ Using the Nextclade assignments, the Long ARG contains 749 samples from
 remove singleton recombinants).
 In contrast, using the GISAID designations we
 have 515 samples from 38 X lineages
-(511 samples from 35 lineages when we filter singletons).
+(511 samples from 35 lineages when we filter singleton recombinants). Of the GISAID designations,
+28 are shared with Nextclade (26 after filtering singletons).
 This variation in classifications highlights the uncertainty that exists when
 assigning Pango X lineages to samples, and is important to keep in mind
 when interpreting the results here.
@@ -945,8 +946,8 @@ Pango designation; smaller symbols are non-sample nodes inserted by \texttt{sc2t
 Pango status is imputed. Genomic regions inherited by the recombination node are shown;
 breakpoints correspond to the maximum breakpoint position inferred by \texttt{sc2ts}.
 (B) Equivalent subgraph for the 17 XAG samples in the Long ARG, with abbreviated labelling. Where
-non-XAG samples are ancestral to other samples, the number of descendant samples is marked as ``+1'',
-``+7'', etc.
+non-XAG samples are ancestral to further unplotted samples, the number of unplotted descendant samples
+is marked as ``+1'', ``+7'', etc.
 (C) Equivalent subgraphs for both origination events involving the four XD samples in the Long ARG.
 Details of the mutations and sample node identities for all three plots are provided in
 supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, and \ref{fig:pango_XD_gisaid_graph}, which also provide alternative GISAID Pango designations.
@@ -1092,8 +1093,9 @@ between a B.1.177.18 sample (specifically the strain Wales/ALDP-115BF41/2021,
 EPI\_ISL~1012804) which contributed the majority of the genome from the start
 to a maximum position of 22227, and an unknown (inserted) node with imputed
 Pango lineage B.1.1.7, which contributed the remaining right hand portion. The
-recombination node has five immediate children: four sample leaves (EPI\_ISLs
-989697, 1019487, 1104468 and 1122630) and a UPGMA-inserted node which is the
+recombination node has five immediate children: four sample leaves (strains
+Wales/ALDP-11CF93B/2021, Wales/ALDP-125C4D7/2021, Wales/LIVE-DFCFFE/2021, and
+Wales/ALDP-130BB95/2021) and a reversion-push node which is the
 ancestor of all other XA samples in the dataset.
 
 For XB, all samples trace back to an originating node which is the product of a
@@ -1145,8 +1147,7 @@ conclusions.
 % back and we should be prepared. Recombination is now a vital factor, and
 % present a way in which it can be incorporated. Our results are accurate.
 Although the COVID-19 pandemic is no longer considered a global emergency
-by the WHO, the prevalence of SARS-CoV-2 continues to be high worldwide
-with persistent high levels of infection. This has allowed the
+by the WHO, the prevalence of SARS-CoV-2 continues to be high worldwide. This fuels 
 proliferation of many variants, with more than 600 Pango-designated lineages
 circulating globally in the last three months (January to March, 2023;
 https://gisaid.org/; access on March 27, 2023). High prevalence also brings a
@@ -1180,7 +1181,7 @@ approach~\citep[e.g.,][]{Aksamentov2021-hj} would
 likely yield significant improvements, and reduce the effect of sites with
 artefactually high levels of mutation (e.g., site 28271;
 Section~\ref{sec:breakpoint_intervals}).
-Using a pre-existing tree built using state-of-the-art phylogenetics methods
+Using a pre-existing tree built using state-of-the-art phylogenetic methods
 for the early stages of the pandemic (Section~\ref{sec:backbone_phylogeny}),
 and minor adaptations to standard node-dating methods
 (Section~\ref{sec:node_dating}) should help resolve the most notable issues with
@@ -1244,7 +1245,7 @@ in large ARGs would have many applications besides those explored here.
 % concerned with masking input alignments. We wrote no C at all. This kind
 % of code reuse and ease of analysis is a major bonus.
 The vast volumes of whole genome sequence data generated during the pandemic
-has presented classical phylogenetics methods and software with major difficulties.
+has presented classical phylogenetic methods and software with major difficulties.
 Standard interchange formats such as FASTA, Newick and VCF were simply not designed
 to deal with millions of samples, and their limitations have come sharply
 into focus~\citep{Turakhia2021-ur,de2023maximum}.
