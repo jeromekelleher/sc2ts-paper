@@ -119,13 +119,6 @@ Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
 combine specific subsets of characteristic mutations from different lineages
 \citep[e.g.,][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz},
 and as a result can only identify inter-lineage recombination events.
-% specific to those motifs.
-% % JK: I've left this out because I felt it broke the narrative up a bit, but
-% % happy to put back in. (We're still citing the paper in a few places).
-% Others have inferred recombinant
-% genealogies to disentangle recombination from recurrent mutation, without
-% having to pre-specify characteristic mutations for each lineage
-% \citep{Ignatieva2021-rg}.
 \cite{Turakhia2022-it} presented a
 phylogeny-based approach (``RIPPLES'') to identify putative recombinants among
 over ten million SARS-CoV-2 genomes, without pre-specifying sets of characteristic
@@ -676,7 +669,7 @@ The recombination node for group A forms a monophyletic clade of all
 \label{sec:breakpoint_intervals}
 It is rarely possible to be precise about the position on the genome at which
 a recombinant sequence switches from inheriting from one parent to another.
-Even if we observe the recombinant sequence before signficant
+Even if we observe the recombinant sequence before subsequent
 divergence occurs (during onward transmission), if the two parent sequences
 are similar there is no way to
 accurately identify the breakpoint.
@@ -697,8 +690,8 @@ the Wide ARG. Top panel shows the intervals for 1,769 breakpoints associated
 with 1,522 recombination nodes with at least two descending samples, plotted along the genome
 as line segments (coloured by interval width). The inset histogram shows the
 distribution of these interval widths (truncated at 10kb).
-The bottom panel shows the number of intervals that intersect with
-each site along the genome (left axis, orange), and the number of mutations
+The bottom panel shows the number of intervals that span 
+each site along the genome (left axis, orange) and the number of mutations
 per site (right axis, blue).
 The top-ten sites by mutation count are annotated.
 See Figure~\ref{fig:long_arg_breakpoint_distribution} for the equivalent plot
@@ -716,22 +709,40 @@ that are ancestral to more than one sample. The mean length of these intervals
 is 1,685 bases (median 962), and the length distribution is summarised in the
 inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-Although we emphasise that further work is required to filter out spuriously inferred
-recombination events, we can draw two preliminary conclusions from
-Figure~\ref{fig:breakpoint-distribution}.
-% While the detailed interpretation of Figure~\ref{fig:breakpoint-distribution}
-% requires further study, a few key properties stand out.[TODO, write this
-% better. ]
-Firstly, in several cases there is a clear relationship between
-gene boundaries and the breakpoint intervals. For example, ORF7a and OR7b
-show sharp differences in the number of intersecting intervals within
-these genes. This could be due to a number of factors, such as [FIXME: BIOLOGY?]
-% reduced frequency of breakpoint sequence motifs, or secondary structure. Sorry, I don't have a citation for this, just theories. The RIPPLES paper vaguely mentions "important mechanistic bias shapes the distribution of recombination events". But maybe we just don't know yet?
-or the presence of sites with artefactually high numbers of mutations
-in the intergenic regions (see the next paragraph for more discussion).
-Secondly, we see substantially fewer intervals intersecting with the N
-gene than other regions, in agreement with the results of
-\cite{Turakhia2022-it}.
+Although we emphasise that further work is required to filter out spuriously inferred recombination events, 
+we can draw some preliminary conclusions from Figure~\ref{fig:breakpoint-distribution}.
+The number of intervals spanning a site (orange curve) is lower at the ends of the genome, 
+as expected due to the lack of information about recombination with few flanking sites.
+In addition, the number of intervals spanning a site often 
+drops near the beginning of a gene.
+This is particularly apparent at the ORF8/N gene interface, 
+with the N gene containing fewer potential recombination breakpoints 
+than other genes, in agreement with the results of \cite{Turakhia2022-it}. 
+Noticeable declines in the number of spanning intervals are also 
+seen near the beginning of S, M, ORF7a, and ORF8.
+These declines are sometimes associated with hypermutated sites (e.g., 27,384 and 28,271 
+near the beginning of ORF7a and N, respectively), as expected because sites that 
+undergo mutation at high rates are more likely to differ between the 
+parents of a recombinant and so provide information about the location of a breakpoint.
+This pattern may, however, also be an artefact of sequencing errors causing sites 
+to appear different between the parents when they are not 
+(indeed, there is evidence that 28271 
+
+The 7,572 mutations (including 5,782 insertions and 1,605 deletions)
+at this site are an indicator that this
+homopolymeric region may be prone to sequencing errors
+may…).
+In other cases, however, the drop in intervals does not appear to 
+coincide with hypermutability and may reflect shifts in the actual 
+rate of recombination between genes.  
+Indeed, template switching is known to occur at hotspots, 
+which often involve transcription-regulatory sequences preceding genes 
+in SARS-CoV-2~\citep{Yang2021-characterizing}
+The rate of recombination may also depend on the relative abundance 
+of different subgenomic RNA intermediates that span different genes, 
+affecting the availability of templates and influencing the rate of 
+homologous recombination~\citep{Kim2020-gt,Zou2021-sars}  
+[Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here)]
 
 It is important to note that the precise endpoints of intervals can be
 somewhat arbitrary, since they are defined by exact comparisons
@@ -1012,8 +1023,8 @@ in XJ and XU there are too few Pango X samples to decide on a ``main'' clade).
 Figure~\ref{fig:pango-simple-origin-graph}C shows a simple multiple-origin example, consisting of
 the 4 samples labelled XD by Nextclade in the Long ARG. The left hand subgraph
 (containing three XD samples, all sampled in France) has an earliest
-sample (EPI\_ISL~11222324, dated 2022-02-26), while the right hand
-subgraph has a single XD sample (EPI\_ISL~8514045, sampled in Turkey and dated 2021-12-30).
+sample (strain France/HDF-biopath-7747831001/2022) dated 2022-02-26, while the right hand
+subgraph has a single XD sample (strain Turkey/HSGM-F12594/2021) dated 2021-12-30.
 Both involve an Omicron lineage being inserted into the middle of a Delta genome, but
 the breakpoints in each case are slightly different: the start of the Omicron insertion
 in the French samples has an estimated rightmost position of 21641bp
@@ -1684,10 +1695,10 @@ and edges (Wide ARG: 12.66\%, Long ARG: 18.46\%)
 as mutation collapsing.
 
 Together these operations substantially increase the overall parsimony
-of the inferred ARGs, most noticably in terms of the number of
+of the inferred ARGs, most noticeably in terms of the number of
 reversion mutations inferred. These nodes are also being chosen by the
 LS HMM as likely choices of parent (as indicated by the node and edge
-counts quoted above), also demostrating that the hueristics are successfully
+counts quoted above), also demonstrating that the heuristics are successfully
 capturing features of real sequences.
 However, they are both simple
 greedy operations, just examining the local parts of the
@@ -1760,7 +1771,7 @@ that $b_\ell \leq x < b_r$.
 The LS HMM machinery, and the interpretation of inferred recombinant paths and
 breakpoint intervals is a central part of \texttt{sc2ts}, and there are many
 ways to extend and improve. For example, the current parameterisation of using
-a single ``mismatch ratio'' is very simplistic (Section~\ref{sec:ls}), and likely
+a single ``mismatch ratio'' is very simplistic (Section~\ref{sec:ls}) and likely
 results in a flat likelihood space where many recombinant paths have equal
 probability of being chosen.
 Post-processing the match results to produce
@@ -1768,7 +1779,7 @@ more parsimonious breakpoints may also be a worthwhile avenue for development.
 In particular, we may choose to insert breakpoints for the ARG that are chosen
 from within the possible interval, rather than the current approach of taking
 the rightmost value. Cases where we have more than two parents may either be
-the ``stacking'' of multiple recombination events, or instances where
+the ``stacking'' of multiple recombination events or instances where
 the HMM has chosen to switch to a third sequence rather than back to
 the original parent (where this is equally parsimonious). Many putative
 recombination events, however, will represent poor quality data, where
@@ -1776,7 +1787,7 @@ a recombinant copying path happens to be a more likely explanation
 of a highly divergent sequence.
 A thorough analysis of the behaviour of the LS model in the context
 of a pandemic-scale ARG may lead to significant improvements in our
-ability identify recombinants and to filter poor quality data.
+ability to identify recombinants and to filter poor quality data.
 
 \subsection{Node dating}
 \label{sec:node_dating}
@@ -1793,8 +1804,8 @@ and the chosen parent nodes equally (in the case of
 trees inferred from daily sample clusters,
 Section~\ref{sec:sample-cluster-tree-inference}) or by adding arbitrary
 small values when creating new nodes using parsimony rules
-(Section~\ref{sec:parsimony-heuristics}). Since the ARGs here are
-very treelike, with recombination nodes consituting a tiny fraction
+(Section~\ref{sec:parsimony-heuristics}). Because the ARGs for SARS-CoV-2 are
+very treelike, with recombination nodes constituting a tiny fraction
 of the overall topology (Table~\ref{tab:args}), existing methods
 \cite[e.g.,][]{to2016fast} could likely be adapted to accurately
 date the vast majority of the nodes.
@@ -1805,7 +1816,7 @@ The findings of this study are
 based on sequences and metadata available on GISAID (\url{https://gisaid.org/})
 up to 2022-08-22 and accessible at
 \url{https://doi.org/10.55876/gis8.230329cd}.
-We removed sequences
+We~removed sequences
 if they had ambiguous collection dates, were collected before 2020-01-01
 or were isolated from a non-human host.
 We aligned sequences to the Wuhan-Hu-1/2019 reference sequence
@@ -1860,7 +1871,7 @@ delay filter.
 As the results of \texttt{sc2ts} are sensitive to the existence of
 time-travellers, an important aspect of future work is to find better ways
 to identify them. One possibility is to use the LS HMM itself to flag
-overly divergent sequences, and to exclude them from attachment to the ARG.
+overly divergent sequences and to exclude them from attachment to the ARG.
 We might also estimate collection dates by adding these potential time travellers
 back to the ARG, allowing an automated assessment of collection date discrepancies.
 
@@ -1871,7 +1882,7 @@ back to the ARG, allowing an automated assessment of collection date discrepanci
 \caption{\label{fig:imputation}A schematic of the iterative procedure to impute
 Pango lineage for inserted, non-sample nodes. Here, three nodes (question
 marks) have unknown Pango lineage (A). The lineage for node N1 can be directly
-copied from its parent (L2). The lineage for node N2 must be inferred from
+copied from its parent (L2), which has an identical sequence. The lineage for node N2 must be inferred from
 that of the parent (L2) plus the lineage-defining mutation (red X)
 on the connecting edge. The lineage for node N3 can then be copied from
 that of node N2.}
@@ -1942,6 +1953,12 @@ Supplemental Table.
 
 The inferred ARGs described here are available on request to those with
 the appropriate GISAID data access.
+
+The mapping of \texttt{tskit} IDs to strain and EPI\_ISL identifiers for the
+subgraph plots in Supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, \ref{fig:pango_XD_gisaid_graph} and \ref{fig:pango_XB_gisaid_graph} are at
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Pango_X_graph_sample_maps.txt}.
+
+The 
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
