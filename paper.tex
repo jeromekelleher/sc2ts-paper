@@ -45,7 +45,7 @@ University of British Columbia, Vancouver, British Columbia, Canada}
 \maketitle
 
 \begin{abstract}
-Recombination is an ongoing and increasingly important feature of circulating lineages of SARS-CoV-2, challenging how we represent the evolutionary history of this virus and giving rise to new variants of potential public health concern by combining transmission and immune evasion properties of different lineages. Detection of new recombinant strains is challenging, with most methods looking for breaks between sets of mutations that characterize distinct lineages. 
+Recombination is an ongoing and increasingly important feature of circulating lineages of SARS-CoV-2, challenging how we represent the evolutionary history of this virus and giving rise to new variants of potential public health concern by combining transmission and immune evasion properties of different lineages. Detection of new recombinant strains is challenging, with most methods looking for breaks between sets of mutations that characterize distinct lineages.
 In addition, many basic approaches fundamental to the study of viral
 evolution assume that recombination is negligible, in that a single
 phylogenetic tree can represent the genetic ancestry of the
@@ -690,7 +690,7 @@ the Wide ARG. Top panel shows the intervals for 1,769 breakpoints associated
 with 1,522 recombination nodes with at least two descending samples, plotted along the genome
 as line segments (coloured by interval width). The inset histogram shows the
 distribution of these interval widths (truncated at 10kb).
-The bottom panel shows the number of intervals that span 
+The bottom panel shows the number of intervals that span
 each site along the genome (left axis, orange) and the number of mutations
 per site (right axis, blue).
 The top-ten sites by mutation count are annotated.
@@ -709,47 +709,42 @@ that are ancestral to more than one sample. The mean length of these intervals
 is 1,685 bases (median 962), and the length distribution is summarised in the
 inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-Although we emphasise that further work is required to filter out spuriously inferred recombination events, 
+Although we emphasise that further work is required to filter out spuriously inferred recombination events,
 we can draw some preliminary conclusions from Figure~\ref{fig:breakpoint-distribution}.
-The number of intervals spanning a site (orange curve) is lower at the ends of the genome, 
+The number of intervals spanning a site (orange curve) is lower at the ends of the genome,
 as expected due to the lack of information about recombination with few flanking sites.
-In addition, the number of intervals spanning a site often 
+In addition, the number of intervals spanning a site often
 drops near the beginning of a gene.
-This is particularly apparent at the ORF8/N gene interface, 
-with the N gene containing fewer potential recombination breakpoints 
-than other genes, in agreement with the results of \cite{Turakhia2022-it}. 
-Noticeable declines in the number of spanning intervals are also 
+This is particularly apparent at the ORF8/N gene interface,
+with the N gene containing fewer potential recombination breakpoints
+than other genes, in agreement with the results of \cite{Turakhia2022-it}.
+Noticeable declines in the number of spanning intervals are also
 seen near the beginning of S, M, ORF7a, and ORF8.
-These declines are sometimes associated with hypermutated sites (e.g., 27,384 and 28,271 
-near the beginning of ORF7a and N, respectively), as expected because sites that 
-undergo mutation at high rates are more likely to differ between the 
+These declines are sometimes associated with hypermutated sites (e.g., 27,384 and 28,271
+near the beginning of ORF7a and N, respectively), as expected because sites that
+undergo mutation at high rates are more likely to differ between the
 parents of a recombinant and so provide information about the location of a breakpoint.
-This pattern may, however, also be an artefact of sequencing errors causing sites 
-to appear different between the parents when they are not 
-(indeed, there is evidence that 28271 
-
-The 7,572 mutations (including 5,782 insertions and 1,605 deletions)
-at this site are an indicator that this
-homopolymeric region may be prone to sequencing errors
-may…).
-In other cases, however, the drop in intervals does not appear to 
-coincide with hypermutability and may reflect shifts in the actual 
-rate of recombination between genes.  
-Indeed, template switching is known to occur at hotspots, 
-which often involve transcription-regulatory sequences preceding genes 
+This pattern may, however, also be an artefact of sequencing errors causing sites
+to appear different between the parents when they are not
+(see the discussion of potential errors at site 28,271 below).
+In other cases, however, the drop in intervals does not appear to
+coincide with hypermutability and may reflect shifts in the actual
+rate of recombination between genes.
+Indeed, template switching is known to occur at hotspots,
+which often involve transcription-regulatory sequences preceding genes
 in SARS-CoV-2~\citep{Yang2021-characterizing}
-The rate of recombination may also depend on the relative abundance 
-of different subgenomic RNA intermediates that span different genes, 
-affecting the availability of templates and influencing the rate of 
-homologous recombination~\citep{Kim2020-gt,Zou2021-sars}  
+The rate of recombination may also depend on the relative abundance
+of different subgenomic RNA intermediates that span different genes,
+affecting the availability of templates and influencing the rate of
+homologous recombination~\citep{Kim2020-gt,Zou2021-sars}
 [Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here)]
 
 It is important to note that the precise endpoints of intervals can be
 somewhat arbitrary, since they are defined by exact comparisons
 of a recombinant's parents.
 Thus, breakpoint intervals will tend to be truncated at sites that are
-hypermutable, either due to being prone to sequencing errors or
-for biological reasons such as selection pressure.
+hypermutable, either due to increased information about parentage
+or spurious inferences caused by sequencing errors.
 It is therefore helpful to compare the number of intersecting intervals
 with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
 For instance, position 28,271 (located in the ORF8-N intergenic
@@ -766,7 +761,7 @@ within one base of site 27,972, which has undergone 770 mutation events
 truncating ORF8, and it has been posited that the truncation is neutral
 or advantageous for transmission, and disadvantageous within-host
 \citep{Jungreis2021-dh}, suggesting that the high rate of recurrent mutation
-at this site is due to selection.
+at this site may be due to selection.
 
 % JK Dropping this for now:
 % We further consider the breakpoint intervals within the context of
@@ -1103,7 +1098,7 @@ Pango lineage B.1.1.7, which contributed the remaining right hand portion. The
 recombination node has five immediate children: four sample leaves (strains
 Wales/ALDP-11CF93B/2021, Wales/ALDP-125C4D7/2021, Wales/LIVE-DFCFFE/2021, and
 Wales/ALDP-130BB95/2021) and a inserted node which is the
-ancestor of all other XA samples in the dataset. The geographical clustering inferred by \texttt{sc2ts} 
+ancestor of all other XA samples in the dataset. The geographical clustering inferred by \texttt{sc2ts}
 for these samples matches the findings of \citet{Jackson2021-ik}.
 
 For XB, all samples trace back to an originating node which is the product of a
@@ -1122,7 +1117,7 @@ of the Nextclade-designated XB samples. The one exception accounts for about 17\
 designated XB nodes and involves a recombination between descendants of the
 originating XB recombination. More specifically, strain
 USA/TX-HMH-MCoV-43092/2021 is inferred to be a recombinant
-between an XB grandparent and its XB grandchild, which 
+between an XB grandparent and its XB grandchild, which
 is likely to be artefactual.
 
 For the few XC-labelled samples, the Wide ARG identifies more than one
@@ -1957,8 +1952,6 @@ the appropriate GISAID data access.
 The mapping of \texttt{tskit} IDs to strain and EPI\_ISL identifiers for the
 subgraph plots in Supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, \ref{fig:pango_XD_gisaid_graph} and \ref{fig:pango_XB_gisaid_graph} are at
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Pango_X_graph_sample_maps.txt}.
-
-The 
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
