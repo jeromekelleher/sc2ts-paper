@@ -16,6 +16,7 @@ paper.pdf: paper.tex paper.bib ${DATA} ${FIGURES}
 paper.ps: paper.dvi
 	dvips paper
 
+
 paper.dvi: paper.tex paper.bib
 	latex paper.tex
 	bibtex paper
