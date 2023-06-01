@@ -197,7 +197,7 @@ for inferring ARGs for SARS-CoV-2 at pandemic scale, in real time.
 Building on the open-source \texttt{tskit} library, the method
 explicitly reconstructs genealogies with both
 mutation and recombination, which
-can be conveniently and efficiently analysed using standard data science
+can be conveniently and efficiently analysed using standard Python data science
 tools. Inference is based on incrementally adding batches of sequences
 based on their collection dates, and proceeds in three phases.
 % First, likely attachment nodes in the current ARG
@@ -379,8 +379,7 @@ in SARS-CoV-2 recombination is relatively rare, with recombination nodes account
 for $<$0.3\% of the inferred ancestry (Table~\ref{tab:args}). As a result,
 relationships between strains can often be represented by a
 single phylogenetic tree, particularly when looking at
-a subset of sampled genomes, e.g., restricted by time or limited to close
-relatives. We expect ARGs to be particularly tree-like
+a subset of strains. We expect ARGs to be particularly tree-like
 early in the pandemic, when co-infection was less likely and divergence between
 lineages relatively low.
 
@@ -843,9 +842,9 @@ large range in divergence times among recombinant parents, with a broad
 spread of times from about 10 to 80 weeks prior to the recombination event
 and a minor additional peak of recombinants that diverged
 ${\sim}95$ weeks, corresponding to recombinants whose
-parental common ancestor traces to early 2020. We would expect, for example
-Delta-Omicron recombinants to fall into this group, hence it can be
-useful to classify the breakpoints further by the VoC combinations of their
+parental common ancestor traces to early 2020. This latter group should
+contain, for example Delta-Omicron recombinants. More widely, we can
+further classify the breakpoints by the VoC combinations of their
 parent lineages. Considering only the Alpha, Delta, and Omicron VoC classes,
 such a classification reveals that the majority of breakpoints have two Delta or
 two Omicron parents, and that Omicron and Delta are the variants associated
@@ -1151,8 +1150,7 @@ Although the COVID-19 pandemic is no longer considered a global emergency
 by the WHO, the prevalence of SARS-CoV-2 continues to be high worldwide. This fuels
 proliferation of many variants, with more than 600 Pango-designated lineages
 circulating globally in the last three months (January to March, 2023;
-https://gisaid.org/; access on March 27, 2023). High prevalence also brings a
-higher risk of coinfection, increasing opportunities for new phenotypically
+https://gisaid.org/; access on March 27, 2023). High prevalence increases the risk of coinfection, providing opportunities for new phenotypically
 distinct recombinants to emerge and spread. Phylogenetic approaches have
 been central to pandemic responses thus far [FIXME: Examples and citations].
 % 1. Form the basis of variant classifications (UShER paper),
@@ -1428,71 +1426,6 @@ mutation-collapsing nodes (D) and pushed-reversion nodes (E) are inserted to
 make more parsimonious placements of mutations that should be shared or should
 not be immediately reverted, respectively.}
 \end{figure}
-
-
-% We introduce an ARG inference method, summarised in
-% Figure~\ref{fig:overview_sc2ts}.
-% % Note going to rewrite this anyway, so not trying to make it flow.
-% It uses (1) an efficient HMM implementation of the Li and Stephens (LS) model
-% \citep{Li2003-ib} to copy SARS-CoV-2 genomes (see Sections 2.2 and 2.3); (2)
-% the reported collection dates of the SARS-CoV-2 samples to determine the order
-% of genome copying; and (3) several parsimony-based heuristics to locally refine
-% the topology. In brief, this combined approach uses the likelihood model of LS
-% to attach sample genomes to existing nodes and to detect recombinants, but
-% because many of the daily tip samples harbour few, if any, mutational changes,
-% we use parsimony to resolve their close relationships.
-
-% Our HMM implementation, sc2ts, builds a reticulated graph for SARS-CoV-2 by
-% taking advantage of the reported collection dates to incrementally grow the
-% ARG. The inference process occurs forward in time, attaching new genomes
-% aggregated by their collection date (daily batches), from the earliest to the
-% last collection date. Prior to attaching sample genomes, the ARG is initialised
-% such that the Wuhan-Hu-1/2019 reference genome is the root node. In the absence
-% of recombination, the ARG is a single tree with no reticulation (Figure 1A);
-% however, in the presence of recombination, a reticulate ARG is generated, with
-% variation in tree topology across the genome (Figure 1B). Unlike standard
-% phylogenetic trees in which internal nodes always represent inferred ancestors,
-% internal nodes in the sc2ts ARGs represent sequences which can either be
-% inferred ancestors or known samples.
-
-% Each daily batch of genomes is first attached to the growing ARG without any
-% phylogenetic resolution. In cases where the newly added sequence is inferred to
-% be a recombinant, a recombination node is inserted; the ``date'' of this node
-% is arbitrarily set to the average of the collection dates of the genome and the
-% most recent of its parent nodes. Otherwise, the genomes are attached to the
-% most closely related ancestral node (an attachment node). This creates
-% polytomies that are then locally resolved among the descendants of each
-% attachment node using the Unweighted Pair Group Method with Arithmetic Mean
-% (UPGMA) algorithm \citep{Michener1957-tr}, with average linkage (Figure 1C).
-% This hierarchical clustering algorithm produces a dendrogram relating a set of
-% sequences, which is treated as an ultrametric binary tree here. Subsequently,
-% mutations are placed onto the daily tree by maximum parsimony. An issue with
-% the UPGMA algorithm is that it may create internal nodes supported by no
-% informative site (i.e., having no mutation immediately ancestral to them). In
-% an adjustment step, such unsupported internal nodes are removed to
-% ``un-resolve'' the daily tree; the remaining internal nodes, which are
-% supported by at least one shared mutation, are retained. The ``dates'' of the
-% non-sample internal nodes are set to the same date as the samples in the daily
-% batch. The resulting daily tree is grafted onto the attachment node in the
-% global ARG.
-
-% During ARG inference, two types of non-sample nodes are inserted to improve
-% parsimonious placement of mutations: mutation-coalescing nodes and
-% pushed-reversion nodes. We call these operations tree adjustments. A
-% mutation-collapsing node is inserted when a shared mutation between sibling
-% nodes is found (Figure 1D). An attempt to create mutation-collapsing nodes is
-% made after grafting a new daily tree onto the global ARG. If shared mutations
-% exist between two or more sibling nodes, then a parsimonious explanation is to
-% create a new node that is the parent of those siblings, on which these
-% mutations occurred. A pushed-reversion node is inserted when an immediate
-% reversion occurs (Figure 1E), i.e., a mutation that reverts another mutation on
-% its parent node. Instead of retaining both the mutation and immediate
-% reversion, only the mutation is kept after a pushed-reversion node is inserted,
-% thereby reducing the number of mutations on the branches. Note that these
-% non-sample nodes are used as reconstructed genomes during HMM copying.
-
-% Furthermore, during inference, the ARG is automatically encoded, stored, and
-% updated as a tree sequence using tskit \citep{Kelleher2018-xc}.
 
 \subsection{Ancestral Recombination Graphs}
 \label{sec:args}
@@ -1962,10 +1895,7 @@ ways to extend and improve. For example, the current parameterisation of using
 a single ``mismatch ratio'' is very simplistic (Section~\ref{sec:ls}), and likely
 results in a flat likelihood space where many recombinant paths have equal
 probability of being chosen.
-More sophisticated parameterisations where we
-condition on known per-site mutation rates (and perhaps per-base subsitution
-rates) may lead to better results, although perhaps at the cost of some
-reduction in interpretability. Post-processing the match results to produce
+Post-processing the match results to produce
 more parsimonious breakpoints may also be a worthwhile avenue for development.
 In particular, we may choose to insert breakpoints for the ARG that are chosen
 from within the possible interval, rather than the current approach of taking
@@ -2387,9 +2317,5 @@ singleton recombinant nested within the main grouping, and the tsk285180 node ma
 but which is labelled XB by Nextstrain.
 }
 \end{sidewaysfigure}
-
-%% Could insert the Pango_X_graph_sample_maps.txt with something like this
-%% but maybe best to leave it as a separate file?
-%% \lstinputlisting[caption={XXX}]{data/Pango_X_graph_sample_maps.txt}
 
 \end{document}
