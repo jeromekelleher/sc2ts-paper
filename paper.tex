@@ -24,20 +24,22 @@
 
 \title{Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2}
 \author[1]{Shing H. Zhan}
-\author[2,5]{Katherine Eaton}
-\author[3,5]{Anastasia Ignatieva}
-\author[1,5]{Benjamin Jeffery}
-\author[1,5]{Duncan S. Palmer}
-\author[1,5]{Yan Wong}
+\author[3$\star$]{Anastasia Ignatieva}
+\author[1$\star$]{Yan Wong}
+\author[2]{Katherine Eaton}
+\author[1]{Benjamin Jeffery}
+\author[1]{Duncan S. Palmer}
 \author[2]{Carmen L. Murall}
 \author[4]{Sarah P. Otto}
-\author[1,6]{Jerome Kelleher}
-\affil[1]{Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, Oxford, United Kingdom}
+\author[1$\dagger$]{Jerome Kelleher}
+\affil[1]{Big Data Institute, Li Ka Shing Centre for Health
+Information and Discovery, University of Oxford, Oxford, United Kingdom}
 \affil[2]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
 \affil[3]{Department of Statistics, University of Oxford, Oxford, United Kingdom}
-\affil[4]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver, British Columbia, Canada}
-\affil[5]{Preliminary alphabetic ordering}
-\affil[6]{Correspondence. E-mail: jerome.kelleher@bdi.ox.ac.uk}
+\affil[4]{Department of Zoology and Biodiversity Research Centre,
+University of British Columbia, Vancouver, British Columbia, Canada}
+\affil[$\star$]{Joint second author}
+\affil[$\dagger$]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
 
 \begin{document}
 \maketitle
@@ -192,7 +194,7 @@ tree sequence data structure.
 % results, with forward refs to Results sections.]
 Here we present a preliminary version of \texttt{sc2ts}, a novel method
 for inferring ARGs for SARS-CoV-2 at pandemic scale, in real time.
-Building on the open-source \texttt{tskit} library, the method 
+Building on the open-source \texttt{tskit} library, the method
 explicitly reconstructs genealogies with both
 mutation and recombination, which
 can be conveniently and efficiently analysed using standard data science
@@ -762,7 +764,7 @@ at this site is due to selection.
 % sort of things because we have an ARG, and we can do  this at a far
 % greater level of granularity than existing methods.
 An important advantage of explicitly inferring an ARG compatible
-with a given sample of sequences (Section~\ref{sec:args}) 
+with a given sample of sequences (Section~\ref{sec:args})
 is that this allows us to precisely trace the origins of recombinants.
 Methods based on motifs among pre-specified lineages
 provide us with estimates of the origins of recombinants as
@@ -1146,7 +1148,7 @@ conclusions.
 % back and we should be prepared. Recombination is now a vital factor, and
 % present a way in which it can be incorporated. Our results are accurate.
 Although the COVID-19 pandemic is no longer considered a global emergency
-by the WHO, the prevalence of SARS-CoV-2 continues to be high worldwide. This fuels 
+by the WHO, the prevalence of SARS-CoV-2 continues to be high worldwide. This fuels
 proliferation of many variants, with more than 600 Pango-designated lineages
 circulating globally in the last three months (January to March, 2023;
 https://gisaid.org/; access on March 27, 2023). High prevalence also brings a
@@ -1400,7 +1402,7 @@ Recombination is inferred as an integral and ongoing part of this
 process, requiring only a few additional steps to facilitate
 later analysis (Section~\ref{sec:treatment_recombinants}).
 The results of inference for a given day is then
-a genealogy recording genetic inheritance as well as 
+a genealogy recording genetic inheritance as well as
 mutation and recombination events
 for all of the sequences inserted into the ARG up to that day,
 which can be conveniently and efficiently analysed using the
