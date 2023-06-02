@@ -211,14 +211,14 @@ based on their collection dates and proceeds in three phases.
 First, possible paths connecting each sample to the current ARG
 are inferred (allowing for recombination) using the
 Li and Stephens (LS) model (Figure~\ref{fig:overview_sc2ts}A, B);
-the LS ``copying processs'' is a Hidden Markov Model (HMM)
+the LS ``copying process'' is a Hidden Markov Model (HMM)
 approximating the effects of mutation
 and recombination, widely used in large-scale genomics (Section~\ref{sec:ls}).
 Then, since many samples
 in the batch can share an attachment path,
 we infer phylogenetic trees for each of the clusters separately using standard methods
 (Figure~\ref{fig:overview_sc2ts}C; Section~\ref{sec:sample-cluster-tree-inference}).
-Finally, we attach the trees for these sample-clusters to the current
+Finally, we attach the trees for these sample clusters to the current
 ARG and apply some parsimony-based heuristics to address issues
 introduced by the inherent greediness of this strategy
 (Figure~\ref{fig:overview_sc2ts}D, E; Section~\ref{sec:parsimony-heuristics}).
@@ -261,7 +261,7 @@ with a maximum delay between sampling and submission dates of 30 days
 (see Section~\ref{sec:filtering_time_travellers}).
 For the Long ARG, we randomly sub-sample a maximum of 1,000 genomes per
 day (again restricting the delay between sampling and submission to 30 days)
-and include an additional year worth of samples (to June 30, 2022).
+and include an additional year's worth of samples (to June 30, 2022).
 
 \begin{table}
 \begin{center}
@@ -326,7 +326,7 @@ In particular, we can see that approximately 40\% of the edges
 in both ARGs involve inheriting directly from sampled genomes.
 Both ARGs contain 29,422 sites, due to the large number of sequences (Section \ref{sec:data_preprocessing}),
 and a large number of mutations.
-The average number of mutations per-site is high, although some
+The average number of mutations per site is high, although some
 of this may be explained by outlier sites with artefactually high
 mutation counts (see Figure~\ref{fig:breakpoint-distribution}).
 Despite this, however, the number of mutations per node
@@ -1149,7 +1149,7 @@ circulating globally in the last three months (January to March, 2023;
 High prevalence increases the risk of coinfection,
 providing opportunities for new phenotypically
 distinct recombinants to emerge and spread. Phylogenetic approaches have
-been central to pandemic responses thus
+been central to responses to the pandemic thus
 far~\citep{Attwood2022-ab,Bloom2023-fitness,Abbas2022-reconstruction,
 Mclaughlin2022-genomic}.
 However, with the rise to high frequency of recombinant
@@ -1286,7 +1286,7 @@ Section~\ref{sec:parsimony-heuristics}).
 Recombination is inferred as an integral and ongoing part of this
 process, requiring only a few additional steps to facilitate
 later analysis (Section~\ref{sec:treatment_recombinants}).
-The results of inference for a given day is then
+The result of inference for a given day is then
 a genealogy recording genetic inheritance as well as
 mutation and recombination events
 for all of the sequences inserted into the ARG up to that day,
@@ -1470,7 +1470,7 @@ along this branch. We can then approximate the probability of observing a mismat
 \end{align*}
 where $\nu$ is the mutation rate per $\mbox{ploidy} \times N_e$ generations.
 
-The probabilities of these competing process of mismatch and recombination are
+The probabilities of these competing processes of mismatch and recombination are
 usually controlled by the site-specific parameters $\mu_\ell$ and $r_\ell$,
 respectively. For this work we used a slightly different formulation, which
 uses one parameter, the mismatch ratio (MMR), to control the relative
@@ -1525,8 +1525,7 @@ beforehand using external software to hard-call or define a distribution over
 the possible missing nucleotides, and use that in the determination of path
 probabilities. Another is to not attempt to estimate the true nucleotide, but
 rather to consider such sites as uninformative to the path probability, and
-impute missing data within that path on the fly, placing them within the
-the emission probability transition from unknown to
+impute missing data within that path on the fly, placing them within the emission probability transition from unknown to
 the emission probability from unknown to
 to any other state as 1.
 % $\mbox{N} \rightarrow \star$ as 1.
@@ -1577,7 +1576,7 @@ fruitful avenue for future work.
 % ways in which this could be done properly.
 Examples include stochastic traceback~\citep[e.g.,][]{rasmussen2014genome}
 through the collection of paths at the global optimum to glean further
-information about our the likelihood surface, and determine whether there are
+information about the likelihood surface, and determine whether there are
 downstream implications for our conclusions. Here, we have considered the
 Viterbi algorithm to make statements about the most likely paths through the
 data. The machinery used here can be modified to run the forwards and backwards
@@ -1714,7 +1713,7 @@ we perform some additional steps in \texttt{sc2ts}.
 
 The LS HMM may infer identical paths and patterns of mutations
 for multiple samples in a daily batch, and so we
-create a ``recombination`` node (marked with a specific ``flags'' value)
+create a ``recombination'' node (marked with a specific ``flags'' value)
 for each distinct recombinant. (This node is not strictly necessary
 but makes it convenient to find recombinants for subsequent analysis.)
 Variation within a cluster
@@ -1768,7 +1767,7 @@ ability to identify recombinants and to filter poor quality data.
 
 \subsection{Node dating}
 \label{sec:node_dating}
-The approaches to assigning a date to nodes in \texttt{sc2ts} is currently
+The approach to assigning a date to nodes in \texttt{sc2ts} is currently
 ad-hoc, and the inferred timing of events from the ARGs reported
 here should be treated with caution (e.g., Figure~\ref{fig:recomb_mrcas}).
 Sample nodes (those corresponding to observed sample sequences) are the
@@ -1936,7 +1935,8 @@ The mapping of \texttt{tskit} IDs to strain and EPI\_ISL identifiers for the
 subgraph plots in Supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, \ref{fig:pango_XD_gisaid_graph} and \ref{fig:pango_XB_gisaid_graph} are at
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Pango_X_graph_sample_maps.txt}.
 
-\bibliographystyle{abbrvnat}
+% \bibliographystyle{abbrvnat}
+\bibliographystyle{stylish}
 \bibliography{paper}
 
 \clearpage
