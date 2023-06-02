@@ -277,20 +277,20 @@ and include an additional year's worth of samples (to June 30, 2022).
 
     Nodes & & 1,453,347 & & 783,231  & \\
      & \emph{Node type} & \\
-    & Samples & 1,265,685 & (87.09\%) & 657,239 & (83.91\%) \\
-    & UPGMA   & 102,709 & (7.07\%) & 51,807 & (6.61\%)  \\
+    & Sample & 1,265,685 & (87.09\%) & 657,239 & (83.91\%) \\
+    & Daily sample cluster tree  & 102,709 & (7.07\%) & 51,807 & (6.61\%)  \\
     & Reversion push & 40,538 & (2.79\%) & 34,358 & (4.39\%)  \\
     & Mutation collapse & 40,292 & (2.77\%) & 37,749 & (4.82\%)  \\
     & Recombination & 4,123 & (0.28\%) & 2,078 & (0.27\%) \\
     \cmidrule{2-6}
-    Edges & & 1,458,146 &  & 785,539 & \\
-     & \emph{Parent node type} & \\
-    & Samples & 610,729 & (41.88\%) & 319,626 & (40.69\%) \\
-    & UPGMA   & 470,545 & (32.27\%) & 156,881 & (19.97\%)  \\
-    & Reversion push & 184,608 & (12.66\%) & 144,991 & (18.46\%)  \\
-    & Mutation collapse &186,218  & (12.77\%) & 160,833 & (20.47\%)  \\
-    & Recombination & 6,046 & (0.41\%) & 3,208 & (0.41\%) \\
-    \cmidrule{2-6}
+    % Edges & & 1,458,146 &  & 785,539 & \\
+    %  & \emph{Parent node type} & \\
+    % & Samples & 610,729 & (41.88\%) & 319,626 & (40.69\%) \\
+    % & UPGMA   & 470,545 & (32.27\%) & 156,881 & (19.97\%)  \\
+    % & Reversion push & 184,608 & (12.66\%) & 144,991 & (18.46\%)  \\
+    % & Mutation collapse &186,218  & (12.77\%) & 160,833 & (20.47\%)  \\
+    % & Recombination & 6,046 & (0.41\%) & 3,208 & (0.41\%) \\
+    % \cmidrule{2-6}
     Mutations & & 1,231,193 &  & 1,062,072 & \\
     & Per node per genome & 0.83  & $\pm$1.40 & 1.36 & $\pm$1.72 \\
     & Per sample per genome & 0.77  & $\pm$1.39 & 1.38 & $\pm$1.77 \\
@@ -304,9 +304,10 @@ and include an additional year's worth of samples (to June 30, 2022).
 \end{tabular}
 \end{center}
 \caption{\label{tab:args}Summary of the inferred ARGs. Nodes are classified
-as either samples or by the inference process which produced them to aid
-understanding of the relative importance of these processes to the overall
-topology (``UPGMA" indicates a node inferred to be an ancestor connecting a sample to the existing tree). Similarly, edges are classified by the type of the parent node.
+as either samples or by the inference process that produced them
+(see Sections~\ref{sec:sample-cluster-tree-inference},
+\ref{sec:parsimony-heuristics} and \ref{sec:treatment_recombinants} for
+details).
 The mean and standard deviation ($\pm$)
 are reported for the number of mutations per node, sample and site.
 }
@@ -315,16 +316,10 @@ are reported for the number of mutations per node, sample and site.
 The properties of the inferred ARGs are summarised in Table~\ref{tab:args}.
 The majority of the nodes in the ARGs represent sample genomes
 (Wide ARG: 87\%, Long ARG: 84\%), with the remainder mostly representing
-the ancestral sequences inferred 
+the ancestral sequences inferred
 from daily sample clusters (Section~\ref{sec:sample-cluster-tree-inference})
 and parsimony heuristics (Section~\ref{sec:parsimony-heuristics}).
-Table~\ref{tab:args} shows the counts of edges (see
-Section~\ref{sec:args} for a technical definition) in the ARGs
-categorised by parent node type, and demonstrates that each
-of these contributes significantly to the overall topology.
-In particular, we can see that approximately 40\% of the edges
-in both ARGs involve inheriting directly from sampled genomes.
-Both ARGs contain 29,422 sites, due to the large number of sequences (Section \ref{sec:data_preprocessing}),
+Both ARGs contain 29,422 sites (Section \ref{sec:data_preprocessing}),
 and a large number of mutations.
 The average number of mutations per site is high, although some
 of this may be explained by outlier sites with artefactually high
@@ -1615,24 +1610,10 @@ under the LS model at pandemic scale.
 
 \subsection{Tree inference from HMM daily sample clusters}
 \label{sec:sample-cluster-tree-inference}
-For a given daily batch of sample sequences that are to be attached to the
-ARG, the LS HMM provides the most likely copying path and required mutations
-for each of those sequences. We could directly attach these samples to
-the ARG according to the copying paths and sets of mutations, but
-such an approach would be highly unparsimonious because there are
-often many samples that share the same copying path, with
-complex patterns of shared mutations among those clusters of samples.
-In this section we discuss the strategy used to infer likely tree
-topologies within these clusters of samples sharing the same copying path.
-In the majority of cases the copying path will consist of a single
-node (i.e., no recombination), and so for simplicity we will assume in the
-following discussion that all of the samples in a HMM-defined cluster
-attach to a single node. The special treatment afforded to
-newly-detected putative recombinants are discussed
-in Section~\ref{sec:treatment_recombinants}.
-
 With tens of thousands of samples being added to the ARG per day,
-there are often clusters of hundreds of sequences attaching to the same node.
+there are often clusters of hundreds of sequences attaching to the same node
+(or more generally, recombinant path;
+see Section~\ref{sec:treatment_recombinants}).
 While some of these samples will require no extra mutations
 (because they are identical to the attachment node), in general there
 will be complex patterns of shared mutations among the samples
@@ -1641,7 +1622,7 @@ these within-cluster evolutionary relationships is to use standard
 tree-building algorithms.
 We can infer a likely tree relating the
 samples in a cluster independently of the other samples in a
-daily batch, and then attach the tree (and mutations)
+daily batch and then attach the tree (and mutations)
 to the ARG at the node identified by the HMM.
 
 We currently use the UPGMA algorithm~\citep{Michener1957-tr}
@@ -1660,8 +1641,7 @@ There are well-known issues with using such a simple algorithm for inferring
 evolutionary relationships~\citep{Felsenstein2004-inferring}.
 Table~\ref{tab:args} show that
 this within-cluster tree building has a significant influence on the
-overall ARG topology (Wide ARG: 7.07\% of nodes and parent of
-32.27\% of edges; Long ARG: 6.61\% and 19.97\%, respectively),
+overall ARG topology
 and therefore applying more sophisticated
 tree building methods which keep track of the required mutations
 (rather then inferring post-hoc by parsimony), is a likely avenue
