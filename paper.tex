@@ -169,8 +169,8 @@ is now widely used in population genetics applications.
 The methods in \texttt{tskit} have been developed to support millions of
 whole human genomes~\citep{Kelleher2019-ba}, and so it is particularly well suited
 to representing large SARS-CoV-2 genealogies,
-which currently encompasses over 15 million sequences in the GISAID database
-\citep{Shu2017-hp}.
+which currently encompasses over 15 million sequences in the GISAID 
+database~\citep{Shu2017-hp}.
 See Section~\ref{sec:args} for more details on ARGs and the succinct
 tree sequence data structure.
 
@@ -203,15 +203,14 @@ mutation and recombination, which
 can be conveniently and efficiently analysed using standard Python data science
 tools. As illustrated in Figure~\ref{fig:overview_sc2ts}, inference is based on incrementally adding batches of sequences
 based on their collection dates and proceeds in three phases.
-% First, likely attachment nodes in the current ARG
-% (or paths, if inferred to be a recombinant) are
 First, possible paths connecting each sample to the current ARG
 are inferred (allowing for recombination) using the
-% chosen for each of the samples in the daily batch using the
-Li and Stephens (LS) model (Figure~\ref{fig:overview_sc2ts}A, B; Section~\ref{sec:ls}). Then, since many samples
+Li and Stephens (LS) 
+model (Figure~\ref{fig:overview_sc2ts}A, B; Section~\ref{sec:ls}). 
+Then, since many samples
 in the batch can share an attachment path,
-we infer phylogenetic trees for each of the clusters separately using standard
-methods (Figure~\ref{fig:overview_sc2ts}C; Section~\ref{sec:sample-cluster-tree-inference}).
+we infer phylogenetic trees for each of the clusters separately using standard methods 
+(Figure~\ref{fig:overview_sc2ts}C; Section~\ref{sec:sample-cluster-tree-inference}).
 Finally, we attach the trees for these sample-clusters to the current
 ARG and apply some parsimony-based heuristics to address issues
 introduced by the inherent greediness of this strategy
@@ -253,10 +252,6 @@ The Wide ARG is densely sampled but time-limited and
 includes all 1.27 million sample genomes collected up to June 30, 2021
 with a maximum delay between sampling and submission dates of 30 days
 (see Section~\ref{sec:filtering_time_travellers}).
-% The Long ARG is more sparsely sampled but
-% includes data for an additional year (June 30, 2022).
-% For the Long ARG, we use at most 1,000 randomly subsampled
-% genomes per day from those meeting the maximum sampling delay criterion.
 For the Long ARG, we randomly sub-sample a maximum of 1,000 genomes per
 day (again restricting the delay between sampling and submission to 30 days)
 and include an additional year worth of samples (to June 30, 2022).
@@ -311,8 +306,6 @@ are reported for the number of mutations per node, sample and site.
 \end{table}
 
 The properties of the inferred ARGs are summarised in Table~\ref{tab:args}.
-% TODO more discussion here, making sure we explain anything that might not be
-% obvious.
 The majority of the nodes in the ARGs represent sample genomes
 (Wide ARG: 87\%, Long ARG: 84\%), with the remainder mostly representing
 the ancestral sequences inferred by UPGMA
@@ -331,7 +324,9 @@ of this may be explained by outlier sites with artefactually high
 mutation counts (see Figure~\ref{fig:breakpoint-distribution}).
 Despite this, however, the number of mutations per node
 is small. In the Wide ARG, for example, we have a mean of 0.77
-mutations per sampled genome, demonstrating that most added samples fit into the ARG parsimoniously. See Section~\ref{sec:mutation_spectrum}
+mutations per sampled genome, demonstrating that most 
+added samples fit into the ARG parsimoniously. 
+See Section~\ref{sec:mutation_spectrum}
 for more analysis of the patterns of inferred mutations.
 Recombination plays a relatively minor role, with $<0.3\%$
 of nodes in the ARGs representing inferred recombination events.
@@ -457,7 +452,7 @@ the simplicity of the algorithm, tree inference for the early pandemic
 is surprisingly good.
 The second difference between the \texttt{sc2ts} and Nextstrain trees
 that we would like to highlight are a few non-identical sample partitions
-near the tips (e.g.\ cross-crossing assingments within the Alpha clade). It is unclear what
+near the tips (e.g.\ criss-crossing assignments within the Alpha clade). It is unclear what
 particular differences between the phylogenetic reconstruction algorithms are driving these
 differences, and more study is required to characterise and address them.
 Finally, some branch lengths differ substantially between the \texttt{sc2ts}
@@ -589,7 +584,7 @@ By searching for samples combining genomic segments from Alpha (B.1.1.7) and
 from the parental lineage B.1.1 based on a list of 22 Alpha-defining mutations,
 they found 16 recombinant sequences from 8 putative
 origins (groups A to D and four singletons).
-These findings are closely replicated in both the Wide and Long ARGs (Table \ref{tab:jackson}).
+These findings are closely replicated in both the Wide and Long ARGs.
 
 \begin{table} \centering
 \begin{tabular}{lllr@{--}lr@{+}l}
@@ -812,7 +807,7 @@ nodes ancestral to five or more samples.
 Horizontal dotted lines show the four most common MRCA nodes,
 which tend to be associated with major outbreaks and with many immediate children.
 The stacked histogram shows the distribution of parental divergence times, ranging
-from parents that have diverged only a handful of days ago, to much more
+from parents that have diverged only a few days ago, to much more
 divergent parent lineages. See Figure~\ref{fig:recomb_mrcas_voc_breakdown}
 for equivalent plots broken down by parental VoC classification.
 }
@@ -824,12 +819,6 @@ concentrated in several banded rows in Figure~\ref{fig:recomb_mrcas}. These are
 largely due to a few MRCAs shared by many
 recombinants (the top four are indicated in the figure).
 These shared MRCAs lie near the root of large expansions,
-% Anyone reading this will know what these are
-% (B.1: original variant, B.1.617.2: Delta, BA.1: first Omicron wave,
-% and BA.2: second Omicron wave)
-% as demonstrated by the number of samples with those
-% Pango designations traback to each ancestral node.
-% The majority of these frequently-shared MRCAs
 and the majority are associated with large polytomies, likely
 indicating a rapid and under-sampled expansion of a clade (e.g. major
 Delta and Omicron waves).
@@ -933,13 +922,11 @@ fall into this category (Table~\ref{tab:pango-recombinants})
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/Pango_XA_XAG_XD_nxcld_tight_graph.pdf}
-% This figure is gorgeous!!
-
 \caption{\label{fig:pango-simple-origin-graph} Examples of non-nested
 Nextclade Pango X lineages. (A) Subgraph for XA in the Long ARG: all five samples designated
 as XA by Nextclade, together with their ancestral lineages, are shown outwards to the nearest
 sampled viral genome; dotted lines show ARG continuation. Vertical position of nodes does not
-show absolute time, but simply relative rank (parents above children). Nodes are coloured by Nextclade
+show absolute time, but relative rank (parents above children). Nodes are coloured by Nextclade
 Pango designation; smaller symbols are non-sample nodes inserted by \texttt{sc2ts}, whose
 Pango status is imputed. Genomic regions inherited by the recombination node are shown;
 breakpoints correspond to the rightmost breakpoint position inferred by \texttt{sc2ts}.
@@ -957,7 +944,7 @@ shows the exact relationships inferred by \texttt{sc2ts} as a subgraph of the Lo
 Here, paths have been traced from all
 Nextclade-identified XA samples (in red) to the closest other sample nodes in the ARG.
 Sample nodes are plotted as larger circles, but the subgraph also includes intermediate,
-non-sample nodes (i.e. inserted by sc2ts, see Sections~\ref{sec:sample-cluster-tree-inference} and \ref{sec:parsimony-heuristics}). Dotted lines show where this subgraph links
+non-sample nodes (i.e., inserted by \texttt{sc2ts}, see Sections~\ref{sec:sample-cluster-tree-inference} and \ref{sec:parsimony-heuristics}). Dotted lines show where this subgraph links
 to the rest of the ARG. Above recombination nodes, only ancestral nodes are shown, meaning
 that the subgraph is not extended to show additional descendants of recombinant parents.
 
@@ -1022,7 +1009,7 @@ the breakpoints in each case are slightly different: the start of the Omicron in
 in the French samples has an estimated rightmost position of 21641bp
 (and a leftmost of 21619, not shown) with the insertion end occurring at a rightmost position of 25584
 (and a leftmost of 25470). By contrast, the Omicron insertion in the Turkish sample
-is inferred to have occurred from position 21619-22578 to position 23605-24130.
+is inferred to have occurred from position 21619--22578 to position 23605--24130.
 The breakpoint difference, the different geographical locations, the time between the
 samples, and the fact that the two samples differ at 23 nucleotide positions,
 suggests that these may indeed represent independent Delta--Omicron recombinants.
@@ -1203,8 +1190,8 @@ we might solve this problem in general, some simple solutions such
 as filtering out sequences that exceed a given cost in the LS HMM
 (i.e., number of mutations and recombination switches) may work well
 in practice. Such an approach would also reduce the impact of sequences
-with high levels of sequencing error (which contribute a large number of
-mutations, currently).
+with high levels of sequencing error (which currently contribute a large number of
+mutations).
 Taken together, these and other relatively minor improvements should
 enable inference over much larger subsets of the dataset and
 give a clearer picture of the combined processes of recombination and
@@ -1226,10 +1213,10 @@ be straightforward to condition on per-site mutation rates (and nucleotide-depen
 state transitions, with some additional development).
 Recombination breakpoints for the ARG are currently inserted at the
 right-most extent of the possible interval
-(Section~\ref{sec:breakpoint_intervals}). More likely locations for the
+(Section~\ref{sec:breakpoint_intervals}). 
+More likely locations for the
 breakpoint could be chosen within the interval, for example based
-on sequence motifs \citep{Gallaher2020-mr, Yang2020-ct}.
-% Citation: https://doi.org/10.1007/s00705-020-04750-z . This is the data source we used to create the breakpoints motif look up table.
+on sequence motifs~\citep{Gallaher2020-mr, Yang2020-ct}.
 % Hint: there's probably a bunch of other stuff you could do with this
 It is likely that the basic machinery of finding matches and quantifying
 the uncertainty around them under a well-defined statistical model
@@ -1276,7 +1263,7 @@ The first step is to find likely ``copying paths'' under the Li and Stephens mod
 for each sequence in the daily batch to the current ARG (Section~\ref{sec:ls}).
 These copying paths
 will mostly consist of a new sample sequence copying from a node in the ARG
-with a small number of mutations and often many samples
+with a small number of mutations, and often many samples
 from a daily batch will copy from the same ARG node.
 The second step is then to ``resolve'' these implied polytomies by using
 standard tree-building techniques (Figure~\ref{fig:overview_sc2ts}C;
@@ -1623,9 +1610,9 @@ to the ARG at the node identified by the HMM.
 
 We currently use the UPGMA algorithm~\citep{Michener1957-tr}
 as implemented in SciPy~\citep{Pauli2020-scipy} to build trees from sample
-clusters, and map mutations back to this topology using maximum parsimony.
-This approach was chosen mainly for simplicity and because of the
-speed and reliability of the implementation.
+clusters, and then map mutations back to this topology using maximum parsimony.
+We chose this approach mainly for simplicity, and because of the
+speed and reliability of the SciPy implementation.
 An issue with the UPGMA algorithm is that it generates a strictly
 binary tree, creating internal nodes
 supported by no informative site (i.e., having no mutation immediately
@@ -1637,7 +1624,7 @@ There are well-known issues with using such a simple algorithm for inferring
 evolutionary relationships~\citep{Felsenstein2004-inferring}.
 Table~\ref{tab:args} show that
 this within-cluster tree building has a significant influence on the
-overall ARG topology (Wide ARG: 7.05\% of nodes and parent of
+overall ARG topology (Wide ARG: 7.07\% of nodes and parent of
 32.27\% of edges; Long ARG: 6.61\% and 19.97\%, respectively),
 and therefore applying more sophisticated
 tree building methods which keep track of the required mutations
@@ -1698,7 +1685,9 @@ ARG topology affected by newly added samples. Because the inferred
 ARGs still contain a large number of reversion mutations which
 are likely to be mostly artefactual, it is clear that there
 is room for improvement and that further parsimony-increasing
-heuristics would likely be of benefit.
+heuristics 
+(e.g., resolving reversions beyond those on immediately adjacent edges)
+would likely be of benefit .
 
 \subsection{Treatment of recombinants}
 \label{sec:treatment_recombinants}
@@ -1745,20 +1734,6 @@ and all positions from $x$ (inclusive) to the end of the genome from parent
 $p_2$. We then define the breakpoint \emph{interval} $[b_\ell, b_r)$ as the
 half-closed interval defining the range of possible values for $x$, such
 that $b_\ell \leq x < b_r$.
-
-% Thus, the breakpoints used in the ARG represent the rightmost end of the
-% interval, within which the recombination event could have occurred. To obtain
-% the leftmost end of this interval, we rerun the HMM using mirrored coordinates
-% (i.e., from the 3’ end to the 5’ end) and store the information as
-% metadata on the recombination node.
-% These left- and rightmost positions
-% are the recombination intervals reported throughout.
-% Ultimately all the recombination intervals mean is that the parent sequences
-% are identical within that interval, and there is therefore no information
-% about where the recombination occurred. There are many different processes
-% that can contribute to the size of these intervals, and therefore
-% understanding how these processes interact to produce wider or narrower
-% intervals is an important avenue for future work.
 
 The LS HMM machinery, and the interpretation of inferred recombinant paths and
 breakpoint intervals is a central part of \texttt{sc2ts}, and there are many
@@ -1831,8 +1806,8 @@ sequencing errors or as highly homoplasic
 (\url{https://github.com/W-L/ProblematicSites_SARS-CoV2/},
 accessed 2022-09-22) entirely.
 
-Although the masking strategy used currently is simple and robust,
-there are significant disadvantages, excluding, for example, any
+Although the current masking strategy is simple and robust,
+there are significant disadvantages because it excludes, for example, any
 deletions of length greater than one base. Exploring more sophisticated
 masking strategies is an important route for future improvements.
 
@@ -1932,6 +1907,7 @@ Biomedical Research Centre. The views expressed are those of the author(s) and
 not necessarily those of the NHS, the NIHR or the Department of Health.
 
 \section{Data Availability}
+\label{sec-data-availability}
 The source code for \texttt{sc2ts} and notebooks and code used to produce the
 results described here available on GitHub:
 \begin{itemize}
@@ -1941,7 +1917,7 @@ results described here available on GitHub:
 
 Details of the GISAID data used are available at
 \url{https://doi.org/10.55876/gis8.230329cd} and included in the
-Supplemental Table.
+Supplemental Table (GISAID EPI SET PDF).
 
 The inferred ARGs described here are available on request to those with
 the appropriate GISAID data access.
@@ -1949,8 +1925,6 @@ the appropriate GISAID data access.
 The mapping of \texttt{tskit} IDs to strain and EPI\_ISL identifiers for the
 subgraph plots in Supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, \ref{fig:pango_XD_gisaid_graph} and \ref{fig:pango_XB_gisaid_graph} are at
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Pango_X_graph_sample_maps.txt}.
-
-[FIXME/TODO - include a reference to the GISAID EPI SET pdf]
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
@@ -2114,34 +2088,6 @@ Sc2ts inferred parents for the main clade are based on Nextclade designations, i
 Official parents are taken from Pango designation alias key (TODO: explain the asterisks). Note that B.1.617.2 is the origin of the Delta VoC, which includes all AY.* classes. Additional descendants within the main clade are summarised giving their NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
 }
 \end{sidewaystable}
-
-% \begin{table}
-% \small
-% \centering
-% \begin{tabular}{lp{0.2cm}p{0.8cm}lp{0.9cm}ll}
-% \toprule
-% Date & $n$ & Causal Pango & Causal strain & Causal \#muts & Sc2ts parents & Breakpoint \\
-% \midrule
-% 2022-03-24 & 2 & XN & Germany/BY-RKI-I-674341/2022 & 3 & Unknown + BA.2 & (2833,9867) \\
-% 2022-03-29 & 2 & XN & Spain/AB-HGUA-26086757/2022 & 2 & BA.1.1 + BA.2.9 & (2833,4185) \\
-% 2022-04-23 & 7 & XN & Spain/MD-HRYC-12296321/2022 & 2 & BA.1 + BA.2 & (4185,4322) \\
-% 2022-05-17 & 2 & XN & USA/TX-HMH-MCoV-97903/2022 & 5 & BA.2 + BA.2 & (22776,22787) \\
-% \bottomrule
-% \end{tabular}
-% \caption{\label{tab:multiple_origins_table}
-% Summary of inferred multiple ``origins'' for Nextclade-designated XN samples after filtering
-% (Official: BA.1* \& BA.2*, breakpoint between 2834 \& 4183, defined from UK strains, earliest
-% on 2022-02-01;  see \protect\url{https://github.com/cov-lineages/pango-designation/issues/480}).
-% The 13 XN samples are grouped into rows based on their most recent ancestral recombination node;
-% all the descendant samples of the four recombination nodes are designated XN by Nextclade.
-% Details are also provided for the ``causal strain'' that led to the recombination
-% being proposed by \texttt{sc2ts}. When undersampling causes three or more mutations to lie
-% immediately above the causal strain, \texttt{sc2ts} may mistakenly propose multiple
-% independent origins rather than one. Note that a large number of XN samples were previously
-% removed by filtering.
-% }
-% \end{table}
-
 
 \begin{figure} \centering
 \includegraphics[width=0.5\textwidth]{figures/Pango_XA_gisaid_large_graph.pdf}
