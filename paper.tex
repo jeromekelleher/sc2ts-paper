@@ -115,9 +115,9 @@ ancestry is now essential in understanding the evolution of SARS-CoV-2.
 
 % Recombination is hard to detect
 Detecting recombination in SARS-CoV-2 is difficult, and identifying new
-recombinant strains is a time-consuming, manual process, subject
-to biases [FIXME: have we a citation for how tedious this is? Also what
-are the biases?]
+recombinant strains is a time-consuming, manual
+process~\citep{Smith2023-identifying}.
+% (e.g., \url{https://pha4ge.org/resource/identifying-sars-cov-2-recombinants/}).
 % This resource shows the typical workflow for manually identifying recombinants that the pango team uses: https://pha4ge.org/resource/identifying-sars-cov-2-recombinants/
 % Regarding bias, not peer-reviewed but in the official pango designation post for XAC, you can see that me (Katherine) and the authors had a multi-month long discussion on how many breakpoints there should be and where. Reproducibility was difficult: https://github.com/cov-lineages/pango-designation/issues/590
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
@@ -1811,9 +1811,9 @@ UShER~\citep{Turakhia2021-ur}.
 Sites that are masked by this process are
 treated as missing data by the LS HMM (Section~\ref{sec:ls}).
 In addition, we exclude 481 problematic sites flagged as prone to
-sequencing errors or as highly homoplasic
+sequencing errors or as highly homoplasic entirely
 (\url{https://github.com/W-L/ProblematicSites_SARS-CoV2/},
-accessed 2022-09-22) entirely.
+accessed 2022-09-22).
 
 Although the current masking strategy is simple and robust,
 there are significant disadvantages because it excludes, for example, any
@@ -1935,7 +1935,7 @@ The mapping of \texttt{tskit} IDs to strain and EPI\_ISL identifiers for the
 subgraph plots in Supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, \ref{fig:pango_XD_gisaid_graph} and \ref{fig:pango_XB_gisaid_graph} are at
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Pango_X_graph_sample_maps.txt}.
 
-\bibliographystyle{plainnat}
+\bibliographystyle{abbrvnat}
 \bibliography{paper}
 
 \clearpage
