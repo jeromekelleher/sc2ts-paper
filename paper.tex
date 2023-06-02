@@ -512,9 +512,10 @@ Reversions  & 72,617 & (5.99\%) & 48,226 & (4.54\%) \\
 \caption{\label{fig:mutational_spectra}
 (A) Summary of mutations in the Long and Wide ARGs. Private mutations
 occur on terminal branches. Insertions are mutations in which the
-inherited state is the gap state ``-'' and the derived state is a
-nucleotide, and vice versa for deletions. Recurrent mutations are
-those that inherit from at least one other mutation (at that site),
+ancestral state is the gap state ``-'' and the derived state is a
+nucleotide, and vice versa for deletions. A recurrent mutation is
+one that occurs at a site which has previously mutated (i.e. where one
+or more mutations at that site occur on the edges ancestral to the mutation),
 and a reversion is a recurrent mutation that reverses the state change
 of the mutation immediately ancestral to it.
 (B) Mutational spectrum in
@@ -533,7 +534,7 @@ sample, i.e.\ on terminal branches.
 Although the average number
 of mutations per sample is small
 (Wide ARG: 0.77, Long ARG: 1.38; Table~\ref{tab:args}), the average number per site
-is large (Wide ARG: 41.23, Long ARG: 36.10; Table~\ref{tab:args}). This is
+is large across each ARG (Wide ARG mean: 41.23, median: XXX;  Long ARG mean: 36.10, median: YYY; Table~\ref{tab:args}). This is
 partly driven by some highly mutagenic sites (e.g., site 28,271 has over 7,000
 mutations in the Wide ARG, Figure~\ref{fig:breakpoint-distribution}), which
 may be artefactual.
