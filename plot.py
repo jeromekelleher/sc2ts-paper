@@ -1687,7 +1687,7 @@ class MutationalSpectra(Figure):
 
         width = 0.4  # bar width
         fig, ax = plt.subplots(1, 1)
-        fig.set_size_inches(10, 8)
+        fig.set_size_inches(6.5, 7)
         ax.tick_params(axis="both", which="major", labelsize=16)
         types = ["C>T", "G>A", "G>T", "G>C", "C>A", "T>A"]
         rev_types = [t[::-1] for t in types]
@@ -1721,16 +1721,16 @@ class MutationalSpectra(Figure):
 
         types = [_replace_T_with_U(t) for t in types]
         rev_types = [_replace_T_with_U(t) for t in rev_types]
-        ax2.set_xticklabels(types, fontsize=20)
+        ax2.set_xticklabels(types, fontsize=18)
         ax.set_xticks(x + width / 2)
-        ax.set_xticklabels(rev_types, fontsize=20)
+        ax.set_xticklabels(rev_types, fontsize=18)
 
         labels = ["Wide ARG (min inheritor = 2)", "Yi et al. (2021), shared SBS"]
         ax.legend(
             [labels[0], labels[0], labels[1], labels[1]],
             loc="best",
             frameon=False,
-            fontsize=14,
+            fontsize=15,
         )
         prefix = os.path.join("figures", self.name)
         plt.savefig(prefix + f".{args.outtype}", bbox_inches="tight")

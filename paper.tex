@@ -483,8 +483,9 @@ format~\citep{Turakhia2021-ur}.
 
 \begin{figure} \centering
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
-\begin{tabularx}{\textwidth}{Yc}
-
+\begin{tabularx}{\textwidth}{cY}
+\hspace*{-2.5mm}\includegraphics[width=0.32\textwidth]{figures/mutational_spectra.pdf}
+&
 \begin{tabular}[b]{llrlr}\toprule
             & \multicolumn{2}{l}{Wide ARG} & \multicolumn{2}{l}{Long ARG} \\
 % \midrule
@@ -501,28 +502,28 @@ Deletions   & 7,462  & (0.62\%) & 5,152   & (0.49\%) \\
 Recurrent   & 74,719 & (6.16\%) & 50,099 & (4.72\%) \\
 Of which reversions  & 72,617 & (5.99\%) & 48,226 & (4.54\%) \\
 \bottomrule
-\end{tabular}
-&
-\includegraphics[width=0.35\textwidth]{figures/mutational_spectra.pdf}\\
+\vspace{-2mm}
+\end{tabular}\\
 (A) & (B)\\
 \end{tabularx}
 \caption{\label{fig:mutational_spectra}
-(A) Summary of mutations in the Long and Wide ARGs. Private mutations
+(A) Mutational spectrum in
+the Wide ARG compared to \cite{Yi2021-sc}. Mutations are
+categorised by type (i.e., inherited state $>$ derived state). The percentages
+of each mutation type from the Wide ARG are represented by blue bars and the
+percentages from Yi et al.\ by orange bars, with the darker colours representing
+one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).
+(B) Summary of mutations in the Long and Wide ARGs. Private mutations
 occur on terminal branches. Insertions are mutations in which the
 inherited state is the gap state ``-'' and the derived state is a
 nucleotide, and vice versa for deletions. See Section~\ref{sec:args}
 for precise definitions of mutations, and the recurrent and reversion
 classifications.
-(B) Mutational spectrum in
-the Wide ARG compared to \cite{Yi2021-sc}. Mutations are
-categorised by type (i.e., inherited state $>$ derived state). The percentages
-of each mutation type from the Wide ARG are represented by blue bars and the
-percentages from Yi et al.\ by orange bars, with the darker colours representing
-one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).}
+}
 \end{figure}
 
 The properties of the mutations inferred in the Wide and Long
-ARGs are summarised in Figure~\ref{fig:mutational_spectra}A. In both
+ARGs are summarised in Figure~\ref{fig:mutational_spectra}B. In both
 cases we have a large number of mutations, and a majority of these
 (Wide ARG: 62.55\%, Long ARG: 72.23\%) are private to a single
 sample, i.e.\ on terminal branches.
@@ -548,7 +549,7 @@ address this issue.
 Despite the presence of some artefactual mutations,
 the properties of the mutations inferred by \texttt{sc2ts} largely follow
 established results.
-In Figure~\ref{fig:mutational_spectra}B we compare the mutational spectrum
+In Figure~\ref{fig:mutational_spectra}A we compare the mutational spectrum
 in the Wide ARG to the results of \cite{Yi2021-sc},
 who reconstructed a SARS-CoV-2 phylogeny of
 over 350,000 genomes sampled globally from 2019-12-24 to 2021-01-12
@@ -560,7 +561,7 @@ more likely to be sequencing errors).
 Similarly, we took the data for single nucleotide mutations from
 \citet[][\url{https://github.com/ju-lab/SC2_evol_signature}]{Yi2021-sc}, excluding
 mutations occurring along terminal branches, and tallied them up by type.
-Figure~\ref{fig:mutational_spectra}B shows that the mutational spectrum from the
+Figure~\ref{fig:mutational_spectra}A shows that the mutational spectrum from the
 Wide ARG (based on 448,825 mutations) matches that reported by \citet[based on
 92,344 mutations]{Yi2021-sc}. In both spectra, C-to-U mutations and G-to-U
 mutations occur more frequently than U-to-C and U-to-G, respectively. Similar
