@@ -499,8 +499,8 @@ Private     & 758,903 & (62.55\%) &  767,111 & (72.23\%)\\
 Transitions & 873,487   & (72.00\%) & 783,773  & (73.80\%) \\
 Transversions & 326,053 & (26.88\%) & 270,333  & (25.45\%) \\
     \cmidrule{2-5}
-Insertions  & 6191  & (0.51\%) & 2814   & (0.26\%) \\
-Deletions   & 7462  & (0.62\%) & 5152   & (0.49\%) \\
+Insertions  & 6,191  & (0.51\%) & 2,814   & (0.26\%) \\
+Deletions   & 7,462  & (0.62\%) & 5,152   & (0.49\%) \\
     \cmidrule{2-5}
 Recurrent   & 74,719 & (6.16\%) & 50,099 & (4.72\%) \\
 Reversions  & 72,617 & (5.99\%) & 48,226 & (4.54\%) \\
@@ -514,16 +514,14 @@ Reversions  & 72,617 & (5.99\%) & 48,226 & (4.54\%) \\
 (A) Summary of mutations in the Long and Wide ARGs. Private mutations
 occur on terminal branches. Insertions are mutations in which the
 inherited state is the gap state ``-'' and the derived state is a
-nucleotide, and vice versa for deletions. A recurrent mutation is
-one that occurs at a site which has previously mutated (i.e. where one
-or more mutations at that site occur on the edges ancestral to the mutation),
-and a reversion is a recurrent mutation that reverses the state change
-of the mutation immediately ancestral to it.
+nucleotide, and vice versa for deletions. See Section~\ref{sec:args}
+for precise definitions of mutations, and the recurrent and reversion
+classifications.
 (B) Mutational spectrum in
 the Wide ARG compared to \cite{Yi2021-sc}. Mutations are
 categorised by type (i.e., inherited state $>$ derived state). The percentages
 of each mutation type from the Wide ARG are represented by blue bars and the
-percentages from Yi et al. by orange bars, with the darker colours representing
+percentages from Yi et al.\ by orange bars, with the darker colours representing
 one direction (e.g., C$>$U) and the lighter colours the reverse (e.g., U$>$C).}
 \end{figure}
 
@@ -534,15 +532,19 @@ cases we have a large number of mutations, and a majority of these
 sample, i.e.\ on terminal branches.
 Although the average number
 of mutations per sample is small
-(Wide ARG: 0.77, Long ARG: 1.38; Table~\ref{tab:args}), the average number per site
-is large across each ARG (Wide ARG mean: 41.23, median: XXX;  Long ARG mean: 36.10, median: YYY; Table~\ref{tab:args}). This is
-partly driven by some highly mutagenic sites (e.g., site 28,271 has over 7,000
+(Wide ARG: 0.77, Long ARG: 1.38; Table~\ref{tab:args}),
+the average number per site
+is large in both ARGs (Wide ARG: 41.23; Long ARG:36.10; Table~\ref{tab:args}).
+However, a lower median count (Wide ARG: 14; Long ARG:13),
+suggests that these high mutation counts are
+partly driven by some hypermutable sites (e.g., site 28,271 has over 7,000
 mutations in the Wide ARG, Figure~\ref{fig:breakpoint-distribution}), which
 may be artefactual.
 A significant issue with the current version of \texttt{sc2ts} is an excess
 of inferred reversion mutations, with 5.99\% of all mutations in the Wide
 ARG (Long ARG: 4.54\%) reverting the state change of the immediately
-ancestral mutation. The majority of these mutations are likely to be
+ancestral mutation (see Section~\ref{sec:args} for precise definitions).
+The majority of these mutations are likely to be
 artefactual, and a key goal of future development is to improve
 our parsimony heuristics (Section~\ref{sec:parsimony-heuristics}) to
 address this issue.
@@ -1328,15 +1330,40 @@ a pair of nodes along a segment of genome is defined by
 the \emph{edge} $(\ell, r, p, c)$, which states that
 child node $c$ inherited its genome from parent node $p$
 from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
-defines the genomic position at which some variation occurs,
-and a \emph{mutation} defines the site, node and derived state
-that generates variation.
-% JK: Note sure this clarifies much at the representational level?
-% (note that this requires that the sequences can be aligned and phased).
+defines a position on the genome
+and the ancestral state (allele) at that site.
+A \emph{mutation} records the site and node IDs where a mutation
+occurs and the derived state (allele).
+In addition to these basic elements of the data model, the \texttt{tskit} library
+supports additional tables and fields,
+the ability to associate arbitrary metadata with
+table rows, and facilities to record provenance
+information~\citep{Tskit2023-tskit}.
 
-Given these tables, we can then efficiently construct the local
+Tskit supports arbitrarily complex patterns of mutation at a particular
+site, and it is useful
+to define some terminology to classify them.
+A mutation's ``parent''
+is the first mutation encountered (at that site) on the path to
+root from the mutation's node in the local tree corresponding to
+the site's position. If no other mutation is encountered on the
+path to root, the mutation's parent is null.
+The ``derived state'' of a mutation is the allelic state inherited by nodes
+in the subtree rooted at the mutation's node (in the local tree), assuming
+there are no subsequent descendant mutations.
+The ``inherited state'' of a mutation is the derived state of the
+parent mutation, if it exists, or the site's ancestral state otherwise.
+A ``recurrent mutation`` is a mutation with a non-null parent,
+and a ``reversion`` is a recurrent mutation that reverses the state
+change of its parent. For example, if we have two mutations
+$a$ and $b$, such that $a$ is the parent of $b$,
+with state transitions (inherited state $\rightarrow$ derived state)
+$a: A\rightarrow T$ and $b: T\rightarrow A$, we define $b$ as a reversion.
+
+Given the node, edge, site and mutation tables we can
+efficiently construct the local
 genealogical trees along the genome (arising from recombination)
-and also perform a range of calculations efficiently by
+and perform a range of calculations efficiently by
 reasoning about the differences between these local
 trees~\citep{Kelleher2016-wk,Ralph2020-efficiently}. These
 algorithms have led to performance increases of several orders
