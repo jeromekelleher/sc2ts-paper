@@ -98,7 +98,7 @@ together mutations carried by different lineages, recombination plays an
 important role in generating genetic diversity, with recombinant lineages
 associated with adaptation to new host species and with the production of more
 immune evasive variants~\citep{Graham2010-xe,De_Klerk2022-tt,Tamura2023-ab}.
-Early on in the COVID-19 pandemic, the levels of genetic diversity
+Early in the COVID-19 pandemic, the levels of genetic diversity
 were too low to enable the detection of distinctive recombinant strains.
 By late 2020, however, the appearance and
 spread of variants of concern (VoC), designated into classes such as Alpha and
@@ -114,12 +114,9 @@ established and spread to high frequency, and accounting for recombinant
 ancestry is now essential in understanding the evolution of SARS-CoV-2.
 
 % Recombination is hard to detect
-Detecting recombination in SARS-CoV-2 is difficult, and identifying new
+Detecting recombination in SARS-CoV-2 is difficult and identifying new
 recombinant strains is a time-consuming, manual
 process~\citep{Smith2023-identifying}.
-% (e.g., \url{https://pha4ge.org/resource/identifying-sars-cov-2-recombinants/}).
-% This resource shows the typical workflow for manually identifying recombinants that the pango team uses: https://pha4ge.org/resource/identifying-sars-cov-2-recombinants/
-% Regarding bias, not peer-reviewed but in the official pango designation post for XAC, you can see that me (Katherine) and the authors had a multi-month long discussion on how many breakpoints there should be and where. Reproducibility was difficult: https://github.com/cov-lineages/pango-designation/issues/590
 Most genomic surveys for SARS-CoV-2 recombinants search for mosaic genomes that
 combine specific subsets of characteristic mutations from different lineages
 \citep[e.g.,][]{VanInsberghe2021-eu,Jackson2021-ik,Wertheim2022-hj,Sekizuka2022-xz}
@@ -184,17 +181,19 @@ tree sequence data structure.
 \includegraphics[width=0.7\textwidth]{figures/overview_sc2ts.pdf}
 \caption{\label{fig:overview_sc2ts}
 A schematic of the \texttt{sc2ts} method.
-Sc2ts reconstructs the genetic relationships
-among SARS-CoV-2 genomes by copying samples to all possible ancestors collected
-at earlier time points (curved arrows). Each daily iteration involves three stages:
-(1) attachment of new samples to the growing ARG (A, B); (2) reconstruction of
-trees relating the samples under each attachment node (C); and parsimony-based
-tree topology adjustments (D, E). In the absence of  recombination, sc2ts
-infers an ARG that is a single tree relating the samples (A). However, in the
-presence of recombination, sc2ts infers an ARG that is encoded as a sequence of
-local trees relating segments of the sample genomes (B), inserting a
-recombination node to represent a putative recombination event. Additionally,
-mutation-collapsing nodes (D) and pushed-reversion nodes (E) are inserted to
+The genetic relationships among SARS-CoV-2 genomes is
+reconstructed by using the Li and Stephens
+model to infer attachment paths for samples to an existing ARG (curved lines).
+Each daily iteration involves three stages:
+attachment of new samples to the growing ARG (A, B);
+reconstruction of trees relating the samples under each attachment node (C);
+and parsimony-based tree topology adjustments (D, E).
+In the absence of  recombination, \texttt{sc2ts}
+infers an ARG that is a single tree relating the samples (A).
+When recombination is detected, \texttt{sc2ts} infers
+an ARG that concisely encodes a sequence of local trees relating segments
+of the sample genomes (B). Additionally,
+mutation-collapsing nodes (D) and reversion-push nodes (E) are inserted to
 make more parsimonious placements of mutations that should be shared or should
 not be immediately reverted, respectively.}
 \end{figure}
@@ -211,8 +210,10 @@ tools. As illustrated in Figure~\ref{fig:overview_sc2ts}, inference is based on 
 based on their collection dates and proceeds in three phases.
 First, possible paths connecting each sample to the current ARG
 are inferred (allowing for recombination) using the
-Li and Stephens (LS)
-model (Figure~\ref{fig:overview_sc2ts}A, B; Section~\ref{sec:ls}).
+Li and Stephens (LS) model (Figure~\ref{fig:overview_sc2ts}A, B);
+the LS ``copying processs'' is a Hidden Markov Model (HMM)
+approximating the effects of mutation
+and recombination, widely used in large-scale genomics (Section~\ref{sec:ls}).
 Then, since many samples
 in the batch can share an attachment path,
 we infer phylogenetic trees for each of the clusters separately using standard methods
