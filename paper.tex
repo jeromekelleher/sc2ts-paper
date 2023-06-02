@@ -1328,15 +1328,40 @@ a pair of nodes along a segment of genome is defined by
 the \emph{edge} $(\ell, r, p, c)$, which states that
 child node $c$ inherited its genome from parent node $p$
 from left coordinate $\ell$ to right coordinate $r$. A \emph{site}
-defines the genomic position at which some variation occurs,
-and a \emph{mutation} defines the site, node and derived state
-that generates variation.
-% JK: Note sure this clarifies much at the representational level?
-% (note that this requires that the sequences can be aligned and phased).
+defines a position on the genome
+and the ancestral state (allele) at that site.
+A \emph{mutation} records the site and node IDs where a mutation
+occurs and the derived state (allele).
+In addition to these basic elements of the data model, the \texttt{tskit} library
+supports additional tables and fields,
+the ability to associate arbitrary metadata with
+table rows, and facilities to record provenance
+information~\citep{Tskit2023-tskit}.
 
-Given these tables, we can then efficiently construct the local
+Tskit supports arbitrarily complex patterns of mutation at a particular
+site, and it is useful
+to define some terminology to classify them.
+A mutation's ``parent''
+is the first mutation encountered (at that site) on the path to
+root from the mutation's node in the local tree corresponding to
+the site's position. If no other mutation is encountered on the
+path to root, the mutation's parent is null.
+The ``derived state'' of a mutation is the allelic state inherited by nodes
+in the subtree rooted at the mutation's node (in the local tree), assuming
+there are no subsequent descendant mutations.
+The ``inherited state'' of a mutation is the derived state of the
+parent mutation, if it exists, or the site's ancestral state otherwise.
+A ``recurrent mutation`` is a mutation with a non-null parent,
+and a ``reversion`` is a recurrent mutation that reverses the state
+change of its parent. For example, if we have two mutations
+$a$ and $b$, such that $a$ is the parent of $b$,
+with state transitions (inherited state $\rightarrow$ derived state)
+$a: A\rightarrow T$ and $b: T\rightarrow A$, we define $b$ as a reversion.
+
+Given the node, edge, site and mutation tables we can
+efficiently construct the local
 genealogical trees along the genome (arising from recombination)
-and also perform a range of calculations efficiently by
+and perform a range of calculations efficiently by
 reasoning about the differences between these local
 trees~\citep{Kelleher2016-wk,Ralph2020-efficiently}. These
 algorithms have led to performance increases of several orders
