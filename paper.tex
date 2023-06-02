@@ -45,7 +45,13 @@ University of British Columbia, Vancouver, British Columbia, Canada}
 \maketitle
 
 \begin{abstract}
-Recombination is an ongoing and increasingly important feature of circulating lineages of SARS-CoV-2, challenging how we represent the evolutionary history of this virus and giving rise to new variants of potential public health concern by combining transmission and immune evasion properties of different lineages. Detection of new recombinant strains is challenging, with most methods looking for breaks between sets of mutations that characterize distinct lineages.
+Recombination is an ongoing and increasingly important feature of circulating
+lineages of SARS-CoV-2, challenging how we represent the evolutionary history
+of this virus and giving rise to new variants of potential public health
+concern by combining transmission and immune evasion properties of different
+lineages. Detection of new recombinant strains is challenging, with most
+methods looking for breaks between sets of mutations that characterize distinct
+lineages.
 In addition, many basic approaches fundamental to the study of viral
 evolution assume that recombination is negligible, in that a single
 phylogenetic tree can represent the genetic ancestry of the
@@ -169,7 +175,7 @@ is now widely used in population genetics applications.
 The methods in \texttt{tskit} have been developed to support millions of
 whole human genomes~\citep{Kelleher2019-ba}, and so it is particularly well suited
 to representing large SARS-CoV-2 genealogies,
-which currently encompasses over 15 million sequences in the GISAID 
+which currently encompasses over 15 million sequences in the GISAID
 database~\citep{Shu2017-hp}.
 See Section~\ref{sec:args} for more details on ARGs and the succinct
 tree sequence data structure.
@@ -205,11 +211,11 @@ tools. As illustrated in Figure~\ref{fig:overview_sc2ts}, inference is based on 
 based on their collection dates and proceeds in three phases.
 First, possible paths connecting each sample to the current ARG
 are inferred (allowing for recombination) using the
-Li and Stephens (LS) 
-model (Figure~\ref{fig:overview_sc2ts}A, B; Section~\ref{sec:ls}). 
+Li and Stephens (LS)
+model (Figure~\ref{fig:overview_sc2ts}A, B; Section~\ref{sec:ls}).
 Then, since many samples
 in the batch can share an attachment path,
-we infer phylogenetic trees for each of the clusters separately using standard methods 
+we infer phylogenetic trees for each of the clusters separately using standard methods
 (Figure~\ref{fig:overview_sc2ts}C; Section~\ref{sec:sample-cluster-tree-inference}).
 Finally, we attach the trees for these sample-clusters to the current
 ARG and apply some parsimony-based heuristics to address issues
@@ -324,8 +330,8 @@ of this may be explained by outlier sites with artefactually high
 mutation counts (see Figure~\ref{fig:breakpoint-distribution}).
 Despite this, however, the number of mutations per node
 is small. In the Wide ARG, for example, we have a mean of 0.77
-mutations per sampled genome, demonstrating that most 
-added samples fit into the ARG parsimoniously. 
+mutations per sampled genome, demonstrating that most
+added samples fit into the ARG parsimoniously.
 See Section~\ref{sec:mutation_spectrum}
 for more analysis of the patterns of inferred mutations.
 Recombination plays a relatively minor role, with $<0.3\%$
@@ -1213,7 +1219,7 @@ be straightforward to condition on per-site mutation rates (and nucleotide-depen
 state transitions, with some additional development).
 Recombination breakpoints for the ARG are currently inserted at the
 right-most extent of the possible interval
-(Section~\ref{sec:breakpoint_intervals}). 
+(Section~\ref{sec:breakpoint_intervals}).
 More likely locations for the
 breakpoint could be chosen within the interval, for example based
 on sequence motifs~\citep{Gallaher2020-mr, Yang2020-ct}.
@@ -1685,7 +1691,7 @@ ARG topology affected by newly added samples. Because the inferred
 ARGs still contain a large number of reversion mutations which
 are likely to be mostly artefactual, it is clear that there
 is room for improvement and that further parsimony-increasing
-heuristics 
+heuristics
 (e.g., resolving reversions beyond those on immediately adjacent edges)
 would likely be of benefit .
 
