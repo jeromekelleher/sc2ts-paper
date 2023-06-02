@@ -297,7 +297,7 @@
   language  = "en"
 }
 
-@MISC{Shu2017-hp,
+@article{Shu2017-hp,
   title   = "{GISAID}: Global initiative on sharing all influenza data -- from
              vision to reality",
   author  = "Shu, Yuelong and McCauley, John",
@@ -653,7 +653,8 @@
     author={Zhang, Brian C and Biddanda, Arjun and Gunnarsson, {\'A}rni
         Freyr and Cooper, Fergus and Palamara, Pier Francesco},
     journal={Nature Genetics},
-    pages={1--9},
+    pages={768--776},
+    volume={55},
     year={2023},
     publisher={Nature Publishing Group US New York}
 }
@@ -1432,14 +1433,19 @@
   language = "en"
 }
 
-@MISC{VanInsberghe2021-eu,
+@article{VanInsberghe2021-eu,
   title   = "Recombinant {SARS-CoV-2} Genomes Circulated at Low Levels Over The
              First Year of The Pandemic",
   author  = "VanInsberghe, David and Neish, Andrew S and Lowen, Anice C and
              Koelle, Katia",
-  journal = "Virus Evolution",
-  year    =  2021
+  journal={Virus Evolution},
+  volume={7},
+  number={2},
+  pages={veab059},
+  year={2021},
+  publisher={Oxford University Press UK}
 }
+
 
 @ARTICLE{Lam2018-dc,
   title    = "Improved Algorithmic Complexity for the {3SEQ} Recombination
@@ -1889,7 +1895,7 @@
 
 
 @article{Ralph2020-efficiently,
-    title={Efficiently summarizing relationships in large samples: a general
+    title={Efficiently summarizing relationships in large samples: {A} general
         duality between statistics of genealogies and genomes},
     author={Ralph, Peter and Thornton, Kevin and Kelleher, Jerome},
     journal={Genetics},
@@ -1952,14 +1958,14 @@
   author={Wong, Yan and Ignatieva, Anastasia and Koskela, Jere
       and Gorjanc, Gregor and Wohns, Anthony W and Kelleher, Jerome},
   year=2023,
-  journal={In preparation}
+  note={In preparation}
 }
 
 @MISC{Palmer2023-efficient,
   title={Efficient {Li and Stephens} on Ancestral Recombination Graphs},
   author={Palmer, Duncan S and Wong, Yan and Kelleher, Jerome},
   year=2023,
-  journal={In preparation}
+  note={In preparation}
 }
 
 @article{Haller2018-tree,
@@ -1976,10 +1982,10 @@
 }
 
 
-@article{Tskit2023-tskit,
+@misc{Tskit2023-tskit,
   title={Tskit: {A} portable library for population scale genealogical analysis},
   author={{Tskit developers}},
-  journal={In preparation},
+  note={In preparation},
   year={2023},
 }
 
@@ -2026,23 +2032,16 @@
     publisher={Oxford University Press}
 }
 
-@article{Mcvean2019-linkage,
-    title={Linkage Disequilibrium, Recombination and Haplotype Structure},
-    author={McVean, Gil and Kelleher, Jerome},
-    journal={Handbook of Statistical Genomics: Two Volume Set},
-    pages={51--86},
-    year={2019},
-    publisher={Wiley Online Library}
-}
-
-@inbook{Mcvean2019-linkage,
+@inproceedings{Mcvean2019-linkage,
 author = {McVean, Gil and Kelleher, Jerome},
-publisher = {John Wiley \& Sons, Ltd},
+editor = {Balding, David and Moltke, Ida and Marioni, John},
+publisher = {Wiley},
 title = {Linkage Disequilibrium, Recombination and Haplotype Structure},
 booktitle = {Handbook of Statistical Genomics},
 chapter = {2},
 pages = {51-86},
 year = {2019},
+address = {Hoboken, NJ},
 }
 
 @article{Korfmann2022-weak,
@@ -2073,6 +2072,7 @@ year = {2019},
     author={Petr, Martin and Haller, Benjamin C and Ralph, Peter L and
         Racimo, Fernando},
     journal={bioRxiv},
+    url = {https://doi.org/10.1101/2022.03.20.485041 },
     year={2022},
     publisher={Cold Spring Harbor Laboratory}
 }
@@ -2083,6 +2083,7 @@ year = {2019},
     author={Rasmussen, David A and Guo, Fangfang},
     journal={bioRxiv},
     year={2022},
+    url = {https://doi.org/10.1101/2022.01.17.476639 },
     publisher={Cold Spring Harbor Laboratory}
 }
 
@@ -2278,7 +2279,6 @@ year = {2019},
     abstract = "{Novel coronaviruses, including SARS-CoV-2, SARS, and MERS, often originate from recombination events. The mechanism of recombination in RNA viruses is template switching. Coronavirus transcription also involves template switching at specific regions, called transcriptional regulatory sequences (TRS). It is hypothesized but not yet verified that TRS sites are prone to recombination events. Here, we developed a tool called SuPER to systematically identify TRS in coronavirus genomes and then investigated whether recombination is more common at TRS. We ran SuPER on 506 coronavirus genomes and identified 465 TRS-L and 3,509 TRS-B. We found that the TRS-L core sequence (CS) and the secondary structure of the leader sequence are generally conserved within coronavirus genera but different between genera. By examining the location of recombination breakpoints with respect to TRS-B CS, we observed that recombination hotspots are more frequently colocated with TRS-B sites than expected.}",
     issn = {1537-1719},
     doi = {10.1093/molbev/msaa281},
-    url = {https://doi.org/10.1093/molbev/msaa281},
     eprint = {https://academic.oup.com/mbe/article-pdf/38/4/1241/37042119/msaa281.pdf},
 }
 
@@ -2371,8 +2371,7 @@ year = {2019},
 @misc{Smith2023-identifying,
   title = {Identifying {SARS-CoV-2} Recombinants},
   author= {Smith, E and Wright, S and Libuit, K},
-  howpublished =
-  {\url{https://pha4ge.org/resource/identifying-sars-cov-2-recombinants/}},
+  url = {https://pha4ge.org/resource/identifying-sars-cov-2-recombinants},
   year={2023},
   note = {Accessed: 2023-06-02}
 }
