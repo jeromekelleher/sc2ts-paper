@@ -24,19 +24,20 @@
 
 \title{Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2}
 \author[1]{Shing H. Zhan}
-\author[2$\star$]{Anastasia Ignatieva}
+\author[2,3$\star$]{Anastasia Ignatieva}
 \author[1$\star$]{Yan Wong}
-\author[3]{Katherine Eaton}
+\author[4]{Katherine Eaton}
 \author[1]{Benjamin Jeffery}
 \author[1]{Duncan S. Palmer}
-\author[2]{Carmen L. Murall}
-\author[4]{Sarah P. Otto}
+\author[4]{Carmen L. Murall}
+\author[5]{Sarah P. Otto}
 \author[1$\dagger$]{Jerome Kelleher}
 \affil[1]{Big Data Institute, Li Ka Shing Centre for Health
 Information and Discovery, University of Oxford, Oxford, United Kingdom}
 \affil[2]{Department of Statistics, University of Oxford, Oxford, United Kingdom}
-\affil[3]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-\affil[4]{Department of Zoology and Biodiversity Research Centre,
+\affil[3]{School of Mathematics and Statistics, University of Glasgow, Glasgow, United Kingdom}
+\affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
+\affil[5]{Department of Zoology and Biodiversity Research Centre,
 University of British Columbia, Vancouver, British Columbia, Canada}
 \affil[$\star$]{Joint second author}
 \affil[$\dagger$]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
@@ -93,7 +94,7 @@ further investment and development.
 Recombination via template switching is a common feature
 of the evolution of coronaviruses~\citep{Graham2010-xe,De_Klerk2022-tt},
 including SARS-CoV-2
-\citep{VanInsberghe2021-eu,Jackson2021-ik,Ignatieva2021-rg}. By bringing
+\citep{VanInsberghe2021-eu,Jackson2021-ik,Ignatieva2022-st}. By bringing
 together mutations carried by different lineages, recombination plays an
 important role in generating genetic diversity, with recombinant lineages
 associated with adaptation to new host species and with the production of more
@@ -1106,8 +1107,10 @@ of the Nextclade-designated XB samples. The one exception accounts for about 17\
 designated XB nodes and involves a recombination between descendants of the
 originating XB recombination. More specifically, strain
 USA/TX-HMH-MCoV-43092/2021 is inferred to be a recombinant
-between an XB grandparent and its XB grandchild, which
-is likely to be artefactual.
+between an XB grandparent and its XB grandchild, involving an intermediate UPGMA node.
+We assess it is a relatively likely that this is an artefactual recombination event,
+caused by undersampling. Alternatively, it could reflect true (but hard to detect)
+recombination between closely related lineages.
 
 For the few XC-labelled samples, the Wide ARG identifies more than one
 originating recombination node. However, as none of the samples designated as
