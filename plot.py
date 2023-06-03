@@ -28,6 +28,7 @@ import pandas as pd
 
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
 import sc2ts
+import sc2ts.utils
 
 import utils
 
@@ -886,20 +887,20 @@ class Pango_X_graph(Figure):
     @staticmethod
     def grow_graph(ts, input_nodes):
         # Ascend up from input nodes
-        up_nodes = sc2ts.node_path_to_samples(
+        up_nodes = sc2ts.utils.node_path_to_samples(
             input_nodes, ts, ignore_initial=True, stop_at_recombination=True
         )
         # Descend from these
-        nodes = sc2ts.node_path_to_samples(
+        nodes = sc2ts.utils.node_path_to_samples(
             up_nodes, ts, rootwards=False, ignore_initial=False
         )
         # Ascend again, to get parents of downward nonsamples
-        up_nodes = sc2ts.node_path_to_samples(nodes, ts, ignore_initial=False)
+        up_nodes = sc2ts.utils.node_path_to_samples(nodes, ts, ignore_initial=False)
         nodes = np.append(nodes, up_nodes)
         # Add parents of recombination nodes up to the nearest sample
         re_nodes = nodes[ts.nodes_flags[nodes] & sc2ts.NODE_IS_RECOMBINANT > 0]
         re_parents = np.unique(ts.edges_parent[np.isin(ts.edges_child, re_nodes)])
-        re_ancestors = sc2ts.node_path_to_samples(re_parents, ts, ignore_initial=False)
+        re_ancestors = sc2ts.utils.node_path_to_samples(re_parents, ts, ignore_initial=False)
         nodes = np.append(nodes, re_ancestors)
         # Remove duplicates
         _, idx = np.unique(nodes, return_index=True)
@@ -907,7 +908,7 @@ class Pango_X_graph(Figure):
 
     def __init__(self):
         ts, self.basetime = utils.load_tsz(self.ts_dir, self.long_fn)
-        self.ts = sc2ts.detach_singleton_recombinants(ts)
+        self.ts = sc2ts.utils.detach_singleton_recombinants(ts)
         logging.info(
             f"Removed {ts.num_samples - self.ts.num_samples} singleton recombinants"
         )
@@ -1001,7 +1002,7 @@ class Pango_X_tight_graph(Pango_X_graph):
             sample_metadata_labels = self.sample_metadata_labels
         if label_replace is None:
             label_replace = self.label_replace
-        return sc2ts.plot_subgraph(
+        return sc2ts.utils.plot_subgraph(
             nodes,
             self.ts,
             ti=treeinfo,
@@ -1445,7 +1446,7 @@ class Pango_XA_XAG_XD_nxcld_tight_graph(Pango_X_tight_graph):
         axA = fig.add_subplot(gs[0, 0])
         axB = fig.add_subplot(gs[1, :])
 
-        treeinfo = sc2ts.TreeInfo(self.ts)
+        treeinfo = sc2ts.utils.TreeInfo(self.ts)
 
         fn = self.fn_prefix
         for Xlin, ax, cls in [
