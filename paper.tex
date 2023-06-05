@@ -7,6 +7,7 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{authblk}
+\usepackage[symbol]{footmisc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{graphicx}
@@ -22,35 +23,45 @@
 \usepackage[hidelinks]{hyperref}
 
 
-\title{\bf Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2}
-\author[1]{Shing H. Zhan}
-\author[2,3$\star$]{Anastasia Ignatieva}
-\author[1$\star$]{Yan Wong}
-\author[4]{Katherine Eaton}
-\author[1]{Benjamin Jeffery}
-\author[1]{Duncan S. Palmer}
-\author[4]{Carmen L. Murall}
-\author[5]{Sarah P. Otto}
-\author[1$\dagger$]{Jerome Kelleher}
-\affil[1]{\normalsize Big Data Institute, Li Ka Shing Centre for Health
-Information and Discovery, University of Oxford, Oxford, United Kingdom}
-\affil[2]{Department of Statistics, University of Oxford, Oxford, United Kingdom}
-\affil[3]{School of Mathematics and Statistics, University of Glasgow, Glasgow, United Kingdom}
-\affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-\affil[5]{Department of Zoology and Biodiversity Research Centre,
-University of British Columbia, Vancouver, British Columbia, Canada}
-\affil[$\star$]{Joint second author}
-\affil[$\dagger$]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
+\title{\vspace{-1.5em} \bf Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2}
 
-% \author{
-% Shing H.~Zhan \thanks{Big Data Institute, Li Ka Shing Centre for Health
-% Information and Discovery, University of Oxford, Oxford, United Kingdom} \and Anastasia Ignatieva
-% \thanks{Department of Statistics, University of Oxford, Oxford, United Kingdom}
-% }
+\author[1]{Shing~H.~Zhan}
+\author[2,3$\star$]{Anastasia~Ignatieva}
+\author[1$\star$]{Yan~Wong}
+\author[4]{Katherine~Eaton}
+\author[1]{Benjamin~Jeffery}
+\author[1]{Duncan~S.~Palmer}
+\author[4]{Carmen~L.~Murall}
+\author[5]{Sarah~P.~Otto}
+\author[1$\dagger$]{Jerome~Kelleher}
+% \affil[1]{\normalsize Big Data Institute, Li Ka Shing Centre for Health
+% Information and Discovery, University of Oxford, United Kingdom}
+% \affil[2]{Department of Statistics, University of Oxford, United Kingdom}
+% \affil[3]{School of Mathematics and Statistics, University of Glasgow, United Kingdom}
+% \affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
+% \affil[5]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Canada}
+% \affil[$\star$]{Joint second author}
+% \affil[$\dagger$]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
+\affil[ ]{\mbox{}\vspace{-2.5em}}
+
 
 \begin{document}
 \maketitle
 
+\setlength{\skip\footins}{1em}
+\setlength{\footnotemargin}{0.5em}
+\renewcommand{\thefootnote}{\arabic{footnote}}
+\footnotetext[1]{Big Data Institute, Li Ka Shing Centre for Health
+Information and Discovery, University of Oxford, United Kingdom}
+\footnotetext[2]{Department of Statistics, University of Oxford, United Kingdom}
+\footnotetext[3]{School of Mathematics and Statistics, University of Glasgow, United Kingdom}
+\footnotetext[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
+\footnotetext[5]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Canada}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\footnotetext[1]{Joint second author}
+\footnotetext[2]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
+
+\vspace{-1em}
 \begin{abstract}
 Recombination is an ongoing and increasingly important feature of circulating
 lineages of SARS-CoV-2, challenging how we represent the evolutionary history
@@ -1430,7 +1441,7 @@ of the LS model.
 \begin{figure} \centering
 \includegraphics[width=0.5\textwidth]{figures/ls_diagram_covid.pdf}
 \caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
-model, in which a query sequence (bottom) is described as an
+model, in which a focal sequence (bottom) is described as an
 imperfect mosaic of the sequences in a reference panel.
 Black crosses along the focal sequence show sequencing
 errors or mutations.
@@ -1438,7 +1449,7 @@ In the standard formulation, at site $\ell$, the recombination probability is $r
 the mutation probability is $\mu_\ell$ and $n$
 denotes the size of the reference panel.
 The Viterbi algorithm can be used to find a
-``copying path'' through the reference panel for a given query sequence that
+``copying path'' through the reference panel for a given focal sequence that
 maximises the likelihood under these parameters. Unseen states in the reference panel are shown as coloured lines enclosed by
 the grey box. The black arrow describes the true path through the data which leads to the emitted
 focal sequence below. Examples of transition and
@@ -1471,7 +1482,7 @@ but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
 Emissions may also be a function of the nucleotide states, but in our
-case, we assume that all observed alleles (in both the reference panel and
+case, we assume that all observed alleles in both the reference panel and
 focal sequence, $a_\ell$) at the site under consideration are equally likely and
 occur with mutation probability $\mu_\ell/(a_\ell-1)$
  (Figure~\ref{fig:ls_diagram}, blue panel).
@@ -1480,39 +1491,39 @@ to find the most likely copying path, given a set of reference sequences, $Q$, a
 Throughout, we refer to the probabilities of mismatching to a
 member of the reference panel at site $\ell$ as $\mu_\ell$,
 and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$ as $r_\ell$. For convenience, $\mu_\ell$ is commonly referred to as the `mutation probability', but we note that this probability of
-mismatch also encompasses various other error modes which result in a mismatch
+mismatch also encompasses various other error modes that result in a mismatch
 (such as sequencing and alignment errors). Note also that it is these probabilities,
 not the rates of mutation and recombination, that are required to fully define the HMM.
-That said, we can approximately relate these probabilities to the coalescent with recombination process which LS is approximating. In the case of recombination,
-suppose that there is some constant underlying recombination rate, $\rho$.
-Assuming that recombination events occur as a Poisson process,
-then the probability of recombining between adjacent sites is
-\begin{align*}
-    r_\ell = 1 - \exp\left(-\frac{\rho\left(m_{i-1} - m_{i}\right)}{n}\right),
-\end{align*}
-where $m_j$ is the nucleotide position of variant $j$.
-Similarly, we may consider the probability of mutation to represent to the
-probability of mutation along the branch joining the focal sequence to a coalescent
+That said, we can approximately relate these probabilities to the coalescent in a population with constant effective population size ($N_e$), with recombination process which LS is approximating to guide intuition. We may consider the probability of mutation to represent the
+probability of mutation along the branches joining the focal sequence to the closest member of a coalescent
 tree containing a reference panel with $n$ members, assuming a Poisson process
-along the branch. The expected length of this branch is $4/n$, and so the mismatch
+along the branch. The expected length of these two branches is $4/n$ in units of $N_e$ generations, and so the mismatch
 probability represents the probability of observing a mutation or error mode,
-along this branch. We can then approximate the probability of observing a mismatch as:
+along these branches. We can then approximate the probability of observing a mismatch as:
 \begin{align*}
     \mu_\ell \approx 1 - \exp{\left(-\frac{4\nu}{n}\right)}
 \end{align*}
 where $\nu$ is the mutation rate per $\mbox{ploidy} \times N_e$ generations.
+In the case of recombination,
+suppose that there is some constant underlying recombination rate, $\rho$.
+Assuming that recombination events occur as a Poisson process,
+then the probability of detecting a recombination event before coalescence between the focal sequence and the reference panel, between adjacent variant sites is
+\begin{align*}
+    r_\ell = 1 - \exp\left(-\frac{\rho\left(m_{i-1} - m_{i}\right)}{n}\right),
+\end{align*}
+where $m_j$ is the nucleotide position of variant $j$.
 
 The probabilities of these competing processes of mismatch and recombination are
 usually controlled by the site-specific parameters $\mu_\ell$ and $r_\ell$,
 respectively. For this work we used a slightly different formulation, which
 uses one parameter, the mismatch ratio (MMR), to control the relative
 importance of mutation and recombination in the HMM. Specifically, an MMR value
-of $k$ will prefer $k$ mismatches (mutations) to a single recombination which
-results in copying from a template with no mismatches. To map between
+of $k$ will prefer $k$ mismatches (mutations) to a single recombination that
+ results in copying from a template with no mismatches. To map between
 recombination probability and mutation probability for a particular mismatch
-ratio, we simply consider the two paths which we wish to be equally likely, and
+ratio, we simply consider the two paths that we wish to be equally likely, and
 rearrange for the mutation or recombination probability. Consider the simple
-case when we assume $\mu_l=\mu$ and $r_l=r$. Without loss of generality,
+case where we assume $\mu_l=\mu$ and $r_l=r$. Without loss of generality,
 consider a region of length $m$. Up until this region, two paths are equally
 likely, so we can re-scale by the likelihood of observing the focal sequence up
 to the site before the region starts, $c$. For an MMR of $k$, we only need to
@@ -1539,7 +1550,7 @@ where $c$ is the
 likelihood of the path up to this point, which are assumed to be
 equal by construction.
 We then
-set these path probabilities to be equal, and rearrange to obtain:
+set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ to one another::
 \begin{align*} r = \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},
 \quad\quad \mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}. \end{align*}
 Thus, for lower MMR values ($k$ here),
@@ -1550,12 +1561,12 @@ Exploring different mismatch ratios, and more sophisticated parameterisations
 of the HMM are important avenues for future work.
 
 A varying degree of missingness is present in the genetic data, that is, for a
-given sample, a subset of nucleotides coded as `unknown' at a set of positions.
+given sample, a subset of nucleotides may be coded as `unknown' at a set of positions.
 As a result, we had to consider missingness in our implementation of the LS
 Viterbi algorithm. One approach would be to `impute' all missing data
 beforehand using external software to hard-call or define a distribution over
 the possible missing nucleotides, and use that in the determination of path
-probabilities. Another is to not attempt to estimate the true nucleotide, but
+probabilities. Another, which we carry out within \texttt{sc2ts}, is to not attempt to estimate the true nucleotide, but
 rather to consider such sites as uninformative to the path probability, and
 impute missing data within that path on the fly, placing them within the emission probability transition from unknown to
 the emission probability from unknown to
@@ -1569,7 +1580,7 @@ among all sequences (sampled and inferred) in the current ARG.
 In the majority of cases, with non-recombinant sample sequences,
 the most likely solution is to copy from one
 of the nodes in the ARG that minimises the number of mutations required
-to insert the query sequence. Importantly, because the reference panel here consists of
+to insert the focal sequence. Importantly, because the reference panel here consists of
 \emph{every} node in the ARG, we can match to both older sample
 sequences or internal nodes representing an inferred ancestral sequence
 (see subsequent subsections for details about how these are added).
@@ -1612,7 +1623,7 @@ information about the likelihood surface, and determine whether there are
 downstream implications for our conclusions. Here, we have considered the
 Viterbi algorithm to make statements about the most likely paths through the
 data. The machinery used here can be modified to run the forwards and backwards
-algorithms which determine the probability of observing a focal sequence,
+algorithms that determine the probability of observing a focal sequence,
 integrating over all possible paths through the data, under the LS
 model~\citep{Palmer2023-efficient}.
 This presents an opportunity to estimate parameters of interest
