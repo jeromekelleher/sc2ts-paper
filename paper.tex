@@ -243,9 +243,9 @@ introduced by the inherent greediness of this strategy
 Using the current preliminary version of \texttt{sc2ts}, we infer two
 large ARGs (with 1,265,685 and 657,239 samples, respectively) and study
 the properties of these ARGs to illustrate the power of the method
-and to inform subsequent development. 
+and to inform subsequent development.
 We find that these
-ARGs accurately capture known phylogenetic 
+ARGs accurately capture known phylogenetic
 relationships (Section~\ref{sec:backbone_phylogeny}) and
 mutational spectra (Section~\ref{sec:mutation_spectrum}),
 as well as automatically identifying the majority of known recombinant
@@ -270,13 +270,13 @@ We work with a
 representative subset of the available data, limited to
 inferences that can be performed on a single server in
 a few weeks (see below for further details on timings and
-computer hardware used). The cut-off dates for sampling 
+computer hardware used). The cut-off dates for sampling
 are arbitrary.
 We inferred two ARGs, which we refer to as the
 ``Wide'' and ``Long'' ARGs throughout.
 The Wide ARG is densely sampled but time-limited and
 includes 1.27 million strains collected up to June 30, 2021
-which 
+which
 pass some quality-control filters (Section~\ref{sec:data_preprocessing})
 and  have a maximum delay between sampling and submission dates of 30 days
 (Section~\ref{sec:filtering_time_travellers}).
@@ -815,7 +815,7 @@ exclude breakpoints associated with ``singleton'' recombination nodes
 Larger points distinguish those breakpoints which occur in nodes
 ancestral to 5 or more samples, comprising 316 breakpoints from
 291 recombination nodes. The criterion of 5 descendants matches the
-minimum number required to designate a new Pango 
+minimum number required to designate a new Pango
 lineage~\citep{Rambaut2020-dw}.
 Note that as each plotted point represents a breakpoint, a recombination
 node with more than one breakpoint (e.g., with 3 or more parents,
@@ -1485,7 +1485,7 @@ but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
 Emissions may also be a function of the nucleotide states, but in our
-case, we assume that all alleles ($A,C,G,T,-$) can be mutated to with equal probability $\mu_\ell/5$. This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate 
+case, we assume that all alleles ($A,C,G,T,-$) can be mutated to with equal probability $\mu_\ell/5$. This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
  (Figure~\ref{fig:ls_diagram}, blue panel).
 We use the Viterbi algorithm~\citep{Viterbi1967-ol}
 to find the most likely copying path, given a set of reference sequences, $Q$, and $E$.
@@ -1556,9 +1556,9 @@ set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ 
 \quad\quad \mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}. \end{align*}
 Thus, for lower MMR values ($k$ here),
 recombinations are favoured over mutations
-than a single ancestral genome. 
+than a single ancestral genome.
 We use an MMR value of $k=3$ in this work,
-as it provided results that tallied well with empirical observations. 
+as it provided results that tallied well with empirical observations.
 Exploring different mismatch ratios and more sophisticated parameterisations
 of the HMM are important avenues for future work.
 
@@ -1598,7 +1598,7 @@ The Viterbi algorithm enables us to find a path through
 the reference panel from among the $n^m$ paths that is provably at the
 optimum, under the LS model.
 We can solve this massive optimisation problem exactly because the ARG-based
-implementation of the LS HMM used in \texttt{tsinfer}~\citep{Kelleher2019-ba} 
+implementation of the LS HMM used in \texttt{tsinfer}~\citep{Kelleher2019-ba}
 scales approximately
 logarithmically with reference panel size (as opposed to linearly,
 for standard matrix-based approaches).
