@@ -1156,6 +1156,29 @@ conclusions.
 % in the UShER public phylogeny. Node 628656 (Scotland/QEUH-37794BB/2022) is a
 % sister clade of XAC, and annotated as ``miscBA2BA1PostSpike''.
 
+\subsection{False positive recombinants}
+The Long and Wide ARGs both contain several recombination nodes that are
+ancestral to large numbers of samples, and are almost certainly
+artefactual. The
+
+
+\begin{table} \centering
+\begin{tabular}{lllll}
+Strain & Lineage & Descendants & HMM Cost & Lineage rank\\
+Germany/HH-RKI-I-061284/2021 & B.1.617.2 & 178405 & 17 & 2 \\
+India/ILSGS00961/2021   & B.1.617.2 & 177649 & 25  & 7  \\
+Denmark/DCGC-281594/2021 & BA.2.9 & 127227 & 32  & 1\\
+USA/NJ-GBW-EWR000001/2021 & BA.3 & 127230 & 25 & 1\\
+\end{tabular}
+\caption{\label{tab:false_positive}
+False positive recombination events.}
+\end{table}
+
+
+
+Further study is required to systematically identify likely false
+positive
+
 \section{Discussion}
 % PARA 1. SARS-CoV-2 is still important, and the vast hordes of data provide an
 % unprecedented opportunity to study the evolution of a virus. Even if the
