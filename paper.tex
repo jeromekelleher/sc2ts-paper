@@ -82,7 +82,7 @@ inheritance. We infer two ARGs under
 different sampling strategies, and study their properties.
 One contains 1.27 million sequences
 sampled up to June 30, 2021, and the second is more sparsely sampled,
-consisting of 784K sequences sampled up to June 30, 2022.
+consisting of 657K sequences sampled up to June 30, 2022.
 We find that both ARGs are
 % better words?
 highly consistent with
@@ -100,9 +100,9 @@ and loads in less than a second.
 % basic gist I'd like to get accross[
 The ability to fully integrate the effects of recombination into
 downstream analyses, to quickly and automatically detect new recombinants,
-and to provide an efficient and convenient platform for computation
-makes \texttt{sc2ts} a promising approach, worthy of
-further investment and development.
+and to utilise an efficient and convenient platform for computation
+based on well-engineered technologies
+makes \texttt{sc2ts} a promising approach.
 \end{abstract}
 
 \section{Introduction}
@@ -129,7 +129,7 @@ accelerated the rate of coinfection and the potential for
 recombination~\citep{Bal2022-hq}.
 In early 2023, multiple recombinant lineages have successfully
 established and spread to high frequency, and accounting for recombinant
-ancestry is now essential in understanding the evolution of SARS-CoV-2.
+ancestry is now essential in understanding the ongoing evolution of SARS-CoV-2.
 
 % Recombination is hard to detect
 Detecting recombination in SARS-CoV-2 is difficult and identifying new
@@ -233,8 +233,8 @@ the LS ``copying process'' is a Hidden Markov Model (HMM)
 approximating the effects of mutation
 and recombination, widely used in large-scale genomics (Section~\ref{sec:ls}).
 Then, since many samples
-in the batch can share an attachment path,
-we infer phylogenetic trees for each of the clusters separately using standard methods
+in a batch can share an attachment path,
+we infer phylogenetic trees for each of these clusters separately using standard methods
 (Figure~\ref{fig:overview_sc2ts}C; Section~\ref{sec:sample-cluster-tree-inference}).
 Finally, we attach the trees for these sample clusters to the current
 ARG and apply some parsimony-based heuristics to address issues
@@ -243,16 +243,17 @@ introduced by the inherent greediness of this strategy
 Using the current preliminary version of \texttt{sc2ts}, we infer two
 large ARGs (with 1,265,685 and 657,239 samples, respectively) and study
 the properties of these ARGs to illustrate the power of the method
-and to inform subsequent development. We find that these
-ARGs accurately reflect known patterns of phylogenetic relationships
-between samples (Section~\ref{sec:backbone_phylogeny}),
+and to inform subsequent development. 
+We find that these
+ARGs accurately capture known phylogenetic 
+relationships (Section~\ref{sec:backbone_phylogeny}) and
 mutational spectra (Section~\ref{sec:mutation_spectrum}),
-and automatically identify the majority of known recombinant
-lineages (Sections~\ref{sec:jackson_recombs} and \ref{sec:pango_x_lineages}),
+as well as automatically identifying the majority of known recombinant
+lineages (Sections~\ref{sec:jackson_recombs} and \ref{sec:pango_x_lineages})
 with a high level of precision in the
 genomic location of recombination breakpoints
 (Section~\ref{sec:breakpoint_intervals})
-and the relationship between parental sequences
+and relationship between parental sequences
 (Section~\ref{sec:parent_divergence}).
 We hope that these benefits of accurate joint estimation of
 genetic inheritance with mutation and recombination events will generate community
@@ -269,14 +270,16 @@ We work with a
 representative subset of the available data, limited to
 inferences that can be performed on a single server in
 a few weeks (see below for further details on timings and
-computer hardware used). The cut-off dates for sampling were chosen
-arbitrarily.
+computer hardware used). The cut-off dates for sampling 
+are arbitrary.
 We inferred two ARGs, which we refer to as the
 ``Wide'' and ``Long'' ARGs throughout.
 The Wide ARG is densely sampled but time-limited and
-includes all 1.27 million sample genomes collected up to June 30, 2021
-with a maximum delay between sampling and submission dates of 30 days
-(see Section~\ref{sec:filtering_time_travellers}).
+includes 1.27 million strains collected up to June 30, 2021
+which 
+pass some quality-control filters (Section~\ref{sec:data_preprocessing})
+and  have a maximum delay between sampling and submission dates of 30 days
+(Section~\ref{sec:filtering_time_travellers}).
 For the Long ARG, we randomly sub-sample a maximum of 1,000 genomes per
 day (again restricting the delay between sampling and submission to 30 days)
 and include an additional year's worth of samples (to June 30, 2022).
@@ -376,7 +379,7 @@ of the analyses in this preprint can be carried out in seconds
 with the \texttt{tskit} Python API, using a few gigabytes of RAM.
 
 Inferring these ARGs does require substantial computation.
-The Wide ARG required 17 days of computation time on a machine with
+The Wide ARG required 17 days to infer on a server with
 128 threads and 512 GB RAM (2x AMD EPYC 7502 @ 2.5GHz). The Long ARG
 required 23 days on a (much older) machine with 40 threads and 256 GB RAM (2x
 Intel(R) Xeon(R) CPU E5-2680 v2 @ 2.80GHz). The majority of the time is spent
@@ -410,7 +413,7 @@ Phylogenies are pruned down to those samples present as tips in both datasets, w
 lines match the corresponding samples between the two trees; black circles
 indicate identical sample partitions between the two trees. Terminal branches
 are colour-coded according to the Pango lineage status assigned to the tip
-samples; no Pango recombinants are shown, as none are shared between the trees.
+samples.
 The tanglegram was generated using the Neighbor-Net algorithm
 \citep{Scornavacca2011-mg} implemented in Dendroscope version 3.8.5
 \citep{Huson2012-ys}. See Figure~\ref{fig:cophylogeny_long} for the equivalent
@@ -552,7 +555,7 @@ is large in both ARGs (Wide ARG: 41.23; Long ARG:36.10; Table~\ref{tab:args}).
 However, a lower median count (Wide ARG: 14; Long ARG:13),
 suggests that these high mutation counts are
 partly driven by some hypermutable sites (e.g., site 28,271 has over 7,000
-mutations in the Wide ARG, Figure~\ref{fig:breakpoint-distribution}), which
+mutations in the Wide ARG; Figure~\ref{fig:breakpoint-distribution}), which
 may be artefactual.
 A significant issue with the current version of \texttt{sc2ts} is an excess
 of inferred reversion mutations, with 5.99\% of all mutations in the Wide
@@ -812,8 +815,8 @@ exclude breakpoints associated with ``singleton'' recombination nodes
 Larger points distinguish those breakpoints which occur in nodes
 ancestral to 5 or more samples, comprising 316 breakpoints from
 291 recombination nodes. The criterion of 5 descendants matches the
-minimum number required to designate a new Pango recombinant lineage
-\citep{Rambaut2020-dw}.
+minimum number required to designate a new Pango 
+lineage~\citep{Rambaut2020-dw}.
 Note that as each plotted point represents a breakpoint, a recombination
 node with more than one breakpoint (e.g., with 3 or more parents,
 comprising ${\sim}10 \%$ of the
@@ -937,7 +940,7 @@ In the absence of genealogical information, a reasonable initial assumption is
 that all sequences
 assigned to a given Pango X lineage are descendants of a single recombinant
 sequence, arising as a result of a mixed infection followed by onward
-transmission. We would expect our ARG to reveal evolutionary histories of this
+transmission. We would expect our ARGs to reveal evolutionary histories of this
 nature, where all the samples assigned to a given recombinant lineage
 trace back to one recombination node, representing a single originating
 recombination event. In the Long ARG, 16 of the 31 Pango recombinants lineages identified by Nextclade
@@ -1482,9 +1485,7 @@ but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
 Emissions may also be a function of the nucleotide states, but in our
-case, we assume that all observed alleles in both the reference panel and
-focal sequence, $a_\ell$) at the site under consideration are equally likely and
-occur with mutation probability $\mu_\ell/(a_\ell-1)$
+case, we assume that all alleles ($A,C,G,T,-$) can be mutated to with equal probability $\mu_\ell/5$. This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate 
  (Figure~\ref{fig:ls_diagram}, blue panel).
 We use the Viterbi algorithm~\citep{Viterbi1967-ol}
 to find the most likely copying path, given a set of reference sequences, $Q$, and $E$.
@@ -1536,11 +1537,11 @@ region.
 Now, follow the probability of tracking along each of those paths:
 \begin{align*}
 \mathbb{P}[\mathcal{P}_1] &= \frac{cr}{n}
-\left(\left(1-r\right)+\frac{r}{n}\right)^m\left(1-\mu\right)^m
+\left(\left(1-r\right)+\frac{r}{n}\right)^{m-1}\left(1-\mu\right)^m
 &\text{recombine to a template with no mismatches,}\\
 \mathbb{P}[\mathcal{P}_2] &= c
 \left(\left(1-r\right) +
-\frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^m
+\frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^{m-1}
 \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
 \end{align*}
 % where $r$ is the recombination probability between adjacent
@@ -1550,7 +1551,7 @@ where $c$ is the
 likelihood of the path up to this point, which are assumed to be
 equal by construction.
 We then
-set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ to one another::
+set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ to one another:
 \begin{align*} r = \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},
 \quad\quad \mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}. \end{align*}
 Thus, for lower MMR values ($k$ here),
