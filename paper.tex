@@ -1562,25 +1562,30 @@ member of the reference panel at site $\ell$ as $\mu_\ell$,
 and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$ as $r_\ell$. For convenience, $\mu_\ell$ is commonly referred to as the `mutation probability', but we note that this probability of
 mismatch also encompasses various other error modes that result in a mismatch
 (such as sequencing and alignment errors). Note also that it is these probabilities,
-not the rates of mutation and recombination, that are required to fully define the HMM.
-That said, we can approximately relate these probabilities to the coalescent process in a population with constant effective population size ($N_e$), which LS is approximating to guide intuition. We may consider the probability of mutation to represent the
-probability of mutation along the branches joining the focal sequence to the closest member of a coalescent
-tree containing a reference panel with $n$ members, assuming a Poisson process
-along the branch. The expected length of these two branches is $4/n$ in units of $N_e$ generations, and so the mismatch
-probability represents the probability of observing a mutation or error mode,
-along these branches. We can then approximate the probability of observing a mismatch as:
-\begin{align*}
-    \mu_\ell \approx 1 - \exp{\left(-\frac{4\nu}{n}\right)}
-\end{align*}
-where $\nu$ is the mutation rate per $\mbox{ploidy} \times N_e$ generations.
-In the case of recombination,
-suppose that there is some constant underlying recombination rate, $\rho$.
-Assuming that recombination events occur as a Poisson process,
-then the probability of detecting a recombination event before coalescence between the focal sequence and the reference panel, between adjacent variant sites is
-\begin{align*}
-    r_\ell = 1 - \exp\left(-\frac{\rho\left(m_{i-1} - m_{i}\right)}{n}\right),
-\end{align*}
-where $m_j$ is the nucleotide position of variant $j$.
+not the rates of mutation and recombination, that are required to fully define
+the HMM; see~\cite{Donnelly2010-coalescent} for a discussion of how these
+parameters relate to the coalescent process.
+
+
+% That said, we can approximately relate these probabilities to the coalescent
+% process in a population with constant effective population size ($N_e$), which
+% LS is approximating to guide intuition. We may consider the probability of
+% mutation to represent the probability of mutation along the branches joining
+% the focal sequence to the closest member of a coalescent tree containing a
+% reference panel with $n$ members, assuming a Poisson process along the branch.
+% The expected length of these two branches is $4/n$ in units of $N_e$
+% generations, and so the mismatch probability represents the probability of
+% observing a mutation or error mode, along these branches. We can then
+% approximate the probability of observing a mismatch as: \begin{align*} \mu_\ell
+% \approx 1 - \exp{\left(-\frac{4\nu}{n}\right)} \end{align*} where $\nu$ is the
+% mutation rate per $\mbox{ploidy} \times N_e$ generations. In the case of
+% recombination, suppose that there is some constant underlying recombination
+% rate, $\rho$. Assuming that recombination events occur as a Poisson process,
+% then the probability of detecting a recombination event before coalescence
+% between the focal sequence and the reference panel, between adjacent variant
+% sites is \begin{align*} r_\ell = 1 - \exp\left(-\frac{\rho\left(m_{i-1} -
+% m_{i}\right)}{n}\right), \end{align*} where $m_j$ is the nucleotide position of
+% variant $j$.
 
 The probabilities of these competing processes of mismatch and recombination are
 usually controlled by the site-specific parameters $\mu_\ell$ and $r_\ell$,
@@ -1597,7 +1602,6 @@ consider a region of length $m$. Up until this region, two paths are equally
 likely, so we can re-scale by the likelihood of observing the focal sequence up
 to the site before the region starts, $c$. For an MMR of $k$, we only need to
 consider two of the $n$ members of the reference panel.
-
 One, $\mathcal{P}_1$,
 for which there are no mismatches, but we need to recombine in, and a second,
 $\mathcal{P}_2$, for which there are $k$ (randomly chosen) mismatches in the
@@ -1605,17 +1609,17 @@ region.
 Now, follow the probability of tracking along each of those paths:
 \begin{align*}
 \mathbb{P}[\mathcal{P}_1] &= \frac{cr}{n}
-\left(\left(1-r\right)+\frac{r}{n}\right)^{m-1}\left(1-\mu\right)^m
+\alpha^{m-1}\left(1-\mu\right)^m
 &\text{recombine to a template with no mismatches,}\\
 \mathbb{P}[\mathcal{P}_2] &= c
-\left(\left(1-r\right) +
-\frac{r}{n}\right)\left(\left(1-r\right)+\frac{r}{n}\right)^{m-1}
+\alpha^{m}
+% \alpha \alpha^{m-1}
 \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
 \end{align*}
 % where $r$ is the recombination probability between adjacent
 % variants, $\mu$ is the mismatch probability between a target sequence at a
 % variant and a particular member of the reference panel,
-where $c$ is the
+where $\alpha = (1 - r + r / n) $ and $c$ is the
 likelihood of the path up to this point, which are assumed to be
 equal by construction.
 We then
@@ -1770,19 +1774,19 @@ inference by ``pushing in'' a new node which descends from the
 original parent, and carries all its mutations except those
 causing the reversions on the newly added node (Figure \ref{fig:overview_sc2ts}E).
 
-Table~\ref{tab:args} shows that nodes generated by 
-these operations constitute 
+Table~\ref{tab:args} shows that nodes generated by
+these operations constitute
 roughly the same fraction of the total in both the Long and Wide ARGs,
 and contribute significantly to the overall topology.
 These nodes are also being chosen by the
-LS HMM as likely choices of parent (data not shown) 
+LS HMM as likely choices of parent (data not shown)
 demonstrating that the heuristics are successfully
 capturing features of real sequences.
 However, they are both simple
 greedy operations, just examining the local parts of the
 ARG topology affected by newly added samples. Because the inferred
 ARGs still contain a large number of reversion mutations which
-are likely to be mostly artefactual (Section~\ref{sec:mutation_spectrum}), 
+are likely to be mostly artefactual (Section~\ref{sec:mutation_spectrum}),
 it is clear that there
 is room for improvement and that further parsimony-increasing
 heuristics
