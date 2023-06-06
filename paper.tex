@@ -1159,25 +1159,70 @@ conclusions.
 \subsection{False positive recombinants}
 The Long and Wide ARGs both contain several recombination nodes that are
 ancestral to large numbers of samples, and are almost certainly
-artefactual. The
-
+artefactual. Table~\ref{tab:false_positive} shows details for four recombinants
+in the Long ARG that are likely false positives, and have come to be
+the ancestors of a large number of samples. These are the top-four recombinants
+from the Long ARG in terms of numbers of descendant samples
+(the fifth-largest has substantially fewer, at 14,869),
+labelled A--D. These false positives are associated with the origins
+of large outbreaks. For each row, we show the sample's Pango lineage
+designation and the rank of that sample in the overall list of
+samples with that designation. Thus, rows C and D are the first
+samples seen in the Long ARG from the BA.2.9 and BA.3 lineages,
+and A and B are the third and eighth samples from the B.1.617.2
+lineage (Delta VoC). Also shown is the overall ``cost'' of the Viterbi
+solution computed by the LS HMM (Section~\ref{sec:ls}), which
+is $3 \times$ number of recombinations + number of additional mutations
+(for a mismatch ratio of 3; Section~\ref{sec:ls}).
+The column shows that each of these samples was a large
+``distance'' from the current ARG when it was added. The mean
+HMM cost over all 2078 recombinants in the Long ARG is 8.39
+(median: 7), and the mean cost for the  763 non-singleton
+recombinants is 8.5 (median: 7). Thus, the recombinants in
+Table~\ref{tab:false_positive} are in the tail of this distribution.
 
 \begin{table} \centering
-\begin{tabular}{lllll}
-Strain & Lineage & Descendants & HMM Cost & Lineage rank\\
-Germany/HH-RKI-I-061284/2021 & B.1.617.2 & 178405 & 17 & 2 \\
-India/ILSGS00961/2021   & B.1.617.2 & 177649 & 25  & 7  \\
-Denmark/DCGC-281594/2021 & BA.2.9 & 127227 & 32  & 1\\
-USA/NJ-GBW-EWR000001/2021 & BA.3 & 127230 & 25 & 1\\
+\begin{tabular}{llllll}
+\toprule
+& Strain & Descendants & Lineage & Rank in lineage&HMM Cost \\
+\midrule
+A&Germany/HH-RKI-I-061284/2021 & 178,405    & B.1.617.2   & 3& 17  \\
+B&India/ILSGS00961/2021        & 177,649    & B.1.617.2   & 8& 25   \\
+C&Denmark/DCGC-281594/2021     & 127,227    & BA.2.9      & 1& 32 \\
+D&USA/NJ-GBW-EWR000001/2021    & 127,230    & BA.3        & 1& 25 \\
+\bottomrule
 \end{tabular}
 \caption{\label{tab:false_positive}
-False positive recombination events.}
+False positive recombination events. Details show are for the top
+four recombination nodes in the Long ARG ordered by number of
+descending samples. See the text for details on the remaining columns.
+Rows are labelled A, B, C and D for ease of reference.}
 \end{table}
 
+Occasional evolutionary leaps, in which a large number of mutations
+are acquired in sudden jumps
+is a signature feature of SARS-CoV-2~\citep{Corey2021-sars,Nielsen2023-host}.
+Such ``saltations'' naturally present challenges to \texttt{sc2ts} and the
+current HMM parameterisation of three mutations per recombination (mismatch
+ratio). The first few sequences from these new lineages will match in to
+the existing ARG with very low likelihood, and the HMM will therefore
+search for ways to reduce the number of mutations required by recombining
+in segments. If this is combined with data quality issues and
+``time travellers'' (Section~\ref{sec:filtering_time_travellers}),
+the early stages of the VoC emergence can be quite muddled.
+This appears to be the case for the Delta VoC,
+which corresponded to the sudden emergence of
+[HOW MANY, citation?] mutations,
+as show in Table~\ref{tab:false_positive}A and B.
+Similar patterns around the emergence of Delta are seen in the Wide ARG
+(not shown).
 
-
-Further study is required to systematically identify likely false
-positive
+Given these considerations, it  is important to note that the
+number of ultimate descendants is not an entirely reliable
+indicator of reliability for recombinants.
+Further study is required to systematically identify such false
+positives recombinants, and to update the topology with a
+more parsimonious explanation of the data.
 
 \section{Discussion}
 % PARA 1. SARS-CoV-2 is still important, and the vast hordes of data provide an
