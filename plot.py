@@ -1697,7 +1697,7 @@ class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
             "Unknown (R)": "Additional recombination node",
             "B.1.617.2": "Nextclade Pango Delta VoC",
             cls.main_delta_source: "Large Delta polytomy (>100 children)",
-            "Unknown": "Unknown Pango lineage",
+            "Unknown": "Unimputed Pango lineage",
         }
         ax.legend(
             title=f"$\\bf{{Highlighted\ nodes}}$",
