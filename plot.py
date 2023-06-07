@@ -948,6 +948,7 @@ class Pango_X_tight_graph(Pango_X_graph):
     node_def_lineage = (
         "Nextclade_pango"  # Always use this when defining which nodes to pick
     )
+    show_descendant_samples = "sample_tips"
 
     def __init__(self):
         super().__init__()
@@ -1026,6 +1027,7 @@ class Pango_X_tight_graph(Pango_X_graph):
             edge_font_size=self.edge_font_size,
             colour_metadata_key="Imputed_" + self.imputed_lineage,
             node_positions=node_positions,
+            show_descendant_samples=self.show_descendant_samples
         )
 
     def plot(self, args):
@@ -1623,6 +1625,109 @@ class Pango_XB_gisaid_large_graph(Pango_XB_nxcld_tight_graph):
     def post_process(cls, ax):
         x_min, x_max = ax.get_xlim()
         ax.set_xlim(x_min + (x_max - x_min) * 0.06, x_max - (x_max - x_min) * 0.06)
+
+class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
+    name = "false_positive_top2_nxcld_large_graph"
+    focal_nodes = [229998, 235293]
+    main_focal_node_parents = [21605, 204945]
+    main_focal_child = 248215
+    main_focal_grandchild = 243149
+    main_delta_source = 261771
+    node_colours = {
+        **{
+            main_delta_source: "gold",
+            "B.1.617.2": "#e2da91",
+            "AY.100": "#e2da91",
+            "AY.112": "#e2da91",
+            None: "lightgray",
+            "Unknown (R)": "k",
+            "Unknown": "white",
+        },
+        **{u: "darkred" for u in focal_nodes}
+    }
+    imputed_lineage = "Nextclade_pango"
+    label_replace = {"Unknown (R)": "Rec node"}
+    show_ids = True # Show IDs for all nodes
+    figsize = (20, 30)
+    node_size = 5000
+    edge_font_size = 7
+    node_font_size = 7
+    mutations_fn = None
+    show_metadata = True
+    show_descendant_samples = "tips"
+
+    @classmethod
+    def define_nodes(cls, ts):
+        to_plot = set()
+        for u in set(cls.focal_nodes) | {cls.main_focal_child, cls.main_focal_grandchild}:
+            to_plot.add(u)
+            for child in np.unique(ts.edges_child[ts.edges_parent == u]):
+                to_plot.add(child)
+
+        # Add the parents of each focal recombination node
+        for u in cls.focal_nodes:
+            to_plot.update(ts.edges_parent[ts.edges_child == u])
+
+        # Add the main Delta polytomy
+        to_plot.add(cls.main_delta_source)
+        logging.info(
+            f"Node {cls.main_delta_source} (coloured {cls.node_colours[cls.main_delta_source]}" +
+            f", Pango {ts.node(cls.main_delta_source).metadata['Imputed_Nextclade_pango']})" +
+            f" has {len(np.unique(ts.edges_child[ts.edges_parent == 261771]))} children"
+        )
+
+        # Add path between the two major parents and their MRCA
+        tree = ts.at(21400)
+        mrca = tree.mrca(*cls.main_focal_node_parents)
+        for u in cls.main_focal_node_parents:
+            while True:
+                u = tree.parent(u)
+                if u < 0:
+                    break
+                to_plot.add(u)
+                if u == mrca:
+                    break
+        return list(to_plot)
+    
+    @classmethod
+    def legend_key(cls, ax, nodes, ts):
+        print_sample_map(ts, nodes)
+        labels = {
+            cls.focal_nodes[0]: "Focal recombination node",
+            "Unknown (R)": "Additional recombination node",
+            "B.1.617.2": "Nextclade Pango Delta VoC",
+            cls.main_delta_source: "Large Delta polytomy (>100 children)",
+            "Unknown": "Unknown Pango lineage",
+        }
+        ax.legend(
+            title=f"$\\bf{{Highlighted\ nodes}}$",
+            handles=[
+                Line2D(
+                    [0], [0],
+                    label=v,
+                    markerfacecolor=cls.node_colours[k],
+                    markeredgecolor="k" if cls.node_colours[k] == "white" else cls.node_colours[k],
+                    linestyle="None",
+                    marker="o",
+                    markersize=np.sqrt(cls.node_size) * 0.55,
+                )
+                for k, v in labels.items()
+            ],
+            loc="upper left",
+            labelspacing=1.4,
+            alignment="center",
+            borderpad=0.6,
+            handletextpad=1,
+            title_fontsize=20,
+            prop={'size': 20}
+        )
+
+    @staticmethod
+    def adjust_positions(pos):
+        pos[274163] = (pos[274163][0] + 40, pos[274163][1] - 10) # shift to make room for mutation labels
+        pos[294002] = (pos[294002][0] + 30, pos[294002][1]) # shift
+        pos[21605] = (pos[21605][0] - 40, pos[21605][1] + 85) # shift
+        pos[357852] = (pos[357852][0] + 30, pos[357852][1]) # shift
 
 
 ######################################
