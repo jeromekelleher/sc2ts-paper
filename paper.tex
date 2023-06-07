@@ -903,9 +903,9 @@ This variation in classifications highlights the uncertainty that exists when
 assigning Pango X lineages to samples, and is important to keep in mind
 when interpreting the results here.
 
-We focus here on the 749 Nextclade-designated recombinant samples, all
-but two of which descend from a recombination node in the Long ARG.
-These two exceptions are both designated XP, and a likely
+We focus here on the 749 Nextclade-designated recombinant samples.
+There are two samples designated XP which do not descend from a recombination node, 
+and a likely
 explanation for the absence of a corresponding recombination event in the Long ARG
 is that the characteristic multibase deletion for XP
 (\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
@@ -1129,8 +1129,8 @@ designated XB nodes and involves a recombination between descendants of the
 originating XB recombination. More specifically, strain
 USA/TX-HMH-MCoV-43092/2021 is inferred to be a recombinant
 between an XB grandparent and its XB grandchild, involving an intermediate UPGMA node.
-We assess it is a relatively likely that this is an artefactual recombination event,
-caused by undersampling. Alternatively, it could reflect true (but hard to detect)
+It seems likely to be artefactual recombination event
+caused by undersampling, but could reflect true 
 recombination between closely related lineages.
 
 For the few XC-labelled samples, the Wide ARG identifies more than one
@@ -1157,6 +1157,7 @@ conclusions.
 % sister clade of XAC, and annotated as ``miscBA2BA1PostSpike''.
 
 \subsection{False positive recombinants}
+\label{sec:false_positives}
 The Long and Wide ARGs both contain several recombination nodes that are
 ancestral to large numbers of samples, and are almost certainly
 artefactual. Table~\ref{tab:false_positive} shows details for four recombinants
@@ -1211,15 +1212,17 @@ in segments. If this is combined with data quality issues and
 ``time travellers'' (Section~\ref{sec:filtering_time_travellers}),
 the early stages of the VoC emergence can be quite muddled.
 This appears to be the case for the Delta VoC,
-which corresponded to the sudden emergence of
-[HOW MANY, citation?] mutations,
-as show in Table~\ref{tab:false_positive}A and B.
+corresponding to rows A and B of Table~\ref{tab:false_positive},
+which emerged and quickly rose to high prevalence in early-mid 2021,
+carrying 30 characteristic mutations compared to the reference sequence 
+\citep{McCrone2022-context}, including nine mutations in the S gene 
+not seen in earlier VoCs.
 Similar patterns around the emergence of Delta are seen in the Wide ARG
 (not shown).
 
 Given these considerations, it  is important to note that the
 number of ultimate descendants is not an entirely reliable
-indicator of reliability for recombinants.
+indicator of the quality of inferred recombinants.
 Further study is required to systematically identify such false
 positives recombinants, and to update the topology with a
 more parsimonious explanation of the data.
@@ -1504,7 +1507,7 @@ statistical genotype phasing and imputation
 \citep{Delaneau2019-wl,Browning2021-cg,Browning2018-nk,Rubinacci2020-pa},
 and estimation of parameters such as
 recombination rates \citep[e.g.,][]{Hinch2011-tz}
-and selection within and across hosts in viral
+and intensity of selection within and across hosts in viral
 sequence data \citep[e.g.,][]{Palmer2019-wa}.
 See~\cite{Mcvean2019-linkage} for further review and discussion
 of the LS model.
@@ -2192,7 +2195,7 @@ Focal Pango  & Num origins & Num focal samples (further split by origin, \textda
 \caption{\label{tab:pango-recombinants}
 Summary of the Pango X-lineages in the Long ARG (excluding XP and XAK whose samples are entirely filtered out, see text). In cases of multiple origins, most X-lineages have a single ``main clade'' (in bold).
 Sc2ts inferred parents for the main clade are based on Nextclade designations, imputed where necessary.
-Official parents are taken from Pango designation alias key (TODO: explain the asterisks). Note that B.1.617.2 is the origin of the Delta VoC, which includes all AY.* classes. Additional descendants within the main clade are summarised giving their NextClade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
+Official parents are taken from Pango designation alias key (TODO: explain the asterisks). Note that B.1.617.2 is the origin of the Delta VoC, which includes all AY.* classes. Additional descendants within the main clade are summarised giving their Nextclade Pango designation and clade count / total ARG count (the latter being omitted for non-recombinant designations).
 }
 \end{sidewaystable}
 
