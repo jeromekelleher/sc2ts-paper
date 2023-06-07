@@ -53,12 +53,12 @@ genes = {
 }
 
 
-class FocalTreeTs:
+class SingleTreeTs:
     """Convenience class to access a single focal tree in a tree sequence"""
 
-    def __init__(self, ts, pos, basetime=None):
-        self.tree = ts.at(pos, sample_lists=True)
-        self.pos = pos
+    def __init__(self, ts, basetime=None):
+        # .tree is the first non-empty tree
+        self.tree = next(t for t in ts.trees() if t.num_edges > 0)
         self.basetime = basetime
 
     @property
@@ -89,7 +89,7 @@ class Nextstrain:
     def __init__(self, filename, span, prefix="data"):
         """
         Load from a nextstrain nexus file.
-        Note that NextClade also produces a tree with  more samples but no branch lengths
+        Note that NextClade also produces a tree with more samples but no branch lengths
         e.g. at
             https://github.com/nextstrain/nextclade_data/tree/
             release/data/datasets/sars-cov-2/references/MN908947/versions
@@ -296,23 +296,30 @@ class Cophylogeny(Figure):
             [sc2ts_tip.at(self.pos), nxstr_tip.first()]
         )
 
-        # Align the time in the nextstrain tree to the sc2ts tree
-        ns_sc2_time_difference = []
-        for s1, s2 in zip(sc2ts_tip.samples(), nxstr_tip.samples()):
-            n1 = sc2ts_tip.node(s1)
-            n2 = nxstr_tip.node(s2)
-            assert n1.metadata["strain"] == n2.metadata["strain"]
-            ns_sc2_time_difference.append(n1.time - n2.time)
-        dt = timedelta(**{nxstr_tip.time_units: np.median(ns_sc2_time_difference)})
-
         nxstr_order = list(
             reversed(nxstr_order)
         )  # RH tree rotated so reverse the order
 
-        self.sc2ts = FocalTreeTs(sc2ts_tip.simplify(sc2ts_order), self.pos, basetime)
-        self.nxstr = FocalTreeTs(
-            nxstr_tip.simplify(nxstr_order), self.pos, basetime - dt
-        )
+        plotted_sc2ts_ts = sc2ts_tip.simplify(sc2ts_order).keep_intervals([sc2ts_tip.at(self.pos).interval])
+        plotted_nxstr_ts = nxstr_tip.simplify(nxstr_order).keep_intervals([nxstr_tip.at(self.pos).interval])
+
+        # TODO - extract all the code above into a notebook that creates
+        # the plotted_sc2ts_ts and plotted_nxstr_ts files, and saves them
+        # to physical files. This routine can then load them.
+
+        # Align the time in the nextstrain tree to the sc2ts tree
+        ns_sc2_time_difference = []
+        sc2ts_map = {plotted_sc2ts_ts.node(u).metadata["strain"]: u for u in plotted_sc2ts_ts.samples()}
+        for u in nxstr_tip.samples():
+            nxstr_nd = nxstr_tip.node(u)
+            sc2ts_id = sc2ts_map.get(nxstr_nd.metadata["strain"])
+            if sc2ts_id is not None:
+                ns_sc2_time_difference.append(plotted_sc2ts_ts.node(sc2ts_id).time - nxstr_nd.time)
+        assert len(ns_sc2_time_difference) > 1
+        dt = timedelta(**{nxstr_tip.time_units: np.median(ns_sc2_time_difference)})
+
+        self.sc2ts = SingleTreeTs(plotted_sc2ts_ts, basetime)
+        self.nxstr = SingleTreeTs(plotted_nxstr_ts, basetime - dt)
 
         logging.info(
             f"{self.sc2ts.ts.num_trees} trees in the simplified 'backbone' ARG. Using the one "
@@ -1129,11 +1136,11 @@ class Pango_XA_nxcld_tight_graph(Pango_X_tight_graph):
             title=f"$\\bf{{Nodes}}$ (labelled/coloured\nby {lin} Pango lineage)",
             handles=cls.make_legend_elements(
                 {
-                    "sample node": "lightgray",
-                    "inserted node": "lightgray",
-                    "recombination node": "k",
+                    "Inserted node": "lightgray",
+                    "Recombination node": "k",
+                    "Sample node": "lightgray",
                 },
-                sizes=np.sqrt(np.array([1, 1 / 3, 1 / 3]) * cls.node_size),
+                sizes=np.sqrt(np.array([1 / 3, 1 / 3, 1]) * cls.node_size),
             ),
             loc="center left",
             labelspacing=0.9,
