@@ -1648,7 +1648,7 @@ class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
     imputed_lineage = "Nextclade_pango"
     label_replace = {"Unknown (R)": "Rec node"}
     show_ids = True # Show IDs for all nodes
-    figsize = (20, 30)
+    figsize = (25, 30)
     node_size = 5000
     edge_font_size = 7
     node_font_size = 7
@@ -1659,7 +1659,7 @@ class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
     @classmethod
     def define_nodes(cls, ts):
         to_plot = set()
-        for u in set(cls.focal_nodes) | {cls.main_focal_child, cls.main_focal_grandchild}:
+        for u in set(cls.focal_nodes) | {cls.main_focal_child, cls.main_focal_grandchild, cls.main_focal_node_parents[1]}:
             to_plot.add(u)
             for child in np.unique(ts.edges_child[ts.edges_parent == u]):
                 to_plot.add(child)
@@ -1724,10 +1724,28 @@ class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
 
     @staticmethod
     def adjust_positions(pos):
-        pos[274163] = (pos[274163][0] + 40, pos[274163][1] - 10) # shift to make room for mutation labels
-        pos[294002] = (pos[294002][0] + 30, pos[294002][1]) # shift
-        pos[21605] = (pos[21605][0] - 40, pos[21605][1] + 85) # shift
-        pos[357852] = (pos[357852][0] + 30, pos[357852][1]) # shift
+        pos[179] = (pos[179][0] + 90, pos[179][1]) # shift to make room for mutation labels
+        pos[5184] = (pos[5184][0] + 80, pos[5184][1]) # shift
+        pos[21656] = (pos[21656][0] + 10, pos[21656][1]) # shift
+        pos[5868] = (pos[5868][0] + 80, pos[5868][1]) # shift
+        pos[205995] = (pos[205995][0] + 70, pos[205995][1]) # shift
+        pos[274163] = (pos[274163][0] + 100, pos[274163][1] - 10) # shift
+        pos[294002] = (pos[294002][0] + 100, pos[294002][1]) # shift
+        pos[21605] = (pos[21605][0] - 60, pos[21605][1] + 85) # shift
+        pos[357852] = (pos[357852][0] + 140, pos[357852][1]) # shift
+        pos[240637] = (pos[240637][0] - 70, pos[240637][1]) # shift
+        pos[204945] = (pos[204945][0] + 60, pos[204945][1]) # shift
+        p = pos[232088][0]
+        pos[232088] = (pos[317538][0], pos[232088][1]) # shift
+        pos[317538] = (pos[209245][0], pos[317538][1]) # shift
+        pos[209245] = (pos[315067][0], pos[209245][1]) # shift
+        pos[315067] = (p, pos[315067][1]) # shift
+        pos[235293] = (pos[235293][0] - 20, pos[235293][1]) # shift
+
+    @classmethod
+    def post_process(cls, ax):
+        y_min, y_max = ax.get_ylim()
+        ax.set_ylim(y_min + (y_max - y_min) * 0.04, y_max - (y_max - y_min) * 0.04)
 
 
 ######################################
