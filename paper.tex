@@ -563,15 +563,22 @@ suggests that these high mutation counts are
 partly driven by some hypermutable sites (e.g., site 28,271 has over 7,000
 mutations in the Wide ARG; Figure~\ref{fig:breakpoint-distribution}), which
 may be artefactual.
-A significant issue with the current version of \texttt{sc2ts} is an excess
-of inferred reversion mutations, with 5.99\% of all mutations in the Wide
+
+The current version of \texttt{sc2ts} infers a
+large number of ``reversion'' mutations, with 5.99\% of all mutations in the Wide
 ARG (Long ARG: 4.54\%) reverting the state change of the immediately
-ancestral mutation (see Section~\ref{sec:args} for precise definitions). 
-\sally{[What confuses me is that I would think that none of these reversions would remain after the reversion push step of Figure 1D.  Is this because ``immediately ancestral'' is incorrect or because the problem is that some of these immediate reversions are created deeper in the tree than the newly added samples (i.e., uncorrected by the reversion push). If the former, maybe say ``reverting the state change of a recent ancestral mutation'', if the latter, maybe say  ``(see Section~\ref{sec:args} for precise definitions, note that the reversion push algorithm of Figure 1D only eliminates reversions in the newly added portion of the tree and not reversions around earlier nodes created by this algorithm)''.]}
-The majority of these mutations are likely to be
-artefactual, and a key goal of future development is to improve
-our parsimony heuristics (Section~\ref{sec:parsimony-heuristics}) to
-address this issue.
+ancestral mutation (see Section~\ref{sec:args} for precise definitions).
+These are symptomatic of both data quality issues
+such as ``time travellers'' (Section~\ref{sec:filtering_time_travellers})
+and problematic sites (e.g., 28,271 as discussed in
+Section~\ref{sec:breakpoint_intervals}; see also
+Figure~\ref{fig:pango_XB_gisaid_graph} for an example of multiple
+reversions at this site), as well as indicating opportunities
+for improvement in tree building hueristics
+(Section~\ref{sec:parsimony-heuristics}).
+For example, the current ``reversion push'' operation
+only eliminates reversions in the newly added portion of the tree
+and not reversions around earlier nodes created by this algorithm.
 
 Despite the presence of some artefactual mutations,
 the properties of the mutations inferred by \texttt{sc2ts} largely follow
@@ -699,7 +706,8 @@ Even if we observe the recombinant sequence before subsequent
 divergence occurs (during onward transmission), there is no way to identify the exact breakpoint if the two parent sequences
 are similar.
 Here we define the
-interval \sally{within which a particular breakpoint may have occurred} as the genome coordinates over which the
+interval within which a particular breakpoint may have occurred
+as the genome coordinates over which the
 sequences for the left and right parent nodes are identical. The right-hand
 extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
 (Section~\ref{sec:ls}), and the left endpoint is then derived by directly
@@ -765,7 +773,8 @@ homologous recombination~\citep{Kim2020-gt,Zou2021-sars}
 \sally{[Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here).]}
 
 It is important to note that the precise endpoints of intervals can be
-somewhat arbitrary, because they are defined by \sally{the sequence differences that happen to be present in the} recombinant's parents.
+somewhat arbitrary, because they are defined by the sequence differences
+that happen to be present in the recombinant's parents.
 Thus, breakpoint intervals will tend to be truncated at sites that are
 hypermutable, either due to increased information about parentage
 or spurious inferences caused by sequencing errors.
@@ -777,7 +786,7 @@ of 66 intervals.
 The 7,572 mutations (including 5,782 insertions and 1,605 deletions)
 at this site are an indicator that this
 homopolymeric region may be prone to sequencing errors
-and \sally{potentially} should be included in the list of ``problematic sites'' that
+and potentially should be included in the list of ``problematic sites'' that
 are excluded from analysis (Section~\ref{sec:data_preprocessing}).
 On the other hand, 58 of the breakpoint intervals have endpoints
 within one base of site 27,972, which has undergone 770 mutation events
