@@ -1495,7 +1495,7 @@ and the methods are also very efficient when working with a single tree.
 \subsection{The Li and Stephens model}
 \label{sec:ls}
 The Li and Stephens (LS) model \citep{Li2003-ib} is an approximation of the
-coalescent with recombination~\citep{Hudson1983-properties}, which captures
+coalescent with recombination~\citep{Hudson1983-properties} which captures
 many of the important features of the joint processes of mutation and
 recombination. It is a Hidden Markov Model (HMM) in which a focal genome
 is modelled as a
@@ -1556,8 +1556,16 @@ Both $E$ and $Q$ may be a function of the reference panel members,
 but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
-Emissions may also be a function of the nucleotide states, but in our RNA virus case, we assume that \sally{mutations occur to all possible alternate alleles} ($A,C,G,U,-$) with equal probability for a mutation to any other allele (including a gap in the alignment; $-$) are equally likely $\mu_\ell/4$. This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
- (Figure~\ref{fig:ls_diagram}, blue panel).
+Emissions may also be a function of the nucleotide states, 
+but in our RNA virus case
+we assume that mutations occur from all possible alleles 
+($A,C,G,U$ and a gap in the alignment, $-$) to any other with
+equal probability $\mu_\ell/4$.
+This is reasonable for rapidly evolving pathogens, 
+but we note that setting the number of alleles at site $\ell$ ($a_\ell$) 
+to the set of observed alleles across all analysed 
+samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate 
+(Figure~\ref{fig:ls_diagram}, blue panel).
 We use the Viterbi algorithm~\citep{Viterbi1967-ol}
 to find the most likely copying path, given $Q$, $E$, and a set of reference sequences.
 Throughout, we refer to the probabilities of mismatching to a
@@ -1609,7 +1617,7 @@ One, $\mathcal{P}_1$,
 for which there are no mismatches, but we need to recombine in, and a second,
 $\mathcal{P}_2$, for which there are $k$ (randomly chosen) mismatches in the
 region.
-Now, follow the probability of tracking along each of those paths:
+The probability of tracking along each of those paths is given by:
 \begin{align*}
 \mathbb{P}[\mathcal{P}_1] &= \frac{cr}{n}
 \alpha^{m-1}\left(1-\mu\right)^m
@@ -2255,8 +2263,8 @@ recombination nodes at the start of the Delta wave
 (``focal'' nodes, in red, corresponding to rows A and B in 
 Table~\ref{tab:false_positive}).
 The path to node \texttt{tsk261771} has been expanded: 
-this node (in gold) is a large polytomy with
-107 immediate children, and is the ancestor of the majority of Delta samples.
+this node (in gold) is the ancestor of ${\sim}90\%$ of Delta samples in the Long ARG,
+and represents a large polytomy with 107 immediate children.
 The suspected-incorrect recombination path to an early B.1 MRCA is also shown.
 Note the large amount of additional recombination (black nodes) among close 
 descendants of the focal nodes.
