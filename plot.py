@@ -27,15 +27,13 @@ import tqdm
 import pandas as pd
 
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
+import tszip
 import sc2ts
 import sc2ts.utils
 
 import utils
 
 # Redefine the path to your local dendroscope Java app & chromium app here
-dendroscope_binary = (
-    "/Applications/Dendroscope/Dendroscope.app/Contents/MacOS/JavaApplicationStub"
-)
 chromium_binary = "/usr/local/bin/chromium"
 
 genes = {
@@ -180,10 +178,12 @@ def isomonths_iter(start):
             year += 1
 
 class Cophylogeny(Figure):
+    """
+    Plot a cophylogeny of a sc2ts tree and a nextstrain tree
+    requires .tsz files produced by running s2.2_cophylo_recombinants.ipynb
+    """
     name = None
-    pos = 14952  # Position along tree seq to plot trees: 14952 is halfway along
-    sc2ts_filename = None
-    nextstrain_ts_fn = "nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex"
+    file_prefix = None
 
     # Utility functions
     @staticmethod
@@ -196,127 +196,24 @@ class Cophylogeny(Figure):
         leaves = [u for u in tree.nodes(order="minlex_postorder") if tree.is_leaf(u)]
         return {focal_tree_ts.strain(v): i for i, v in enumerate(leaves)}
 
-    @staticmethod
-    def run_nnet_untangle(trees):
-        assert len(trees) == 2
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            newick_path = os.path.join(tmpdirname, "cophylo.nwk")
-            command_path = os.path.join(tmpdirname, "commands.txt")
-            with open(newick_path, "wt") as file:
-                for tree in trees:
-                    print(tree.as_newick(), file=file)
-            with open(command_path, "wt") as file:
-                print(f"open file='{newick_path}';", file=file)
-                print("compute tanglegram method=nnet", file=file)
-                print(
-                    f"save format=newick file='{newick_path}'", file=file
-                )  # overwrite
-                print("quit;", file=file)
-            subprocess.run([dendroscope_binary, "-g", "-c", command_path])
-            order = []
-            with open(newick_path, "rt") as newicks:
-                for line in newicks:
-                    # hack: use the order of `nX encoded in the string
-                    order.append([int(n[1:]) for n in re.findall(r"n\d+", line)])
-        return order
-
     def __init__(self):
         """
         Defines two simplified tree sequences, focussed on a specific tree. These are
         stored in self.sc2ts and self.nxstr
         """
-        sc2ts_arg, basetime = utils.load_tsz(self.ts_dir, self.sc2ts_filename)
-        fn = os.path.join(self.ts_dir, self.nextstrain_ts_fn)
-        try:
-            nextstrain = Nextstrain(fn, span=sc2ts_arg.sequence_length)
-        except FileNotFoundError:
-            logging.info("Attempting to extract gz compressed file")
-            with tempfile.TemporaryDirectory() as tmpdir:
-                with gzip.open(fn + ".gz") as f_in:
-                    fn = os.path.join(tmpdir, self.nextstrain_ts_fn)
-                    with open(fn, "wb") as f_out:
-                        shutil.copyfileobj(f_in, f_out)
-                    nextstrain = Nextstrain(fn, span=sc2ts_arg.sequence_length)
-
-        # Slow step: find the samples in sc2ts_arg.ts also in nextstrain.ts, and subset
-        sc2ts_its, nxstr_its = sc2ts.subset_to_intersection(
-            sc2ts_arg, nextstrain.ts, filter_sites=False, keep_unary=True
-        )
-
-        logging.info(
-            f"Num samples in subsetted ARG={sc2ts_its.num_samples} vs "
-            f"NextStrain={nxstr_its.num_samples}"
-        )
-
-        # Check first set of samples map
-        for u, v in zip(sc2ts_its.samples(), nxstr_its.samples()):
-            assert (
-                sc2ts_its.node(u).metadata["strain"]
-                == nxstr_its.node(v).metadata["strain"]
-            )
-
-        ## Filter from entire TS:
-        # Some of the samples in sc2_its are recombinants: remove these from both trees
-        sc2ts_simp_its = sc2ts_its.simplify(
-            sc2ts_its.samples()[0 : nxstr_its.num_samples],
-            keep_unary=True,
-            filter_nodes=False,
-        )
-        assert sc2ts_simp_its.num_samples == sc2ts_simp_its.num_samples
-        for u, v in zip(sc2ts_simp_its.samples(), nxstr_its.samples()):
-            assert (
-                sc2ts_simp_its.node(u).metadata["strain"]
-                == nxstr_its.node(v).metadata["strain"]
-            )
-
-        logging.info(
-            f"Removed {sc2ts_its.num_samples-sc2ts_simp_its.num_samples} samples "
-            "in sc2 not in nextstrain"
-        )
-
-        ## Filter from trees
-        # Some samples in sc2ts_simp_its are internal. Remove those from both datasets
-        keep = np.array([u for u in sc2ts_simp_its.at(self.pos).leaves()])
-
-        # Change the random seed here to change the untangling start point
-        # rng = np.random.default_rng(777)
-        # keep = rng.shuffle(keep)
-        sc2ts_tip = sc2ts_simp_its.simplify(keep, keep_unary=True)
-        logging.info(
-            f"Removed samples that are internal in tree at pos {self.pos}. "
-            f"Trees now have {sc2ts_tip.num_samples} leaf samples and "
-            f"{(sc2ts_tip.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0).sum()} recmb nodes"
-        )
-        sc2ts_tip = sc2ts_tip.simplify()  # remove unary nodes (e.g. recmb nodes)
-        assert nxstr_its.num_trees == 1
-        nxstr_tip = nxstr_its.simplify(keep)
-
-        # Call the java untangling program
-        sc2ts_order, nxstr_order = self.run_nnet_untangle(
-            [sc2ts_tip.at(self.pos), nxstr_tip.first()]
-        )
-
-        nxstr_order = list(
-            reversed(nxstr_order)
-        )  # RH tree rotated so reverse the order
-
-        plotted_sc2ts_ts = sc2ts_tip.simplify(sc2ts_order).keep_intervals([sc2ts_tip.at(self.pos).interval])
-        plotted_nxstr_ts = nxstr_tip.simplify(nxstr_order).keep_intervals([nxstr_tip.at(self.pos).interval])
-
-        # TODO - extract all the code above into a notebook that creates
-        # the plotted_sc2ts_ts and plotted_nxstr_ts files, and saves them
-        # to physical files. This routine can then load them.
+        plotted_sc2ts_ts, basetime = utils.load_tsz(self.ts_dir, self.file_prefix + "_untangled.tsz")
+        plotted_nxstr_ts = tszip.decompress(os.path.join(self.ts_dir, self.file_prefix + "_nxstr_untangled.tsz"))
 
         # Align the time in the nextstrain tree to the sc2ts tree
         ns_sc2_time_difference = []
         sc2ts_map = {plotted_sc2ts_ts.node(u).metadata["strain"]: u for u in plotted_sc2ts_ts.samples()}
-        for u in nxstr_tip.samples():
-            nxstr_nd = nxstr_tip.node(u)
+        for u in plotted_nxstr_ts.samples():
+            nxstr_nd = plotted_nxstr_ts.node(u)
             sc2ts_id = sc2ts_map.get(nxstr_nd.metadata["strain"])
             if sc2ts_id is not None:
                 ns_sc2_time_difference.append(plotted_sc2ts_ts.node(sc2ts_id).time - nxstr_nd.time)
         assert len(ns_sc2_time_difference) > 1
-        dt = timedelta(**{nxstr_tip.time_units: np.median(ns_sc2_time_difference)})
+        dt = timedelta(**{plotted_nxstr_ts.time_units: np.median(ns_sc2_time_difference)})
 
         self.sc2ts = SingleTreeTs(plotted_sc2ts_ts, basetime)
         self.nxstr = SingleTreeTs(plotted_nxstr_ts, basetime - dt)
@@ -589,7 +486,7 @@ class Cophylogeny(Figure):
 
 class CophylogenyWide(Cophylogeny):
     name = "cophylogeny_wide"
-    sc2ts_filename = "upgma-full-md-30-mm-3-2021-06-30-recinfo2-gisaid-il.ts.tsz"
+    file_prefix = "upgma-full-md-30-mm-3-2021-06-30-recinfo2-gisaid-il"
     use_colour = "Pango"
     x_axis_ticks = {
         # show ticks for 19 months (up to 2021-07), with labels every 3 months
@@ -599,7 +496,7 @@ class CophylogenyWide(Cophylogeny):
 
 class CophylogenyLong(Cophylogeny):
     name = "supp_cophylogeny_long"
-    sc2ts_filename = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il.ts.tsz"
+    file_prefix = "upgma-mds-1000-md-30-mm-3-2022-06-30-recinfo2-gisaid-il"
     use_colour = "Pango"
     x_axis_ticks = {
         # show ticks for 31 months (up to 2022-07), with labels every 6 months
