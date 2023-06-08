@@ -1651,16 +1651,20 @@ of the HMM are important avenues for future work.
 A varying degree of missingness is present in the genetic data, that is, for a
 given sample, a subset of nucleotides may be coded as `unknown' at a set of
 positions. As a result, we had to consider missingness in our implementation of
-the LS Viterbi algorithm. One approach would be to `impute' all missing data
+the LS Viterbi algorithm. 
+
+To deal with this missingness, we could explicitly model the missingness structure and generative process, or impute the missing data and revert back to our model without missingness. We choose the latter. To do this, we estimate a most likely path through the data assuming that missing nucleotides in the focal sequence are uninformative to the probability of any given path through the reference data. We then simply fill in the missing data in the focal sequence by copying it from the relevant positions in the most likely path. To ensure that missing data is not considered in determining the most likely copying path, we set the emission probability from any state $(A,C,G,U,-)$ to `unknown' as
+1 (though we could have chosen any constant). As a result, emissions of unknown nucleotides will not contribute to differences in path probabilities. Note that by
+iteratively imputing missing data in focal sequences in this way, the reference
+panel being used for any newly observed focal sequence is guaranteed to be
+devoid of missingness.
+
+One approach would be to `impute' all missing data
 beforehand using external software to hard-call or define a distribution over
 the possible missing nucleotides and use that in the determination of path
 probabilities. Another, which we carry out within \texttt{sc2ts}, is to assume
-sites with missing nucleotides are uninformative to the path probability, and
-impute them as each focal sequence is analysed, on the fly. We achieve this by
-setting the emission probability from any state $(A,C,G,U,-)$ to `unknown' as
-1. Then, after determining a most likely copying path, we can impute these
-missing data by simply copying nucleotides present on the most likely copying
-path at the sites of missing data in the focal sequence. Note that by
+sites with missing nucleotides are uninformative to estimating the most likely path through the data which gives rise to the focal sequence. If we are able to estimate the most likely copying path among these paths, a reasonable imputation method is to fill in the missing data in the focal sequence by copying it from the relevant positions in the most likely path. To ensure that missing data is not considered in determining the most likely copying path, we set the emission probability from any state $(A,C,G,U,-)$ to `unknown' as
+1 (though we could have chosen any constant). As a result, emissions of unknown nucleotides will not contribute to differences in path probabilities. Note that by
 iteratively imputing missing data in focal sequences in this way, the reference
 panel being used for any newly observed focal sequence is guaranteed to be
 devoid of missingness.
@@ -2274,7 +2278,7 @@ recombination nodes at the start of the Delta wave
 (``focal'' nodes, in red, corresponding to rows A and B in
 Table~\ref{tab:false_positive}).
 The path to node \texttt{tsk261771} has been expanded:
-this node (in gold) is the ancestor of ${\sim}90\%$ of Delta samples in the Long ARG,
+this node (in gold) is the ancestor of ${\sim}89.8\%$ of Delta samples in the Long ARG,
 and represents a large polytomy with 107 immediate children.
 The suspected-incorrect recombination path to an early B.1 MRCA is also shown.
 Note the large amount of additional recombination (black nodes) among close
