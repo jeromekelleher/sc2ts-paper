@@ -254,7 +254,7 @@ We find that these
 ARGs accurately capture known phylogenetic
 relationships (Section~\ref{sec:backbone_phylogeny}) and
 mutational spectra (Section~\ref{sec:mutation_spectrum}),
-as well as automatically identifying the majority of known recombinant
+and automatically identify  the majority of known recombinant
 lineages (Sections~\ref{sec:jackson_recombs} and \ref{sec:pango_x_lineages})
 with a high level of precision in the
 genomic location of recombination breakpoints
@@ -262,7 +262,7 @@ genomic location of recombination breakpoints
 and relationship between parental sequences
 (Section~\ref{sec:parent_divergence}).
 We hope that these benefits of accurate joint estimation of
-genetic inheritance with mutation and recombination events will generate community
+genetic inheritance with mutation and recombination will generate community
 interest and development of the \texttt{sc2ts} method, and
 more generally in applying the efficient and mature software
 of the \texttt{tskit} ecosystem to pandemic-scale SARS-CoV-2 data.
@@ -399,13 +399,15 @@ enable inferences at the full pandemic scale.
 
 \subsection{Backbone phylogeny}
 \label{sec:backbone_phylogeny}
-%% The ARG is mostly tree-like
+% FIXME the development of thought is quite muddled here, we should rearrange
+% in later revisions. We should discuss the expected lack of recombination
+% and our likely false +s in one paragraph.
 Compared to organisms like humans that recombine in every generation,
 recombination is relatively rare in SARS-CoV-2, with recombination nodes accounting
 for $<$0.3\% of the inferred ancestry (Table~\ref{tab:args}). As a result,
 relationships between strains can often be represented by a
 single phylogenetic tree, particularly when looking at
-a subset of strains. We expect ARGs to be particularly tree-like
+a subset of strains. We expect ARGs to be particularly treelike
 early in the pandemic, when co-infection was less likely and divergence between
 lineages relatively low.
 
@@ -442,15 +444,10 @@ assigned to Pango recombinant lineages by Nextclade (see Section
 
 The \texttt{sc2ts} backbone phylogenies for these Nextstrain subsamples contain small amounts of recombination,
 with 7 recombination nodes in the Wide ARG backbone (8 for the Long ARG
-backbone). However, the backbones are highly tree-like, as these
-recombination events involve minor, local topological rearrangements
+backbone). However, the recombination events involve minor, local topological rearrangements
 where recombination only occurs between close relatives.
-% sometimes even within a single lineage such that the parent
-% lineages above a recombination event coalesce with each other before involvement with
-% any other part of the phylogeny.
-These local reticulations could either represent
-real but previously unobserved recombination events between closely related strains
-or could be artefacts of the current \texttt{sc2ts} method and its parameterization.
+(The majority of these recombinations are likely
+false-positives, as discussed in Section~\ref{sec:false_positives}.)
 
 Figure~\ref{fig:cophylogeny} compares the backbone phylogeny of the Wide ARG with
 a GISAID global ``all-time'' tree from Nextstrain.
@@ -742,7 +739,9 @@ that are ancestral to more than one sample. The mean length of these intervals
 is 1,685 bases (median 962), and the length distribution is summarised in the
 inset histogram in Figure~\ref{fig:breakpoint-distribution}.
 
-Although we emphasise that further work is required to filter out spuriously inferred recombination events,
+Although further work is required to filter
+out spuriously inferred recombination events (see
+Section~\ref{sec:false_positives})
 we can draw some preliminary conclusions from Figure~\ref{fig:breakpoint-distribution}.
 The number of intervals spanning a site (orange curve) is lower at the ends of the genome,
 as expected due to the lack of information about recombination with few flanking sites.
@@ -765,11 +764,11 @@ coincide with hypermutability and may reflect shifts in the actual
 rate of recombination between genes.
 Indeed, template switching is known to occur at hotspots,
 which often involve transcription-regulatory sequences preceding genes
-in SARS-CoV-2~\citep{Yang2021-characterizing}
+in SARS-CoV-2~\citep{Yang2021-characterizing}.
 The rate of recombination may also depend on the relative abundance
 of different subgenomic RNA intermediates that span different genes,
 affecting the availability of templates and influencing the rate of
-homologous recombination~\citep{Kim2020-gt,Zou2021-sars}
+homologous recombination~\citep{Kim2020-gt,Zou2021-sars}.
 \sally{[Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here).]}
 
 It is important to note that the precise endpoints of intervals can be
