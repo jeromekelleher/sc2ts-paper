@@ -909,29 +909,20 @@ when interpreting the results here.
 
 We focus here on the 749 Nextclade-designated recombinant samples.
 There are two samples designated XP which do not descend from a recombination node, 
-and a likely
-explanation for the absence of a corresponding recombination event in the Long ARG
-is that the characteristic multibase deletion for XP
+and a likely explanation for the absence of a corresponding recombination event
+in the Long ARG is that the characteristic multibase deletion for XP
 (\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
 during our preprocessing (see Section~\ref{sec:data_preprocessing} for details and potential
 improvements). Of the remaining X designated samples, 38 are singleton recombinants,
-descending
-from recombination nodes that are ancestral only to that sample (10 are labelled XZ; 6
-are XE;  3 each from XN and XK; 2 each from XC, XS, XV, XQ and XAB; and 1
-sample from each of XB, XM, XJ, XAF, XAH and XAJ). Such samples are likely to
+descending from recombination nodes that are ancestral only to that sample
+(10 are labelled XZ; 6 are XE;  3 each from XN and XK; 2 each from XC, XS, XV, XQ and XAB;
+and 1 sample from each of XB, XM, XJ, XAF, XAH and XAJ). Such samples are likely to
 be enriched for sequencing errors and lineage designation artefacts, and so we
-exclude them from further analysis in this section.
-
-\sally{[Delete this paragraph now? The new section 4.8 gets at the real issue, that the multi-step mutations common in new VoC generate false positive signals of recombination.]} The most recent recombination node for 79 samples (XN: 53, XZ: 16, XAJ: 6, XE:
-1, XAD: 1, XAH: 1, XAK: 1) is the same. This node, introduced as a
-result of adding strain
-Denmark/DCGC-281594/2021 (BA.2.9), is ancestral to more than 127K samples, 
-and is highly likely to be a spuriously inferred recombination event. \sally{[Replace with ``...is ancestral to more than 127K samples and XX immediate descendants. While such a hyper-connected node may reflect a large outbreak with little phylogenetic resolution, it may also be spurious, e.g., caused by the attraction of sequences with similar constellations of mutations or another phylogenetic artefact.'']}
-Understanding the origin of this
-and other similar high-impact, but potentially spurious, recombination
-events is an important aspect of future work.
-For simplicity, we exclude these samples from further analyses in
-this section.
+exclude them from further analysis in this section. A further 79 samples
+(XN: 53, XZ: 16, XAJ: 6, XE:1, XAD: 1, XAH: 1, XAK: 1) trace back
+to a most recent recombination node that is likely to be a false positive
+(row C in Table~\ref{tab:false_positive}, see Section~\ref{sec:false_positives}).
+For simplicity these samples are likewise excluded from further analyses.
 
 The remaining 630 samples (31 Pango lineages) trace back to 50 different
 most recent recombination nodes, summarised
@@ -1161,13 +1152,16 @@ conclusions.
 \subsection{False positive recombinants}
 \label{sec:false_positives}
 The Long and Wide ARGs both contain several recombination nodes that are
-ancestral to a large number of samples\sally{. These inferences of recombination may well be artefacts caused by the appearance of new variants of concern carrying more than the expected number of mutations \cite{otto2021origins}}. Table~\ref{tab:false_positive} shows details for four recombinants
+ancestral to a large number of samples.
+These inferences of recombination may well be artefacts 
+caused by the appearance of new variants of concern carrying 
+more than the expected number of mutations~\citep{otto2021origins}.
+Table~\ref{tab:false_positive} shows details of four recombinants
 in the Long ARG that are likely false positives and have come to be
 the ancestors of a large number of samples. These are the top-four recombinants
 from the Long ARG in terms of numbers of descendant samples
 (the fifth-largest has substantially fewer, at 14,869 descendant samples),
 labelled A--D. 
-\sally{[DELETED SENTENCE]}%These false positives are associated with the origins of large outbreaks. 
 For each row, we show the sample's Pango lineage
 designation and the rank of that sample in the overall list of
 samples with that designation. Thus, rows C and D are the first
@@ -1176,8 +1170,8 @@ and A and B are the third and eighth samples from the B.1.617.2
 lineage (Delta VoC), respectively. Also shown is the overall ``cost'' of the Viterbi
 solution computed by the LS HMM (Section~\ref{sec:ls}), which
 is $3 \times$ number of recombinations + number of additional mutations
-(for a mismatch ratio of 3; Section~\ref{sec:ls}).
-The column shows that each of these samples was a large
+(for a mismatch ratio of $k=3$).
+This column shows that each of these samples was a large
 ``distance'' from the current ARG when it was added. The mean
 HMM cost over all 2,078 recombinants in the Long ARG is 8.39
 (median: 7), and the mean cost for the  763 non-singleton
@@ -1204,20 +1198,26 @@ Rows are labelled A, B, C and D for ease of reference.}
 
 Occasional evolutionary leaps, in which a large number of mutations
 are acquired in sudden jumps,
-is a signature feature of SARS-CoV-2~\citep{Corey2021-sars,otto2021origins,Nielsen2023-host}.
+is a signature feature of 
+SARS-CoV-2~\citep{Corey2021-sars,otto2021origins,Nielsen2023-host}.
 Such ``saltations'' naturally present challenges to \texttt{sc2ts} and the
 current HMM parameterisation of three mutations per recombination (mismatch
-ratio). The first few sequences from these new lineages will \sally{be a poor match} to
+ratio). The first few sequences from these new lineages will be a poor match to
 the existing ARG, and the HMM will therefore
 search for ways to reduce the number of mutations required by recombining
 segments. 
-\sally{[DELETED SENTENCE (TRUE WHETHER OR NOT QUALITY ISSUES OCCUR).] }%If this is combined with data quality issues and ``time travellers'' (Section~\ref{sec:filtering_time_travellers}), the early stages of the VoC emergence can be quite muddled.
 This appears to be the case for the Delta VoC,
 corresponding to rows A and B of Table~\ref{tab:false_positive},
 which emerged and quickly rose to high prevalence in early-mid 2021,
 carrying 30 characteristic mutations compared to the reference sequence 
 \citep{McCrone2022-context}, including nine mutations in the S gene 
 not seen in earlier VoCs.
+The origins of the  Delta VoC are
+are illustrated in  Figure~\ref{fig:false_positives}, 
+which shows the large numbers of mutations involved,
+and the multiple closely related recombinations inferred
+before tree-like behaviour is resumed at the ancestor of 
+[FIXME what percentage?] Delta samples (node \texttt{tsk261771}).
 Similar patterns around the emergence of Delta are seen in the Wide ARG
 (not shown).
 
@@ -1225,7 +1225,7 @@ Given these considerations, it  is important to note that the
 number of ultimate descendants is not an entirely reliable
 indicator of the quality of inferred recombinants.
 Further study is required to systematically identify such false
-positives recombinants, and to update the topology with a
+positive recombinants, and to update the topology with a
 more parsimonious explanation of the data.
 
 \section{Discussion}
@@ -1556,10 +1556,10 @@ Both $E$ and $Q$ may be a function of the reference panel members,
 but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
-Emissions may also be a function of the nucleotide states, but in our RNA virus case, we assume that \sally{mutations occur to all possible alternate alleles} ($A,C,G,U,-$) with equal probability $\mu_\ell/5$. \sally{[Why is this 5?  I wouldn't have counted mutations to the same allele as a mutation.]} This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
+Emissions may also be a function of the nucleotide states, but in our RNA virus case, we assume that \sally{mutations occur to all possible alternate alleles} ($A,C,G,U,-$) with equal probability for a mutation to any other allele (including a gap in the alignment; $-$) are equally likely $\mu_\ell/4$. This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
  (Figure~\ref{fig:ls_diagram}, blue panel).
 We use the Viterbi algorithm~\citep{Viterbi1967-ol}
-to find the most likely copying path, given a set of reference sequences, $Q$, and $E$.
+to find the most likely copying path, given $Q$, $E$, and a set of reference sequences.
 Throughout, we refer to the probabilities of mismatching to a
 member of the reference panel at site $\ell$ as $\mu_\ell$,
 and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$ as $r_\ell$. For convenience, $\mu_\ell$ is commonly referred to as the `mutation probability', but we note that this probability of
@@ -1619,21 +1619,22 @@ Now, follow the probability of tracking along each of those paths:
 % \alpha \alpha^{m-1}
 \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
 \end{align*}
-% where $r$ is the recombination probability between adjacent
-% variants, $\mu$ is the mismatch probability between a target sequence at a
-% variant and a particular member of the reference panel,
-where \sally{$\alpha = (1 - r(n-1)/n) $ represents the probability of a sequence not recombining at a given position with any of the other $n-1$ members of the reference panel [REVISION OK?]} and $c$ is the
-likelihood of the path up to this point, which are assumed to be
-equal by construction.
+% Note: brackets here emphasise the two different components 
+% of alpha: (1-r) = don't leave this reference member, 
+% and r/n = move out, but back to yourself.
+where $\alpha = (1 - r) + r/n$ represents the probability of a sequence not recombining at a given position with any of the other $n-1$ members of the reference panel (Figure~\ref{fig:ls_diagram}, red panel) and $c$ is the
+likelihood of the path up to this point (assumed to be
+equal by construction).
 We then
 set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ to one another:
 \begin{align*} r = \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},
 \quad\quad \mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}. \end{align*}
 Thus, for lower MMR values ($k$ here),
-\sally{recombination is increasingly favoured over multiple mutations in a specific ancestral genome}.
-%We use an MMR value of $k=3$ in this work, as it provided results that tallied well with empirical observations.
-\sally{We use an MMR value of $k=3$ in this work,
-because of the relatively high rate of recombination relative to mutation typical of coronaviruses \cite{amoutzias2022remarkable}.}
+recombination is increasingly favoured over multiple mutations in a specific ancestral genome.
+We use an MMR value of $k=3$ in this work,
+because of the relatively high rate of recombination relative 
+to mutation typical of 
+coronaviruses~\citep{amoutzias2022remarkable}.
 Exploring different mismatch ratios and more sophisticated parameterisations
 of the HMM are important avenues for future work.
 
@@ -1643,11 +1644,7 @@ As a result, we had to consider missingness in our implementation of the LS
 Viterbi algorithm. One approach would be to `impute' all missing data
 beforehand using external software to hard-call or define a distribution over
 the possible missing nucleotides and use that in the determination of path
-probabilities. Another, which we carry out within \texttt{sc2ts}, is to not attempt to estimate the true nucleotide but
-rather to consider such sites as uninformative to the path probability, and
-impute missing data within that path on the fly, placing them within the emission probability transition from unknown to
-the emission probability from unknown to
-to any other state as 1. \sally{[Repeated clause in the last sentence?  Also, I'm a bit unclear if this is enough.  Let's say that the nodes were G->Unknown->G.  The latter is given a probability of one, but is the former G->Unknown also allowed with probability one?  Note, however, that G->G shouldn't occur with probability one but Exp[-mu/t]]}
+probabilities. Another, which we carry out within \texttt{sc2ts}, is to assume sites with missing nucleotides are uninformative to the path probability, and impute them as each focal sequence is analysed, on the fly. We achieve this by setting the emission probability from any state $(A,C,G,U,-)$ to `unknown' as 1. Then, after determining a most likely copying path, we can impute these missing data by simply copying nucleotides present on the most likely copying path at the sites of missing data in the focal sequence. Note that by iteratively imputing missing data in focal sequences in this way, the reference panel being used for any newly observed focal sequence is guaranteed to be devoid of missingness.
 
 In \texttt{sc2ts}, we use the efficient ARG-based implementation of the
 LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
@@ -2031,7 +2028,7 @@ the appropriate GISAID data access.
 
 The mapping of \texttt{tskit} IDs to strain and EPI\_ISL identifiers for the
 subgraph plots in Supplementary Figures \ref{fig:pango_XA_gisaid_graph}, \ref{fig:pango_XAG_gisaid_graph}, \ref{fig:pango_XD_gisaid_graph} and \ref{fig:pango_XB_gisaid_graph} are at
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Pango_X_graph_sample_maps.txt}.
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/data/Subgraph_sample_mapping.txt}.
 
 % \bibliographystyle{abbrvnat}
 \bibliographystyle{refstyle}
@@ -2203,11 +2200,10 @@ Official parents are taken from Pango designation alias key (TODO: explain the a
 \includegraphics[width=0.5\textwidth]{figures/Pango_XA_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XA_gisaid_graph}
 Detailed version of Figure~\ref{fig:pango-simple-origin-graph}A. All single nucleotide mutations are listed
-with the initial nucleotide state, followed by the reference genome position, followed by the derived
-nucleotide state (after mutation). If an ancestral (``parent'') mutation exists at the same site in the path
-to the root, it is possible for a mutation to be a ``reversion'' to the initial state of the parent mutation:
-such reversions are indicated by lowercase nucleotide letters. Sample nodes are shown with \texttt{tskit} IDs,
-which can be mapped to GISAID EPI ISL identifiers and strain names using supplementary file \protect\path{Pango_X_graph_sample_maps.txt}. In contrast to
+with the inherited nucleotide state, followed by the reference genome position, followed by the derived
+nucleotide state (after mutation). Recurrent mutations (see Section~\ref{sec:args}) are highlighted in bold,
+with reversions indicated by lowercase nucleotide letters. Sample nodes are shown with \texttt{tskit} IDs,
+which can be mapped to GISAID EPI ISL identifiers and strain names using supplementary file \protect\path{Subgraph_sample_mapping.txt}. In contrast to
 Figure~\ref{fig:pango-simple-origin-graph}A, Pango lineages shown here are those assigned by GISAID rather
 than Nextclade; however, in the specific case of XA, Nextclade and GISAID exactly agree on the lineage designations.
 }
@@ -2217,7 +2213,7 @@ than Nextclade; however, in the specific case of XA, Nextclade and GISAID exactl
 \includegraphics[width=\textwidth]{figures/Pango_XAG_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XAG_gisaid_graph}
 Detailed version of Figure~\ref{fig:pango-simple-origin-graph}B, with node and mutation labels as in
-Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Pango_X_graph_sample_maps.txt}
+Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Subgraph_sample_mapping.txt}
 to map tskID to EPI\_ISL and strain name).
 Note that GISAID Pango designations assign an extra 2 samples to XAG, which are labelled as XAB
 by Nextclade in Figure~\ref{fig:pango-simple-origin-graph}B. This renders XAG fully monophyletic.
@@ -2231,7 +2227,7 @@ agree more with our ARG structure than GISAID assignments.
 \includegraphics[width=0.6\textwidth]{figures/Pango_XD_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XD_gisaid_graph}
 Detailed version of Figure~\ref{fig:pango-simple-origin-graph}C, with node and mutation labels as in
-Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Pango_X_graph_sample_maps.txt}
+Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Subgraph_sample_mapping.txt}
 to map tskID to EPI\_ISL and strain name).
 Note that GISAID does not designate any nodes as XD in the Long ARG, hence no recombinant Pango lineages
 are marked in this plot. From inspection of the samples, we believe the GISAID designations to be erroneous
@@ -2243,12 +2239,31 @@ in this case.
 \includegraphics[width=\textwidth]{figures/Pango_XB_gisaid_large_graph.pdf}
 \caption{\label{fig:pango_XB_gisaid_graph}
 Detailed version of Figure~\ref{fig:complex_origins_graph}, with node and mutation labels as in
-Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Pango_X_graph_sample_maps.txt}
+Figure~\ref{fig:pango_XA_gisaid_graph} (see supplementary file \protect\path{Subgraph_sample_mapping.txt}
 to map tskID to EPI\_ISL and strain name).
 The GISAID XB designations agree with the Nextclade ones except in two cases: an unplotted
 singleton recombinant nested within the main grouping, and the tsk285180 node marked BA.1 in this plot,
 but which is labelled XB by Nextstrain.
 }
 \end{sidewaysfigure}
+
+\begin{figure} \centering
+\includegraphics[width=0.85\textwidth]{figures/false_positive_top2_nxcld_large_graph.pdf}
+\caption{\label{fig:false_positives}
+Subgraph of the Long ARG, focussing on two likely false positive 
+recombination nodes at the start of the Delta wave 
+(``focal'' nodes, in red, corresponding to rows A and B in 
+Table~\ref{tab:false_positive}).
+The path to node \texttt{tsk261771} has been expanded: 
+this node (in gold) is a large polytomy with
+107 immediate children, and is the ancestor of the majority of Delta samples.
+The suspected-incorrect recombination path to an early B.1 MRCA is also shown.
+Note the large amount of additional recombination (black nodes) among close 
+descendants of the focal nodes.
+% Why say this here and not at for the other subgraph figs?
+%See supplementary file \protect\path{Subgraph_sample_mapping.txt} to  map tskID to EPI\_ISL and strain name.
+}
+\end{figure}
+
 
 \end{document}
