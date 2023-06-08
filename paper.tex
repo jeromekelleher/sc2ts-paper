@@ -908,7 +908,7 @@ assigning Pango X lineages to samples, and is important to keep in mind
 when interpreting the results here.
 
 We focus here on the 749 Nextclade-designated recombinant samples.
-There are two samples designated XP which do not descend from a recombination node, 
+There are two samples designated XP which do not descend from a recombination node,
 and a likely explanation for the absence of a corresponding recombination event
 in the Long ARG is that the characteristic multibase deletion for XP
 (\url{https://github.com/cov-lineages/pango-designation/issues/481}) is masked
@@ -1153,15 +1153,15 @@ conclusions.
 \label{sec:false_positives}
 The Long and Wide ARGs both contain several recombination nodes that are
 ancestral to a large number of samples.
-These inferences of recombination may well be artefacts 
-caused by the appearance of new variants of concern carrying 
+These inferences of recombination may well be artefacts
+caused by the appearance of new variants of concern carrying
 more than the expected number of mutations~\citep{otto2021origins}.
 Table~\ref{tab:false_positive} shows details of four recombinants
 in the Long ARG that are likely false positives and have come to be
 the ancestors of a large number of samples. These are the top-four recombinants
 from the Long ARG in terms of numbers of descendant samples
 (the fifth-largest has substantially fewer, at 14,869 descendant samples),
-labelled A--D. 
+labelled A--D.
 For each row, we show the sample's Pango lineage
 designation and the rank of that sample in the overall list of
 samples with that designation. Thus, rows C and D are the first
@@ -1198,25 +1198,25 @@ Rows are labelled A, B, C and D for ease of reference.}
 
 Occasional evolutionary leaps, in which a large number of mutations
 are acquired in sudden jumps,
-is a signature feature of 
+is a signature feature of
 SARS-CoV-2~\citep{Corey2021-sars,otto2021origins,Nielsen2023-host}.
 Such ``saltations'' naturally present challenges to \texttt{sc2ts} and the
 current HMM parameterisation of three mutations per recombination (mismatch
 ratio). The first few sequences from these new lineages will be a poor match to
 the existing ARG, and the HMM will therefore
 search for ways to reduce the number of mutations required by recombining
-segments. 
+segments.
 This appears to be the case for the Delta VoC,
 corresponding to rows A and B of Table~\ref{tab:false_positive},
 which emerged and quickly rose to high prevalence in early-mid 2021,
-carrying 30 characteristic mutations compared to the reference sequence 
-\citep{McCrone2022-context}, including nine mutations in the S gene 
+carrying 30 characteristic mutations compared to the reference sequence
+\citep{McCrone2022-context}, including nine mutations in the S gene
 not seen in earlier VoCs.
 The origins of the  Delta VoC are
-are illustrated in  Figure~\ref{fig:false_positives}, 
+are illustrated in  Figure~\ref{fig:false_positives},
 which shows the large numbers of mutations involved,
 and the multiple closely related recombinations inferred
-before tree-like behaviour is resumed at the ancestor of 
+before tree-like behaviour is resumed at the ancestor of
 [FIXME what percentage?] Delta samples (node \texttt{tsk261771}).
 Similar patterns around the emergence of Delta are seen in the Wide ARG
 (not shown).
@@ -1556,15 +1556,15 @@ Both $E$ and $Q$ may be a function of the reference panel members,
 but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
-Emissions may also be a function of the nucleotide states, 
+Emissions may also be a function of the nucleotide states,
 but in our RNA virus case
-we assume that mutations occur from all possible alleles 
+we assume that mutations occur from all possible alleles
 ($A,C,G,U$ and a gap in the alignment, $-$) to any other with
 equal probability $\mu_\ell/4$.
-This is reasonable for rapidly evolving pathogens, 
-but we note that setting the number of alleles at site $\ell$ ($a_\ell$) 
-to the set of observed alleles across all analysed 
-samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate 
+This is reasonable for rapidly evolving pathogens,
+but we note that setting the number of alleles at site $\ell$ ($a_\ell$)
+to the set of observed alleles across all analysed
+samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
 (Figure~\ref{fig:ls_diagram}, blue panel).
 We use the Viterbi algorithm~\citep{Viterbi1967-ol}
 to find the most likely copying path, given $Q$, $E$, and a set of reference sequences.
@@ -1627,10 +1627,12 @@ The probability of tracking along each of those paths is given by:
 % \alpha \alpha^{m-1}
 \left(1-\mu\right)^{m-k}\mu^k &\text{stay in a template with $k$ mismatches,}
 \end{align*}
-% Note: brackets here emphasise the two different components 
-% of alpha: (1-r) = don't leave this reference member, 
+% Note: brackets here emphasise the two different components
+% of alpha: (1-r) = don't leave this reference member,
 % and r/n = move out, but back to yourself.
-where $\alpha = (1 - r) + r/n$ represents the probability of a sequence not recombining at a given position with any of the other $n-1$ members of the reference panel (Figure~\ref{fig:ls_diagram}, red panel) and $c$ is the
+where $\alpha = (1 - r) + r/n$ represents the probability of a sequence not recombining at a
+given position with any of the other $n-1$ members of the reference panel
+(Figure~\ref{fig:ls_diagram}, red panel) and $c$ is the
 likelihood of the path up to this point (assumed to be
 equal by construction).
 We then
@@ -1640,19 +1642,28 @@ set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ 
 Thus, for lower MMR values ($k$ here),
 recombination is increasingly favoured over multiple mutations in a specific ancestral genome.
 We use an MMR value of $k=3$ in this work,
-because of the relatively high rate of recombination relative 
-to mutation typical of 
+because of the relatively high rate of recombination relative
+to mutation typical of
 coronaviruses~\citep{amoutzias2022remarkable}.
 Exploring different mismatch ratios and more sophisticated parameterisations
 of the HMM are important avenues for future work.
 
 A varying degree of missingness is present in the genetic data, that is, for a
-given sample, a subset of nucleotides may be coded as `unknown' at a set of positions.
-As a result, we had to consider missingness in our implementation of the LS
-Viterbi algorithm. One approach would be to `impute' all missing data
+given sample, a subset of nucleotides may be coded as `unknown' at a set of
+positions. As a result, we had to consider missingness in our implementation of
+the LS Viterbi algorithm. One approach would be to `impute' all missing data
 beforehand using external software to hard-call or define a distribution over
 the possible missing nucleotides and use that in the determination of path
-probabilities. Another, which we carry out within \texttt{sc2ts}, is to assume sites with missing nucleotides are uninformative to the path probability, and impute them as each focal sequence is analysed, on the fly. We achieve this by setting the emission probability from any state $(A,C,G,U,-)$ to `unknown' as 1. Then, after determining a most likely copying path, we can impute these missing data by simply copying nucleotides present on the most likely copying path at the sites of missing data in the focal sequence. Note that by iteratively imputing missing data in focal sequences in this way, the reference panel being used for any newly observed focal sequence is guaranteed to be devoid of missingness.
+probabilities. Another, which we carry out within \texttt{sc2ts}, is to assume
+sites with missing nucleotides are uninformative to the path probability, and
+impute them as each focal sequence is analysed, on the fly. We achieve this by
+setting the emission probability from any state $(A,C,G,U,-)$ to `unknown' as
+1. Then, after determining a most likely copying path, we can impute these
+missing data by simply copying nucleotides present on the most likely copying
+path at the sites of missing data in the focal sequence. Note that by
+iteratively imputing missing data in focal sequences in this way, the reference
+panel being used for any newly observed focal sequence is guaranteed to be
+devoid of missingness.
 
 In \texttt{sc2ts}, we use the efficient ARG-based implementation of the
 LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
@@ -2258,15 +2269,15 @@ but which is labelled XB by Nextstrain.
 \begin{figure} \centering
 \includegraphics[width=0.85\textwidth]{figures/false_positive_top2_nxcld_large_graph.pdf}
 \caption{\label{fig:false_positives}
-Subgraph of the Long ARG, focussing on two likely false positive 
-recombination nodes at the start of the Delta wave 
-(``focal'' nodes, in red, corresponding to rows A and B in 
+Subgraph of the Long ARG, focussing on two likely false positive
+recombination nodes at the start of the Delta wave
+(``focal'' nodes, in red, corresponding to rows A and B in
 Table~\ref{tab:false_positive}).
-The path to node \texttt{tsk261771} has been expanded: 
+The path to node \texttt{tsk261771} has been expanded:
 this node (in gold) is the ancestor of ${\sim}90\%$ of Delta samples in the Long ARG,
 and represents a large polytomy with 107 immediate children.
 The suspected-incorrect recombination path to an early B.1 MRCA is also shown.
-Note the large amount of additional recombination (black nodes) among close 
+Note the large amount of additional recombination (black nodes) among close
 descendants of the focal nodes.
 % Why say this here and not at for the other subgraph figs?
 %See supplementary file \protect\path{Subgraph_sample_mapping.txt} to  map tskID to EPI\_ISL and strain name.
