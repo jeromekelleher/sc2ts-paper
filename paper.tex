@@ -281,7 +281,7 @@ are arbitrary.
 We inferred two ARGs, which we refer to as the
 ``Wide'' and ``Long'' ARGs throughout.
 The Wide ARG is densely sampled but time-limited and
-includes 1.27 million strains collected up to June 30, 2021
+includes 1.27 million sequences collected up to June 30, 2021
 which
 pass some quality-control filters (Section~\ref{sec:data_preprocessing})
 and  have a maximum delay between sampling and submission dates of 30 days
@@ -1173,11 +1173,12 @@ from the Long ARG in terms of numbers of descendant samples
 (the fifth-largest has substantially fewer, at 14,869 descendant samples),
 labelled A--D.
 For each row, we show the sample's Pango lineage
-designation and the rank of that sample in the overall list of
-samples with that designation. Thus, rows C and D are the first
+designation and the temporal rank of that sample out of all
+samples with that designation. Thus, rows C and D are the earliest
 samples seen in the Long ARG from the BA.2.9 and BA.3 lineages,
-and A and B are the third and eighth samples from the B.1.617.2
-lineage (Delta VoC), respectively. Also shown is the overall ``cost'' of the Viterbi
+and A and B are respectively the third and eighth earliest samples among 12829 samples
+assigned by Nextclade to the B.1.617.2
+lineage (Delta VoC). Also shown is the overall ``cost'' of the Viterbi
 solution computed by the LS HMM (Section~\ref{sec:ls}), which
 is $3 \times$ number of recombinations + number of additional mutations
 (for a mismatch ratio of $k=3$).
@@ -1193,10 +1194,10 @@ Table~\ref{tab:false_positive} are in the tail of this distribution.
 \toprule
 & Strain & Descendants & Lineage & Rank in lineage&HMM Cost \\
 \midrule
-A&Germany/HH-RKI-I-061284/2021 & 178,405    & B.1.617.2   & 3& 17  \\
-B&India/ILSGS00961/2021        & 177,649    & B.1.617.2   & 8& 25   \\
-C&Denmark/DCGC-281594/2021     & 127,227    & BA.2.9      & 1& 32 \\
-D&USA/NJ-GBW-EWR000001/2021    & 127,230    & BA.3        & 1& 25 \\
+A&Germany/HH-RKI-I-061284/2021 & 178,405    & B.1.617.2   & 3 / 12829& 17  \\
+B&India/ILSGS00961/2021        & 177,649    & B.1.617.2   & 8 / 12829& 25   \\
+C&Denmark/DCGC-281594/2021     & 127,227    & BA.2.9      & 1 / 10897& 32 \\
+D&USA/NJ-GBW-EWR000001/2021    & 127,230    & BA.3        & 1 / 15& 25 \\
 \bottomrule
 \end{tabular}
 \caption{\label{tab:false_positive}
@@ -1524,7 +1525,7 @@ See~\cite{Mcvean2019-linkage} for further review and discussion
 of the LS model.
 
 \begin{figure} \centering
-\includegraphics[width=0.5\textwidth]{figures/ls_diagram_covid.pdf}
+\includegraphics[width=0.5\textwidth]{figures/Li_S.pdf}
 \caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
 model, in which a focal sequence (bottom) is described as an
 imperfect mosaic of the sequences in a reference panel.
@@ -2336,7 +2337,9 @@ recombination nodes at the start of the Delta wave
 Table~\ref{tab:false_positive}).
 The path to node \texttt{tsk261771} has been expanded:
 this node (in gold) is the ancestor of ${\sim}89.8\%$ of Delta samples in the Long ARG,
-and represents a large polytomy with 107 immediate children.
+and represents a large polytomy with 107 immediate children. Of the remaining Delta samples, 10\% of Delta
+samples are mostly descendants of the node \texttt{tsk232088} on the far right,
+a sibling of the earliest focal recombination node.
 The suspected-incorrect recombination path to an early B.1 MRCA is also shown.
 Note the large amount of additional recombination (black nodes) among close
 descendants of the focal nodes.
