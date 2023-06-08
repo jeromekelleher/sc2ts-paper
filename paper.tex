@@ -22,6 +22,12 @@
 % Can reinstate when we're ready to preprint
 \usepackage[hidelinks]{hyperref}
 
+% sets colours for notes to each other in the text
+\usepackage{xcolor}
+\newcommand{\sally}[1]{\textcolor{red}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
 
 \title{\vspace{-1.5em} \bf Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2}
 
@@ -551,8 +557,8 @@ Although the average number
 of mutations per sample is small
 (Wide ARG: 0.77, Long ARG: 1.38; Table~\ref{tab:args}),
 the average number per site
-is large in both ARGs (Wide ARG: 41.23; Long ARG:36.10; Table~\ref{tab:args}).
-However, a lower median count (Wide ARG: 14; Long ARG:13),
+is large in both ARGs (Wide ARG: 41.23; Long ARG: 36.10; Table~\ref{tab:args}).
+However, a lower median count (Wide ARG: 14; Long ARG: 13),
 suggests that these high mutation counts are
 partly driven by some hypermutable sites (e.g., site 28,271 has over 7,000
 mutations in the Wide ARG; Figure~\ref{fig:breakpoint-distribution}), which
@@ -560,7 +566,7 @@ may be artefactual.
 A significant issue with the current version of \texttt{sc2ts} is an excess
 of inferred reversion mutations, with 5.99\% of all mutations in the Wide
 ARG (Long ARG: 4.54\%) reverting the state change of the immediately
-ancestral mutation (see Section~\ref{sec:args} for precise definitions).
+ancestral mutation (see Section~\ref{sec:args} for precise definitions). \sally{[What confuses me is that I would think that none of these reversions would remain after the reversion push step of Figure 1D.  Is this because ``immediately ancestral'' is incorrect or because the problem is that some of these immediate reversions are created deeper in the tree than the newly added samples (i.e., uncorrected by the reversion push). If the former, maybe say ``reverting the state change of a recent ancestral mutation'', if the latter, maybe say  ``(see Section~\ref{sec:args} for precise definitions, note that the reversion push algorithm of Figure 1D only eliminates reversions in the newly added portion of the tree and not reversions around earlier nodes created by this algorithm)''.]}
 The majority of these mutations are likely to be
 artefactual, and a key goal of future development is to improve
 our parsimony heuristics (Section~\ref{sec:parsimony-heuristics}) to
@@ -689,11 +695,10 @@ The recombination node for group A forms a monophyletic clade of all
 It is rarely possible to be precise about the position on the genome at which
 a recombinant sequence switches from inheriting from one parent to another.
 Even if we observe the recombinant sequence before subsequent
-divergence occurs (during onward transmission), if the two parent sequences
-are similar there is no way to
-accurately identify the breakpoint.
+divergence occurs (during onward transmission), there is no way to identify the exact breakpoint if the two parent sequences
+are similar.
 Here we define the
-interval around a particular breakpoint as the genome coordinates over which the
+interval \sally{within which a particular breakpoint may have occurred} as the genome coordinates over which the
 sequences for the left and right parent nodes are identical. The right-hand
 extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
 (Section~\ref{sec:ls}), and the left endpoint is then derived by directly
@@ -756,23 +761,22 @@ The rate of recombination may also depend on the relative abundance
 of different subgenomic RNA intermediates that span different genes,
 affecting the availability of templates and influencing the rate of
 homologous recombination~\citep{Kim2020-gt,Zou2021-sars}
-[Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here)]
+\sally{[Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here).]}
 
 It is important to note that the precise endpoints of intervals can be
-somewhat arbitrary, since they are defined by exact comparisons
-of a recombinant's parents.
+somewhat arbitrary, because they are defined by \sally{the sequence differences that happen to be present in the} recombinant's parents.
 Thus, breakpoint intervals will tend to be truncated at sites that are
 hypermutable, either due to increased information about parentage
 or spurious inferences caused by sequencing errors.
 It is therefore helpful to compare the number of intersecting intervals
-with the number of mutations per site in Figure~\ref{fig:breakpoint-distribution}.
+with the number of mutations per site (Figure~\ref{fig:breakpoint-distribution}).
 For instance, position 28,271 (located in the ORF8-N intergenic
 region) has the largest number of mutations and appears as an endpoint
 of 66 intervals.
 The 7,572 mutations (including 5,782 insertions and 1,605 deletions)
 at this site are an indicator that this
 homopolymeric region may be prone to sequencing errors
-and should be included in the list of ``problematic sites'' that
+and \sally{potentially} should be included in the list of ``problematic sites'' that
 are excluded from analysis (Section~\ref{sec:data_preprocessing}).
 On the other hand, 58 of the breakpoint intervals have endpoints
 within one base of site 27,972, which has undergone 770 mutation events
@@ -918,13 +922,13 @@ sample from each of XB, XM, XJ, XAF, XAH and XAJ). Such samples are likely to
 be enriched for sequencing errors and lineage designation artefacts, and so we
 exclude them from further analysis in this section.
 
-The most recent recombination node for 79 samples (XN: 53, XZ: 16, XAJ: 6, XE:
+\sally{[Delete this paragraph now? The new section 4.8 gets at the real issue, that the multi-step mutations common in new VoC generate false positive signals of recombination.]} The most recent recombination node for 79 samples (XN: 53, XZ: 16, XAJ: 6, XE:
 1, XAD: 1, XAH: 1, XAK: 1) is the same. This node, introduced as a
 result of adding strain
-Denmark/DCGC-281594/2021, is ancestral to more than 127K samples,
-and is highly likely to be a spuriously inferred recombination event.
+Denmark/DCGC-281594/2021 (BA.2.9), is ancestral to more than 127K samples, 
+and is highly likely to be a spuriously inferred recombination event. \sally{[Replace with ``...is ancestral to more than 127K samples and XX immediate descendants. While such a hyper-connected node may reflect a large outbreak with little phylogenetic resolution, it may also be spurious, e.g., caused by the attraction of sequences with similar constellations of mutations or another phylogenetic artefact.'']}
 Understanding the origin of this
-and other similar high-impact, but likely spurious recombination
+and other similar high-impact, but potentially spurious, recombination
 events is an important aspect of future work.
 For simplicity, we exclude these samples from further analyses in
 this section.
@@ -1129,9 +1133,7 @@ designated XB nodes and involves a recombination between descendants of the
 originating XB recombination. More specifically, strain
 USA/TX-HMH-MCoV-43092/2021 is inferred to be a recombinant
 between an XB grandparent and its XB grandchild, involving an intermediate UPGMA node.
-It seems likely to be artefactual recombination event
-caused by undersampling, but could reflect true 
-recombination between closely related lineages.
+It seems likely to be an artefactual recombination event caused by undersampling, but it could also reflect true recombination between closely related lineages.
 
 For the few XC-labelled samples, the Wide ARG identifies more than one
 originating recombination node. However, as none of the samples designated as
@@ -1159,14 +1161,14 @@ conclusions.
 \subsection{False positive recombinants}
 \label{sec:false_positives}
 The Long and Wide ARGs both contain several recombination nodes that are
-ancestral to large numbers of samples, and are almost certainly
-artefactual. Table~\ref{tab:false_positive} shows details for four recombinants
-in the Long ARG that are likely false positives, and have come to be
+ancestral to a large number of samples\sally{. These inferences of recombination may well be artefacts caused by the appearance of new variants of concern carrying more than the expected number of mutations \cite{otto2021origins}}. Table~\ref{tab:false_positive} shows details for four recombinants
+in the Long ARG that are likely false positives and have come to be
 the ancestors of a large number of samples. These are the top-four recombinants
 from the Long ARG in terms of numbers of descendant samples
 (the fifth-largest has substantially fewer, at 14,869 descendant samples),
-labelled A--D. These false positives are associated with the origins
-of large outbreaks. For each row, we show the sample's Pango lineage
+labelled A--D. 
+\sally{[DELETED SENTENCE]}%These false positives are associated with the origins of large outbreaks. 
+For each row, we show the sample's Pango lineage
 designation and the rank of that sample in the overall list of
 samples with that designation. Thus, rows C and D are the first
 samples seen in the Long ARG from the BA.2.9 and BA.3 lineages,
@@ -1201,16 +1203,15 @@ Rows are labelled A, B, C and D for ease of reference.}
 \end{table}
 
 Occasional evolutionary leaps, in which a large number of mutations
-are acquired in sudden jumps
-is a signature feature of SARS-CoV-2~\citep{Corey2021-sars,Nielsen2023-host}.
+are acquired in sudden jumps,
+is a signature feature of SARS-CoV-2~\citep{Corey2021-sars,otto2021origins,Nielsen2023-host}.
 Such ``saltations'' naturally present challenges to \texttt{sc2ts} and the
 current HMM parameterisation of three mutations per recombination (mismatch
-ratio). The first few sequences from these new lineages will match in to
-the existing ARG with very low likelihood, and the HMM will therefore
+ratio). The first few sequences from these new lineages will \sally{be a poor match} to
+the existing ARG, and the HMM will therefore
 search for ways to reduce the number of mutations required by recombining
-in segments. If this is combined with data quality issues and
-``time travellers'' (Section~\ref{sec:filtering_time_travellers}),
-the early stages of the VoC emergence can be quite muddled.
+segments. 
+\sally{[DELETED SENTENCE (TRUE WHETHER OR NOT QUALITY ISSUES OCCUR).] }%If this is combined with data quality issues and ``time travellers'' (Section~\ref{sec:filtering_time_travellers}), the early stages of the VoC emergence can be quite muddled.
 This appears to be the case for the Delta VoC,
 corresponding to rows A and B of Table~\ref{tab:false_positive},
 which emerged and quickly rose to high prevalence in early-mid 2021,
@@ -1349,7 +1350,7 @@ Similarly, all of the analyses shown here are written in Python,
 using the \texttt{tskit} API, mostly running in a few seconds
 on standard laptop computers (see the Data Availability
 section for details of the corresponding Jupyter notebooks).
-Retooling methods to scale rapidly and to encode recombination
+Retooling methods to scale up rapidly with expanding data and to encode recombination
 promises to improve tracking during this and any future pandemic.
 
 \section{Methods}
@@ -1555,8 +1556,7 @@ Both $E$ and $Q$ may be a function of the reference panel members,
 but transitions are generally assumed to be independent of the
 hidden states (Figure~\ref{fig:ls_diagram}, pink panel).
 This assumption dramatically increases performance as the state space drops to two states (i.e., switching or not switching).
-Emissions may also be a function of the nucleotide states, but in our
-case, we assume that all alleles ($A,C,G,T,-$) can be mutated to with equal probability $\mu_\ell/5$. This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
+Emissions may also be a function of the nucleotide states, but in our RNA virus case, we assume that \sally{mutations occur to all possible alternate alleles} ($A,C,G,U,-$) with equal probability $\mu_\ell/5$. \sally{[Why is this 5?  I wouldn't have counted mutations to the same allele as a mutation.]} This is reasonable for rapidly evolving pathogens, but we note that setting the number of alleles at site $\ell$ ($a_\ell$) to the set of observed alleles across all analysed samples ($\mu_\ell/(a_\ell-1)$) will often be more appropriate
  (Figure~\ref{fig:ls_diagram}, blue panel).
 We use the Viterbi algorithm~\citep{Viterbi1967-ol}
 to find the most likely copying path, given a set of reference sequences, $Q$, and $E$.
@@ -1598,7 +1598,7 @@ importance of mutation and recombination in the HMM. Specifically, an MMR value
 of $k$ will prefer $k$ mismatches (mutations) to a single recombination that
  results in copying from a template with no mismatches. To map between
 recombination probability and mutation probability for a particular mismatch
-ratio, we simply consider the two paths that we wish to be equally likely, and
+ratio, we simply consider the two paths that we wish to be equally likely and
 rearrange for the mutation or recombination probability. Consider the simple
 case where we assume $\mu_l=\mu$ and $r_l=r$. Without loss of generality,
 consider a region of length $m$. Up until this region, two paths are equally
@@ -1622,7 +1622,7 @@ Now, follow the probability of tracking along each of those paths:
 % where $r$ is the recombination probability between adjacent
 % variants, $\mu$ is the mismatch probability between a target sequence at a
 % variant and a particular member of the reference panel,
-where $\alpha = (1 - r + r / n) $ and $c$ is the
+where \sally{$\alpha = (1 - r(n-1)/n) $ represents the probability of a sequence not recombining at a given position with any of the other $n-1$ members of the reference panel [REVISION OK?]} and $c$ is the
 likelihood of the path up to this point, which are assumed to be
 equal by construction.
 We then
@@ -1630,10 +1630,10 @@ set these path probabilities to be equal, and rearrange to relate $r$ and $\mu$ 
 \begin{align*} r = \frac{n\mu^k}{\left(1-\mu\right)^k + \left(n-1\right)\mu^k},
 \quad\quad \mu = \frac{1}{\sqrt[k]{\frac{n}{r} - (n-1)} + 1}. \end{align*}
 Thus, for lower MMR values ($k$ here),
-recombinations are favoured over mutations
-than a single ancestral genome.
-We use an MMR value of $k=3$ in this work,
-as it provided results that tallied well with empirical observations.
+\sally{recombination is increasingly favoured over multiple mutations in a specific ancestral genome}.
+%We use an MMR value of $k=3$ in this work, as it provided results that tallied well with empirical observations.
+\sally{We use an MMR value of $k=3$ in this work,
+because of the relatively high rate of recombination relative to mutation typical of coronaviruses \cite{amoutzias2022remarkable}.}
 Exploring different mismatch ratios and more sophisticated parameterisations
 of the HMM are important avenues for future work.
 
@@ -1642,12 +1642,12 @@ given sample, a subset of nucleotides may be coded as `unknown' at a set of posi
 As a result, we had to consider missingness in our implementation of the LS
 Viterbi algorithm. One approach would be to `impute' all missing data
 beforehand using external software to hard-call or define a distribution over
-the possible missing nucleotides, and use that in the determination of path
-probabilities. Another, which we carry out within \texttt{sc2ts}, is to not attempt to estimate the true nucleotide, but
+the possible missing nucleotides and use that in the determination of path
+probabilities. Another, which we carry out within \texttt{sc2ts}, is to not attempt to estimate the true nucleotide but
 rather to consider such sites as uninformative to the path probability, and
 impute missing data within that path on the fly, placing them within the emission probability transition from unknown to
 the emission probability from unknown to
-to any other state as 1.
+to any other state as 1. \sally{[Repeated clause in the last sentence?  Also, I'm a bit unclear if this is enough.  Let's say that the nodes were G->Unknown->G.  The latter is given a probability of one, but is the former G->Unknown also allowed with probability one?  Note, however, that G->G shouldn't occur with probability one but Exp[-mu/t]]}
 
 In \texttt{sc2ts}, we use the efficient ARG-based implementation of the
 LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
@@ -1737,12 +1737,12 @@ between $k$ identical descendants of a node as a polytomy of size $k$.
 
 There are well-known issues with using such a simple algorithm for inferring
 evolutionary relationships~\citep{Felsenstein2004-inferring}.
-Table~\ref{tab:args} show that
+Table~\ref{tab:args} shows that
 this within-cluster tree building has a significant influence on the
-overall ARG topology
+overall ARG topology,
 and therefore applying more sophisticated
-tree building methods which keep track of the required mutations
-(rather then inferring post-hoc by parsimony), is a likely avenue
+tree building methods that keep track of the required mutations
+(rather then inferring post-hoc by parsimony) is a likely avenue
 for improvements in overall inference quality.
 
 \subsection{Parsimony-increasing heuristics}
@@ -1750,7 +1750,7 @@ for improvements in overall inference quality.
 Attaching trees built from the clusters of samples that copy from
 a particular node (or path of nodes for recombinants,
 see Section~\ref{sec:treatment_recombinants}) under the
-HMM is an inherently greedy strategy,
+HMM is an inherently greedy strategy
 and can produce inferences that are clearly unparsimonious.
 The final step in adding a daily batch of samples to the ARG
 is therefore to perform some local updates that target specific
@@ -1763,7 +1763,7 @@ Given a newly attached node, mutation collapsing inspects its siblings from
 previous sample days to check if any of them share (a subset of) the mutations that
 it carries. If so, we increase the overall parsimony of the inference
 by creating a new node representing the ancestor that carried
-those shared mutations, and make that new node the parent of the
+those shared mutations and make that new node the parent of the
 siblings carrying those shared mutations (Figure \ref{fig:overview_sc2ts}D). The patterns of
 shared mutations between siblings can be complex, and the current
 implementation uses a simple greedy strategy for choosing
@@ -1794,7 +1794,7 @@ it is clear that there
 is room for improvement and that further parsimony-increasing
 heuristics
 (e.g., resolving reversions beyond those on immediately adjacent edges)
-would likely be of benefit .
+would likely be of benefit.
 
 \subsection{Treatment of recombinants}
 \label{sec:treatment_recombinants}
