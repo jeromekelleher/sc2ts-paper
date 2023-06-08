@@ -1570,7 +1570,8 @@ We use the Viterbi algorithm~\citep{Viterbi1967-ol}
 to find the most likely copying path, given $Q$, $E$, and a set of reference sequences.
 Throughout, we refer to the probabilities of mismatching to a
 member of the reference panel at site $\ell$ as $\mu_\ell$,
-and the probability of recombining between two members of the reference panel between site $\ell-1$ and site $\ell$ as $r_\ell$. For convenience, $\mu_\ell$ is commonly referred to as the `mutation probability', but we note that this probability of
+and the probability of recombining between two members of the reference panel
+between site $\ell-1$ and site $\ell$ as $r_\ell$. For convenience, $\mu_\ell$ is commonly referred to as the `mutation probability', but we note that this probability of
 mismatch also encompasses various other error modes that result in a mismatch
 (such as sequencing and alignment errors). Note also that it is these probabilities,
 not the rates of mutation and recombination, that are required to fully define
@@ -1648,26 +1649,72 @@ coronaviruses~\citep{amoutzias2022remarkable}.
 Exploring different mismatch ratios and more sophisticated parameterisations
 of the HMM are important avenues for future work.
 
-A varying degree of missingness is present in the genetic data, that is, for a
-given sample, a subset of nucleotides may be coded as `unknown' at a set of
-positions. As a result, we had to consider missingness in our implementation of
-the LS Viterbi algorithm. 
+% A varying degree of missingness is present in the genetic data, that is, for a
+% given sample, a subset of nucleotides may be coded as `unknown' at a set of
+% positions. As a result, we had to consider missingness in our implementation of
+% the LS Viterbi algorithm.
 
-To deal with this missingness, we could explicitly model the missingness structure and generative process, or impute the missing data and revert back to our model without missingness. We choose the latter. To do this, we estimate a most likely path through the data assuming that missing nucleotides in the focal sequence are uninformative to the probability of any given path through the reference data. We then simply fill in the missing data in the focal sequence by copying it from the relevant positions in the most likely path. To ensure that missing data is not considered in determining the most likely copying path, we set the emission probability from any state $(A,C,G,U,-)$ to `unknown' as
-1 (though we could have chosen any constant). As a result, emissions of unknown nucleotides will not contribute to differences in path probabilities. Note that by
-iteratively imputing missing data in focal sequences in this way, the reference
-panel being used for any newly observed focal sequence is guaranteed to be
-devoid of missingness.
+% To deal with this missingness, we could explicitly model the missingness
+% structure and generative process, or impute the missing data and revert back to
+% our model without missingness. We choose the latter. To do this, we estimate a
+% most likely path through the data assuming that missing nucleotides in the
+% focal sequence are uninformative to the probability of any given path through
+% the reference data. We then simply fill in the missing data in the focal
+% sequence by copying it from the relevant positions in the most likely path. To
+% ensure that missing data is not considered in determining the most likely
+% copying path, we set the emission probability from any state $(A,C,G,U,-)$ to
+% `unknown' as 1 (though we could have chosen any constant). As a result,
+% emissions of unknown nucleotides will not contribute to differences in path
+% probabilities. Note that by iteratively imputing missing data in focal
+% sequences in this way, the reference panel being used for any newly observed
+% focal sequence is guaranteed to be devoid of missingness.
 
-One approach would be to `impute' all missing data
-beforehand using external software to hard-call or define a distribution over
-the possible missing nucleotides and use that in the determination of path
-probabilities. Another, which we carry out within \texttt{sc2ts}, is to assume
-sites with missing nucleotides are uninformative to estimating the most likely path through the data which gives rise to the focal sequence. If we are able to estimate the most likely copying path among these paths, a reasonable imputation method is to fill in the missing data in the focal sequence by copying it from the relevant positions in the most likely path. To ensure that missing data is not considered in determining the most likely copying path, we set the emission probability from any state $(A,C,G,U,-)$ to `unknown' as
-1 (though we could have chosen any constant). As a result, emissions of unknown nucleotides will not contribute to differences in path probabilities. Note that by
-iteratively imputing missing data in focal sequences in this way, the reference
-panel being used for any newly observed focal sequence is guaranteed to be
-devoid of missingness.
+% One approach would be to `impute' all missing data beforehand using external
+% software to hard-call or define a distribution over the possible missing
+% nucleotides and use that in the determination of path probabilities. Another,
+% which we carry out within \texttt{sc2ts}, is to assume sites with missing
+% nucleotides are uninformative to estimating the most likely path through the
+% data which gives rise to the focal sequence. If we are able to estimate the
+% most likely copying path among these paths, a reasonable imputation method is
+% to fill in the missing data in the focal sequence by copying it from the
+% relevant positions in the most likely path. To ensure that missing data is
+% not considered in determining the most likely copying path, we set the
+% emission probability from any state $(A,C,G,U,-)$ to `unknown' as 1 (though
+% we could have chosen any constant). As a result, emissions of unknown
+% nucleotides will not contribute to differences in path probabilities. Note
+% that by iteratively imputing missing data in focal sequences in this way, the
+% reference panel being used for any newly observed focal sequence is
+% guaranteed to be devoid of missingness.
+
+Genetic data for SARS-CoV-2 contains substantial amounts of missingness,
+(nucleotides coded as `unknown' or masked out
+as described in Section~\ref{sec:data_preprocessing})
+and it is important to account for this missinging in a systematic way.
+In \texttt{sc2ts} we automatically impute missing data as samples are added
+into the ARG, using the LS model.
+To do this, we assume that sites with missing nucleotides are uninformative
+to the path probability, by setting the emission probability from any
+state $(A,C,G,U,-)$ to `unknown' equal to 1 (though we could have chosen any constant).
+As a result, emissions of unknown nucleotides will not contribute to
+differences in path probabilities.
+Once the most likely copying path is determined, we then attach the
+sample to the ARG (see Figure~\ref{fig:overview_sc2ts} and following subsections).
+For each newly attached sample we encode its nucleotide sequence by
+recording mutations where it differs from the nucleotide sequence
+of its parental node, but (importantly) ignoring sites with missing data
+in the new sample.
+Thus, once the newly added sequence has been attached to the ARG
+any missing data is imputed from its parental node. There is therefore
+no missing data in the ARG; all missing bases are ``hard called''
+at attachment time.
+Note that this approach is equivalent to
+using state-of-the-art imputation
+methods~\citep[e.g.][]{Browning2018-nk,Delaneau2019-wl} with a reference
+panel consisting of all sequences in the ARG,
+since these methods are also based on the LS model.
+% Could say more here, but let's leave it.
+Evaluating the accuracy of missing data imputation
+using \texttt{sc2ts} is an important facet of future work.
 
 In \texttt{sc2ts}, we use the efficient ARG-based implementation of the
 LS Viterbi algorithm from \texttt{tsinfer} \citep{Kelleher2019-ba} to find
