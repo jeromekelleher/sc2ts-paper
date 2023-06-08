@@ -1696,7 +1696,7 @@ class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
             cls.focal_nodes[0]: "Focal recombination node",
             "Unknown (R)": "Additional recombination node",
             "B.1.617.2": "Nextclade Pango Delta VoC",
-            cls.main_delta_source: "Large Delta polytomy (>100 children)",
+            cls.main_delta_source: "Majority Delta ancestor\n(root of 90% of Delta samples, >100 children)",
             "Unknown": "Unimputed Pango lineage",
         }
         ax.legend(
