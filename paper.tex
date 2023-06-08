@@ -706,7 +706,8 @@ Even if we observe the recombinant sequence before subsequent
 divergence occurs (during onward transmission), there is no way to identify the exact breakpoint if the two parent sequences
 are similar.
 Here we define the
-interval \sally{within which a particular breakpoint may have occurred} as the genome coordinates over which the
+interval within which a particular breakpoint may have occurred
+as the genome coordinates over which the
 sequences for the left and right parent nodes are identical. The right-hand
 extreme of the breakpoint interval is chosen by the LS HMM Viterbi algorithm
 (Section~\ref{sec:ls}), and the left endpoint is then derived by directly
@@ -772,7 +773,8 @@ homologous recombination~\citep{Kim2020-gt,Zou2021-sars}
 \sally{[Sally: KATHERINE, WHAT DO YOU THINK?  These not-full-length subgenomic RNA intermediates may provide a lot of homologous templates for some genes more than other (e.g., fig 3B here).]}
 
 It is important to note that the precise endpoints of intervals can be
-somewhat arbitrary, because they are defined by \sally{the sequence differences that happen to be present in the} recombinant's parents.
+somewhat arbitrary, because they are defined by the sequence differences
+that happen to be present in the recombinant's parents.
 Thus, breakpoint intervals will tend to be truncated at sites that are
 hypermutable, either due to increased information about parentage
 or spurious inferences caused by sequencing errors.
@@ -784,7 +786,7 @@ of 66 intervals.
 The 7,572 mutations (including 5,782 insertions and 1,605 deletions)
 at this site are an indicator that this
 homopolymeric region may be prone to sequencing errors
-and \sally{potentially} should be included in the list of ``problematic sites'' that
+and potentially should be included in the list of ``problematic sites'' that
 are excluded from analysis (Section~\ref{sec:data_preprocessing}).
 On the other hand, 58 of the breakpoint intervals have endpoints
 within one base of site 27,972, which has undergone 770 mutation events
