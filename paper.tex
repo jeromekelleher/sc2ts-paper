@@ -74,7 +74,7 @@ lineages of SARS-CoV-2, challenging how we represent the evolutionary history
 of this virus and giving rise to new variants of potential public health
 concern by combining transmission and immune evasion properties of different
 lineages. Detection of new recombinant strains is challenging, with most
-methods looking for breaks between sets of mutations that characterize distinct
+methods looking for breaks between sets of mutations that characterise distinct
 lineages.
 In addition, many basic approaches fundamental to the study of viral
 evolution assume that recombination is negligible, in that a single
@@ -454,7 +454,7 @@ or could be artefacts of the current \texttt{sc2ts} method and its parameterizat
 
 Figure~\ref{fig:cophylogeny} compares the backbone phylogeny of the Wide ARG with
 a GISAID global ``all-time'' tree from Nextstrain.
-We illustrate the backbone phylogeny by visualizing
+We illustrate the backbone phylogeny by visualising
 a single tree in the middle of the viral genome,
 although other regions of the
 genome show almost identical topologies.
@@ -574,7 +574,7 @@ and problematic sites (e.g., 28,271 as discussed in
 Section~\ref{sec:breakpoint_intervals}; see also
 Figure~\ref{fig:pango_XB_gisaid_graph} for an example of multiple
 reversions at this site), as well as indicating opportunities
-for improvement in tree building hueristics
+for improvement in tree building heuristics
 (Section~\ref{sec:parsimony-heuristics}).
 For example, the current ``reversion push'' operation
 only eliminates reversions in the newly added portion of the tree
@@ -1027,7 +1027,7 @@ recombination node in the ARG. Of these, 11 are cases where the
 recombinants are independent rather than nested (i.e., there is no overlap in the list
 of descendant samples for each recombination node). Most have a single ``main''
 recombination event from which the majority of the corresponding recombinant samples
-descend and which agrees with the offical Pango designated parent lineages
+descend and which agrees with the official Pango designated parent lineages
 (see Table~\ref{tab:pango-recombinants}, but note that
 in XJ and XU there are too few Pango X samples to decide on a ``main'' clade).
 
@@ -1212,7 +1212,7 @@ are acquired in sudden jumps,
 is a signature feature of
 SARS-CoV-2~\citep{Corey2021-sars,otto2021origins,Nielsen2023-host}.
 Such ``saltations'' naturally present challenges to \texttt{sc2ts} and the
-current HMM parameterisation of three mutations per recombination (mismatch
+current HMM parameterization of three mutations per recombination (mismatch
 ratio). The first few sequences from these new lineages will be a poor match to
 the existing ARG, and the HMM will therefore
 search for ways to reduce the number of mutations required by recombining
@@ -1269,7 +1269,7 @@ structure accurately captures results derived by many different means.
 % PARA 2. Here are things that could be improved in the short term. Here's a
 % few more, longer term ideas.
 Nonetheless, \texttt{sc2ts} is currently ``alpha'' quality software, and
-we caution against overinterpreting current results. As we have sought
+we caution against over interpreting current results. As we have sought
 to illustrate throughout, there are some clear areas for improvement.
 The pipeline used to identify and
 mask erroneous sites in the input alignments is simplistic, and, among
@@ -1321,7 +1321,7 @@ The implementation currently uses
 a single, arbitrarily chosen, maximum likelihood path via the
 Viterbi algorithm, but there are numerous ways in which the HMM machinery
 could be extended in order to explore the set of possible paths, or to
-quantify the uncertainty around it. Similarly, the current parameterisation
+quantify the uncertainty around it. Similarly, the current parameterization
 of the HMM with a single mismatch ratio is simplistic, and it would
 be straightforward to condition on per-site mutation rates (and nucleotide-dependent
 state transitions, with some additional development).
@@ -1657,7 +1657,7 @@ We use an MMR value of $k=3$ in this work,
 because of the relatively high rate of recombination relative
 to mutation typical of
 coronaviruses~\citep{amoutzias2022remarkable}.
-Exploring different mismatch ratios and more sophisticated parameterisations
+Exploring different mismatch ratios and more sophisticated parameterizations
 of the HMM are important avenues for future work.
 
 % A varying degree of missingness is present in the genetic data, that is, for a
@@ -1922,7 +1922,7 @@ that $b_\ell \leq x < b_r$.
 
 The LS HMM machinery, and the interpretation of inferred recombinant paths and
 breakpoint intervals is a central part of \texttt{sc2ts}, and there are many
-ways to extend and improve. For example, the current parameterisation of using
+ways to extend and improve. For example, the current parameterization of using
 a single ``mismatch ratio'' is very simplistic (Section~\ref{sec:ls}) and likely
 results in a flat likelihood space where many recombinant paths have equal
 probability of being chosen.
@@ -2331,7 +2331,7 @@ but which is labelled XB by Nextstrain.
 \begin{figure} \centering
 \includegraphics[width=0.85\textwidth]{figures/false_positive_top2_nxcld_large_graph.pdf}
 \caption{\label{fig:false_positives}
-Subgraph of the Long ARG, focussing on two likely false positive
+Subgraph of the Long ARG, focusing on two likely false positive
 recombination nodes at the start of the Delta wave
 (``focal'' nodes, in red, corresponding to rows A and B in
 Table~\ref{tab:false_positive}).
