@@ -1,6 +1,6 @@
 # sc2ts-paper
 
-This is the repository for the code that produces analysis and figures in the preprint _Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2_ (https://doi.org/10.1101/2023.06.08.544212).
+This is the repository for the code that produces analysis and figures in the preprint _Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2_ (https://doi.org/10.1101/2023.06.08.544212). See our _virological.org_ post at https://virological.org/t/towards-pandemic-scale-ancestral-recombination-graphs-of-sars-cov-2/936 for a brief summary.
 
 The main `sc2ts` software itself exists in a separate repository: https://github.com/jeromekelleher/sc2ts
 
@@ -13,6 +13,4 @@ The Wide and Long ARGs themselves, in compressed tskit format, which are require
 
 To cite the preprint, please use:
 
-_Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2_
-Shing H Zhan, Anastasia Ignatieva, Yan Wong, Katherine Eaton, Benjamin Jeffery, Duncan S Palmer, Carmen Lia Murall, Sarah Otto, Jerome Kelleher
-**bioRxiv** 2023.06.08.544212; doi: https://doi.org/10.1101/2023.06.08.544212
+S. H. Zhan, A. Ignatieva, Y. Wong, K. Eaton, B. Jeffery, D. S. Palmer, C. L. Murall, S. Otto, and J. Kelleher. (2023) Towards pandemic-scale ancestral recombination graphs of SARS-CoV-2. **bioRxiv** 2023.06.08.544212; doi: https://doi.org/10.1101/2023.06.08.544212
