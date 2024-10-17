@@ -1,0 +1,7 @@
+# Looks like biotite doesn't work with numpy 2
+numpy<2
+sc2ts @ git+https://github.com/jeromekelleher/sc2ts
+# These are for the sc2ts "extras" fix this
+matplotlib
+IPython
+scikit-learn
