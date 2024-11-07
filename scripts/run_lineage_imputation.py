@@ -1,9 +1,10 @@
 import sc2ts
 import tszip
-import sklearn
+import sklearn.tree
 import numpy as np
 from tqdm.auto import tqdm
 import pandas as pd
+from collections import defaultdict
 import time
 import argparse
 
@@ -170,7 +171,7 @@ class InferLineage:
             "(",
             round(100 * type1 / (self.total_inferred(ti)), 3),
             "% )",
-            "decision tree:",
+            "using characteristic mutations:",
             type2,
             "(",
             round(100 * type2 / (self.total_inferred(ti)), 3),
@@ -189,19 +190,6 @@ class InferLineage:
                 all_lineages[i] = lp
         return all_lineages
 
-def get_node_to_mut_dict(ts, ti, linmuts_dict):
-    """
-    Create dictionary of {node : [(pos, alt) of all mutations just above this node]}
-    """
-    node_to_mut_dict = MutationContainer()
-    with tqdm(total=ts.num_mutations) as pbar:
-        for m in ts.mutations():
-            pos = int(ts.site(m.site).position)
-            if pos in linmuts_dict.all_positions:
-                alt = ti.mutations_inherited_state[m.id]
-                node_to_mut_dict.add_item(m.node, pos, alt)
-            pbar.update(1)
-    return node_to_mut_dict
 
 def impute_lineages(
     ts,
@@ -210,7 +198,7 @@ def impute_lineages(
     df,
     ohe_encoder,
     clf_tree,
-    true_lineage="Nextclade_pango",
+    true_lineage="Viridian_pangolin",
     internal_only=False,
 ):
     """
@@ -265,6 +253,7 @@ def impute_lineages(
     inferred_lineages.print_info(ts, ti, internal_only, target)
 
     edited_ts = add_lineages_to_ts(inferred_lineages, ts)
+    edited_ts = fix_lineages(inferred_lineages, edited_ts)
 
     print("Time:", time.time() - tic)
 
@@ -367,6 +356,7 @@ def impute_lineages_decisiontree(
                             positions, alts = node_to_mut_dict.get_mutations(n_)
                             X.loc[ind][positions] = alts
                             ind += 1
+                            # print(n_)
     if ind > 0:
         X = X.iloc[0:ind]
         X_index = X_index[0:ind]
@@ -375,17 +365,43 @@ def impute_lineages_decisiontree(
     pbar.update(inferred_lineages.change)
 
 
+def check_lineages_in_ts(ts, linmuts_dict):
+    """
+    Removes any lineage assignements from ts samples if not in linmuts_dict
+    """
+    tables = ts.tables
+    new_metadata = []
+    removed = set()
+    count = 0
+    for node in ts.nodes():
+        md = node.metadata
+        if "Viridian_pangolin" in md:
+            if md["Viridian_pangolin"] not in linmuts_dict.names:
+                removed.add(md["Viridian_pangolin"])
+                count += 1
+                md["Viridian_pangolin"] = "A.1"
+        new_metadata.append(md)
+    validated_metadata = [
+        tables.nodes.metadata_schema.validate_and_encode_row(row)
+        for row in new_metadata
+    ]
+    tables.nodes.packset_metadata(validated_metadata)
+    edited_ts = tables.tree_sequence()
+    print("Lineages removed from metadata as not in lineages list:", count)
+    print(removed)
+    return edited_ts
+
+
 def add_lineages_to_ts(il, ts):
     """
     Adds imputed lineages to ts metadata.
     """
+
     imputed_lineages = il.get_results()
     tables = ts.tables
     new_metadata = []
     for node in ts.nodes():
         md = node.metadata
-        if "Imputed_lineage" in md:
-            md.pop("Imputed_lineage")
         md["Imputed_" + il.true_lineage] = imputed_lineages[node.id]
         new_metadata.append(md)
     validated_metadata = [
@@ -394,6 +410,62 @@ def add_lineages_to_ts(il, ts):
     ]
     tables.nodes.packset_metadata(validated_metadata)
     edited_ts = tables.tree_sequence()
+    return edited_ts
+
+def fix_lineages(il, ts):
+    """
+    Check if lineage of parent and child nodes are the same
+    If so ensure assign this as the imputed lineage of the node
+    """
+
+    stop = False
+    edited_ts = ts
+    while not stop:
+        differences = defaultdict(list)
+        edits = {}
+        t = edited_ts.at_index(int(edited_ts.num_trees / 2))
+        for n in t.nodes():
+            md = edited_ts.node(n).metadata
+            if "Collection_date" not in md:
+                if md["Imputed_" + il.true_lineage] != "Unknown" and md["Imputed_" + il.true_lineage] != "Unknown (R)":
+                    differences_ = []
+                    lineages = set()
+                    p_diff = ch_diff = False
+                    l1 = md["Imputed_" + il.true_lineage]
+                    l2 = edited_ts.node(t.parent(n)).metadata["Imputed_" + il.true_lineage]
+                    if l1 != l2 and l2 != "Unknown" and l2 != "Unknown (R)":
+                        differences_.append(("p", t.parent(n), l2))
+                        lineages.add(l2)
+                        p_diff = True
+                    for i, ch in enumerate(t.children(n)):
+                        l = edited_ts.node(ch).metadata["Imputed_" + il.true_lineage]
+                        if l != l1 and l != "Unknown" and l != "Unknown (R)":
+                            differences_.append(("ch", ch, l))
+                            lineages.add(l)
+                            ch_diff = True
+                    if p_diff and ch_diff:
+                        differences[("n", n, l1)] = differences_
+                        if len(lineages) == 1:
+                            edits[n] = lineages.pop()
+
+        print("Matching parent-child lineages where possible: " + str(len(edits)) + " out of " + str(len(differences)))
+        stop = len(edits) == 0
+
+        if not stop:
+            tables = edited_ts.tables
+            new_metadata = []
+            for node in edited_ts.nodes():
+                md = node.metadata
+                if node.id in edits:
+                    md["Imputed_" + il.true_lineage] = edits[node.id]
+                new_metadata.append(md)
+            validated_metadata = [
+                tables.nodes.metadata_schema.validate_and_encode_row(row)
+                for row in new_metadata
+            ]
+            tables.nodes.packset_metadata(validated_metadata)
+            edited_ts = tables.tree_sequence()
+
     return edited_ts
 
 
@@ -436,18 +508,17 @@ def imputation_setup(filepath, verbose=False):
 
     return linmuts_dict, df, df_ohe, ohe, clf
 
+
 def lineage_imputation(filepath, ts, ti, internal_only=False, verbose=False):
     """
     Runs lineage imputation on input ts
     """
     linmuts_dict, df, df_ohe, ohe, clf = imputation_setup(filepath, verbose)
+    ts = check_lineages_in_ts(ts, linmuts_dict)
     print("Recording relevant mutations for each node...")
-    node_to_mut_dict = get_node_to_mut_dict(ts, ti, linmuts_dict)
+    node_to_mut_dict = sc2ts.lineages.get_node_to_mut_dict(ts, ti, linmuts_dict)
     edited_ts = impute_lineages(
-        ts, ti, node_to_mut_dict, df, ohe, clf, "Nextclade_pango", internal_only
-    )
-    edited_ts = impute_lineages(
-        edited_ts, ti, node_to_mut_dict, df, ohe, clf, "GISAID_lineage", internal_only
+        ts, ti, node_to_mut_dict, df, ohe, clf, "Viridian_pangolin", internal_only
     )
     return edited_ts
 
@@ -469,7 +540,7 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     ts = tszip.load(args.input_ts)
-    ti = sc2ts.TreeInfo(ts)
+    ti = sc2ts.info.TreeInfo(ts)
 
     new_ts = lineage_imputation(
         args.mutations_json_filepath,
