@@ -8,6 +8,8 @@ from collections import defaultdict
 import time
 import argparse
 
+from sc2ts.lineages import read_in_mutations, read_in_mutations_json, MutationContainer
+
 class InferLineage:
     def __init__(self, num_nodes, true_lineage):
         self.lineages_true = [None] * num_nodes
@@ -184,6 +186,19 @@ class InferLineage:
                 all_lineages[i] = lp
         return all_lineages
 
+def get_node_to_mut_dict(ts, ti, linmuts_dict):
+    """
+    Create dictionary of {node : [(pos, alt) of all mutations just above this node]}
+    """
+    node_to_mut_dict = MutationContainer()
+    inherited_state = ti.mutations_inherited_state
+
+    for site in tqdm(ts.sites(), total=ts.num_sites, desc="Map muts to nodes"):
+        if site.position in linmuts_dict.all_positions:
+            for mut in site.mutations:
+                alt = inherited_state[mut.id]
+                node_to_mut_dict.add_item(mut.node, site.position, alt)
+    return node_to_mut_dict
 
 def impute_lineages(
     ts,
@@ -441,8 +456,8 @@ def imputation_setup(filepath, verbose=False):
     JSON can be downloaded from covidcg.org -> 'Compare AA mutations' -> Download -> 'Consensus mutations'
     (setting mutation type to 'NT' and consensus threshold to 0.9)
     """
-    linmuts_dict = sc2ts.lineages.read_in_mutations(filepath)
-    df, df_ohe, ohe = sc2ts.lineages.read_in_mutations_json(filepath)
+    linmuts_dict = read_in_mutations(filepath)
+    df, df_ohe, ohe = read_in_mutations_json(filepath)
 
     # Get decision tree
     y = df_ohe.index  # lineage labels
@@ -475,14 +490,14 @@ def imputation_setup(filepath, verbose=False):
     return linmuts_dict, df, df_ohe, ohe, clf
 
 
+
 def lineage_imputation(filepath, ts, ti, verbose=False):
     """
     Runs lineage imputation on input ts
     """
     linmuts_dict, df, df_ohe, ohe, clf = imputation_setup(filepath, verbose)
     check_lineages_in_ts(ts, linmuts_dict)
-    print("Recording relevant mutations for each node...")
-    node_to_mut_dict = sc2ts.lineages.get_node_to_mut_dict(ts, ti, linmuts_dict)
+    node_to_mut_dict = get_node_to_mut_dict(ts, ti, linmuts_dict)
     edited_ts = impute_lineages(
         ts, ti, node_to_mut_dict, df, ohe, clf, "Viridian_pangolin"
     )
