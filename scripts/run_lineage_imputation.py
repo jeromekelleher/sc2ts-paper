@@ -122,7 +122,7 @@ class InferLineage:
             "Internal nodes imputed:",
             self.num_intern_imputed,
             "out of possible",
-            target - target_samples,
+            target - ts.num_samples,
         )
         print(
             "Total imputed:",
