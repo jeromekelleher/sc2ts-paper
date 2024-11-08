@@ -349,7 +349,7 @@ def impute_lineages_decisiontree(
                         X_index[ind] = n_
                         X.loc[ind] = df.loc[parent_lineage]
                         positions, alts = node_to_mut_dict.get_mutations(n_)
-                        X.loc[ind][positions] = alts
+                        X.loc[ind, positions] = alts
                         ind += 1
                         # print(n_)
     if ind > 0:
