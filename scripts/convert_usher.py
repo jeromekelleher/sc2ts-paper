@@ -81,6 +81,7 @@ def main(in_path, out_path):
             assert u == node["node_id"]
             parent = node["parent_id"]
             assert pi[u] == -1
+            assert pi[u] != u
             pi[u] = parent
             tables.edges.add_row(0, L, parent=parent, child=u)
             for mut_id in node["mutations"]:
