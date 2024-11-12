@@ -28,10 +28,10 @@ import pandas as pd
 
 import tsconvert  # Not on pip. Install with python -m pip install git+http://github.com/tskit-dev/tsconvert
 import tszip
-import sc2ts
-import sc2ts.utils
+#import sc2ts
+#import sc2ts.utils
 
-import utils
+#import utils
 
 # Redefine the path to your local dendroscope Java app & chromium app here
 chromium_binary = "/usr/local/bin/chromium"
@@ -1585,7 +1585,7 @@ class LongTopTwoFalsePositiveGraph(Pango_X_tight_graph):
                 if u == mrca:
                     break
         return list(to_plot)
-    
+
     @classmethod
     def legend_key(cls, ax, nodes, ts):
         print_sample_map(ts, nodes)
