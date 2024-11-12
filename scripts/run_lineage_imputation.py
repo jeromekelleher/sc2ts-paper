@@ -523,20 +523,15 @@ def fix_lineages(il, ts):
                 if md["Imputed_" + il.true_lineage] != "Unknown" and md["Imputed_" + il.true_lineage] != "Unknown (R)":
                     differences_ = []
                     lineages = set()
-                    p_diff = ch_diff = False
+                    ch_diff = False
                     l1 = md["Imputed_" + il.true_lineage]
-                    l2 = edited_ts.node(t.parent(n)).metadata["Imputed_" + il.true_lineage]
-                    if l1 != l2 and l2 != "Unknown" and l2 != "Unknown (R)":
-                        differences_.append(("p", t.parent(n), l2))
-                        lineages.add(l2)
-                        p_diff = True
                     for i, ch in enumerate(t.children(n)):
                         l = edited_ts.node(ch).metadata["Imputed_" + il.true_lineage]
                         if l != l1 and l != "Unknown" and l != "Unknown (R)":
                             differences_.append(("ch", ch, l))
                             lineages.add(l)
                             ch_diff = True
-                    if p_diff and ch_diff:
+                    if ch_diff:
                         differences[("n", n, l1)] = differences_
                         if len(lineages) == 1:
                             edits[n] = lineages.pop()
