@@ -305,10 +305,10 @@ def get_node_to_mut_dict(ts, ti, linmuts_dict):
     inherited_state = ti.mutations_inherited_state
 
     for site in tqdm(ts.sites(), total=ts.num_sites, desc="Map muts to nodes"):
-        if site.position in linmuts_dict.all_positions:
+        if int(site.position) in linmuts_dict.all_positions:
             for mut in site.mutations:
                 alt = inherited_state[mut.id]
-                node_to_mut_dict.add_item(mut.node, site.position, alt)
+                node_to_mut_dict.add_item(mut.node, int(site.position), alt)
     return node_to_mut_dict
 
 
@@ -461,7 +461,7 @@ def impute_lineages_decisiontree(
                         X_index[ind] = n_
                         X.loc[ind] = df.loc[parent_lineage]
                         positions, alts = node_to_mut_dict.get_mutations(n_)
-                        X.loc[ind][positions] = alts
+                        X.loc[ind, positions] = alts
                         ind += 1
                         # print(n_)
     if ind > 0:
