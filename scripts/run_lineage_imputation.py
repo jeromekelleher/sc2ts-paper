@@ -513,33 +513,35 @@ def fix_lineages(il, ts):
 
     stop = False
     edited_ts = ts
+    updated_nodes = set()
     while not stop:
         differences = defaultdict(list)
         edits = {}
         t = edited_ts.at_index(int(edited_ts.num_trees / 2))
         for n in t.nodes():
-            md = edited_ts.node(n).metadata
-            if "Collection_date" not in md:
-                if md["Imputed_" + il.true_lineage] != "Unknown" and md["Imputed_" + il.true_lineage] != "Unknown (R)":
-                    differences_ = []
-                    lineages = set()
-                    p_diff = ch_diff = False
-                    l1 = md["Imputed_" + il.true_lineage]
-                    l2 = edited_ts.node(t.parent(n)).metadata["Imputed_" + il.true_lineage]
-                    if l1 != l2 and l2 != "Unknown" and l2 != "Unknown (R)":
-                        differences_.append(("p", t.parent(n), l2))
-                        lineages.add(l2)
-                        p_diff = True
-                    for i, ch in enumerate(t.children(n)):
-                        l = edited_ts.node(ch).metadata["Imputed_" + il.true_lineage]
-                        if l != l1 and l != "Unknown" and l != "Unknown (R)":
-                            differences_.append(("ch", ch, l))
-                            lineages.add(l)
-                            ch_diff = True
-                    if p_diff and ch_diff:
-                        differences[("n", n, l1)] = differences_
-                        if len(lineages) == 1:
-                            edits[n] = lineages.pop()
+            if n not in updated_nodes:
+                md = edited_ts.node(n).metadata
+                if "Collection_date" not in md:
+                    if md["Imputed_" + il.true_lineage] != "Unknown (R)":
+                        differences_ = []
+                        lineages = set()
+                        p_diff = ch_diff = 0
+                        l1 = md["Imputed_" + il.true_lineage]
+                        l2 = edited_ts.node(t.parent(n)).metadata["Imputed_" + il.true_lineage]
+                        if l1 != l2 and l2 != "Unknown" and l2 != "Unknown (R)":
+                            differences_.append(("p", t.parent(n), l2))
+                            p_diff = 1
+                        for ch in t.children(n):
+                            l = edited_ts.node(ch).metadata["Imputed_" + il.true_lineage]
+                            if l != l1 and l != "Unknown" and l != "Unknown (R)":
+                                differences_.append(("ch", ch, l))
+                                lineages.add(l)
+                                ch_diff += 1
+                        if ch_diff > 0:
+                            differences[("n", n, l1)] = differences_
+                            if len(lineages) == 1 and (ch_diff >= 3 or (p_diff > 0 and l2 in lineages)):
+                                edits[n] = lineages.pop()
+                                updated_nodes.add(n)
 
         print("Matching parent-child lineages where possible: " + str(len(edits)) + " out of " + str(len(differences)))
         stop = len(edits) == 0
