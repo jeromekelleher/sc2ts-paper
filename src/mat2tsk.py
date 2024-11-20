@@ -11,7 +11,7 @@ import dataclasses
 import numpy as np
 import tskit
 import tqdm
-
+import click
 
 def set_tree_time(tables, unit_scale=False):
     # Add times using max number of hops from leaves.
@@ -134,7 +134,16 @@ def main(in_path, out_path):
     ts.dump(out_path)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        raise ValueError("Usage: [usher in] [tskit out]")
-    main(sys.argv[1], sys.argv[2])
+@click.command()
+@click.argument("usher_json", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("tsk", type=click.Path(dir_okay=False, file_okay=True))
+def convert_topology(usher_json, tsk):
+    print("hello")
+
+@click.group()
+def cli():
+    pass
+
+cli.add_command(convert_topology)
+# cli.add_command(convert_mutations)
+cli()
