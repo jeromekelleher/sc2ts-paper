@@ -5,13 +5,77 @@ https://figshare.com/articles/dataset/Global_Viridian_tree/27194547
 """
 
 import sys
+import gzip
 import json
 import dataclasses
 
+import pandas as pd
 import numpy as np
 import tskit
 import tqdm
 import click
+import pyfaidx
+
+
+def set_mutations(ts, ref, mutations_per_node):
+    tables = ts.dump_tables()
+    mutations = tables.mutations
+    mutations.clear()
+    sites = tables.sites
+    sites.clear()
+
+    for j in range(int(ts.sequence_length)):
+        sites.add_row(j, ref[j])
+
+    for node_id, node_mutations in tqdm.tqdm(mutations_per_node.items()):
+        for muts in node_mutations:
+            for mutation_str in muts.split(","):
+                inherited = mutation_str[0]
+                derived = mutation_str[-1]
+                pos = int(mutation_str[1:-1])
+                mutations.add_row(
+                    site=pos,
+                    derived_state=derived,
+                    node=node_id,
+                    time=ts.nodes_time[node_id],
+                )
+    mutations_per_site = np.bincount(mutations.site, minlength=len(sites))
+    zero_mutation_sites = np.where(mutations_per_site == 0)[0]
+    print(f"Deleting {len(zero_mutation_sites)} sites with zero mutations")
+    tables.delete_sites(zero_mutation_sites)
+    tables.sort()
+    tables.build_index()
+    tables.compute_mutation_parents()
+    return tables.tree_sequence()
+
+
+@click.command()
+@click.argument("tsk_in", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("usher_tsv", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("reference_fa", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("tsk_out", type=click.Path(dir_okay=False, file_okay=True))
+def convert_mutations(tsk_in, usher_tsv, reference_fa, tsk_out):
+
+    # Convert to 0-based coordinate
+    reference = "X" + str(pyfaidx.Fasta(reference_fa)["Wuhan/Hu-1/2019"])
+    df = pd.read_csv(usher_tsv, sep="\t")
+    ts = tskit.load(tsk_in)
+    print("loaded tskit file")
+    node_id_map = {}
+    for node in tqdm.tqdm(ts.nodes(), total=ts.num_nodes):
+        node_id_map[node.metadata["strain"]] = node.id
+        # if node.id == 10000:
+        #     break
+
+    nt_mutations = {}
+    for _, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
+        tsk_id = node_id_map[row.node_id]
+        assert tsk_id not in nt_mutations
+        nt_mutations[tsk_id] = set(row.nt_mutations.split(";"))
+
+    ts_muts = set_mutations(ts, reference, nt_mutations)
+    ts_muts.dump(tsk_out)
+
 
 def set_tree_time(tables, unit_scale=False):
     # Add times using max number of hops from leaves.
@@ -32,67 +96,36 @@ def set_tree_time(tables, unit_scale=False):
     tables.nodes.time = tau
 
 
-def convert_root_mutations(tables, root):
-    # Convert mutations over the root to ancestral state values
-    mutations = tables.mutations
-    root_mutations = mutations.node == root
-    ancestral_state = ["N" for _ in range(len(tables.sites))]
-    for mutation in mutations[root_mutations]:
-        ancestral_state[mutation.site] = mutation.derived_state
-    mutations.parent = np.full_like(mutations.parent, -1)
-    mutations.keep_rows(~root_mutations)
-    tables.sites.ancestral_state = [ord(a) for a in ancestral_state]
-
-
-@dataclasses.dataclass
-class TranslatedMutation:
-    site: int
-    derived_state: str
-    metadata: dict
-
-
-def main(in_path, out_path):
+@click.command()
+@click.argument("usher_json", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("tsk", type=click.Path(dir_okay=False, file_okay=True))
+def convert_topology(usher_json, tsk):
     L = 29_904
 
     tables = tskit.TableCollection(L)
+    tables.metadata_schema = tskit.MetadataSchema.permissive_json()
     tables.nodes.metadata_schema = tskit.MetadataSchema.permissive_json()
     tables.mutations.metadata_schema = tskit.MetadataSchema.permissive_json()
     tables.sites.metadata_schema = tskit.MetadataSchema.permissive_json()
+
     meta_prefix = "meta_"
-    with open(in_path) as f:
+    with gzip.open(usher_json) as f:
         header = json.loads(next(f))
-        mutations = {}
-        site_id_map = {}
-        for mut in header["mutations"]:
-            if mut["type"] == "aa":
-                pos = mut["nuc_for_codon"]
-            else:
-                pos = mut["residue_pos"]
-            if pos not in site_id_map:
-                site_id = tables.sites.add_row(pos, ancestral_state="X")
-                site_id_map[pos] = site_id
-            mutations[mut["mutation_id"]] = TranslatedMutation(
-                site=site_id_map[pos], derived_state=mut["new_residue"], metadata=mut
-            )
-
-        assert len(mutations) == len(header["mutations"])
-        assert set(mutations.keys()) == set(range(len(mutations)))
-        print(f"Got mutations for {len(site_id_map)} sites")
-        # for k, v in mutations.items():
-        #     print(k, site_id_map[v.site], v, sep="\t")
-
+        samples_strain = []
         pi = np.zeros(header["total_nodes"]) - 1
         for line in tqdm.tqdm(f, total=header["total_nodes"], desc="Parse"):
             node = json.loads(line)
             name = node["name"]
             node_id = node["node_id"]
-            flags = 0 if name.startswith("node_") else tskit.NODE_IS_SAMPLE
+            flags = 0
+            if not name.startswith("node_"):
+                flags = tskit.NODE_IS_SAMPLE
+                samples_strain.append(name)
             u = tables.nodes.add_row(
                 flags,
                 time=-1,
                 metadata={
-                    "name": name,
-                    "num_tips": node["num_tips"],  # including for validation
+                    "strain": name,
                     **{
                         k[len(meta_prefix) :]: v
                         for k, v in node.items()
@@ -108,42 +141,25 @@ def main(in_path, out_path):
                 assert pi[u] != u
                 pi[u] = parent
                 tables.edges.add_row(0, L, parent=parent, child=u)
-            for mut_id in node["mutations"]:
-                mut = mutations[mut_id]
-                tables.mutations.add_row(
-                    node=u,
-                    site=mut.site,
-                    derived_state=mut.derived_state,
-                    metadata=mut.metadata,
-                )
 
-        # tables.dump("intermediate.trees")
-    # tables = tskit.TableCollection.load("intermediate.trees")
-    # pi = np.full(len(tables.nodes), -1, dtype=int)
-    # pi[tables.edges.child] = tables.edges.parent
+    # Store the mapping samples strain in the same format as sc2ts for simplicity
+    tables.metadata = {"sc2ts": {"samples_strain": samples_strain}}
 
-    root = np.where(pi == -1)[0][0]
-    convert_root_mutations(tables, root)
     set_tree_time(tables)
-    # Set the time of mutations to their node so that they sort appropriately.
-    tables.mutations.time = tables.nodes.time[tables.mutations.node]
     tables.sort()
     tables.build_index()
-    tables.compute_mutation_parents()
     ts = tables.tree_sequence()
-    ts.dump(out_path)
+    ts.dump(tsk)
 
-
-@click.command()
-@click.argument("usher_json", type=click.Path(dir_okay=False, file_okay=True))
-@click.argument("tsk", type=click.Path(dir_okay=False, file_okay=True))
-def convert_topology(usher_json, tsk):
-    print("hello")
 
 @click.group()
 def cli():
+    """
+    Utilities to convert Usher MAT files to sc2ts-like tskit format.
+    """
     pass
 
+
 cli.add_command(convert_topology)
-# cli.add_command(convert_mutations)
+cli.add_command(convert_mutations)
 cli()
