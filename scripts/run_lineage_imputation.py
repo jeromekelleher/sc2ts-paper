@@ -64,12 +64,19 @@ class OHE_transform:
         return X
 
 
-def read_in_mutations(json_filepath, verbose=False):
+def read_in_mutations(
+    json_filepath,
+    verbose=False,
+    exclude_positions=None,
+):
     """
     Read in lineage-defining mutations from COVIDCG input json file.
     Assumes root lineage is B.
     """
-
+    if exclude_positions is None:
+        exclude_positions = set()
+    else:
+        exclude_positions = set(exclude_positions)
     with open(json_filepath, "r") as file:
         linmuts = json.load(file)
 
@@ -81,8 +88,14 @@ def read_in_mutations(json_filepath, verbose=False):
             set
         )  # will check how many multi-allelic sites there are
 
+    excluded_pos = defaultdict(int)
+    excluded_del = defaultdict(int)
     for item in linmuts:
-        if item["alt"] != "-" and item["ref"] != "-":  # ignoring indels
+        if item["pos"] in exclude_positions:
+            excluded_pos[item["pos"]] += 1
+        elif item["ref"] == "-" or item["alt"] == "-":
+            excluded_del[item["pos"]] += 1
+        else:
             linmuts_dict.add_item(item["name"], item["pos"], item["alt"])
             if verbose:
                 check_multiallelic_sites[item["pos"]].add(item["ref"])
@@ -101,17 +114,26 @@ def read_in_mutations(json_filepath, verbose=False):
             len(check_multiallelic_sites),
         )
         print("Number of lineages:", linmuts_dict.size)
+        if len(excluded_pos) > 0:
+            print(
+                f"Excluded {len(excluded_pos)} positions not in ts:",
+                f"{list(excluded_pos.keys())}"
+            )
+        if len(excluded_del) > 0:
+            print("Excluded deletions at positions", list(excluded_del.keys()))
 
     return linmuts_dict
 
 
-def read_in_mutations_json(json_filepath):
+def read_in_mutations_json(json_filepath, exclude_positions=None):
     """
     Read in COVIDCG json file of lineage-defining mutations into a pandas data frame
     """
     df = pd.read_json(json_filepath)
     df = df.loc[df["ref"] != "-"]
     df = df.loc[df["alt"] != "-"]
+    if exclude_positions is not None:
+        df = df.loc[np.logical_not(np.isin(df["pos"].values, exclude_positions))]
     df = df.pivot_table(
         index="name", columns="pos", values="alt", aggfunc="min", fill_value="."
     )
@@ -564,17 +586,21 @@ def fix_lineages(il, ts):
     return edited_ts
 
 
-def imputation_setup(filepath, verbose=False):
+def imputation_setup(filepath, verbose=False, exclude_positions=None):
     """
     Reads in JSON of lineage-defining mutations and constructs decision tree classifier
     JSON can be downloaded from covidcg.org -> 'Compare AA mutations' -> Download -> 'Consensus mutations'
     (setting mutation type to 'NT' and consensus threshold to 0.9)
     """
-    linmuts_dict = read_in_mutations(filepath)
-    df, df_ohe, ohe = read_in_mutations_json(filepath)
+    linmuts_dict = read_in_mutations(
+        filepath, verbose=verbose, exclude_positions=exclude_positions)
+    df, df_ohe, ohe = read_in_mutations_json(
+        filepath, exclude_positions=exclude_positions)
 
     # Get decision tree
     y = df_ohe.index  # lineage labels
+    if verbose:
+        print("Creating decision tree:", len(y))
     clf = sklearn.tree.DecisionTreeClassifier()
     clf = clf.fit(df_ohe, y)
 
@@ -605,11 +631,19 @@ def imputation_setup(filepath, verbose=False):
 
 
 
-def lineage_imputation(filepath, ts, ti, verbose=False):
+def lineage_imputation(filepath, ts, ti, verbose=False, all_positions=False):
     """
     Runs lineage imputation on input ts
     """
-    linmuts_dict, df, df_ohe, ohe, clf = imputation_setup(filepath, verbose)
+    if all_positions:
+        exclude_positions = None
+    else:
+        exclude_positions = np.ones(int(ts.sequence_length), dtype=bool)
+        exclude_positions[ts.sites_position.astype(int)] = False
+        exclude_positions = np.where(exclude_positions)[0]
+
+    linmuts_dict, df, df_ohe, ohe, clf = imputation_setup(
+        filepath, verbose, exclude_positions=exclude_positions)
     check_lineages_in_ts(ts, linmuts_dict)
     node_to_mut_dict = get_node_to_mut_dict(ts, ti, linmuts_dict)
     edited_ts = impute_lineages(
@@ -631,6 +665,14 @@ if __name__ == "__main__":
         default=None,
         help="Path to the compressed tsz file to output. If not given, adds '.il' to input filename",)
     argparser.add_argument("--verbose", "-v", action="store_true", help="Print extra info")
+    argparser.add_argument(
+        "--all-positions",
+        "-p",
+        action="store_true",
+        help=(
+            "Use lineage defining mutations at all sites, even if those sites"
+            " are not in the input ts"),
+    )
     args = argparser.parse_args()
 
     ts = tszip.load(args.input_ts)
@@ -641,6 +683,7 @@ if __name__ == "__main__":
         ts, 
         ti,
         verbose=args.verbose,
+        all_positions=args.all_positions,
     )
     if args.output_tsz is None:
         if args.input_ts.endswith(".tsz"):
