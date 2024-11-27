@@ -1,5 +1,6 @@
 from collections import defaultdict
 import json
+import fileinput
 import time
 import argparse
 
@@ -77,7 +78,7 @@ def read_in_mutations(
         exclude_positions = set()
     else:
         exclude_positions = set(exclude_positions)
-    with open(json_filepath, "r") as file:
+    with fileinput.hook_compressed(json_filepath, "r") as file:
         linmuts = json.load(file)
 
     # Read in lineage defining mutations
@@ -656,14 +657,15 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Run lineage imputation on ts")
     argparser.add_argument(
         "mutations_json_filepath",
-        help="Path to JSON file of lineage-defining mutations",
+        help="Path to JSON file of lineage-defining mutations: can be .bz2 or .gz compressed",
     )
     argparser.add_argument("input_ts", help="Path to input ts or tsz file")
     argparser.add_argument(
         "output_tsz",
         nargs='?',
         default=None,
-        help="Path to the compressed tsz file to output. If not given, adds '.il' to input filename",)
+        help="Path to the compressed tsz file to output. If not given, adds '.il' to input filename",
+    )
     argparser.add_argument("--verbose", "-v", action="store_true", help="Print extra info")
     argparser.add_argument(
         "--all-positions",
