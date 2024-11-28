@@ -18,7 +18,7 @@ class MutationContainer:
         self.positions = []
         self.alts = []
         self.size = 0
-        self.all_positions = set()
+        self.all_positions = {}
 
     def add_root(self, root_lineage_name):
         self.names[root_lineage_name] = self.size
@@ -36,12 +36,16 @@ class MutationContainer:
             index = self.names[item]
             self.positions[index].append(position)
             self.alts[index].append(alt)
-        if position not in self.all_positions:
-            self.all_positions.add(position)
-
+        # map each position to a set of alt alleles
+        if position in self.all_positions:
+            self.all_positions[position].add(alt)
+        else:
+            self.all_positions[position] = {alt}
+            
     def get_mutations(self, item):
         index = self.names[item]
         return self.positions[index], self.alts[index]
+
 
 
 class OHE_transform:
@@ -143,6 +147,7 @@ def read_in_mutations_json(json_filepath, exclude_positions=None):
     ohe = OHE_transform()
     df_ohe = ohe.fit(df)
     return df, df_ohe, ohe
+
 class InferLineage:
     def __init__(self, num_nodes, true_lineage):
         self.lineages_true = [None] * num_nodes
@@ -495,7 +500,7 @@ def impute_lineages_decisiontree(
     pbar.update(inferred_lineages.change)
 
 
-def check_lineages_in_ts(ts, linmuts_dict):
+def check_lineages_in_ts(ts, ti, linmuts_dict, verbose):
     """
     Error out if any lineage assignments from ts samples not in linmuts_dict
     """
@@ -506,7 +511,41 @@ def check_lineages_in_ts(ts, linmuts_dict):
                 raise ValueError(
                     "Lineage assignment not in lineage-defining mutations list"
                 )
+    not_in_ts = set(linmuts_dict.names.keys())-set(ti.pango_lineage_samples.keys())
+    if verbose:
+        print(f"Pango absent from ts: {not_in_ts}")
+    else:
+        print(f"{len(not_in_ts)} pango lineages absent from ts")
+    muts = {
+        (int(site.position), mut.derived_state)
+        for site in ts.sites() for mut in site.mutations
+    }
+    missing = defaultdict(list)
+    not_in_pango = []
+    for pango in ti.pango_lineage_samples.keys():
+        try:
+            lineage_defining_muts = linmuts_dict.get_mutations(pango)
+        except KeyError:
+            if pango != "unknown":
+                not_in_pango.append(pango)
+            continue
+        for mut in zip(*lineage_defining_muts):
+            if mut not in muts:
+                missing[mut].append(pango)
+    if len(not_in_pango) > 0:
+        if verbose:
+            print(f"In ts but not in mutations list: {missing}")
+        else:
+            print(f"{len(not_in_pango)} ts pango lineages not in mutations list")
 
+    if verbose:
+        for (pos, derived), lineages in missing.items():
+            print(
+                f"Lineage-defining mut to '{derived}' at position {pos} for {lineages} "
+                "absent from ts"
+            )
+    elif len(missing) > 0:
+        print(f"{len(missing)} lineage-defining mutations missing from ts")
 
 def add_lineages_to_ts(il, ts):
     """
@@ -645,7 +684,7 @@ def lineage_imputation(filepath, ts, ti, verbose=False, all_positions=False):
 
     linmuts_dict, df, df_ohe, ohe, clf = imputation_setup(
         filepath, verbose, exclude_positions=exclude_positions)
-    check_lineages_in_ts(ts, linmuts_dict)
+    check_lineages_in_ts(ts, ti, linmuts_dict, verbose)
     node_to_mut_dict = get_node_to_mut_dict(ts, ti, linmuts_dict)
     edited_ts = impute_lineages(
         ts, ti, node_to_mut_dict, df, ohe, clf, "Viridian_pangolin"
