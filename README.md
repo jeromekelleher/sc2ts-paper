@@ -1,6 +1,6 @@
 # sc2ts-paper
 
-This is the repository for the code that produces analysis and figures in the preprint _Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2_ (https://doi.org/10.1101/2023.06.08.544212). See our _virological.org_ post at https://virological.org/t/towards-pandemic-scale-ancestral-recombination-graphs-of-sars-cov-2/936 for a brief summary.
+This is the repository for the code that produces analysis and figures in the preprint _Towards Pandemic-Scale Ancestral Recombination Graphs of SARS-CoV-2_ (https://doi.org/10.1101/2023.06.08.544212). See our _virological.org_ post at https://virological.org/t/towards-pandemic-scale-ancestral-recombination-graphs-of-sars-cov-2/936 for a brief summary. To obtain the code specifically used in that version of the preprint, checkout the code associated with the [`preprint-v1` tag](https://github.com/jeromekelleher/sc2ts-paper/releases/tag/preprint-v1).
 
 The main `sc2ts` software itself exists in a separate repository: https://github.com/jeromekelleher/sc2ts
 
