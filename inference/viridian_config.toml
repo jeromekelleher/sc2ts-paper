@@ -20,7 +20,7 @@ exclude_sites = [
 ]
 
 [extend_parameters]
-date_field=Date_tree
+date_field="Date_tree"
 num_mismatches=4
 hmm_cost_threshold=7
 max_missing_sites=500
