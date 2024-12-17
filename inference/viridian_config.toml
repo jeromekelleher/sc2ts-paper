@@ -1,0 +1,76 @@
+dataset="data/viridian_2024-04-29.alpha1.zarr.zip"
+
+run_id="v1-beta1"
+results_dir = "results"
+log_dir = "logs"
+matches_dir= "/scratch/jk/tmp/matches"
+log_level = 2
+
+exclude_dates = ["2020-12-31"]
+
+exclude_sites = [
+    106, 203, 222, 335, 337, 635, 683, 823, 1191, 1684, 1820, 1912, 3096, 4579, 5284,
+    5512, 5812, 5869, 7528, 8835, 9430, 10138, 10323, 10369, 11020, 11074, 11083, 11750,
+    12439, 12789, 14724, 15240, 15521, 15720, 15738, 15960, 16887, 17550, 17676, 18555,
+    18744, 19524, 19983, 20178, 21077, 21137, 21255, 21304, 21305, 21575, 21595, 21622,
+    21987, 22599, 22786, 22792, 22882, 23191, 23948, 24023, 25413, 25521, 25624, 25855,
+    25904, 25916, 26681, 26801, 26873, 27384, 27389, 27476, 27532, 27577, 28077, 28079,
+    28087, 28093, 28253, 28254, 28378, 28603, 28657, 28677, 28877, 28878, 29095, 29253,
+    29358, 29541, 29543, 29555, 29614, 29700, 29733, 29762, 29769, 29774, 29779, 29781,
+]
+
+[extend_parameters]
+date_field="Date_tree"
+num_mismatches=4
+hmm_cost_threshold=7
+max_missing_sites=500
+deletions_as_missing=true
+max_daily_samples=1000
+
+# Knobs for tuning retro group insertion
+min_group_size=10
+min_root_mutations=2
+max_recurrent_mutations=2
+max_mutations_per_sample=5
+retrospective_window=7
+
+num_threads=-1
+memory_limit=1000
+
+include_samples=[
+    # First ten designated sequence for 617.1
+    # "ERR5461550", #2021-02-22 # removing this for now as it's colliding with 617 sequence
+    "ERR5461562", #2021-02-22
+    "ERR5469699", #2021-03-02
+    "ERR5469807", #2021-03-04
+    "ERR5486121", #2021-03-04
+    "ERR5521603", #2021-03-06
+    "ERR5531143", #2021-03-07
+    "ERR5532096", #2021-03-07
+    "ERR5532118", #2021-03-07
+    "ERR5537492", #2021-03-09
+    # First ten designated sequences for 617.2
+    # "ERR5653377", # 2021-03-18 # Removing these two as they seem to come after next one
+    # "ERR5656218", # 2021-03-18 # resulting in double recombination and reversions
+    "ERR5676810", # 2021-03-23
+    "ERR5690893", # 2021-03-28
+    "ERR5690055", # 2021-03-30
+    "ERR5690921", # 2021-03-30
+    "ERR5695631", # 2021-03-30
+    "ERR5701881", # 2021-03-30
+    "ERR5690052", # 2021-03-31
+    "ERR5690920", # 2021-03-31
+
+    # OLD SEQUENCES FOR DELTA
+    # "ERR5542504", # 2021-03-09 hmm_cost=27.0 ERR5542504 B.1.617 path=(0:29904, 58) # early 617, just to see
+    # "SRR15910995", # 2021-03-17 B.1.617.1 path=(0:29904, 123449) mutations(14) # 617.1, copies from 617 sample
+    # "SRR15910931", # 2021-03-23 B.1.617.2 path=(0:25469, 5299), (25469:29904, 130751) mutations(19)
+    
+
+    "ERR7602255", #  2021-11-26 BA.1 path=(0:29904, 4471) # Arbitrary quick pick, just to see
+]
+
+[[override]]
+start = "2020-01-01"
+stop = "2020-03-01"
+parameters.max_missing_sites = 10000
