@@ -42,7 +42,7 @@ if __name__ == "__main__":
         ts,
         mutation_rate=av_mu,
         rescaling_intervals=0,
-        constr_iterations=100,
+        constr_iterations=500,
         time_units=ts.time_units,
         allow_unary=True,
         progress=args.verbose, 
