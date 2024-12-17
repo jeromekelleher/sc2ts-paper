@@ -13,4 +13,4 @@ data/sequences.fasta
 bin/
 logs/
 results/
-
+*.zarr
