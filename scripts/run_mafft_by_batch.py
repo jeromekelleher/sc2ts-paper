@@ -1,3 +1,10 @@
+"""
+This script was used to generate MAFFT alignments on the BMRC.
+
+Note that the gaps at the termini of the aligned sequences are replaced with Ns.
+"""
+
+
 import argparse
 import subprocess
 from pathlib import Path
