@@ -730,8 +730,8 @@ if __name__ == "__main__":
         if args.input_ts.endswith(".tsz"):
             args.output_tsz = args.input_ts[:-4] + ".il.tsz"
         elif args.input_ts.endswith(".trees"):
-            args.output_tsz = args.input_ts + ".il.trees"
+            args.output_tsz = args.input_ts[:-6] + ".il.trees"
         elif args.input_ts.endswith(".ts"):
-            args.output_tsz = args.input_ts + ".il.ts"
+            args.output_tsz = args.input_ts[:-3] + ".il.ts"
     tszip.compress(new_ts, args.output_tsz)
 
