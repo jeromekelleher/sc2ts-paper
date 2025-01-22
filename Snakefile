@@ -4,11 +4,9 @@ import glob
 
 BASE_DIR = Path("alignments")
 DATA_DIR = BASE_DIR / "data"
-MAFFT_DIR = BASE_DIR / "mafft"
 
 MAFFT_BIN = "/opt/homebrew/bin/mafft"
-MAFFT_SCRIPT = "./scripts/run_mafft_snakemake.py"
-
+CHUNK_SIZE = 1000
 
 # Figshare
 URLS = {
@@ -16,28 +14,23 @@ URLS = {
     'batch2': "https://figshare.com/ndownloader/files/49692480",
 }
 
-
 def get_output_files(wildcards):
-    all_files = [
-        f"{DATA_DIR}/reference.fasta",
-        f"{DATA_DIR}/run_metadata.v05.tsv.gz",
-    ]
+    all_files = [f"{DATA_DIR}/run_metadata.v05.tsv.gz"]
+    
     for dir_name, url in URLS.items():
-        checkpoints.extract_tar.get(dir_name=dir_name)
-        #xz_files = glob.glob(f"{DATA_DIR}/{dir_name}.extracted/*.cons.fa.xz")
-        #all_files.extend([f.replace('.xz', '') for f in xz_files])
-        aln_files = glob.glob(f"{MAFFT_DIR}/{dir_name}/*.mafft.aln")
-        print(aln_files)
-        all_files.extend(aln_files)
+        fa_files = glob.glob(f"{checkpoints.process_tar.get(dir_name=dir_name).output[0]}/*.fa")
+        print(checkpoints.process_tar.get(dir_name=dir_name).output[0], fa_files)
+        for fa in fa_files:
+            aln_file = fa.replace(".fa", ".aln").replace(".extracted", ".aln")
+            all_files.append(aln_file)
+    
+    print(all_files)
     return all_files
-
 
 rule all:
     input:
         get_output_files
 
-
-"""Fetch reference sequence file from the sc2ts GitHub repository."""
 rule download_reference:
     output:
         f"{DATA_DIR}/reference.fasta"
@@ -48,8 +41,6 @@ rule download_reference:
             -O {output}
         """
 
-
-"""Fetch sample metadata and consensus sequences (Viridian v04 and v05) from Figshare."""
 rule download_viridian_metadata:
     output:
         f"{DATA_DIR}/run_metadata.v05.tsv.gz"
@@ -59,7 +50,6 @@ rule download_viridian_metadata:
             https://figshare.com/ndownloader/files/49694808 \
             -O {output}
         """
-
 
 rule download_viridian_sequences:
     output:
@@ -71,40 +61,64 @@ rule download_viridian_sequences:
         wget --quiet --content-disposition {params.url} -O {output}
         """
 
-
-checkpoint extract_tar:
+checkpoint process_tar:
     input:
         DATA_DIR / "{dir_name}.tar"
     output:
         directory(DATA_DIR / "{dir_name}.extracted")
     shell:
         """
-        mkdir {output} && tar -xf {input} -C {output} --strip-components 1
+        # Extract tar
+        mkdir -p {output}
+        tar -xf {input} -C {output} --strip-components 1
+        
+        # Decompress files
+        for f in {output}/*.cons.fa.xz; do
+            base=$(basename "$f" .cons.fa.xz)
+            xz --decompress --stdout "$f" > "{output}/$base.fa"
+        done
         """
 
-
-rule decompress_files:
+# If we pass the unmodified fasta file to mafft, it will attempt a multiple sequence alignment
+# of all the sequences. We only want an alignment of each sequence to the reference, so
+# mafft needs to be run for each sequence separately.
+rule align_sequences:
     input:
-        DATA_DIR / "{dir_name}.extracted" / "{part}.cons.fa.xz"
+        reference = DATA_DIR / "reference.fasta",
+        sequences = DATA_DIR / "{dir_name}.extracted" / "{part}.fa"
     output:
-        DATA_DIR / "{dir_name}.extracted" / "{part}.cons.fa"
-    shell:
-        """
-        xz --decompress --keep --stdout {input} > {output}
-        """
-
-
-"""Get pairwise MAFFT alignments."""
-rule run_mafft:
-    input:
-        DATA_DIR / "{dir_name}.extracted" / "{part}.cons.fa"
-    output:
-        MAFFT_DIR / "{dir_name}" / "{part}.mafft.aln"
-    shell:
-        """
-        python ./scripts/run_mafft_snakemake.py \
-            alignments/data/reference.fasta \
-            {input} \
-            {output} \
-            /opt/homebrew/bin/mafft
-        """
+        DATA_DIR / "{dir_name}.aln" / "{part}.aln"
+    run:
+        import os
+        from Bio import SeqIO
+        import subprocess
+        os.makedirs(Path(output[0]).parent / "logs", exist_ok=True)
+        ref_seq = str(next(SeqIO.parse(input.reference, "fasta")).seq)
+        ref_name = "reference"
+        with open(output[0], 'w') as output_file:
+            for seq in SeqIO.parse(input.sequences, "fasta"):
+                log_file = Path(output[0]).parent / "logs" / f"{seq.id}.log"
+                seq_str = f">{seq.id}\n{str(seq.seq)}\n"
+                script = "\n".join([
+                    f'''ref=">{ref_name}\n{ref_seq}"''',
+                    f'''qry=">{seq.id}\n{str(seq.seq)}"''',
+                    f'''{MAFFT_BIN} --quiet --keeplength --add <(echo "$qry") <(echo "$ref")'''
+                ])
+                process = subprocess.run(
+                    ["bash"],
+                    input=script,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+                
+                if len(process.stderr) > 0:
+                    with open(log_file, 'w') as f:
+                        f.write(process.stderr)
+                if process.returncode != 0:
+                    raise Exception(
+                        f"Error running mafft for {seq.id}. Stdout:\n{process.stdout}\n\nStderr:{process.stderr}"
+                    )
+                aln_seqs = process.stdout.split(">")
+                assert len(aln_seqs) == 3
+                output_file.write(f">{aln_seqs[2].strip()}\n")
