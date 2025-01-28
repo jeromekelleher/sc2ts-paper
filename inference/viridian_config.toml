@@ -1,9 +1,10 @@
-dataset="data/viridian_2024-04-29.alpha1.zarr.zip"
+# dataset="data/viridian_2024-04-29.alpha1.zarr.zip"
+dataset="/tmp/jk/viridian_2024-04-29.alpha1.zarr.zip"
 
 run_id="v1-beta1"
 results_dir = "results"
 log_dir = "logs"
-matches_dir= "/scratch/jk/tmp/matches"
+matches_dir= "/tmp/jk/matches"
 log_level = 2
 
 exclude_dates = ["2020-12-31"]
@@ -25,7 +26,7 @@ num_mismatches=4
 hmm_cost_threshold=7
 max_missing_sites=500
 deletions_as_missing=true
-max_daily_samples=1000
+# max_daily_samples=1000
 
 # Knobs for tuning retro group insertion
 min_group_size=10
@@ -34,8 +35,8 @@ max_recurrent_mutations=2
 max_mutations_per_sample=5
 retrospective_window=7
 
-num_threads=-1
-memory_limit=1000
+num_threads=80
+memory_limit=250
 
 include_samples=[
     # First ten designated sequence for 617.1
@@ -61,14 +62,13 @@ include_samples=[
     "ERR5690052", # 2021-03-31
     "ERR5690920", # 2021-03-31
 
-    # OLD SEQUENCES FOR DELTA
-    # "ERR5542504", # 2021-03-09 hmm_cost=27.0 ERR5542504 B.1.617 path=(0:29904, 58) # early 617, just to see
-    # "SRR15910995", # 2021-03-17 B.1.617.1 path=(0:29904, 123449) mutations(14) # 617.1, copies from 617 sample
-    # "SRR15910931", # 2021-03-23 B.1.617.2 path=(0:25469, 5299), (25469:29904, 130751) mutations(19)
-    
+    # BA.1 https://github.com/jeromekelleher/sc2ts-paper/issues/264
+    "SRR17041376", # 2021-11-12  South Africa   Gauteng
 
-    "ERR7602255", #  2021-11-26 BA.1 path=(0:29904, 4471) # Arbitrary quick pick, just to see
+    # BA.2 https://github.com/jeromekelleher/sc2ts-paper/issues/265
+    "SRR17461792", # 2021-11-27, South Africa   Gauteng
 ]
+
 
 [[override]]
 start = "2020-01-01"
