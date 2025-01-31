@@ -1,6 +1,7 @@
 *.pyc
 *-checkpoint.ipynb
 .DS_Store
+env
 
 # Pre-Alignment Nextclade data
 data/sars-cov-2_*
@@ -14,3 +15,7 @@ bin/
 logs/
 results/
 *.zarr
+
+# Viridian data
+viridian_dataset/data
+viridian_dataset/.snakemake

@@ -2,11 +2,10 @@ from pathlib import Path
 import glob
 
 
-BASE_DIR = Path("alignments")
-DATA_DIR = BASE_DIR / "data"
-
-MAFFT_BIN = "/opt/homebrew/bin/mafft"
-CHUNK_SIZE = 1000
+DATA_DIR = Path("data")
+OUTPUT_ZARR = DATA_DIR / "viridian_mafft_2024-10-14_v1.vcz"
+OUTPUT_ZIP = OUTPUT_ZARR.with_suffix(".zip")
+MAFFT_BIN = "mafft"
 
 # Figshare
 URLS = {
@@ -14,22 +13,9 @@ URLS = {
     'batch2': "https://figshare.com/ndownloader/files/49692480",
 }
 
-def get_output_files(wildcards):
-    all_files = [f"{DATA_DIR}/run_metadata.v05.tsv.gz"]
-    
-    for dir_name, url in URLS.items():
-        fa_files = glob.glob(f"{checkpoints.process_tar.get(dir_name=dir_name).output[0]}/*.fa")
-        print(checkpoints.process_tar.get(dir_name=dir_name).output[0], fa_files)
-        for fa in fa_files:
-            aln_file = fa.replace(".fa", ".aln").replace(".extracted", ".aln")
-            all_files.append(aln_file)
-    
-    print(all_files)
-    return all_files
-
 rule all:
     input:
-        get_output_files
+        OUTPUT_ZIP
 
 rule download_reference:
     output:
@@ -48,6 +34,16 @@ rule download_viridian_metadata:
         """
         wget --quiet --content-disposition \
             https://figshare.com/ndownloader/files/49694808 \
+            -O {output}
+        """
+
+rule download_viridian_column_description:
+    output:
+        f"{DATA_DIR}/run_metadata.v05.column_description.json"
+    shell:
+        """
+        wget --quiet --content-disposition \
+            https://figshare.com/ndownloader/files/51278111 \
             -O {output}
         """
 
@@ -122,3 +118,54 @@ rule align_sequences:
                 aln_seqs = process.stdout.split(">")
                 assert len(aln_seqs) == 3
                 output_file.write(f">{aln_seqs[2].strip()}\n")
+
+def get_all_aln_files(wildcards):
+    aln_files = []
+    for dir_name, url in URLS.items():
+        fa_files = glob.glob(f"{checkpoints.process_tar.get(dir_name=dir_name).output[0]}/*.fa")
+        print(checkpoints.process_tar.get(dir_name=dir_name).output[0], fa_files)
+        for fa in fa_files:
+            aln_file = fa.replace(".fa", ".aln").replace(".extracted", ".aln")
+            aln_files.append(aln_file)
+    print(aln_files)
+    return aln_files
+
+rule import_alignments:
+    input:
+        get_all_aln_files
+    output:
+        OUTPUT_ZARR / ".alignments_done"
+    params:
+        zarr=OUTPUT_ZARR
+    shell:
+        """
+        python3 -m sc2ts import-alignments -vi {params.zarr} {input}
+        touch {output}
+        """
+
+rule import_metadata:
+    input:
+        metadata=f"{DATA_DIR}/run_metadata.v05.tsv.gz",
+        col_description=f"{DATA_DIR}/run_metadata.v05.column_description.json",
+        zarr_aln_done=OUTPUT_ZARR/".alignments_done"
+    output:
+        OUTPUT_ZARR / ".metadata_done"
+    params:
+        zarr=OUTPUT_ZARR
+    shell:
+        """
+        python3 -m sc2ts import-metadata {params.zarr} {input.metadata} -vv --viridian --field-descriptions={input.col_description}
+        touch {output}
+        """
+
+rule zip_output:
+    input:
+        OUTPUT_ZARR / ".metadata_done"
+    output:
+        OUTPUT_ZIP
+    params:
+        zarr=OUTPUT_ZARR
+    shell:
+        """
+        7z a -mx0 -tzip {output} {params.zarr}/.
+        """
