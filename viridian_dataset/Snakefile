@@ -126,9 +126,13 @@ def get_all_aln_files(wildcards):
         print(checkpoints.process_tar.get(dir_name=dir_name).output[0], fa_files)
         for fa in fa_files:
             aln_file = fa.replace(".fa", ".aln").replace(".extracted", ".aln")
-            aln_files.append(aln_file)
+            # We need to sort the files across batches into order to get the best
+            # compression. This is the easiest way.
+            file_key = int(aln_file.split("/")[-1].split(".")[0])
+            aln_files.append((file_key, aln_file))
+    aln_files.sort()
     print(aln_files)
-    return aln_files
+    return [t[-1] for t in aln_files]
 
 rule import_alignments:
     input:
