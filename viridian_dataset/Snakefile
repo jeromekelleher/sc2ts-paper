@@ -4,7 +4,7 @@ import glob
 
 DATA_DIR = Path("data")
 OUTPUT_ZARR = DATA_DIR / "viridian_mafft_2024-10-14_v1.vcz"
-OUTPUT_ZIP = OUTPUT_ZARR.with_suffix(".zip")
+OUTPUT_ZIP = str(OUTPUT_ZARR) + ".zip"
 MAFFT_BIN = "mafft"
 
 # Figshare
