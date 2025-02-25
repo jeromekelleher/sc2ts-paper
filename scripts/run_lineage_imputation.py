@@ -1,8 +1,9 @@
-from collections import defaultdict
-import json
-import fileinput
-import time
 import argparse
+import fileinput
+import json
+import sys
+import time
+from collections import defaultdict
 
 import sc2ts
 import tszip
@@ -719,6 +720,7 @@ if __name__ == "__main__":
     ts = tszip.load(args.input_ts)
     ti = sc2ts.info.TreeInfo(ts)
 
+    
     new_ts = lineage_imputation(
         args.mutations_json_filepath,
         ts, 
@@ -726,6 +728,20 @@ if __name__ == "__main__":
         verbose=args.verbose,
         all_positions=args.all_positions,
     )
+    
+    # Add provenance info
+    tables = new_ts.dump_tables()
+    arguments = [args.mutations_json_filepath, args.input_ts]
+    if args.output_tsz is not None:
+        arguments.append(args.output_tsz)
+    if args.all_positions:
+        arguments.append("--all-positions")
+    tables.provenances.add_row(
+        json.dumps({"command": sys.argv[0], "args": arguments}).encode()
+    )
+    new_ts = tables.tree_sequence()
+
+
     if args.output_tsz is None:
         if args.input_ts.endswith(".tsz"):
             args.output_tsz = args.input_ts[:-4] + ".il.tsz"
