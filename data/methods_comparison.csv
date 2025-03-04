@@ -48,7 +48,7 @@ covrecomb,XAL,BA.1.1*,BA.2.23,15240,19955
 groundtruth,XAL,BA.1*,BA.2*,17412,19954
 recombinhunt_gisaid,XAL,BA.1.1,BA.2,17420,17421
 recombinhunt_nextstrain,XAL,BA.1.1,BA.2,17426,17427
-sc2ts,XAL,na,na,na,na
+sc2ts,XAL,BA.1.1,BA.2,17411,21762
 covrecomb,XAM,BA.1.1*,BA.2.9*,6513,9344
 groundtruth,XAM,BA.1.1,BA.2.9,8087,9192
 recombinhunt_gisaid,XAM,BA.1.1.16,BA.2.9,6512,6513
