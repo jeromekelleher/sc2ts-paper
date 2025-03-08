@@ -133,7 +133,7 @@ covrecomb,XBJ,CM.2*,BA.5.2*,23013,26529
 groundtruth,XBJ,BA.2.3.20,BA.5.2*,23014,25810
 recombinhunt_gisaid,XBJ,BA.2.3.20,BA.5.2.36,25584,25585
 recombinhunt_nextstrain,XBJ,BA.2.3.20,BA.5.2.62,25593,25594
-sc2ts,XBJ,na,na,na,na
+sc2ts,XBJ,BA.2.3.20,BA.5.2,23019,25810
 covrecomb,XBK,na,na,na,na
 groundtruth,XBK,BA.5.2,CJ.1,-,-
 recombinhunt_gisaid,XBK,BF.5.2,CJ.1,1629,1630
