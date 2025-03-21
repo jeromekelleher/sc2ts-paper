@@ -5,6 +5,7 @@ env
 
 # Pre-Alignment Nextclade data
 data/sars-cov-2_*
+data/*.vcz
 
 # Pre-Alignment GISAID data
 data/metadata.tsv
