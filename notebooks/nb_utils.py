@@ -919,3 +919,24 @@ def sample_subgraph(sample_node, ts, ti=None, **kwargs):
     nodes = nodes[np.sort(idx)]
 
     return plot_subgraph(nodes, ts, ti, **kwargs)
+
+
+# Use pangonet to compute node distances between Pango labels.
+def initialise_pangonet(alias_key_file, lineage_notes_file):
+    from pangonet.pangonet import PangoNet
+    pangonet = PangoNet().build(alias_key=alias_key_file, lineage_notes=lineage_notes_file)
+    return pangonet
+
+
+def get_node_distance(pangonet, *, label_1, label_2):
+    mrca = pangonet.get_mrca([label_1, label_2])
+    assert len(mrca) == 1
+    # Paths include the start and end nodes
+    mrca_pango_1_path = pangonet.get_paths(start=label_1, end=mrca[0])
+    mrca_pango_2_path = pangonet.get_paths(start=label_2, end=mrca[0])
+    assert len(mrca_pango_1_path) == 1
+    assert len(mrca_pango_2_path) == 1
+    mrca_pango_1_distance = len(mrca_pango_1_path[0]) - 1
+    mrca_pango_2_distance = len(mrca_pango_2_path[0]) - 1
+    node_distance = mrca_pango_1_distance + mrca_pango_2_distance
+    return node_distance
