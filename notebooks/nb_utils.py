@@ -922,6 +922,7 @@ def sample_subgraph(sample_node, ts, ti=None, **kwargs):
 
 
 # Use pangonet to compute node distances between Pango labels.
+# https://github.com/phac-nml/pangonet
 def initialise_pangonet(alias_key_file, lineage_notes_file):
     from pangonet.pangonet import PangoNet
     pangonet = PangoNet().build(alias_key=alias_key_file, lineage_notes=lineage_notes_file)
@@ -929,14 +930,32 @@ def initialise_pangonet(alias_key_file, lineage_notes_file):
 
 
 def get_node_distance(pangonet, *, label_1, label_2):
-    mrca = pangonet.get_mrca([label_1, label_2])
-    assert len(mrca) == 1
-    # Paths include the start and end nodes
-    mrca_pango_1_path = pangonet.get_paths(start=label_1, end=mrca[0])
-    mrca_pango_2_path = pangonet.get_paths(start=label_2, end=mrca[0])
-    assert len(mrca_pango_1_path) == 1
-    assert len(mrca_pango_2_path) == 1
-    mrca_pango_1_distance = len(mrca_pango_1_path[0]) - 1
-    mrca_pango_2_distance = len(mrca_pango_2_path[0]) - 1
-    node_distance = mrca_pango_1_distance + mrca_pango_2_distance
-    return node_distance
+    ancestors_1 = pangonet.get_ancestors(label_1)
+    ancestors_2 = pangonet.get_ancestors(label_2)
+    if (label_1 in ancestors_2) or (label_2 in ancestors_1):
+        # Paths include the start and end labels.
+        path = pangonet.get_paths(start=label_1, end=label_2)
+        if len(path) == 1:
+            distance = len(path[0]) - 1
+        elif len(path) == 0:
+            # Unclear relationship.
+            distance = -1
+        else:
+            raise ValueError("Unexpected multiple paths from pangonet.")
+    else:
+        mrca = pangonet.get_mrca([label_1, label_2])
+        if len(mrca) != 1:
+            raise ValueError("Unexpected multiple MRCAs from pangonet.")
+        # Paths include the start and end labels.
+        mrca_label_1_path = pangonet.get_paths(start=label_1, end=mrca[0])
+        mrca_label_2_path = pangonet.get_paths(start=label_2, end=mrca[0])
+        if (len(mrca_label_1_path) == 1) and (len(mrca_label_2_path) == 1):
+            mrca_pango_1_distance = len(mrca_label_1_path[0]) - 1
+            mrca_pango_2_distance = len(mrca_label_2_path[0]) - 1
+            distance = mrca_pango_1_distance + mrca_pango_2_distance
+        elif len(path) == 0:
+            # Unclear relationship.
+            distance = -1
+        else:
+            raise ValueError("Unexpected multiple paths from pangonet.")
+    return distance
