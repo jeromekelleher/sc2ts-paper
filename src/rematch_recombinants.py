@@ -34,17 +34,24 @@ def run():
     ds = sc2ts.Dataset(
         "data/viridian_mafft_2024-10-14_v1.vcz.zip", date_field="Date_tree"
     )
-    recomb_df = pd.read_csv("data/recombinants.csv").set_index("sample_id")
+    # recomb_df = pd.read_csv("data/recombinants.csv").set_index("sample_id")
+    recomb_df = pd.read_csv("data/samples_pangos_absent_in_arg.csv").set_index("Run")
+
     ts_prefix = "results/v1-beta1/v1-beta1_"
     work = []
     for s in recomb_df.index:
-        date = datetime.datetime.fromisoformat(ds.metadata[s]["Date_tree"])
+        try:
+            date = datetime.datetime.fromisoformat(ds.metadata[s]["Date_tree"])
+        except KeyError:
+            print(f"missing {s}")
+            continue
         match_date = str(date - datetime.timedelta(days=1)).split()[0]
         ts_path = f"{ts_prefix}{match_date}.ts"
-        for num_mismatches in [2, 1000]:
+        for num_mismatches in [4, 1000]:
             work.append(MatchWork(ts_path, ds.path, s, num_mismatches))
 
-    output_path = "results/recombinant_reruns.json"
+    # output_path = "results/recombinant_reruns.json"
+    output_path = "results/pango_x_not_in_arg.json"
     # Clear the file
     with open(output_path, "w") as f:
         pass
