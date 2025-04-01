@@ -55,7 +55,7 @@ def run():
     #     print(run)
     #     print(run.asjson())
 
-    with cf.ProcessPoolExecutor(20) as executor:
+    with cf.ProcessPoolExecutor(2) as executor:
         futures = [executor.submit(run_match, w) for w in work]
         for future in cf.as_completed(futures):
             run = future.result()
