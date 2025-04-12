@@ -921,6 +921,7 @@ def sample_subgraph(sample_node, ts, ti=None, **kwargs):
     return plot_subgraph(nodes, ts, ti, **kwargs)
 
 
+### Routines to facilitate analysis of novel recombinants.
 # Use pangonet to compute node distances between Pango labels.
 def initialise_pangonet(alias_key_file, lineage_notes_file):
     from pangonet.pangonet import PangoNet
@@ -940,3 +941,29 @@ def get_node_distance(pangonet, *, label_1, label_2):
     mrca_pango_2_distance = len(mrca_pango_2_path[0]) - 1
     node_distance = mrca_pango_1_distance + mrca_pango_2_distance
     return node_distance
+
+
+def plot_stacked_histogram(a, b, alegend, blegend, xlabel, ylabel, xlim):
+    bin_edges = np.arange(xlim[0], xlim[1])
+    hist_a, _ = np.histogram(a, bins=bin_edges)
+    hist_b, _ = np.histogram(b, bins=bin_edges)
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2 - 0.5
+    bar_width = 0.8
+    _, ax = plt.subplots()
+    _ = ax.bar(
+        bin_centers,
+        hist_a,
+        width=bar_width,
+        label=alegend,
+    )
+    _ = ax.bar(
+        bin_centers,
+        hist_b,
+        bottom=hist_a,
+        width=bar_width,
+        label=blegend,
+    )
+    ax.set_xticks(bin_centers.astype(int))
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.legend();
