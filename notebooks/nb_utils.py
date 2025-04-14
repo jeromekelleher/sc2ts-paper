@@ -962,13 +962,12 @@ def get_pangonet_distance(pangonet, *, label_1, label_2):
     return distance
 
 
-def plot_stacked_histogram(a, b, alegend, blegend, xlabel, ylabel, xlim):
+def draw_stacked_histogram(a, b, ax, *, alegend, blegend, xlabel, ylabel, xlim):
     bin_edges = np.arange(xlim[0], xlim[1])
     hist_a, _ = np.histogram(a, bins=bin_edges)
     hist_b, _ = np.histogram(b, bins=bin_edges)
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2 - 0.5
     bar_width = 0.8
-    _, ax = plt.subplots()
     _ = ax.bar(
         bin_centers,
         hist_a,
