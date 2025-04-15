@@ -35,6 +35,13 @@ NODE_REPORT_KEYS = ", ".join([
     "mutations"]
 )
 
+PARENT_COLOURS = [  # Chose to be light enough that black text on top is readable
+    "#8D8",  # First parent: light green
+    "#6AD",  # Second parent: light blue
+    "#B9D",  # Third parent (if any): light purple
+    "#A88",  # Fourth parent (if any): light brown
+]
+
 TSDIR = "../data"
  
 def load(filename = "v1-beta1_2023-02-21.pp.md.bpshift.ts.dated.il.tsz"):
