@@ -35,10 +35,10 @@ NODE_REPORT_KEYS = ", ".join([
     "mutations"]
 )
 
-
-def load(filename = "v1-beta1_2023-02-21.pp.md.ts.dated.il.tsz"):
-    ts_dir = "../data"
-    ts = tszip.decompress(os.path.join(ts_dir, filename))
+TSDIR = "../data"
+ 
+def load(filename = "v1-beta1_2023-02-21.pp.md.bpshift.ts.dated.il.tsz"):
+    ts = tszip.decompress(os.path.join(TSDIR, filename))
     print(
         f"Loaded {ts.nbytes/1e6:0.1f} megabyte SARS-CoV2 genealogy of {ts.num_samples} strains",
         f"({ts.num_trees} trees, {ts.num_mutations} mutations over {ts.sequence_length} basepairs).",
@@ -46,11 +46,34 @@ def load(filename = "v1-beta1_2023-02-21.pp.md.ts.dated.il.tsz"):
     )
     return ts
 
+def load_dataset(filename = "viridian_mafft_2024-10-14_v1.vcz"):
+    return sc2ts.Dataset(os.path.join(TSDIR, filename), date_field="Date_tree")
+
 def date(ts, node_id):
     return (
         datetime.fromisoformat(ts.node(1).metadata["date"]) + 
         timedelta(days=int(ts.node(1).time) - ts.node(node_id).time)
     )
+
+def list_of_months(start_date, end_date):
+    first_days = []
+    current_year = start_date.year
+    current_month = start_date.month if start_date.day == 1 else start_date.month + 1
+    
+    # Handle case where we need to increment the year
+    if current_month > 12:
+        current_year += 1
+        current_month = 1
+    
+    while datetime(current_year, current_month, 1) < end_date:
+        first_days.append(datetime(current_year, current_month, 1))
+        
+        # Move to next month
+        current_month += 1
+        if current_month > 12:
+            current_year += 1
+            current_month = 1
+    return first_days
 
 def remove_single_descendant_re_nodes(ts):
     re_nodes = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT)[0]
@@ -82,6 +105,100 @@ def fetch_genbank_comment(accession):
         if line.strip().startswith('COMMENT'):
             return line.strip()        
     return ""
+
+def cumulative_branch_length(tree):
+    """
+    Calculate the cumulative branch length in the tree going from oldest to youngest
+    (unique) node times in the tree. This is equivalent to the
+    area available for mutations. The last value in the returned `cumulative_lengths`
+    vector is the total branch length of this tree.
+
+    Note that if there are any mutations above local roots, these do
+    not occur on edges, and hence are not relevant to this function.
+    
+    Parameters:
+    tree: tskit.Tree object
+    
+    Returns:
+    tuple: (times, cumulative_lengths)
+        times: array of unique node times where branches start or end, sorted descending
+        cumulative_lengths: cumulative branch lengths from an indefinitely long time ago to
+            each timepoint in the `times` array
+    """
+    used_ids = tree.edge_array[tree.edge_array != tskit.NULL]
+    ts = tree.tree_sequence
+    starts = -ts.nodes_time[ts.edges_parent[used_ids]]
+    ends = -ts.nodes_time[ts.edges_child[used_ids]]
+    
+    # Create event arrays: each event has a position and a num lineage change
+    # Start events add lineages, end events subtract lineages
+    event_times = np.concatenate([starts, ends])
+    event_lineage_count = np.concatenate([np.ones(len(used_ids)), -np.ones(len(used_ids))])
+    times = np.unique(event_times)
+    dt = np.diff(times)
+    assert np.all(dt) > 0
+    event_ind = np.searchsorted(times, event_times)
+    cumulative_areas = np.cumsum(dt * np.cumsum(np.bincount(event_ind, weights=event_lineage_count))[:-1])
+    return -times, np.concatenate([[0.0], cumulative_areas])
+
+def mutation_p_values(ts, min_time=1, progress=True):
+    """
+    Calculate the p-value for each mutation in the tree sequence, based on the
+    probability of the closest similar mutation in time (regardless of topological position)
+
+    min_time (in days) gives the minimum time difference between mutations used to
+    calculate a p-value (e.g. if the nearest similar mutation is 0.01 days, assume 1 day)
+    """
+    mut_p_val = np.ones(ts.num_mutations)
+
+    def prob_closest_mut_within_timedelta(t, cdf_t, focal_times, time_deltas, num_muts):
+        """
+        Given mutational area cdf defined by t and cdf_t, and a number of mutations
+        at a site, what is the probability of observing at least one of those mutations
+        at a time difference of time_delta from a focal time, assuming mutations are
+        randomly placed according to the cdf.
+
+        """
+        if cdf_t[-1] != 1:
+            cdf_t = cdf_t/cdf_t[-1]
+        if np.all(np.diff(t) <= 0): # make times go from 0 .. max_time
+            t = t[::-1]
+            cdf_t = cdf_t[::-1]
+        assert np.all(np.diff(t) >= 0)
+        # note the CDF is the wrong way around from what is conventional
+        assert cdf_t[0] == 1
+        assert cdf_t[-1] == 0
+        prob_gt_time_deltas = np.interp(focal_times + time_deltas, t, cdf_t)
+        prob_lt_time_deltas = 1-np.interp(focal_times - time_deltas, t, cdf_t)
+        prob_outside = prob_gt_time_deltas + prob_lt_time_deltas
+    
+        return 1 - prob_outside**num_muts
+
+
+    with tqdm(total=ts.num_mutations, disable=not progress) as pbar:
+        for tree in ts.trees():
+            # Null model is from the mutational areas
+            times, lengths = cumulative_branch_length(tree)
+            for site in tree.sites():
+                mut_classes = collections.defaultdict(list)
+                ds = {m.id: m.derived_state for m in site.mutations}
+                ds[-1] = site.ancestral_state
+                for m in site.mutations:
+                    mut_classes[frozenset((m.derived_state, ds[m.parent]))].append((m.id, m.time))
+                for mutations in mut_classes.values():
+                    if len(mutations) != 1:
+                        mut_ids = np.array([m[0] for m in mutations])
+                        mut_times = np.array([m[1] for m in mutations])
+                        nearest = np.zeros(len(mutations))
+                        for i, focal_time in enumerate(mut_times):
+                            nearest[i] = np.min(np.abs(focal_time - np.concatenate((mut_times[:i], mut_times[i+1:]))))
+                        # e.g. if less than 1 day apart, assume a day's worth of difference (avoids p==0.0)
+                        nearest = np.where(nearest< min_time, min_time, nearest)
+                        mut_p_val[mut_ids] = prob_closest_mut_within_timedelta(
+                            times, lengths, mut_times, nearest, len(mutations)-1
+                        )
+                    pbar.update(len(mutations))
+    return mut_p_val
 
 
 def set_sc2ts_labels_and_styles(d3arg, ts, add_strain_names=True):
@@ -126,7 +243,8 @@ def plot_sc2ts_subgraph(
     height=1000,
     width=800,
     cmap=plt.cm.tab10,
-    y_axis_scale="rank",
+    y_axis_scale="time", # use "rank" to highlight topology more
+    y_axis_labels=None,
     condense_mutations=False,
     return_included_nodes=None,
     colour_recurrent_mutations=True,
@@ -134,6 +252,8 @@ def plot_sc2ts_subgraph(
     highlight_mutations=None,
     highlight_nodes=True,  # Can also be a mapping of colour to node IDs
     highlight_colour="plum",
+    oldest_y_label=None,
+    node_1_date=datetime(2019, 12, 26),  # date of Wuhan, node #1
 ):
     """
     Display a subset of the sc2ts arg, with mutations that are recurrent or reverted
@@ -143,7 +263,7 @@ def plot_sc2ts_subgraph(
     or a PosAlt named tuple with positions and derived states (e.g. from
     `MutationContainer.get_mutations(Pango)` )
     """
-    
+    select_nodes = np.isin(d3arg.nodes.id, nodes)
     # Find mutations with duplicate position values and the same alleles (could be parallel eg. A->T & A->T, or reversions, e.g. A->T, T->A)
     # Create a composite key for basic duplicates
     if colour_recurrent_mutations:
@@ -210,10 +330,28 @@ def plot_sc2ts_subgraph(
             raise NotImplementedError("Cannot list mutations by ID yet")
 
     if highlight_nodes:
-        d3arg.nodes.loc[np.isin(d3arg.nodes.id, nodes), 'fill'] = highlight_colour
+        d3arg.nodes.loc[select_nodes, 'fill'] = highlight_colour
         if isinstance(highlight_nodes, dict):
             for colour, nodelist in highlight_nodes.items():
                 d3arg.nodes.loc[np.isin(d3arg.nodes.id, nodelist), 'fill'] = colour
+
+    if y_axis_labels is None:
+        times = d3arg.nodes.loc[select_nodes, 'time']
+        zero_date = node_1_date + timedelta(days=int(d3arg.nodes.loc[d3arg.nodes.id == 1, 'time'].values[0]))
+        if oldest_y_label is None:
+            # Can't just use the oldest of select_nodes here, because that doesn't include parents
+            oldest_y_label = node_1_date
+        else:
+            try:
+                if len(oldest_y_label) == 7:
+                    oldest_y_label += "-01"
+                oldest_y_label = datetime.fromisoformat(oldest_y_label)
+            except TypeError:
+                pass
+        y_axis_labels = {
+            (zero_date - d).days: str(d)[:7]
+            for d in list_of_months(oldest_y_label, zero_date-timedelta(days=times.min()))
+        }
 
     shown_nodes = d3arg.draw_nodes(
         nodes,
@@ -223,6 +361,7 @@ def plot_sc2ts_subgraph(
         width=width,
         show_mutations=True,
         y_axis_scale=y_axis_scale,
+        y_axis_labels=y_axis_labels,
         include_mutation_labels=include_mutation_labels,
         condense_mutations=condense_mutations,
         return_included_nodes=return_included_nodes
