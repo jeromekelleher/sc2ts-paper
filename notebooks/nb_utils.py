@@ -1130,6 +1130,7 @@ def draw_stacked_histogram(
         hist_a,
         width=bar_width,
         label=alegend,
+        color="black",
     )
     _ = ax.bar(
         bin_centers,
@@ -1137,9 +1138,10 @@ def draw_stacked_histogram(
         bottom=hist_a,
         width=bar_width,
         label=blegend,
+        color="lightgrey",
     )
     ax.set_xticks(bin_centers.astype(int))
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel, fontsize=15)
+    ax.set_ylabel(ylabel, fontsize=15)
     if show_legend:
-        ax.legend();
+        ax.legend(frameon=False, fontsize=14);
