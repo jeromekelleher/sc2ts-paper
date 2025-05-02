@@ -1109,16 +1109,20 @@ def get_pangonet_distance(pangonet, *, label_1, label_2):
 
 
 def draw_stacked_histogram(
+    ax,
     a,
     b,
-    ax,
     *,
     alegend,
     blegend,
+    acolor,
+    bcolor,
     xlabel,
     ylabel,
     xlim,
     show_legend=True,
+    show_top_spline=True,
+    show_right_spline=True,
 ):
     bin_edges = np.arange(xlim[0], xlim[1])
     hist_a, _ = np.histogram(a, bins=bin_edges)
@@ -1130,7 +1134,7 @@ def draw_stacked_histogram(
         hist_a,
         width=bar_width,
         label=alegend,
-        color="black",
+        color=acolor,
     )
     _ = ax.bar(
         bin_centers,
@@ -1138,10 +1142,14 @@ def draw_stacked_histogram(
         bottom=hist_a,
         width=bar_width,
         label=blegend,
-        color="lightgrey",
+        color=bcolor,
     )
     ax.set_xticks(bin_centers.astype(int))
     ax.set_xlabel(xlabel, fontsize=15)
     ax.set_ylabel(ylabel, fontsize=15)
+    if not show_top_spline:
+        ax.spines['top'].set_visible(False)
+    if not show_right_spline:
+        ax.spines['right'].set_visible(False)
     if show_legend:
         ax.legend(frameon=False, fontsize=14);
