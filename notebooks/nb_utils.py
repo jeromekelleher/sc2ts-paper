@@ -1120,15 +1120,16 @@ def draw_stacked_histogram(
     xlabel,
     ylabel,
     xlim,
+    bin_size,
+    bar_width=0.8,
     show_legend=True,
     show_top_spline=True,
     show_right_spline=True,
 ):
-    bin_edges = np.arange(xlim[0], xlim[1])
+    bin_edges = np.arange(xlim[0], xlim[1], bin_size)
     hist_a, _ = np.histogram(a, bins=bin_edges)
     hist_b, _ = np.histogram(b, bins=bin_edges)
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2 - 0.5
-    bar_width = 0.8
     _ = ax.bar(
         bin_centers,
         hist_a,
