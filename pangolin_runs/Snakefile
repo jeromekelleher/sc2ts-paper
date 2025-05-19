@@ -1,0 +1,91 @@
+from pathlib import Path
+import numpy as np
+
+
+OUT_DIR = Path(".")
+
+MICROMAMBA_BIN = OUT_DIR / "bin" / "micromamba"
+
+PANGO_DATA_VER = "1.33"
+PANGO_DATA_DIR = OUT_DIR / f"pangolin-data-{PANGO_DATA_VER}"
+
+TS_FILE = OUT_DIR / "v1-beta1_2023-02-21.pp.md.bpshift.ts.dated.il.tsz"
+NUM_BATCHES = 14
+
+
+rule all:
+    input:
+        OUT_DIR / "combined.lineage_report.csv.gz"
+
+
+rule concat:
+    input:
+        expand(OUT_DIR / "batch_{batch}.lineage_report.csv", batch=np.arange(NUM_BATCHES))
+    output:
+        OUT_DIR / "combined.lineage_report.csv.gz"
+    run:
+        import pandas as pd
+        df_all = None
+        for i in range(NUM_BATCHES):
+            csv_file = OUT_DIR / f"batch_{i}.lineage_report.csv"
+            df = pd.read_csv(csv_file)
+            df_all = df if i == 0 else pd.concat([df_all, df])
+        df_all.to_csv(output[0], index=False)
+
+
+rule run_pangolin:
+    input:
+        pd_dir = PANGO_DATA_DIR,
+        fa_file = OUT_DIR / "batch_{batch}.fa"
+    output:
+        OUT_DIR / "batch_{batch}.lineage_report.csv"
+    params:
+        micromamba_bin = MICROMAMBA_BIN
+    threads: workflow.cores
+    shell:
+        """
+        {params.micromamba_bin} run -n pangolin pangolin -t {threads} \
+            --use-old-datadir -d {input.pd_dir} {input.fa_file} --outfile {output}
+        """
+
+
+rule write_fasta:
+    input:
+        TS_FILE
+    output:
+        expand(OUT_DIR / "batch_{batch}.fa", batch=np.arange(NUM_BATCHES))
+    run:
+        import tszip
+        import tskit
+        # Set all nodes to be sample nodes.
+        ts = tszip.decompress(input[0])
+        tables = ts.dump_tables()
+        node_flags = tables.nodes.flags
+        node_flags[:] = tskit.NODE_IS_SAMPLE
+        tables.nodes.flags = node_flags
+        ts = tables.tree_sequence()
+        if np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
+            raise ValueError("Not all the nodes are samples.")
+        # Partition sequences into batches.
+        splits = np.array_split(np.arange(ts.num_nodes), NUM_BATCHES)
+        for i, samples in enumerate(splits):
+            out_file = OUT_DIR / f"batch_{i}.fa"
+            with open(out_file, 'w') as f:
+                for j, entry in enumerate(ts.alignments(samples=samples, left=1)):
+                    f.write(f">n{samples[j]}\n")
+                    f.write(entry + "\n")
+
+
+rule download_pangolin_data:
+    output:
+        directory(PANGO_DATA_DIR)
+    params:
+        pd_ver = PANGO_DATA_VER
+    shell:
+        """
+        wget https://api.github.com/repos/cov-lineages/pangolin-data/tarball/v{params.pd_ver}
+        tar -zxf v{params.pd_ver}
+        mv cov-lineages-pangolin-data-9de498c/ pangolin-data-{params.pd_ver}/
+        rm v{params.pd_ver}
+        """
+
