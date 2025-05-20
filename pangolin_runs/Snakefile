@@ -64,7 +64,7 @@ rule write_fasta:
         node_flags[:] = tskit.NODE_IS_SAMPLE
         tables.nodes.flags = node_flags
         ts = tables.tree_sequence()
-        if np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
+        if ~np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
             raise ValueError("Not all the nodes are samples.")
         # Partition sequences into batches.
         splits = np.array_split(np.arange(ts.num_nodes), NUM_BATCHES)
