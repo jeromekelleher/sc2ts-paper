@@ -1,0 +1,175 @@
+from pathlib import Path
+import glob
+
+
+DATA_DIR = Path("data")
+OUTPUT_ZARR = DATA_DIR / "viridian_mafft_2024-10-14_v1.vcz"
+OUTPUT_ZIP = str(OUTPUT_ZARR) + ".zip"
+MAFFT_BIN = "mafft"
+
+# Figshare
+URLS = {
+    'batch1': "https://figshare.com/ndownloader/files/45969777",
+    'batch2': "https://figshare.com/ndownloader/files/49692480",
+}
+
+rule all:
+    input:
+        OUTPUT_ZIP
+
+rule download_reference:
+    output:
+        f"{DATA_DIR}/reference.fasta"
+    shell:
+        """
+        wget --quiet \
+            https://raw.githubusercontent.com/jeromekelleher/sc2ts/e9d1fdcc7e7ae2c172da64b47da2eb0373dd4d39/sc2ts/data/reference.fasta \
+            -O {output}
+        """
+
+rule download_viridian_metadata:
+    output:
+        f"{DATA_DIR}/run_metadata.v05.tsv.gz"
+    shell:
+        """
+        wget --quiet --content-disposition \
+            https://figshare.com/ndownloader/files/49694808 \
+            -O {output}
+        """
+
+rule download_viridian_column_description:
+    output:
+        f"{DATA_DIR}/run_metadata.v05.column_description.json"
+    shell:
+        """
+        wget --quiet --content-disposition \
+            https://figshare.com/ndownloader/files/51278111 \
+            -O {output}
+        """
+
+rule download_viridian_sequences:
+    output:
+        DATA_DIR / "{dir_name}.tar"
+    params:
+        url = lambda wildcards: URLS[wildcards.dir_name]
+    shell:
+        """
+        wget --quiet --content-disposition {params.url} -O {output}
+        """
+
+checkpoint process_tar:
+    input:
+        DATA_DIR / "{dir_name}.tar"
+    output:
+        directory(DATA_DIR / "{dir_name}.extracted")
+    shell:
+        """
+        # Extract tar
+        mkdir -p {output}
+        tar -xf {input} -C {output} --strip-components 1
+        
+        # Decompress files
+        for f in {output}/*.cons.fa.xz; do
+            base=$(basename "$f" .cons.fa.xz)
+            xz --decompress --stdout "$f" > "{output}/$base.fa"
+        done
+        """
+
+# If we pass the unmodified fasta file to mafft, it will attempt a multiple sequence alignment
+# of all the sequences. We only want an alignment of each sequence to the reference, so
+# mafft needs to be run for each sequence separately.
+rule align_sequences:
+    input:
+        reference = DATA_DIR / "reference.fasta",
+        sequences = DATA_DIR / "{dir_name}.extracted" / "{part}.fa"
+    output:
+        DATA_DIR / "{dir_name}.aln" / "{part}.aln"
+    run:
+        import os
+        from Bio import SeqIO
+        import subprocess
+        os.makedirs(Path(output[0]).parent / "logs", exist_ok=True)
+        ref_seq = str(next(SeqIO.parse(input.reference, "fasta")).seq)
+        ref_name = "reference"
+        with open(output[0], 'w') as output_file:
+            for seq in SeqIO.parse(input.sequences, "fasta"):
+                log_file = Path(output[0]).parent / "logs" / f"{seq.id}.log"
+                seq_str = f">{seq.id}\n{str(seq.seq)}\n"
+                script = "\n".join([
+                    f'''ref=">{ref_name}\n{ref_seq}"''',
+                    f'''qry=">{seq.id}\n{str(seq.seq)}"''',
+                    f'''{MAFFT_BIN} --quiet --keeplength --add <(echo "$qry") <(echo "$ref")'''
+                ])
+                process = subprocess.run(
+                    ["bash"],
+                    input=script,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+                
+                if len(process.stderr) > 0:
+                    with open(log_file, 'w') as f:
+                        f.write(process.stderr)
+                if process.returncode != 0:
+                    raise Exception(
+                        f"Error running mafft for {seq.id}. Stdout:\n{process.stdout}\n\nStderr:{process.stderr}"
+                    )
+                aln_seqs = process.stdout.split(">")
+                assert len(aln_seqs) == 3
+                output_file.write(f">{aln_seqs[2].strip()}\n")
+
+def get_all_aln_files(wildcards):
+    aln_files = []
+    for dir_name, url in URLS.items():
+        fa_files = glob.glob(f"{checkpoints.process_tar.get(dir_name=dir_name).output[0]}/*.fa")
+        print(checkpoints.process_tar.get(dir_name=dir_name).output[0], fa_files)
+        for fa in fa_files:
+            aln_file = fa.replace(".fa", ".aln").replace(".extracted", ".aln")
+            # We need to sort the files across batches into order to get the best
+            # compression. This is the easiest way.
+            file_key = int(aln_file.split("/")[-1].split(".")[0])
+            aln_files.append((file_key, aln_file))
+    aln_files.sort()
+    print(aln_files)
+    return [t[-1] for t in aln_files]
+
+rule import_alignments:
+    input:
+        get_all_aln_files
+    output:
+        OUTPUT_ZARR / ".alignments_done"
+    params:
+        zarr=OUTPUT_ZARR
+    shell:
+        """
+        python3 -m sc2ts import-alignments -vi {params.zarr} {input}
+        touch {output}
+        """
+
+rule import_metadata:
+    input:
+        metadata=f"{DATA_DIR}/run_metadata.v05.tsv.gz",
+        col_description=f"{DATA_DIR}/run_metadata.v05.column_description.json",
+        zarr_aln_done=OUTPUT_ZARR/".alignments_done"
+    output:
+        OUTPUT_ZARR / ".metadata_done"
+    params:
+        zarr=OUTPUT_ZARR
+    shell:
+        """
+        python3 -m sc2ts import-metadata {params.zarr} {input.metadata} -vv --viridian --field-descriptions={input.col_description}
+        touch {output}
+        """
+
+rule zip_output:
+    input:
+        OUTPUT_ZARR / ".metadata_done"
+    output:
+        OUTPUT_ZIP
+    params:
+        zarr=OUTPUT_ZARR
+    shell:
+        """
+        7z a -mx0 -tzip {output} {params.zarr}/.
+        """
