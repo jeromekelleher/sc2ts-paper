@@ -61,9 +61,11 @@ def set_mutations(ts, ref, mutations_per_node):
 @click.argument("reference_fa", type=click.Path(dir_okay=False, file_okay=True))
 @click.argument("tsk_out", type=click.Path(dir_okay=False, file_okay=True))
 def convert_mutations(tsk_in, usher_tsv, reference_fa, tsk_out):
-
+    fa_map = dict(pyfaidx.Fasta(reference_fa))
+    assert len(fa_map) == 1
+    key = "MN908947"
     # Convert to 0-based coordinate
-    reference = "X" + str(pyfaidx.Fasta(reference_fa)["Wuhan/Hu-1/2019"])
+    reference = "X" + str(fa_map[key])
     df = pd.read_csv(usher_tsv, sep="\t")
     ts = tskit.load(tsk_in)
     print("loaded tskit file")

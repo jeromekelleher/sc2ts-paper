@@ -20,21 +20,45 @@ rule download_pb:
             -O {output}
         """
 
-
-rule decompress_tree:
+rule export_mutations:
+    conda:
+        "usher.yml"
     input:
-        "tree.all_viridian.202409.jsonl.gz"
+        "tree.all_viridian.202409.pb.gz"
     output:
-        "tree.all_viridian.202409.jsonl"
+        "mutations.tsv"
     shell:
-        "gunzip -k {input}"
-
+        # Got GTF from 
+        # http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
+        """
+        matUtils summary -i tree.all_viridian.202409.pb.gz \
+            -f reference.fasta -g ncbiGenes.gtf \
+            --translate mutations.tsv
+        """
 
 rule convert_topology:
+    conda:
+        "convert.yml"
     input:
         "tree.all_viridian.202409.jsonl.gz"
     output:
         "viridian.topology.trees"
     shell:
         "python ../src/mat2tsk.py convert-topology {input} {output}"
+
+rule add_mutations:
+    conda:
+        "convert.yml"
+    input:
+        "viridian.topology.trees",
+        "mutations.tsv"
+    output:
+        "viridian.mutations.trees"
+    shell:
+        """
+        python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
+        """
+
+
+
 
