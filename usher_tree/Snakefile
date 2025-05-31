@@ -1,0 +1,85 @@
+
+
+rule download_json:
+    output:
+        "tree.all_viridian.202409.jsonl.gz"
+    shell:
+        """
+        wget --quiet --content-disposition \
+            https://figshare.com/ndownloader/files/49691040 \
+            -O {output}
+        """
+
+rule download_pb:
+    output:
+        "tree.all_viridian.202409.pb.gz"
+    shell:
+        """
+        wget --quiet --content-disposition \
+            https://figshare.com/ndownloader/files/49691037 \
+            -O {output}
+        """
+
+rule export_mutations:
+    conda:
+        "usher.yml"
+    input:
+        "tree.all_viridian.202409.pb.gz"
+    output:
+        "mutations.tsv"
+    shell:
+        # Got GTF from 
+        # http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
+        """
+        matUtils summary -i tree.all_viridian.202409.pb.gz \
+            -f reference.fasta -g ncbiGenes.gtf \
+            --translate mutations.tsv
+        """
+
+rule convert_topology:
+    conda:
+        "convert.yml"
+    input:
+        "tree.all_viridian.202409.jsonl.gz"
+    output:
+        "viridian.topology.trees"
+    shell:
+        "python ../src/mat2tsk.py convert-topology {input} {output}"
+
+rule add_mutations:
+    conda:
+        "convert.yml"
+    input:
+        "viridian.topology.trees",
+        "mutations.tsv"
+    output:
+        "viridian.mutations.trees"
+    shell:
+        """
+        python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
+        """
+
+rule minimise_metadata:
+    conda:
+        "convert.yml"
+    input:
+        "viridian.mutations.trees",
+    output:
+        "all_viridian.202409.trees"
+    shell:
+        """
+        python -m sc2ts minimise-metadata {input} {output} --pango-field=Viridian_pangolin_1.29
+        """
+
+rule tszip:
+    conda:
+        "convert.yml"
+    input:
+        "all_viridian.202409.trees"
+    output:
+        "all_viridian.202409.trees.tsz"
+    shell:
+        """
+        python -m tszip -k {input} {output}
+        """
+

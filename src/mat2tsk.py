@@ -61,9 +61,11 @@ def set_mutations(ts, ref, mutations_per_node):
 @click.argument("reference_fa", type=click.Path(dir_okay=False, file_okay=True))
 @click.argument("tsk_out", type=click.Path(dir_okay=False, file_okay=True))
 def convert_mutations(tsk_in, usher_tsv, reference_fa, tsk_out):
-
+    fa_map = dict(pyfaidx.Fasta(reference_fa))
+    assert len(fa_map) == 1
+    key = "MN908947"
     # Convert to 0-based coordinate
-    reference = "X" + str(pyfaidx.Fasta(reference_fa)["Wuhan/Hu-1/2019"])
+    reference = "X" + str(fa_map[key])
     df = pd.read_csv(usher_tsv, sep="\t")
     ts = tskit.load(tsk_in)
     print("loaded tskit file")
@@ -115,9 +117,9 @@ def convert_topology(usher_json, tsk):
     tables.sites.metadata_schema = tskit.MetadataSchema.permissive_json()
 
     meta_prefix = "meta_"
+    sample_date = []
     with gzip.open(usher_json) as f:
         header = json.loads(next(f))
-        samples_strain = []
         pi = np.zeros(header["total_nodes"]) - 1
         for line in tqdm.tqdm(f, total=header["total_nodes"], desc="Parse"):
             node = json.loads(line)
@@ -126,7 +128,7 @@ def convert_topology(usher_json, tsk):
             flags = 0
             if not name.startswith("node_"):
                 flags = tskit.NODE_IS_SAMPLE
-                samples_strain.append(name)
+                sample_date.append(node["meta_Date_tree"])
             u = tables.nodes.add_row(
                 flags,
                 time=-1,
@@ -148,8 +150,7 @@ def convert_topology(usher_json, tsk):
                 pi[u] = parent
                 tables.edges.add_row(0, L, parent=parent, child=u)
 
-    # Store the mapping samples strain in the same format as sc2ts for simplicity
-    tables.metadata = {"sc2ts": {"samples_strain": samples_strain}}
+    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
 
     set_tree_time(tables)
     tables.sort()
