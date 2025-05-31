@@ -117,9 +117,9 @@ def convert_topology(usher_json, tsk):
     tables.sites.metadata_schema = tskit.MetadataSchema.permissive_json()
 
     meta_prefix = "meta_"
+    sample_date = []
     with gzip.open(usher_json) as f:
         header = json.loads(next(f))
-        samples_strain = []
         pi = np.zeros(header["total_nodes"]) - 1
         for line in tqdm.tqdm(f, total=header["total_nodes"], desc="Parse"):
             node = json.loads(line)
@@ -128,7 +128,7 @@ def convert_topology(usher_json, tsk):
             flags = 0
             if not name.startswith("node_"):
                 flags = tskit.NODE_IS_SAMPLE
-                samples_strain.append(name)
+                sample_date.append(node["meta_Date_tree"])
             u = tables.nodes.add_row(
                 flags,
                 time=-1,
@@ -150,8 +150,7 @@ def convert_topology(usher_json, tsk):
                 pi[u] = parent
                 tables.edges.add_row(0, L, parent=parent, child=u)
 
-    # Store the mapping samples strain in the same format as sc2ts for simplicity
-    tables.metadata = {"sc2ts": {"samples_strain": samples_strain}}
+    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
 
     set_tree_time(tables)
     tables.sort()

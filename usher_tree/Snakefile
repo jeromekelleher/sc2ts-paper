@@ -59,6 +59,27 @@ rule add_mutations:
         python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
         """
 
+rule minimise_metadata:
+    conda:
+        "convert.yml"
+    input:
+        "viridian.mutations.trees",
+    output:
+        "all_viridian.202409.trees"
+    shell:
+        """
+        python -m sc2ts minimise-metadata {input} {output}
+        """
 
-
+rule tszip:
+    conda:
+        "convert.yml"
+    input:
+        "all_viridian.202409.trees"
+    output:
+        "all_viridian.202409.trees.tsz"
+    shell:
+        """
+        python -m tszip -k {input} {output}
+        """
 
