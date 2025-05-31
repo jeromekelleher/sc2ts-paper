@@ -68,7 +68,7 @@ rule minimise_metadata:
         "all_viridian.202409.trees"
     shell:
         """
-        python -m sc2ts minimise-metadata {input} {output}
+        python -m sc2ts minimise-metadata {input} {output} --pango-field=Viridian_pangolin_1.29
         """
 
 rule tszip:
