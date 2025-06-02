@@ -7,10 +7,8 @@ Also requires the mutations to be converted into nucleotide format using
 matutils.
 """
 
-import sys
 import gzip
 import json
-import dataclasses
 
 import pandas as pd
 import numpy as np
@@ -20,7 +18,6 @@ import tqdm
 import click
 import pyfaidx
 import numpy.testing as nt
-import numpy as np
 
 
 def set_mutations(ts, ref, mutations_per_node):
@@ -36,7 +33,7 @@ def set_mutations(ts, ref, mutations_per_node):
     for node_id, node_mutations in tqdm.tqdm(mutations_per_node.items()):
         for muts in node_mutations:
             for mutation_str in muts.split(","):
-                inherited = mutation_str[0]
+                # inherited = mutation_str[0]
                 derived = mutation_str[-1]
                 pos = int(mutation_str[1:-1])
                 mutations.add_row(
@@ -124,7 +121,6 @@ def convert_topology(usher_json, tsk):
         for line in tqdm.tqdm(f, total=header["total_nodes"], desc="Parse"):
             node = json.loads(line)
             name = node["name"]
-            node_id = node["node_id"]
             flags = 0
             if not name.startswith("node_"):
                 flags = tskit.NODE_IS_SAMPLE
@@ -150,13 +146,64 @@ def convert_topology(usher_json, tsk):
                 pi[u] = parent
                 tables.edges.add_row(0, L, parent=parent, child=u)
 
-    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
-
+    # This version does just enough to dates that fit tskit rules
     set_tree_time(tables)
     tables.sort()
     tables.build_index()
     ts = tables.tree_sequence()
     ts.dump(tsk)
+
+
+@click.command()
+@click.argument("tsk_in", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("tsk_out", type=click.Path(dir_okay=False, file_okay=True))
+def date_samples(tsk_in, tsk_out):
+    """
+    Generate reasonable dates for the nodes in the specified tree by
+    keeping only samples with full-precision dates, and setting the
+    time of each node based on that. Internal nodes are currently
+    dated as 1+ the maximum of the dates of children.
+    """
+    ts = tskit.load(tsk_in)
+
+    sample_date = {}
+    for u in ts.samples():
+        node = ts.node(u)
+        date = node.metadata["Date_tree"]
+        if len(date) == 10:
+            sample_date[u] = date
+
+    print(f"Dropping {ts.num_samples - len(sample_date)} samples without exact dates")
+
+    samples = np.array(list(sample_date.keys()))
+    dates = np.array(list(sample_date.values()), dtype="datetime64[D]")
+
+    ts = ts.simplify(samples)
+
+    time_zero = dates.max()
+    time = (time_zero - dates).astype(int)
+    sample_time = dict(zip(ts.samples(), time))
+
+    node_time = np.zeros(ts.num_nodes)
+    tree = ts.first()
+    for u in tree.nodes(order="postorder"):
+        if u in sample_time:
+            assert tree.num_children(u) == 0
+            node_time[u] = sample_time[u]
+        else:
+            # Internal node
+            assert tree.num_children(u) > 0
+            node_time[u] = max(node_time[v] + 1 for v in tree.children(u))
+
+    tables = ts.dump_tables()
+    tables.metadata = {"sc2ts": {"date": str(time_zero)}}
+    tables.nodes.time = node_time
+    tables.mutations.time = node_time[tables.mutations.node]
+    tables.sort()
+    tables.time_units = "days"
+    tables.build_index()
+    ts = tables.tree_sequence()
+    ts.dump(tsk_out)
 
 
 @click.command()
@@ -237,10 +284,14 @@ def validate(usher_path, sc2ts_path):
     nt.assert_array_equal(ts_usher.samples(), np.arange(num_samples))
     nt.assert_array_equal(ts_sc2ts.samples(), np.arange(num_samples))
 
-    print(f"nodes: {ts_usher.num_nodes} {ts_sc2ts.num_nodes} "
-            f"{ts_sc2ts.num_nodes / ts_usher.num_nodes * 100 : .2f}%")
-    print(f"mutations: {ts_usher.num_mutations} {ts_sc2ts.num_mutations} "
-            f"{ts_sc2ts.num_mutations / ts_usher.num_mutations * 100 : .2f}%")
+    print(
+        f"nodes: {ts_usher.num_nodes} {ts_sc2ts.num_nodes} "
+        f"{ts_sc2ts.num_nodes / ts_usher.num_nodes * 100 : .2f}%"
+    )
+    print(
+        f"mutations: {ts_usher.num_mutations} {ts_sc2ts.num_mutations} "
+        f"{ts_sc2ts.num_mutations / ts_usher.num_mutations * 100 : .2f}%"
+    )
 
     for u in tqdm.tqdm(range(num_samples), desc="Samples"):
         sc2ts_node = ts_sc2ts.node(u)
@@ -283,6 +334,7 @@ def cli():
 
 cli.add_command(convert_topology)
 cli.add_command(convert_mutations)
+cli.add_command(date_samples)
 cli.add_command(intersect)
 cli.add_command(validate)
 cli()
