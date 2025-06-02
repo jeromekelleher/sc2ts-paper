@@ -1,0 +1,23 @@
+
+v1-beta1_2023-02-21.ts
+
+rule minimise_metadata:
+    input:
+        "viridian.dated_samples.trees",
+    output:
+        "all_viridian.202409.trees"
+    shell:
+        """
+        python -m sc2ts minimise-metadata {input} {output} --pango-field=Viridian_pangolin
+        """
+
+rule tszip:
+    input:
+        "all_viridian.202409.trees"
+    output:
+        "all_viridian.202409.trees.tsz"
+    shell:
+        """
+        python -m tszip -k {input} {output}
+        """
+
