@@ -1,23 +1,29 @@
 
-v1-beta1_2023-02-21.ts
+# TODO add some prefixes or something to reduce duplication
+# currently can't figure out how to get this to work
 
-rule minimise_metadata:
+
+# Add exact matches to the dataset and do some minor mutation
+# rearrangements like pushing unary recombinant mutations.
+rule postprocess:
     input:
-        "viridian.dated_samples.trees",
+        "../inference/results/v1-beta1/v1-beta1_2023-02-21.ts"
     output:
-        "all_viridian.202409.trees"
+        "sc2ts_v1_2023-02-21.trees"
     shell:
         """
-        python -m sc2ts minimise-metadata {input} {output} --pango-field=Viridian_pangolin
+        python -m sc2ts postprocess {input} {output} \
+            --match-db=../inference/results/v1-beta1.matches.db
         """
 
-rule tszip:
+    
+rule map_deletions:
     input:
-        "all_viridian.202409.trees"
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "sc2ts_v1_2023-02-21.trees"
     output:
-        "all_viridian.202409.trees.tsz"
+        "sc2ts_v1_2023-02-21_md.trees"
     shell:
         """
-        python -m tszip -k {input} {output}
+        python -m sc2ts map-deletions {input} {output} 
         """
-
