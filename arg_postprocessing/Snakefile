@@ -1,7 +1,7 @@
 
 rule all:
     input:
-        "sc2ts_v1_2023-02-21_md-0.01.trees"
+        "sc2ts_v1_2023-02-21_md-0.01_bps_dated.trees.tsz"
 
 INFERENCE_DIR="../inference/results/"
 
@@ -30,6 +30,40 @@ rule map_deletions:
         """
         python -m sc2ts map-deletions {input} {output} \
             --frequency-threshold={wildcards.DEL_FREQ}
+        """
+
+rule shift_breakpoints:
+    input:
+        "{PREFIX}.trees"
+    output:
+        "{PREFIX}_bps.trees"
+    shell:
+        """
+        python ../scripts/run_breakpoint_shift_for_deletions.py {input} {output}
+        """
+
+rule date:
+    input:
+        "{PREFIX}.trees"
+    output:
+        "{PREFIX}_dated.trees"
+    shell:
+        """
+        python ../scripts/run_nonsample_dating.py {input} {output}
+        """
+
+# TODO add the rule to run pango on all the nodes.
+
+ruleorder: date > shift_breakpoints > map_deletions
+
+rule tszip:
+    input:
+        "{PREFIX}.trees"
+    output:
+        "{PREFIX}.trees.tsz"
+    shell:
+        """
+        python -m tszip -k {input} 
         """
 
 
