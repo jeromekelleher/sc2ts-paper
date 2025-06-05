@@ -20,3 +20,10 @@ results/
 # Viridian data
 viridian_dataset/data
 viridian_dataset/.snakemake
+
+# Usher
+usher_tree/.snakemake
+usher_tree/*.trees
+usher_tree/*.tsz
+usher_tree/*.gz
+
