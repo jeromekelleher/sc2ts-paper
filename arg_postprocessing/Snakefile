@@ -1,29 +1,35 @@
 
-# TODO add some prefixes or something to reduce duplication
-# currently can't figure out how to get this to work
+rule all:
+    input:
+        "sc2ts_v1_2023-02-21_md-0.01.trees"
 
+INFERENCE_DIR="../inference/results/"
 
 # Add exact matches to the dataset and do some minor mutation
 # rearrangements like pushing unary recombinant mutations.
 rule postprocess:
     input:
-        "../inference/results/v1-beta1/v1-beta1_2023-02-21.ts"
+        "../inference/results/v1-beta1/v1-beta1_{DATE}.ts"
     output:
-        "sc2ts_v1_2023-02-21.trees"
+        "sc2ts_v1_{DATE}.trees"
     shell:
         """
         python -m sc2ts postprocess {input} {output} \
             --match-db=../inference/results/v1-beta1.matches.db
         """
 
-    
+# Map the deletions from the alignments back into the trees,
+# considering only deletions above given frequency threshold.
 rule map_deletions:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "sc2ts_v1_2023-02-21.trees"
+        "{PREFIX}.trees"
     output:
-        "sc2ts_v1_2023-02-21_md.trees"
+        "{PREFIX}_md-{DEL_FREQ}.trees"
     shell:
         """
-        python -m sc2ts map-deletions {input} {output} 
+        python -m sc2ts map-deletions {input} {output} \
+            --frequency-threshold={wildcards.DEL_FREQ}
         """
+
+
