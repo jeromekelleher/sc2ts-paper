@@ -1,4 +1,22 @@
+import shutil
 
+
+rule all:
+    input:
+        "all_viridian.202409.trees.tsz"
+
+rule clean:
+    shell:
+        """
+        rm -f tree.all_viridian.202409.jsonl.gz \
+              tree.all_viridian.202409.pb.gz \
+              mutations.tsv \
+              viridian.topology.trees \
+              viridian.mutations.trees \
+              viridian.dated_samples.trees \
+              all_viridian.202409.trees \
+              all_viridian.202409.trees.tsz
+        """
 
 rule download_json:
     output:
@@ -20,7 +38,14 @@ rule download_pb:
             -O {output}
         """
 
-rule export_mutations:
+# Determine whether to run the rule that creates "mutations.tsv" locally or in a Docker container.
+if shutil.which("matUtils"):
+    ruleorder: export_mutations_local > export_mutations_docker
+else:
+    ruleorder: export_mutations_docker > export_mutations_local
+
+
+rule export_mutations_local:
     conda:
         "usher.yml"
     input:
@@ -34,6 +59,28 @@ rule export_mutations:
         matUtils summary -i tree.all_viridian.202409.pb.gz \
             -f reference.fasta -g ncbiGenes.gtf \
             --translate mutations.tsv
+        """
+
+rule export_mutations_docker:
+    input:
+        "tree.all_viridian.202409.pb.gz"
+    output:
+        "mutations.tsv"
+    shell:
+        # Got GTF from 
+        # http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
+        """
+        echo "Using Docker container for matUtils"
+        if ! docker run --rm -v $(pwd):/data -w /data pathogengenomics/usher:latest \
+            matUtils summary -i tree.all_viridian.202409.pb.gz \
+            -f reference.fasta -g ncbiGenes.gtf \
+            --translate mutations.tsv; then
+            echo "ERROR: Docker command failed. Please check that:" >&2
+            echo "  1. Docker is installed and running" >&2
+            echo "  2. The pathogengenomics/usher:latest image is available (see https://usher-wiki.readthedocs.io/en/latest/Installation.html#docker)" >&2
+            echo "  3. Input files (tree.all_viridian.202409.pb.gz, reference.fasta, ncbiGenes.gtf) exist" >&2
+            exit 1
+        fi
         """
 
 rule convert_topology:
@@ -59,7 +106,7 @@ rule add_mutations:
         python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
         """
 
-rule date_sammples:
+rule date_samples:
     conda:
         "convert.yml"
     input:
@@ -71,11 +118,22 @@ rule date_sammples:
         python ../src/mat2tsk.py date-samples {input} {output}
         """
 
+rule tsdate:
+    input:
+        "viridian.dated_samples.trees"
+    output:
+        "viridian.tsdated_samples.trees"
+    shell:
+        """
+        echo "NOTE: tsdate can take many minutes per EP iteration: this may be a while."
+        python ../src/mat2tsk.py date-internal {input} {output}
+        """
+
 rule minimise_metadata:
     conda:
         "convert.yml"
     input:
-        "viridian.dated_samples.trees",
+        "viridian.tsdated_samples.trees",
     output:
         "all_viridian.202409.trees"
     shell:

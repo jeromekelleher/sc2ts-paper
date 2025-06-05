@@ -207,6 +207,35 @@ def date_samples(tsk_in, tsk_out):
 
 
 @click.command()
+@click.argument("tsk_in", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("tsk_out", type=click.Path(dir_okay=False, file_okay=True))
+def date_internal(tsk_in, tsk_out):
+    """
+    Generate reasonable dates for the internal nodes in the specified
+    sc2ts tree using tsdate without rescaling.
+    """
+    import tsdate  # We do this here because it takes a long time to import
+    ts = tskit.load(tsk_in)
+
+   # assume to first order approximation that the mutation rate is constant for all muts
+    edge_times = ts.nodes_time[ts.edges_parent] - ts.nodes_time[ts.edges_child]
+    av_mu = ts.num_mutations / ((ts.edges_right - ts.edges_left) * edge_times).sum()
+
+    dated_ts = tsdate.date(
+        ts,
+        mutation_rate=av_mu,
+        rescaling_intervals=0,
+        max_iterations=10,
+        constr_iterations=100,
+        time_units=ts.time_units,
+        allow_unary=True,
+        progress=True,
+        set_metadata=False,
+    )
+    dated_ts.dump(tsk_out)
+
+
+@click.command()
 @click.argument("usher_in", type=click.Path(dir_okay=False, file_okay=True))
 @click.argument("sc2ts_in", type=click.Path(dir_okay=False, file_okay=True))
 @click.argument("usher_out", type=click.Path(dir_okay=False, file_okay=True))
@@ -335,6 +364,7 @@ def cli():
 cli.add_command(convert_topology)
 cli.add_command(convert_mutations)
 cli.add_command(date_samples)
+cli.add_command(date_internal)
 cli.add_command(intersect)
 cli.add_command(validate)
 cli()
