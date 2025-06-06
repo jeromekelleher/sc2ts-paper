@@ -14,6 +14,7 @@ rule clean:
               viridian.topology.trees \
               viridian.mutations.trees \
               viridian.dated_samples.trees \
+              viridian.dated_nodes.trees \
               all_viridian.202409.trees \
               all_viridian.202409.trees.tsz
         """
@@ -118,11 +119,11 @@ rule date_samples:
         python ../src/mat2tsk.py date-samples {input} {output}
         """
 
-rule tsdate:
+rule date_internal_nodes:
     input:
         "viridian.dated_samples.trees"
     output:
-        "viridian.tsdated_samples.trees"
+        "viridian.dated_nodes.trees"
     shell:
         """
         echo "NOTE: tsdate can take many minutes per EP iteration: this may be a while."
@@ -133,7 +134,7 @@ rule minimise_metadata:
     conda:
         "convert.yml"
     input:
-        "viridian.tsdated_samples.trees",
+        "viridian.dated_nodes.trees",
     output:
         "all_viridian.202409.trees"
     shell:
@@ -150,6 +151,6 @@ rule tszip:
         "all_viridian.202409.trees.tsz"
     shell:
         """
-        python -m tszip -k {input} {output}
+        python -m tszip -k {input} -c > {output}
         """
 
