@@ -225,8 +225,7 @@ def date_internal(tsk_in, tsk_out):
         ts,
         mutation_rate=av_mu,
         rescaling_intervals=0,
-        max_iterations=10,
-        constr_iterations=100,
+        max_iterations=1,  # single tree, so only one round needed
         time_units=ts.time_units,
         allow_unary=True,
         progress=True,
