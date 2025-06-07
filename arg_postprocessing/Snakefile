@@ -42,6 +42,7 @@ rule shift_breakpoints:
         python ../scripts/run_breakpoint_shift_for_deletions.py {input} {output}
         """
 
+
 rule date:
     input:
         "{PREFIX}.trees"
@@ -52,9 +53,8 @@ rule date:
         python ../scripts/run_nonsample_dating.py {input} {output}
         """
 
-# TODO add the rule to run pango on all the nodes.
 
-ruleorder: date > shift_breakpoints > map_deletions
+ruleorder: date > shift_breakpoints > add_pangolin_metadata > map_deletions
 
 rule tszip:
     input:
@@ -66,4 +66,67 @@ rule tszip:
         python -m tszip -k {input} 
         """
 
+rule write_fasta:
+    input:
+        "{PREFIX}.trees"
+    output:
+        "{PREFIX}.fasta"
+    run:
+        import tszip
+        import tskit
+        import numpy as np      
 
+        # Set all nodes to be sample nodes.
+        ts = tszip.load(input[0])
+        tables = ts.dump_tables()
+        node_flags = tables.nodes.flags
+        node_flags[:] = tskit.NODE_IS_SAMPLE
+        tables.nodes.flags = node_flags
+        ts = tables.tree_sequence()
+        if ~np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
+            raise ValueError("Not all the nodes are samples.")
+        samples = np.arange(ts.num_nodes)
+        with open(f"{output}", 'w') as f:
+            # NOTE: this takes about 80G of RAM to do in one go. Can split
+            # into chunks of nodes to make it more managable
+            for j, entry in enumerate(ts.alignments(samples=samples, left=1)):
+                f.write(f">n{samples[j]}\n")
+                f.write(entry + "\n")
+
+rule run_pangolin:
+    input:
+        "{PREFIX}.fasta"
+    output:
+        "{PREFIX}.lineage_report.csv"
+    shell:
+        # Keep the temp files in a local directory pangolin_tmp because we create
+        # several copies of the data during the process of running it.
+        """
+        mkdir -p pangolin_tmp
+        pangolin -t {threads} {input} --tempdir=pangolin_tmp --outfile={output}
+        """
+
+    
+rule add_pangolin_metadata:
+    input:
+        "{PREFIX}.trees",
+        "{PREFIX}.lineage_report.csv"
+    output:
+        "{PREFIX}_pango.trees"
+    run:
+        import tskit
+        import pandas as pd
+        import tqdm
+        
+        df = pd.read_csv(input[1]).set_index("taxon")
+        tables = tskit.TableCollection.load(input[0])
+        nodes = tables.nodes.copy()
+        tables.nodes.clear()        
+        
+        for u, row in enumerate(tqdm.tqdm(nodes)):
+            record = df.loc[f"n{u}"]
+            row.metadata["pango"] = record["lineage"]
+            row.metadata["scorpio"] = record["scorpio_call"]
+            tables.nodes.append(row)        
+
+        tables.dump(f"{output}")
