@@ -1,8 +1,9 @@
 
 rule all:
     input:
-        "sc2ts_v1_2020-06-21_md-0.01_bps_pango_dated_mm.trees.tsz",
-        #"sc2ts_v1_2023-02-21_md-0.01_bps_dated.trees.tsz",
+        # Small for pipeline dev
+        # "sc2ts_v1_2020-06-21_md-0.01_bps_pango_dated_mm.trees.tsz",
+        "sc2ts_v1_2023-02-21_md-0.01_bps_pango_dated_mm.trees.tsz",
 
 
 INFERENCE_DIR = "../inference/results/"
@@ -57,9 +58,6 @@ rule date:
         """
         python ../scripts/run_nonsample_dating.py {input} {output}
         """
-
-
-# ruleorder: date > add_pangolin_metadata > shift_breakpoints > map_deletions
 
 
 rule tszip:
