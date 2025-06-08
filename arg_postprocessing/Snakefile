@@ -111,7 +111,7 @@ rule run_pangolin:
         # several copies of the data during the process of running it.
         """
         mkdir -p pangolin_tmp
-        pangolin -t {threads} {input} --tempdir=pangolin_tmp --outfile={output}
+        pangolin -t {workflow.cores} {input} --tempdir=pangolin_tmp --outfile={output}
         """
 
 
