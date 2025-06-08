@@ -1,42 +1,46 @@
 
 rule all:
     input:
-        "sc2ts_v1_2023-02-21_md-0.01_bps_dated.trees.tsz"
+        "sc2ts_v1_2023-02-21_md-0.01_bps_dated.trees.tsz",
 
-INFERENCE_DIR="../inference/results/"
+
+INFERENCE_DIR = "../inference/results/"
+
 
 # Add exact matches to the dataset and do some minor mutation
 # rearrangements like pushing unary recombinant mutations.
 rule postprocess:
     input:
-        "../inference/results/v1-beta1/v1-beta1_{DATE}.ts"
+        "../inference/results/v1-beta1/v1-beta1_{DATE}.ts",
     output:
-        "sc2ts_v1_{DATE}.trees"
+        "sc2ts_v1_{DATE}.trees",
     shell:
         """
         python -m sc2ts postprocess {input} {output} \
             --match-db=../inference/results/v1-beta1.matches.db
         """
 
+
 # Map the deletions from the alignments back into the trees,
 # considering only deletions above given frequency threshold.
 rule map_deletions:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "{PREFIX}.trees"
+        "{PREFIX}.trees",
     output:
-        "{PREFIX}_md-{DEL_FREQ}.trees"
+        "{PREFIX}_md-{DEL_FREQ}.trees",
     shell:
         """
         python -m sc2ts map-deletions {input} {output} \
             --frequency-threshold={wildcards.DEL_FREQ}
         """
 
+
 rule shift_breakpoints:
     input:
-        "{PREFIX}.trees"
+        "{PREFIX}.trees",
     output:
-        "{PREFIX}_bps.trees"
+        "{PREFIX}_bps.trees",
     shell:
         """
         python ../scripts/run_breakpoint_shift_for_deletions.py {input} {output}
@@ -45,9 +49,9 @@ rule shift_breakpoints:
 
 rule date:
     input:
-        "{PREFIX}.trees"
+        "{PREFIX}.trees",
     output:
-        "{PREFIX}_dated.trees"
+        "{PREFIX}_dated.trees",
     shell:
         """
         python ../scripts/run_nonsample_dating.py {input} {output}
@@ -56,25 +60,27 @@ rule date:
 
 ruleorder: date > shift_breakpoints > add_pangolin_metadata > map_deletions
 
+
 rule tszip:
     input:
-        "{PREFIX}.trees"
+        "{PREFIX}.trees",
     output:
-        "{PREFIX}.trees.tsz"
+        "{PREFIX}.trees.tsz",
     shell:
         """
         python -m tszip -k {input} 
         """
 
+
 rule write_fasta:
     input:
-        "{PREFIX}.trees"
+        "{PREFIX}.trees",
     output:
-        "{PREFIX}.fasta"
+        "{PREFIX}.fasta",
     run:
         import tszip
         import tskit
-        import numpy as np      
+        import numpy as np
 
         # Set all nodes to be sample nodes.
         ts = tszip.load(input[0])
@@ -86,18 +92,19 @@ rule write_fasta:
         if ~np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
             raise ValueError("Not all the nodes are samples.")
         samples = np.arange(ts.num_nodes)
-        with open(f"{output}", 'w') as f:
+        with open(f"{output}", "w") as f:
             # NOTE: this takes about 80G of RAM to do in one go. Can split
             # into chunks of nodes to make it more managable
             for j, entry in enumerate(ts.alignments(samples=samples, left=1)):
                 f.write(f">n{samples[j]}\n")
                 f.write(entry + "\n")
 
+
 rule run_pangolin:
     input:
-        "{PREFIX}.fasta"
+        "{PREFIX}.fasta",
     output:
-        "{PREFIX}.lineage_report.csv"
+        "{PREFIX}.lineage_report.csv",
     shell:
         # Keep the temp files in a local directory pangolin_tmp because we create
         # several copies of the data during the process of running it.
@@ -106,27 +113,27 @@ rule run_pangolin:
         pangolin -t {threads} {input} --tempdir=pangolin_tmp --outfile={output}
         """
 
-    
+
 rule add_pangolin_metadata:
     input:
         "{PREFIX}.trees",
-        "{PREFIX}.lineage_report.csv"
+        "{PREFIX}.lineage_report.csv",
     output:
-        "{PREFIX}_pango.trees"
+        "{PREFIX}_pango.trees",
     run:
         import tskit
         import pandas as pd
         import tqdm
-        
+
         df = pd.read_csv(input[1]).set_index("taxon")
         tables = tskit.TableCollection.load(input[0])
         nodes = tables.nodes.copy()
-        tables.nodes.clear()        
-        
+        tables.nodes.clear()
+
         for u, row in enumerate(tqdm.tqdm(nodes)):
             record = df.loc[f"n{u}"]
             row.metadata["pango"] = record["lineage"]
             row.metadata["scorpio"] = record["scorpio_call"]
-            tables.nodes.append(row)        
+            tables.nodes.append(row)
 
         tables.dump(f"{output}")
