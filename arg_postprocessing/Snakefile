@@ -1,7 +1,8 @@
 
 rule all:
     input:
-        "sc2ts_v1_2023-02-21_md-0.01_bps_dated.trees.tsz",
+        "sc2ts_v1_2020-06-21_md-0.01_bps_pango_dated_mm.trees.tsz",
+        #"sc2ts_v1_2023-02-21_md-0.01_bps_dated.trees.tsz",
 
 
 INFERENCE_DIR = "../inference/results/"
@@ -26,9 +27,9 @@ rule postprocess:
 rule map_deletions:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "{PREFIX}.trees",
+        "{MD_PREFIX}.trees",
     output:
-        "{PREFIX}_md-{DEL_FREQ}.trees",
+        r"{MD_PREFIX}_md-{DEL_FREQ,0.\d+}.trees",
     shell:
         """
         python -m sc2ts map-deletions {input} {output} \
@@ -38,9 +39,9 @@ rule map_deletions:
 
 rule shift_breakpoints:
     input:
-        "{PREFIX}.trees",
+        "{BP_PREFIX}.trees",
     output:
-        "{PREFIX}_bps.trees",
+        "{BP_PREFIX}_bps.trees",
     shell:
         """
         python ../scripts/run_breakpoint_shift_for_deletions.py {input} {output}
@@ -49,23 +50,23 @@ rule shift_breakpoints:
 
 rule date:
     input:
-        "{PREFIX}.trees",
+        "{DATE_PREFIX}.trees",
     output:
-        "{PREFIX}_dated.trees",
+        "{DATE_PREFIX}_dated.trees",
     shell:
         """
         python ../scripts/run_nonsample_dating.py {input} {output}
         """
 
 
-ruleorder: date > shift_breakpoints > add_pangolin_metadata > map_deletions
+# ruleorder: date > add_pangolin_metadata > shift_breakpoints > map_deletions
 
 
 rule tszip:
     input:
-        "{PREFIX}.trees",
+        "{TSZIP_PREFIX}.trees",
     output:
-        "{PREFIX}.trees.tsz",
+        "{TSZIP_PREFIX}.trees.tsz",
     shell:
         """
         python -m tszip -k {input} 
@@ -74,9 +75,9 @@ rule tszip:
 
 rule write_fasta:
     input:
-        "{PREFIX}.trees",
+        "{WF_PREFIX}.trees",
     output:
-        "{PREFIX}.fasta",
+        "{WF_PREFIX}.fasta",
     run:
         import tszip
         import tskit
@@ -102,9 +103,11 @@ rule write_fasta:
 
 rule run_pangolin:
     input:
-        "{PREFIX}.fasta",
+        "{RP_PREFIX}.fasta",
     output:
-        "{PREFIX}.lineage_report.csv",
+        "{RP_PREFIX}.lineage_report.csv",
+    conda:
+        "pangolin.yml"
     shell:
         # Keep the temp files in a local directory pangolin_tmp because we create
         # several copies of the data during the process of running it.
@@ -116,10 +119,10 @@ rule run_pangolin:
 
 rule add_pangolin_metadata:
     input:
-        "{PREFIX}.trees",
-        "{PREFIX}.lineage_report.csv",
+        "{APM_PREFIX}.trees",
+        "{APM_PREFIX}.lineage_report.csv",
     output:
-        "{PREFIX}_pango.trees",
+        "{APM_PREFIX}_pango.trees",
     run:
         import tskit
         import pandas as pd
@@ -137,3 +140,14 @@ rule add_pangolin_metadata:
             tables.nodes.append(row)
 
         tables.dump(f"{output}")
+
+
+rule minimise_metadata:
+    input:
+        "{MM_PREFIX}.trees",
+    output:
+        "{MM_PREFIX}_mm.trees",
+    shell:
+        """
+        python -m  sc2ts minimise-metadata --pango-field=pango {input} {output}
+        """
