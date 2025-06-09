@@ -5,7 +5,11 @@ rule all:
         # "sc2ts_v1_2020-06-21_md-0.01_bps_pango_dated_mm.trees.tsz",
         "sc2ts_v1_2023-02-21_md-0.01_bps_pango_dated_mm.trees.tsz",
         # Viridian Usher trees
+        # TODO rename the usher tree to start with "usher_" and 
+        # use exact date of last sample
         "all_viridian.202409.trees.tsz"
+        "usher_intersection.trees.tsz",
+        "sc2ts_intersection.trees.tsz",
 
 
 
@@ -253,5 +257,20 @@ rule minimise_usher_metadata:
     shell:
         """
         python -m sc2ts minimise-metadata {input} {output} --pango-field=Viridian_pangolin_1.29
+        """
+
+
+rule sc2ts_usher_intersection:
+    conda:
+        "sc2ts.yml"
+    input:
+        "all_viridian.202409.trees",
+        "sc2ts_v1_2023-02-21_md-0.01_bps_pango_dated_mm.trees.tsz"
+    output:
+        "usher_intersection.trees",
+        "sc2ts_intersection.trees",
+    shell:
+        """
+        python ../src/mat2tsk.py intersect {input} {output}
         """
 
