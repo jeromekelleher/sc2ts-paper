@@ -7,7 +7,7 @@ rule all:
         # Viridian Usher trees
         # TODO rename the usher tree to start with "usher_" and 
         # use exact date of last sample
-        "all_viridian.202409.trees.tsz"
+        "all_viridian.202409.trees.tsz",
         "usher_intersection.trees.tsz",
         "sc2ts_intersection.trees.tsz",
 
