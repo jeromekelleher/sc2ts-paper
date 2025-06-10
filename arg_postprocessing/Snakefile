@@ -2,12 +2,12 @@
 rule all:
     input:
         # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_md-0.01_bps_pango_dated_mm.trees.tsz",
-        "sc2ts_v1_2023-02-21_md-0.01_bps_pango_dated_mm.trees.tsz",
+        # "sc2ts_v1_2020-06-21_dels_bps_pango_dated_mm.trees.tsz",
+        "sc2ts_v1_2023-02-21_dels_bps_pango_dated_mm.trees.tsz",
         # Viridian Usher trees
         # TODO rename the usher tree to start with "usher_" and 
         # use exact date of last sample
-        "all_viridian.202409.trees.tsz",
+        "all_viridian.202409.trees.tsz"
         "usher_intersection.trees.tsz",
         "sc2ts_intersection.trees.tsz",
 
@@ -30,18 +30,16 @@ rule postprocess:
         """
 
 
-# Map the deletions from the alignments back into the trees,
-# considering only deletions above given frequency threshold.
 rule map_deletions:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
         "{MD_PREFIX}.trees",
+        "deletion_sites.txt",
     output:
-        r"{MD_PREFIX}_md-{DEL_FREQ,0.\d+}.trees",
+        r"{MD_PREFIX}_dels.trees",
     shell:
         """
-        python -m sc2ts map-deletions {input} {output} \
-            --frequency-threshold={wildcards.DEL_FREQ}
+        python -m sc2ts map-deletions -vv {input} {output} 
         """
 
 
@@ -265,7 +263,7 @@ rule sc2ts_usher_intersection:
         "sc2ts.yml"
     input:
         "all_viridian.202409.trees",
-        "sc2ts_v1_2023-02-21_md-0.01_bps_pango_dated_mm.trees.tsz"
+        "sc2ts_v1_2023-02-21_dels_bps_pango_dated_mm.trees.tsz"
     output:
         "usher_intersection.trees",
         "sc2ts_intersection.trees",
