@@ -49,8 +49,6 @@ rule postprocess:
             --match-db=../inference/results/v1-beta1.matches.db
         """
 
-
-
 rule map_deletions:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
@@ -62,6 +60,17 @@ rule map_deletions:
         """
         python -m sc2ts map-deletions -vv {input} {output} --no-progress
         """
+
+
+rule deletion_report:
+    input:
+        "{DELR_PREFIX}.trees",
+    input:
+        "{DELR_PREFIX}_deletion_events.csv",
+    log:
+        notebook="logs/{DELR_PREFIX}_deletion-report.ipynb"
+    notebook:
+        "notebooks/deletion_report.py.ipynb"
 
 
 rule shift_breakpoints:
