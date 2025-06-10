@@ -2,8 +2,9 @@
 rule all:
     input:
         # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_dels_bps_pango_dated_mm.trees.tsz",
-        "sc2ts_v1_2023-02-21_dels_bps_pango_dated_mm.trees.tsz",
+        # "sc2ts_v1_2020-06-21_pp_dels_bps_pango_dated_mm.trees.tsz",
+        "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
+        "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mm.trees.tsz",
         # Viridian Usher trees
         # TODO rename the usher tree to start with "usher_" and 
         # use exact date of last sample
@@ -16,18 +17,38 @@ rule all:
 INFERENCE_DIR = "../inference/results/"
 
 
-# Add exact matches to the dataset and do some minor mutation
-# rearrangements like pushing unary recombinant mutations.
-rule postprocess:
+rule initialise:
     input:
         "../inference/results/v1-beta1/v1-beta1_{DATE}.ts",
     output:
         "sc2ts_v1_{DATE}.trees",
     shell:
         """
+        cp {input} {output}
+        """
+
+rule debug_report:
+    input:
+        "{DR_PREFIX}.trees",
+    log:
+        notebook="logs/{DR_PREFIX}_debug-report.ipynb"
+    notebook:
+        "notebooks/debug_report.py.ipynb"
+
+
+# Add exact matches to the dataset and do some minor mutation
+# rearrangements like pushing unary recombinant mutations.
+rule postprocess:
+    input:
+        "{PP_PREFIX}.trees"
+    output:
+        "{PP_PREFIX}_pp.trees",
+    shell:
+        """
         python -m sc2ts postprocess {input} {output} \
             --match-db=../inference/results/v1-beta1.matches.db
         """
+
 
 
 rule map_deletions:
@@ -39,7 +60,7 @@ rule map_deletions:
         r"{MD_PREFIX}_dels.trees",
     shell:
         """
-        python -m sc2ts map-deletions -vv {input} {output} 
+        python -m sc2ts map-deletions -vv {input} {output} --no-progress
         """
 
 
