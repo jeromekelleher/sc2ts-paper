@@ -64,19 +64,20 @@ rule map_deletions:
         "deletion_sites.txt",
     output:
         "{MD_PREFIX}_dels.trees",
-        "{MD_PREFIX}_dels.csv",
+        "{MD_PREFIX}_dels_parsimony.csv",
     shell:
         """
-        python -m sc2ts map-deletions -vv {input} {output[0]} \
-            --report={output[1]} --no-progress
+        python -m sc2ts map-deletions -vv \
+            {input[0]} {input[1]} {output[0]} \
+            --sites={input[2]} --report={output[1]} --no-progress
         """
-
 
 rule deletion_report:
     conda:
         "sc2ts.yml"
     input:
         "{DELR_PREFIX}.trees",
+        "{DELR_PREFIX}_parsimony.csv",
     output:
         "{DELR_PREFIX}_deletion_events.csv",
     log:
