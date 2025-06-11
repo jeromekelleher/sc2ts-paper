@@ -66,7 +66,7 @@ rule map_deletions:
 rule deletion_report:
     input:
         "{DELR_PREFIX}.trees",
-    input:
+    output:
         "{DELR_PREFIX}_deletion_events.csv",
     log:
         notebook="logs/{DELR_PREFIX}_deletion-report.ipynb"
