@@ -7,12 +7,13 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_pp_dels_deletion-report.ipynb",
         "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mm.trees.tsz",
         # Viridian Usher trees
-        # TODO rename the usher tree to start with "usher_" and 
-        # use exact date of last sample
-        "usher_v1_2024-06-06.trees.tsz"
-        "usher_intersection.trees.tsz",
-        "sc2ts_intersection.trees.tsz",
-
+        "usher_v1_2024-06-06.trees.tsz",
+        # Intersection trees between usher and sc2ts
+        "usher_2023-02-21_intersection.trees.tsz",
+        "sc2ts_2023-02-21_intersection.trees.tsz",
+        # All-sites parsimony files, to get the direct comparison
+        "usher_2023-02-21_intersection_asp.trees",
+        "sc2ts_2023-02-21_intersection_asp.trees",
 
 
 INFERENCE_DIR = "../inference/results/"
@@ -62,10 +63,12 @@ rule map_deletions:
         "{MD_PREFIX}.trees",
         "deletion_sites.txt",
     output:
-        r"{MD_PREFIX}_dels.trees",
+        "{MD_PREFIX}_dels.trees",
+        "{MD_PREFIX}_dels.csv",
     shell:
         """
-        python -m sc2ts map-deletions -vv {input} {output} --no-progress
+        python -m sc2ts map-deletions -vv {input} {output[0]} \
+            --report={output[1]} --no-progress
         """
 
 
@@ -324,3 +327,31 @@ rule sc2ts_usher_intersection:
         """
         python ../src/mat2tsk.py intersect {input} {output}
         """
+
+
+rule all_sites_parismony:
+    conda:
+        "sc2ts.yml"
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "{ASP_PREFIX}.trees"
+    output:
+        "{ASP_PREFIX}_asp.trees",
+        "{ASP_PREFIX}_asp.csv"
+    shell:
+        """
+        python -m sc2ts map-deletions -vv {input} {output[0]} \
+            --report={output[1]} --no-progress
+        """
+
+
+rule xx_debug_report:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{DR_PREFIX}.trees",
+    log:
+        notebook="logs/{DR_PREFIX}_debug-report.ipynb"
+    notebook:
+        "notebooks/debug_report.py.ipynb"
+

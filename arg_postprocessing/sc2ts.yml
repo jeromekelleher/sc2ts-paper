@@ -278,5 +278,5 @@ dependencies:
       - sortedcontainers==2.4.0
       - tqdm==4.67.1
       - tsdate==0.2.3
-      # FIXME change to released version when done
+      # FIXME change to released version when it is done
       - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts
