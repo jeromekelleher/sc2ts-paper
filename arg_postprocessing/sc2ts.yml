@@ -274,9 +274,9 @@ dependencies:
       - python-easyconfig==0.1.7
       - python-json-logger==3.3.0
       - resource==0.2.1
-      - sc2ts==0.0.4.dev606+g664155f
       - scipy==1.15.3
       - sortedcontainers==2.4.0
       - tqdm==4.67.1
       - tsdate==0.2.3
-      - tsinfer==0.1.dev1455+g7522bcc
+      # FIXME change to released version when done
+      - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts

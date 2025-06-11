@@ -9,7 +9,7 @@ rule all:
         # Viridian Usher trees
         # TODO rename the usher tree to start with "usher_" and 
         # use exact date of last sample
-        "all_viridian.202409.trees.tsz"
+        "usher_v1_2024-06-06.trees.tsz"
         "usher_intersection.trees.tsz",
         "sc2ts_intersection.trees.tsz",
 
@@ -29,6 +29,8 @@ rule initialise:
         """
 
 rule debug_report:
+    conda:
+        "sc2ts.yml"
     input:
         "{DR_PREFIX}.trees",
     log:
@@ -40,6 +42,8 @@ rule debug_report:
 # Add exact matches to the dataset and do some minor mutation
 # rearrangements like pushing unary recombinant mutations.
 rule postprocess:
+    conda:
+        "sc2ts.yml"
     input:
         "{PP_PREFIX}.trees"
     output:
@@ -51,6 +55,8 @@ rule postprocess:
         """
 
 rule map_deletions:
+    conda:
+        "sc2ts.yml"
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
         "{MD_PREFIX}.trees",
@@ -64,6 +70,8 @@ rule map_deletions:
 
 
 rule deletion_report:
+    conda:
+        "sc2ts.yml"
     input:
         "{DELR_PREFIX}.trees",
     output:
@@ -75,6 +83,8 @@ rule deletion_report:
 
 
 rule shift_breakpoints:
+    conda:
+        "sc2ts.yml"
     input:
         "{BP_PREFIX}.trees",
     output:
@@ -86,6 +96,8 @@ rule shift_breakpoints:
 
 
 rule date:
+    conda:
+        "sc2ts.yml"
     input:
         "{DATE_PREFIX}.trees",
     output:
@@ -97,6 +109,8 @@ rule date:
 
 
 rule tszip:
+    conda:
+        "sc2ts.yml"
     input:
         "{TSZIP_PREFIX}.trees",
     output:
@@ -108,6 +122,8 @@ rule tszip:
 
 
 rule write_fasta:
+    conda:
+        "sc2ts.yml"
     input:
         "{WF_PREFIX}.trees",
     output:
@@ -136,12 +152,12 @@ rule write_fasta:
 
 
 rule run_pangolin:
+    conda:
+        "pangolin.yml"
     input:
         "{RP_PREFIX}.fasta",
     output:
         "{RP_PREFIX}.lineage_report.csv",
-    conda:
-        "pangolin.yml"
     shell:
         # Keep the temp files in a local directory pangolin_tmp because we create
         # several copies of the data during the process of running it.
@@ -152,6 +168,8 @@ rule run_pangolin:
 
 
 rule add_pangolin_metadata:
+    conda:
+        "sc2ts.yml"
     input:
         "{APM_PREFIX}.trees",
         "{APM_PREFIX}.lineage_report.csv",
@@ -177,6 +195,8 @@ rule add_pangolin_metadata:
 
 
 rule minimise_metadata:
+    conda:
+        "sc2ts.yml"
     input:
         "{MM_PREFIX}.trees",
     output:
@@ -219,14 +239,14 @@ rule export_mutations_local:
     input:
         "tree.all_viridian.202409.pb.gz"
     output:
-        "mutations.tsv"
+        "usher_mutations.tsv"
     shell:
         # Got GTF from 
         # http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
         """
         matUtils summary -i tree.all_viridian.202409.pb.gz \
             -f reference.fasta -g ncbiGenes.gtf \
-            --translate mutations.tsv
+            --translate usher_mutations.tsv
         """
 
 rule convert_topology:
@@ -235,7 +255,7 @@ rule convert_topology:
     input:
         "tree.all_viridian.202409.jsonl.gz"
     output:
-        "viridian.topology.trees"
+        "usher.topology.trees"
     shell:
         "python ../src/mat2tsk.py convert-topology {input} {output}"
 
@@ -244,9 +264,9 @@ rule add_mutations:
         "sc2ts.yml"
     input:
         "viridian.topology.trees",
-        "mutations.tsv"
+        "usher_mutations.tsv"
     output:
-        "viridian.mutations.trees"
+        "usher.mutations.trees"
     shell:
         """
         python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
@@ -256,19 +276,21 @@ rule date_samples:
     conda:
         "sc2ts.yml"
     input:
-        "viridian.mutations.trees",
+        "usher.mutations.trees",
     output:
-        "viridian.dated_samples.trees"
+        "usher.dated_samples.trees"
     shell:
         """
         python ../src/mat2tsk.py date-samples {input} {output}
         """
 
 rule date_internal_nodes:
+    conda:
+        "sc2ts.yml"
     input:
-        "viridian.dated_samples.trees"
+        "usher.dated_samples.trees"
     output:
-        "viridian.dated_nodes.trees"
+        "usher.dated_nodes.trees"
     shell:
         """
         echo "NOTE: tsdate can take many minutes per EP iteration: this may be a while."
@@ -280,9 +302,9 @@ rule minimise_usher_metadata:
     conda:
         "sc2ts.yml"
     input:
-        "viridian.dated_nodes.trees",
+        "usher.dated_nodes.trees",
     output:
-        "all_viridian.202409.trees"
+        "usher_v1_2024-06-06.trees"
     shell:
         """
         python -m sc2ts minimise-metadata {input} {output} --pango-field=Viridian_pangolin_1.29
@@ -293,13 +315,12 @@ rule sc2ts_usher_intersection:
     conda:
         "sc2ts.yml"
     input:
-        "all_viridian.202409.trees",
-        "sc2ts_v1_2023-02-21_dels_bps_pango_dated_mm.trees.tsz"
+        "usher_v1_2024-06-06.trees",
+        "sc2ts_v1_2023-02-21_mm.trees"
     output:
-        "usher_intersection.trees",
-        "sc2ts_intersection.trees",
+        "usher_2023-02-21_intersection.trees",
+        "sc2ts_2023-02-21_intersection.trees",
     shell:
         """
         python ../src/mat2tsk.py intersect {input} {output}
         """
-

@@ -198,6 +198,7 @@ def date_samples(tsk_in, tsk_out):
 
     tables = ts.dump_tables()
     tables.metadata = {"sc2ts": {"date": str(time_zero)}}
+    print("Setting time zero = ", str(time_zero))
     tables.nodes.time = node_time
     tables.mutations.time = node_time[tables.mutations.node]
     tables.sort()
