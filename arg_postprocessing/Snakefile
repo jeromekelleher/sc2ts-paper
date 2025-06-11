@@ -1,3 +1,8 @@
+# This workflow is intended to be run with the --sdm=conda option,
+# and most rules require either the sc2ts or pangolin environments.
+# The base conda environment that snakemake is run from requires
+# snakemake, tszip, pandas and tqdm in order to run the "run"
+# rules (which cannot be used with "conda")
 
 rule all:
     input:
@@ -126,8 +131,6 @@ rule tszip:
 
 
 rule write_fasta:
-    conda:
-        "sc2ts.yml"
     input:
         "{WF_PREFIX}.trees",
     output:
@@ -172,8 +175,6 @@ rule run_pangolin:
 
 
 rule add_pangolin_metadata:
-    conda:
-        "sc2ts.yml"
     input:
         "{APM_PREFIX}.trees",
         "{APM_PREFIX}.lineage_report.csv",
@@ -341,18 +342,7 @@ rule all_sites_parismony:
         "{ASP_PREFIX}_asp.csv"
     shell:
         """
-        python -m sc2ts map-deletions -vv {input} {output[0]} \
+        python -m sc2ts map-deletions -v {input} {output[0]} \
             --report={output[1]} --no-progress
         """
-
-
-rule xx_debug_report:
-    conda:
-        "sc2ts.yml"
-    input:
-        "{DR_PREFIX}.trees",
-    log:
-        notebook="logs/{DR_PREFIX}_debug-report.ipynb"
-    notebook:
-        "notebooks/debug_report.py.ipynb"
 
