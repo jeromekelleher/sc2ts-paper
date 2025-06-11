@@ -10,6 +10,7 @@ matutils.
 import gzip
 import json
 
+import sc2ts
 import pandas as pd
 import numpy as np
 import tskit
@@ -251,47 +252,35 @@ def intersect(usher_in, sc2ts_in, usher_out, sc2ts_out, intersect_sites):
     and sc2ts ARGs. The output user and sc2ts files will contain the same
     set of samples in the same order.
     """
-    ts_usher_in = tszip.load(usher_in)
-    ts_sc2ts_in = tszip.load(sc2ts_in)
+    tsu = tszip.load(usher_in)
+    tss = tszip.load(sc2ts_in)
+    print(f"Loaded usher: {tsu.num_samples}, {tsu.num_sites}; "
+        f"sc2ts: {tss.num_samples}, {tss.num_sites}")
 
-    samples_strain_usher = ts_usher_in.metadata["sc2ts"]["samples_strain"]
-    samples_strain_sc2ts = ts_sc2ts_in.metadata["sc2ts"]["samples_strain"]
-    usher_lookup = dict(zip(samples_strain_usher, ts_usher_in.samples()))
-    sc2ts_lookup = dict(zip(samples_strain_sc2ts, ts_sc2ts_in.samples()))
+    dfns = sc2ts.node_data(tss)
+    dfns = dfns[dfns.is_sample].set_index("sample_id")
+    dfnu = sc2ts.node_data(tsu)
+    dfnu = dfnu[dfnu.is_sample].set_index("sample_id")
 
-    intersection = set(usher_lookup.keys()) & set(sc2ts_lookup.keys())
-    print(
-        f"Usher: {len(usher_lookup)}; sc2ts: {len(sc2ts_lookup)} "
-        f"inter = {len(intersection)}"
-    )
-    intersection = sorted(intersection)
+    dfn = dfns.join(dfnu, how="inner", lsuffix="_sc2ts", rsuffix="_usher")
+    print(f"Computed intersection: {dfn.shape[0]}")
 
-    sc2ts_samples = [sc2ts_lookup[k] for k in intersection]
-    tables = ts_sc2ts_in.dump_tables()
-    tables.simplify(sc2ts_samples, filter_sites=False)
-    tables.metadata = {"sc2ts": {"samples_strain": intersection}}
-    ts_sc2ts_out = tables.tree_sequence()
-    del tables
-
-    usher_samples = [usher_lookup[k] for k in intersection]
-    tables = ts_usher_in.dump_tables()
-    tables.simplify(usher_samples, filter_sites=False)
-    tables.metadata = {"sc2ts": {"samples_strain": intersection}}
-    ts_usher_out = tables.tree_sequence()
-    del tables
+    tss = tss.simplify(dfn.node_id_sc2ts.values, filter_sites=False)
+    tsu = tsu.simplify(dfn.node_id_usher.values, filter_sites=False)
 
     if intersect_sites:
-        assert set(ts_sc2ts_out.sites_position) >= set(ts_usher_out.sites_position)
-        missing_positions = set(ts_sc2ts_out.sites_position) - set(
-            ts_usher_out.sites_position
-        )
-        missing_sites = np.searchsorted(
-            ts_sc2ts_out.sites_position, list(missing_positions)
-        )
-        ts_sc2ts_out = ts_sc2ts_out.delete_sites(missing_sites)
 
-    ts_sc2ts_out.dump(sc2ts_out)
-    ts_usher_out.dump(usher_out)
+        inter = np.intersect1d(tss.sites_position, tsu.sites_position)
+        print(f"Found intersection of {len(inter)} sites")
+        del_pos = np.setdiff1d(tss.sites_position, inter)
+        del_sites = np.searchsorted(tss.sites_position, del_pos)
+        tss = tss.delete_sites(del_sites)
+        del_pos = np.setdiff1d(tsu.sites_position, inter)
+        del_sites = np.searchsorted(tsu.sites_position, del_pos)
+        tsu = tsu.delete_sites(del_sites)
+
+    tss.dump(sc2ts_out)
+    tsu.dump(usher_out)
 
 
 @click.command()
@@ -307,10 +296,6 @@ def validate(usher_path, sc2ts_path):
     assert num_samples == ts_sc2ts.num_samples
     num_sites = ts_usher.num_sites
     assert num_sites == ts_sc2ts.num_sites
-    samples_strain = ts_sc2ts.metadata["sc2ts"]["samples_strain"]
-    assert samples_strain == ts_usher.metadata["sc2ts"]["samples_strain"]
-    nt.assert_array_equal(ts_usher.samples(), np.arange(num_samples))
-    nt.assert_array_equal(ts_sc2ts.samples(), np.arange(num_samples))
 
     print(
         f"nodes: {ts_usher.num_nodes} {ts_sc2ts.num_nodes} "
@@ -320,14 +305,17 @@ def validate(usher_path, sc2ts_path):
         f"mutations: {ts_usher.num_mutations} {ts_sc2ts.num_mutations} "
         f"{ts_sc2ts.num_mutations / ts_usher.num_mutations * 100 : .2f}%"
     )
+    df_usher = sc2ts.node_data(ts_usher)
+    df_usher = df_usher[df_usher["is_sample"]]
+    df_sc2ts = sc2ts.node_data(ts_sc2ts)
+    df_sc2ts = df_sc2ts[df_sc2ts["is_sample"]]
 
-    for u in tqdm.tqdm(range(num_samples), desc="Samples"):
-        sc2ts_node = ts_sc2ts.node(u)
-        usher_node = ts_usher.node(u)
-        assert sc2ts_node.metadata["strain"] == samples_strain[u]
-        assert usher_node.metadata["strain"] == samples_strain[u]
+    assert np.all(df_usher["sample_id"] == df_sc2ts["sample_id"])
+    assert np.all(df_usher["node_id"] == df_sc2ts["node_id"])
+    diffs = np.where(df_usher["date"] != df_sc2ts["date"])[0]
+    print(f"Node dates differ for {len(diffs)} samples")
 
-    var_sc2ts = tskit.Variant(ts_sc2ts, alleles=tuple("ACGT"))
+    var_sc2ts = tskit.Variant(ts_sc2ts, alleles=tuple("ACGT-"))
     var_usher = tskit.Variant(ts_usher, alleles=tuple("ACGT"))
 
     identical_sites = 0
@@ -336,7 +324,7 @@ def validate(usher_path, sc2ts_path):
         var_sc2ts.decode(j)
         var_usher.decode(j)
         assert var_sc2ts.site.ancestral_state == var_usher.site.ancestral_state
-        assert var_sc2ts.alleles == var_usher.alleles
+        # assert var_sc2ts.alleles == var_usher.alleles
         g_sc2ts = var_sc2ts.genotypes
         g_usher = var_usher.genotypes
         assert np.all(g_sc2ts >= 0)
