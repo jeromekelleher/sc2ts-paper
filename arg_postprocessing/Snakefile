@@ -10,6 +10,7 @@ rule all:
         # "sc2ts_v1_2020-06-21_pp_dels_bps_pango_dated_mm.trees.tsz",
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
         "logs/sc2ts_v1_2023-02-21_pp_dels_deletion-report.ipynb",
+        "logs/usher_sc2ts_comparison.ipynb",
         "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz",
         # Viridian Usher trees
         "usher_v1_2024-06-06_di_mm.trees.tsz",
