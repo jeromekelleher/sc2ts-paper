@@ -259,7 +259,7 @@ dependencies:
   - zipp=3.22.0
   - zstandard=0.23.0
   - zstd=1.5.7
-  # FIXME jamming this in temporarily
+  # FIXME wedgeing this in temporarily
   - nbconvert
   - jupyter
   - pip:
