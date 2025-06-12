@@ -10,6 +10,7 @@ rule all:
         # "sc2ts_v1_2020-06-21_pp_dels_bps_pango_dated_mm.trees.tsz",
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
         "logs/sc2ts_v1_2023-02-21_pp_dels_deletion-report.ipynb",
+        "logs/usher_sc2ts_comparison.ipynb",
         "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz",
         # Viridian Usher trees
         "usher_v1_2024-06-06_di_mm.trees.tsz",
@@ -344,4 +345,20 @@ rule all_sites_parismony:
         python -m sc2ts map-deletions -v {input} {output[0]} \
             --report={output[1]} --no-progress
         """
+
+
+rule usher_sc2ts_comparison:
+    conda:
+        "sc2ts.yml"
+    input:
+        "usher_2023-02-21_intersection.trees",
+        "usher_2023-02-21_intersection_asp.trees",
+        "usher_2023-02-21_intersection_asp.csv",
+        "sc2ts_2023-02-21_intersection.trees",
+        "sc2ts_2023-02-21_intersection_asp.trees",
+        "sc2ts_2023-02-21_intersection_asp.csv",
+    log:
+        notebook="logs/usher_sc2ts_comparison.ipynb"
+    notebook:
+        "notebooks/usher_sc2ts_comparison.py.ipynb"
 
