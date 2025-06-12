@@ -21,9 +21,6 @@ rule all:
         "sc2ts_2023-02-21_intersection_asp.trees",
 
 
-INFERENCE_DIR = "../inference/results/"
-
-
 rule initialise:
     input:
         "../inference/results/v1-beta1/v1-beta1_{DATE}.ts",
