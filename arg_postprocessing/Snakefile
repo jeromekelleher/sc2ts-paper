@@ -96,9 +96,11 @@ rule shift_breakpoints:
         "{BP_PREFIX}.trees",
     output:
         "{BP_PREFIX}_bps.trees",
+    log:
+        "{BP_PREFIX}_shift_breakpoints.log",
     shell:
         """
-        python ../scripts/run_breakpoint_shift_for_deletions.py {input} {output}
+        python ../scripts/run_breakpoint_shift_for_deletions.py -v {input} {output} > {log} 2>&1
         """
 
 
