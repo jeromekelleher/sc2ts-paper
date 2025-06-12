@@ -345,3 +345,19 @@ rule all_sites_parismony:
             --report={output[1]} --no-progress
         """
 
+
+rule usher_sc2ts_comparison:
+    conda:
+        "sc2ts.yml"
+    input:
+        "usher_2023-02-21_intersection.trees",
+        "usher_2023-02-21_intersection_asp.trees",
+        "usher_2023-02-21_intersection_asp.csv",
+        "sc2ts_2023-02-21_intersection.trees",
+        "sc2ts_2023-02-21_intersection_asp.trees",
+        "sc2ts_2023-02-21_intersection_asp.csv",
+    log:
+        notebook="logs/usher_sc2ts_comparison.ipynb"
+    notebook:
+        "notebooks/usher_sc2ts_comparison.py.ipynb"
+
