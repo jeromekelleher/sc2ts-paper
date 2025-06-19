@@ -12,8 +12,11 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_pp_dels_deletion-report.ipynb",
         "logs/usher_sc2ts_comparison.ipynb",
         "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz",
-        # Viridian Usher trees
-        "usher_v1_2024-06-06_di_mm.trees.tsz",
+        # Full usher tree with mutations, but uncalibrated node time
+        # TODO set the time units to uncalibrated
+        "usher_v1_2024-06-06.trees.tsz",
+        # Usher intersection with sc2ts, with dated nodes
+        "usher_2023-02-21_intersection_ds_di.trees.tsz",
         # Intersection trees between usher and sc2ts
         "usher_2023-02-21_intersection.trees.tsz",
         "sc2ts_2023-02-21_intersection.trees.tsz",
@@ -278,7 +281,7 @@ rule convert_topology:
     input:
         "tree.all_viridian.202409.jsonl.gz"
     output:
-        "usher.topology.trees"
+        "usher_toplogy.trees"
     shell:
         "python ../src/mat2tsk.py convert-topology {input} {output}"
 
@@ -286,10 +289,10 @@ rule add_mutations:
     conda:
         "sc2ts.yml"
     input:
-        "viridian.topology.trees",
+        "usher_topology.trees",
         "usher_mutations.tsv"
     output:
-        "usher.mutations.trees"
+        "usher_v1_2024-06-06.trees"
     shell:
         """
         python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
@@ -299,9 +302,9 @@ rule date_samples:
     conda:
         "sc2ts.yml"
     input:
-        "usher.mutations.trees",
+        "{DS_PREFIX}.trees",
     output:
-        "usher_v1_2024-06-06.trees"
+        "{DS_PREFIX}_ds.trees",
     shell:
         """
         python ../src/mat2tsk.py date-samples {input} {output}
