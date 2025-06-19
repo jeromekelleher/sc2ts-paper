@@ -58,6 +58,8 @@ rule postprocess:
             --match-db=../inference/results/v1-beta1.matches.db
         """
 
+# NOTE: this rule should be renamed to be more general if we 
+# do map sites not just for dels but things we omit also
 rule map_deletions:
     conda:
         "sc2ts.yml"
@@ -70,7 +72,7 @@ rule map_deletions:
         "{MD_PREFIX}_dels_parsimony.csv",
     shell:
         """
-        python -m sc2ts map-deletions -vv \
+        python -m sc2ts map-parsimony -vv \
             {input[0]} {input[1]} {output[0]} \
             --sites={input[2]} --report={output[1]} --no-progress
         """
