@@ -27,3 +27,4 @@ usher_tree/*.trees
 usher_tree/*.tsz
 usher_tree/*.gz
 
+arg_postprocessing/.snakemake
