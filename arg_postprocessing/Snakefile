@@ -16,7 +16,7 @@ rule all:
         # TODO set the time units to uncalibrated
         "usher_v1_2024-06-06.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
-        "usher_2023-02-21_intersection_ds_di.trees.tsz",
+        "usher_2023-02-21_intersection_ds_di_mm.trees.tsz",
         # Intersection trees between usher and sc2ts
         "usher_2023-02-21_intersection.trees.tsz",
         "sc2ts_2023-02-21_intersection.trees.tsz",
@@ -281,7 +281,7 @@ rule convert_topology:
     input:
         "tree.all_viridian.202409.jsonl.gz"
     output:
-        "usher_toplogy.trees"
+        "usher_topology.trees"
     shell:
         "python ../src/mat2tsk.py convert-topology {input} {output}"
 
@@ -327,7 +327,7 @@ rule sc2ts_usher_intersection:
     conda:
         "sc2ts.yml"
     input:
-        "usher_v1_2024-06-06_mm.trees",
+        "usher_v1_2024-06-06.trees",
         "sc2ts_v1_2023-02-21_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
