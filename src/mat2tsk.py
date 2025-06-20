@@ -222,9 +222,20 @@ def date_internal(tsk_in, tsk_out):
 
     ts = tskit.load(tsk_in)
 
+    # Temporarily fix the date of the root node, assuming that we have it right
+    assert ts.num_trees == 1
+    tree = ts.first()
+    u = tree.root
+    assert not ts.node(u).is_sample()  # the top is not usually a sample
+    tables = ts.dump_tables()
+    root_flags = ts.nodes_flags[u]
+    tables.nodes[u] = tables.nodes[u].replace(flags=root_flags | tskit.NODE_IS_SAMPLE)
+    ts = tables.tree_sequence()
+    assert ts.node(u).is_sample()  # check the top is constrained
     # assume to first order approximation that the mutation rate is constant for all muts
     edge_times = ts.nodes_time[ts.edges_parent] - ts.nodes_time[ts.edges_child]
     av_mu = ts.num_mutations / ((ts.edges_right - ts.edges_left) * edge_times).sum()
+    print(f"Using av. mut rate of {av_mu}; root sample fixed at t={ts.node(u).time}")
 
     dated_ts = tsdate.date(
         ts,
@@ -232,10 +243,17 @@ def date_internal(tsk_in, tsk_out):
         rescaling_intervals=0,
         max_iterations=1,  # single tree, so only one round needed
         time_units=ts.time_units,
+        constr_iterations=50000, 
         allow_unary=True,
         progress=True,
         set_metadata=False,
     )
+    # Remove the sample flag from the root node
+    tables = dated_ts.dump_tables()
+    tables.nodes[u] = tables.nodes[u].replace(flags=root_flags)
+    dated_ts = tables.tree_sequence()
+    assert not dated_ts.node(dated_ts.first().root).is_sample()
+    assert np.abs(dated_ts.node(u).time - ts.node(u).time) < 0.5
     dated_ts.dump(tsk_out)
 
 
