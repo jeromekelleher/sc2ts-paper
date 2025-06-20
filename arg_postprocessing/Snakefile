@@ -329,9 +329,9 @@ rule date_internal_nodes:
     conda:
         "sc2ts.yml"
     input:
-        "{DI_PREFIX}.trees"
+        "usher_v1_2024-06-06.trees"
     output:
-        "{DI_PREFIX}_di.trees"
+        "usher_v1_2024-06-06_di.trees"
     shell:
         """
         echo "NOTE: tsdate can take many minutes per EP iteration: this may be a while."
