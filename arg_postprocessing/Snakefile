@@ -13,13 +13,11 @@ rule all:
         "logs/usher_sc2ts_comparison.ipynb",
         "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz",
         # Full usher tree with mutations, but uncalibrated node time
-        # TODO set the time units to uncalibrated
-        "usher_v1_2024-06-06.trees.tsz",
+        "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
-        "usher_2023-02-21_intersection_ds_di_mm.trees.tsz",
-        # Intersection trees between usher and sc2ts
-        "usher_2023-02-21_intersection.trees.tsz",
-        "sc2ts_2023-02-21_intersection.trees.tsz",
+        "usher_2023-02-21_intersection_ds_di.trees.tsz",
+        # Sc2ts intersection, dated on intersection
+        "sc2ts_2023-02-21_intersection_dated.trees.tsz",
         # All-sites parsimony files, to get the direct comparison
         "usher_2023-02-21_intersection_asp.trees",
         "sc2ts_2023-02-21_intersection_asp.trees",
@@ -191,6 +189,8 @@ rule add_pangolin_metadata:
         import tqdm
 
         df = pd.read_csv(input[1]).set_index("taxon")
+        # Remove NaNs from missing scorpio calls
+        df.scorpio_call.fillna(".")
         tables = tskit.TableCollection.load(input[0])
         nodes = tables.nodes.copy()
         tables.nodes.clear()
@@ -216,6 +216,21 @@ rule minimise_metadata_pango_scorpio:
         """
         python -m sc2ts minimise-metadata {input} {output} \
             -m strain sample_id -m pango pango -m scorpio scorpio
+        """
+
+
+rule minimise_metadata_date:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{MM_PREFIX}.trees",
+    output:
+        "{MM_PREFIX}_mmd.trees",
+    shell:
+        # Add the Date_tree to the minimal metadata 
+        """
+        python -m sc2ts minimise-metadata {input} {output} \
+            -m strain sample_id -m Date_tree Date_tree
         """
 
 
@@ -327,7 +342,7 @@ rule sc2ts_usher_intersection:
     conda:
         "sc2ts.yml"
     input:
-        "usher_v1_2024-06-06.trees",
+        "usher_v1_2024-06-06_mmd.trees",
         "sc2ts_v1_2023-02-21_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
@@ -338,7 +353,7 @@ rule sc2ts_usher_intersection:
         """
 
 
-rule all_sites_parismony:
+rule all_sites_parsimony:
     conda:
         "sc2ts.yml"
     input:
@@ -349,7 +364,7 @@ rule all_sites_parismony:
         "{ASP_PREFIX}_asp.csv"
     shell:
         """
-        python -m sc2ts map-deletions -v {input} {output[0]} \
+        python -m sc2ts map-parsimony -v {input} {output[0]} \
             --report={output[1]} --no-progress
         """
 

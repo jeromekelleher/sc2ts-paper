@@ -148,6 +148,7 @@ def convert_topology(usher_json, tsk):
                 tables.edges.add_row(0, L, parent=parent, child=u)
 
     # This version does just enough to dates that fit tskit rules
+    tables.time_units = tskit.TIME_UNITS_UNCALIBRATED
     set_tree_time(tables)
     tables.sort()
     tables.build_index()
