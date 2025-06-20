@@ -149,6 +149,7 @@ def convert_topology(usher_json, tsk):
 
     # This version does just enough to dates that fit tskit rules
     tables.time_units = tskit.TIME_UNITS_UNCALIBRATED
+    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
     set_tree_time(tables)
     tables.sort()
     tables.build_index()
