@@ -148,6 +148,8 @@ def convert_topology(usher_json, tsk):
                 tables.edges.add_row(0, L, parent=parent, child=u)
 
     # This version does just enough to dates that fit tskit rules
+    tables.time_units = tskit.TIME_UNITS_UNCALIBRATED
+    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
     set_tree_time(tables)
     tables.sort()
     tables.build_index()
@@ -179,7 +181,7 @@ def date_samples(tsk_in, tsk_out):
     samples = np.array(list(sample_date.keys()))
     dates = np.array(list(sample_date.values()), dtype="datetime64[D]")
 
-    ts = ts.simplify(samples)
+    ts = ts.simplify(samples, keep_input_roots=True)
 
     time_zero = dates.max()
     time = (time_zero - dates).astype(int)
@@ -217,9 +219,10 @@ def date_internal(tsk_in, tsk_out):
     sc2ts tree using tsdate without rescaling.
     """
     import tsdate  # We do this here because it takes a long time to import
+
     ts = tskit.load(tsk_in)
 
-   # assume to first order approximation that the mutation rate is constant for all muts
+    # assume to first order approximation that the mutation rate is constant for all muts
     edge_times = ts.nodes_time[ts.edges_parent] - ts.nodes_time[ts.edges_child]
     av_mu = ts.num_mutations / ((ts.edges_right - ts.edges_left) * edge_times).sum()
 
@@ -255,8 +258,10 @@ def intersect(usher_in, sc2ts_in, usher_out, sc2ts_out, intersect_sites):
     """
     tsu = tszip.load(usher_in)
     tss = tszip.load(sc2ts_in)
-    print(f"Loaded usher: {tsu.num_samples}, {tsu.num_sites}; "
-        f"sc2ts: {tss.num_samples}, {tss.num_sites}")
+    print(
+        f"Loaded usher: {tsu.num_samples}, {tsu.num_sites}; "
+        f"sc2ts: {tss.num_samples}, {tss.num_sites}"
+    )
 
     dfns = sc2ts.node_data(tss)
     dfns = dfns[dfns.is_sample].set_index("sample_id")
@@ -266,8 +271,12 @@ def intersect(usher_in, sc2ts_in, usher_out, sc2ts_out, intersect_sites):
     dfn = dfns.join(dfnu, how="inner", lsuffix="_sc2ts", rsuffix="_usher")
     print(f"Computed intersection: {dfn.shape[0]}")
 
-    tss = tss.simplify(dfn.node_id_sc2ts.values, filter_sites=False)
-    tsu = tsu.simplify(dfn.node_id_usher.values, filter_sites=False)
+    tss = tss.simplify(
+        dfn.node_id_sc2ts.values, filter_sites=False, keep_input_roots=True
+    )
+    tsu = tsu.simplify(
+        dfn.node_id_usher.values, filter_sites=False, keep_input_roots=True
+    )
 
     if intersect_sites:
 
