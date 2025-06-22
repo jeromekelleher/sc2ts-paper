@@ -12,6 +12,8 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_pp_dels_deletion-report.ipynb",
         "logs/usher_sc2ts_comparison.ipynb",
         "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz",
+        # Recombinant data
+        "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_recombinants.csv",
         # Full usher tree with mutations, but uncalibrated node time
         "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
@@ -90,6 +92,19 @@ rule deletion_report:
         notebook="logs/{DELR_PREFIX}_deletion-report.ipynb"
     notebook:
         "notebooks/deletion_report.py.ipynb"
+
+
+rule recombinants_report:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{RECR_PREFIX}.trees",
+    output:
+        "{RECR_PREFIX}_recombinants.csv",
+    log:
+        notebook="logs/{RECR_PREFIX}_recombinants_report.ipynb"
+    notebook:
+        "notebooks/recombinants_report.py.ipynb"
 
 
 rule shift_breakpoints:
