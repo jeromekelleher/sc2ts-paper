@@ -240,4 +240,4 @@ dependencies:
       - tsdate==0.2.3
       # FIXME change to released version when it is done
       - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts
-# This is a counter to force an update: 2
+# This is a counter to force an update: 4
