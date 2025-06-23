@@ -27,13 +27,20 @@ PARENT_COLOURS = [  # Chose to be light enough that black text on top is readabl
 
 TSDIR = "../data"
  
-def load(filename = "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz"):
+def load(filename = "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz"):
     ts = tszip.decompress(os.path.join(TSDIR, filename))
+    if ts.edge(-1).parent == 0 and ts.edge(-1).child == 1:
+        # remove the edge to the vestigial node
+        tables = ts.dump_tables()
+        tables.edges.truncate(ts.num_edges - 1)
+        ts = tables.tree_sequence()
+    time_zero_date = ts.metadata.get("time_zero_date", "Unknown date")
+    print(f"Loaded {ts.nbytes/1e6:0.1f} megabyte SARS-CoV2 ARG to {time_zero_date}: {ts.num_samples} strains")
+    n_RE = np.sum(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT != 0)    
     print(
-        f"Loaded {ts.nbytes/1e6:0.1f} megabyte SARS-CoV2 genealogy of {ts.num_samples} strains",
-        f"({ts.num_trees} trees, {ts.num_mutations} mutations over {ts.sequence_length} basepairs).",
-        f"Last collection date is {ts.node(ts.samples()[-1]).metadata['date']}",
-    )
+        f"({ts.num_trees} trees, {ts.num_mutations} mutations "
+        f"over {ts.sequence_length}bp with {n_RE} recomb. events)"
+        )
     return ts
 
 def load_dataset(filename = "viridian_mafft_2024-10-14_v1.vcz"):
@@ -191,14 +198,14 @@ def mutation_p_values(ts, min_time=1, progress=True):
     return mut_p_val
     
 class D3ARG_viz:
-    def __init__(self, ts, df, lineage_defining_muts, pangolin_field="pango"):
+    def __init__(self, ts, df, lineage_consensus_muts=None, pangolin_field="pango"):
         self.ts = ts
         self.df = df
         self.pangolin_field = pangolin_field
-        self.lineage_defining_muts = lineage_defining_muts
+        self.lineage_consensus_muts = lineage_consensus_muts
         self.d3arg = argviz.D3ARG.from_ts(ts, progress=True)
         self.d3arg.nodes.loc[self.d3arg.nodes.id == 1, 'label'] = "Wuhan"
-        self.pango_lineage_samples = df.groupby(pangolin_field)['node_id'].apply(list).to_dict()
+        self.pango_lineage_samples = df[df.is_sample].groupby(pangolin_field)['node_id'].apply(list).to_dict()
 
     def set_sc2ts_node_labels(self, add_strain_names=True):
         # Set node labels to Pango lineage + strain, if it exists
@@ -241,6 +248,8 @@ class D3ARG_viz:
         *,
         width=750,
         height=950, 
+        parent_levels=20,
+        child_levels=1,
         restrict_to_first=None,  # restrict every pango to the first N samples
         exclude=None,
         include=None,
@@ -256,17 +265,10 @@ class D3ARG_viz:
         If positions_file is None, look for a file called "'-'.join(sorted(pangos)) + '.json'", e.g. XA-XB.json
         """
         pangos = [pangos] if isinstance(pangos, str) else pangos
-        if exclude is None:
-            exclude = []
-        if include is None:
-            include = []
+        exclude = set() if exclude is None else set(list(exclude))
+        include = set() if include is None else set(list(include))
         if positions_file is None:
             positions_file = f"{'-'.join(pangos)}.json"
-        num_samples = np.sum([len(self.pango_lineage_samples[p]) for p in pangos])
-        title=(
-            f'Subgraph of {self.pangolin_field} {"/".join(pangos)}: '
-            f'({num_samples} sample{"" if num_samples == 1 else "s"})'
-        )
         try:
            self.d3arg.set_node_x_positions(
                 pos=argviz.extract_x_positions_from_json(json.loads(Path(positions_file).read_text()))
@@ -275,25 +277,45 @@ class D3ARG_viz:
             pass
             # self.clear_x_01(self.d3arg)
 
-        nodes = set(include)
+        used_pango_samples = set()
+        pango_samples = set()
         for p in pangos:
-            nodes.update(list(self.pango_lineage_samples[p][:restrict_to_first]))
+            # only the first N samples of each lineage are shown
+            shown_pango = set(self.pango_lineage_samples[p][:restrict_to_first])
+            # plus any samples in that lineage that are specifically included
+            ps = set(self.pango_lineage_samples[p])
+            shown_pango |= (ps & include)
+            # minus any excluded
+            shown_pango = shown_pango - set(exclude)
+            used_pango_samples.update(shown_pango)
+            pango_samples |= ps
+
+
+        nodes = list((used_pango_samples | include) - exclude)
+        used = self.d3arg.subset_graph(nodes, parent_levels=parent_levels, child_levels=child_levels)
+        title=(
+            f'Subgraph of {self.pangolin_field} {"/".join(pangos)}: '
+            f'({len(pango_samples)} sample{"" if len(pango_samples) == 1 else "s"},'
+            f' {len(used_pango_samples)} shown)'
+        )
         lineage_muts = None
-        if parent_pangos is not None:
-            lm = self.lineage_defining_muts.get_unique_mutations(p, parent_pangos)
+        if parent_pangos is not None and self.lineage_consensus_muts is not None:
+            lm = self.lineage_consensus_muts.get_unique_mutations(p, parent_pangos)
             if lineage_muts is None:
                 lineage_muts = lm 
             else:
                 lineage_muts = np.hstack((lm, lineage_muts))
 
         return self.plot_sc2ts_subgraph(
-            list(nodes - set(list(exclude))),
+            list(nodes),
             preamble=extra_html,
             width=width,
             height=height,
             title=title,
             highlight_mutations=lineage_muts,
             highlight_nodes=highlight_nodes, 
+            parent_levels=parent_levels,
+            child_levels=child_levels,
             **kwargs)
 
     def plot_sc2ts_subgraph(
@@ -726,7 +748,7 @@ def read_in_mutations(
     exclude_positions=None,
 ):
     """
-    Read in lineage-defining mutations from COVIDCG input json file.
+    Read in lineage-consensus mutations from COVIDCG input json file.
     Assumes root lineage is B.
     """
     if exclude_positions is None:
@@ -736,7 +758,7 @@ def read_in_mutations(
     with fileinput.hook_compressed(json_filepath, "r") as file:
         linmuts = json.load(file)
 
-    # Read in lineage defining mutations
+    # Read in lineage consensus mutations
     linmuts_dict = MutationContainer()
     linmuts_dict.add_root("B")
     if verbose:
