@@ -206,10 +206,7 @@ class D3ARG_viz:
         def label_lines(row):
             if getattr(row, "sample_id", "") == "Vestigial_ignore":
                 return([""])
-            if row.is_sample:
-                lab = getattr(row, self.pangolin_field)
-            else:
-                lab = row.pango + "?"  # show this label is imputed using a question mark
+            lab = getattr(row, self.pangolin_field)
             return [lab, f"({getattr(row, 'sample_id', '')})"] if add_strain_names else [lab]
 
         node_labels = {}
