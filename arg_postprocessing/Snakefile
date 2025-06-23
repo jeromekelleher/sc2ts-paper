@@ -205,7 +205,7 @@ rule add_pangolin_metadata:
 
         df = pd.read_csv(input[1]).set_index("taxon")
         # Remove NaNs from missing scorpio calls
-        df.scorpio_call.fillna(".")
+        df["scorpio_call"] = df.scorpio_call.fillna(".")
         tables = tskit.TableCollection.load(input[0])
         nodes = tables.nodes.copy()
         tables.nodes.clear()
@@ -214,6 +214,7 @@ rule add_pangolin_metadata:
             record = df.loc[f"n{u}"]
             row.metadata["pango"] = record["lineage"]
             row.metadata["scorpio"] = record["scorpio_call"]
+            assert isinstance(record["scorpio_call"], str)
             tables.nodes.append(row)
 
         tables.dump(f"{output}")
