@@ -317,6 +317,7 @@ rule date_samples:
     conda:
         "sc2ts.yml"
     input:
+        # Note: call with e.g. snakemake usher_v1_2024-06-06_ds.trees
         "{DS_PREFIX}.trees",
     output:
         "{DS_PREFIX}_ds.trees",
@@ -329,6 +330,7 @@ rule date_internal_nodes:
     conda:
         "sc2ts.yml"
     input:
+        # Note: call with e.g. snakemake usher_v1_2024-06-06_ds_di.trees
         "{DI_PREFIX}.trees"
     output:
         "{DI_PREFIX}_di.trees"
