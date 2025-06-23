@@ -202,15 +202,14 @@ class D3ARG_viz:
 
     def set_sc2ts_node_labels(self, add_strain_names=True):
         # Set node labels to Pango lineage + strain, if it exists
-        # A questin mark at the end of a pango lineage indicates that the lineage is imputed
         def label_lines(row):
             if getattr(row, "sample_id", "") == "Vestigial_ignore":
                 return([""])
             lab = getattr(row, self.pangolin_field)
-            return [lab, f"({getattr(row, 'sample_id', '')})"] if add_strain_names else [lab]
+            return [lab, f"({row.Index})"] if add_strain_names else [lab]
 
         node_labels = {}
-        for row in tqdm(self.df.itertuples(index=False), total=len(self.df), desc="Setting all labels"):
+        for row in tqdm(self.df.itertuples(), total=len(self.df), desc="Setting all labels"):
             node_labels[row.node_id] = "\n".join([s for s in label_lines(row) if s not in ("()", "?")])
         boldnumbers = {str(i):s for i, s in enumerate("𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗")}
         for u in np.where(self.ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT)[0]:
