@@ -107,6 +107,43 @@ rule recombinants_report:
         "notebooks/recombinants_report.py.ipynb"
 
 
+# NOTE: these two rematch steps are very slow and take a lot 
+# of RAM. We should probabably have a ~80G resource limit
+# on them. They could be made a bit faster, but haven't put the 
+# effort to adaptively update the HMM match threshold for these
+# awkward cases.
+rule rematch_arg_recombinants:
+    conda:
+        "sc2ts.yml"
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "{REMARG_PREFIX}_recombinants.csv",
+    output:
+        "{REMARG_PREFIX}_rematch.json",
+    shell:
+        """
+        python ../src/rematch_recombinants.py \\
+            ../inference/results/v1-beta1/v1-beta1_ \
+            {input} {output}.tmp -k 1000
+        mv {output}.tmp {output}
+        """
+
+rule rematch_non_arg_recombinants:
+    conda:
+        "sc2ts.yml"
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "../data/samples_pangos_absent_in_arg.csv",
+    output:
+        "pango_x_absent_in_arg_rematch.json",
+    shell:
+        """
+        python ../src/rematch_recombinants.py \\
+            ../inference/results/v1-beta1/v1-beta1_ \
+            {input} {output}.tmp -k 1000 -k 4
+        mv {output}.tmp {output}
+        """
+
 rule shift_breakpoints:
     conda:
         "sc2ts.yml"
