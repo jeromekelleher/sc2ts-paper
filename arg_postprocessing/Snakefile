@@ -202,7 +202,7 @@ rule write_fasta:
         node_flags[:] = tskit.NODE_IS_SAMPLE
         tables.nodes.flags = node_flags
         ts = tables.tree_sequence()
-        if ~np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
+        if not np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
             raise ValueError("Not all the nodes are samples.")
         samples = np.arange(ts.num_nodes)
         with open(f"{output}", "w") as f:
