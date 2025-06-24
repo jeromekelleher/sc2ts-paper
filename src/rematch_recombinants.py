@@ -1,9 +1,11 @@
 import datetime
 import dataclasses
-import concurrent.futures as cf
+import os
 
 import sc2ts
 import pandas as pd
+import click
+import tqdm
 
 
 @dataclasses.dataclass
@@ -29,15 +31,17 @@ def run_match(m):
     return runs[0]
 
 
-def run():
+@click.command()
+@click.argument("ts_prefix")
+@click.argument("ds_path", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("samples_csv_path", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("output_path")
+@click.option("--num-mismatches", "-k", type=int, multiple=True)
+def run(ts_prefix, ds_path, samples_csv_path, output_path, num_mismatches):
 
-    ds = sc2ts.Dataset(
-        "data/viridian_mafft_2024-10-14_v1.vcz.zip", date_field="Date_tree"
-    )
-    # recomb_df = pd.read_csv("data/recombinants.csv").set_index("sample_id")
-    recomb_df = pd.read_csv("data/samples_pangos_absent_in_arg.csv").set_index("Run")
+    ds = sc2ts.Dataset(ds_path, date_field="Date_tree")
+    recomb_df = pd.read_csv(samples_csv_path).set_index("sample_id")
 
-    ts_prefix = "results/v1-beta1/v1-beta1_"
     work = []
     for s in recomb_df.index:
         try:
@@ -47,29 +51,21 @@ def run():
             continue
         match_date = str(date - datetime.timedelta(days=1)).split()[0]
         ts_path = f"{ts_prefix}{match_date}.ts"
-        for num_mismatches in [4, 1000]:
-            work.append(MatchWork(ts_path, ds.path, s, num_mismatches))
+        if not os.path.exists(ts_path):
+            raise ValueError(f"Missing path: {ts_path}")
+        for k in num_mismatches:
+            work.append(MatchWork(ts_path, ds.path, s, k))
 
-    # output_path = "results/recombinant_reruns.json"
-    output_path = "results/pango_x_not_in_arg.json"
     # Clear the file
     with open(output_path, "w") as f:
         pass
-    # for w in work:
-    #     # print(work)
-    #     print(w)
-    #     run = run_match(w)
-    #     print(run)
-    #     print(run.asjson())
 
-    with cf.ProcessPoolExecutor(2) as executor:
-        futures = [executor.submit(run_match, w) for w in work]
-        for future in cf.as_completed(futures):
-            run = future.result()
-            print(run)
-            with open(output_path, "a") as f:
-                print(run.asjson(), file=f)
+    # There's no real point in doing these in parallel as the amount
+    # of RAM needed can be very large.
+    for w in tqdm.tqdm(work):
+        run = run_match(w)
+        with open(output_path, "a") as f:
+            print(run.asjson(), file=f)
 
 
-if __name__ == "__main__":
-    run()
+run()

@@ -107,6 +107,21 @@ rule recombinants_report:
         "notebooks/recombinants_report.py.ipynb"
 
 
+rule rematch_arg_recombinants:
+    conda:
+        "sc2ts.yml"
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "{REMARG_PREFIX}_recombinants.csv",
+    output:
+        "{REMARG_PREFIX}_rematch.json",
+    shell:
+        """
+        python ../src/rematch_recombinants.py \\
+            ../inference/results/v1-beta1/v1-beta1_ \
+            {input} {output} -k 1000
+        """
+
 rule shift_breakpoints:
     conda:
         "sc2ts.yml"
