@@ -7,13 +7,13 @@
 rule all:
     input:
         # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_pp_remapped_bps_pango_dated_mm.trees.tsz",
+        # "sc2ts_v1_2020-06-21_pp_remapped_pango_dated_bps_mm.trees.tsz",
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
         "logs/sc2ts_v1_2023-02-21_pp_remapped_deletion-report.ipynb",
         "logs/usher_sc2ts_comparison.ipynb",
-        "sc2ts_v1_2023-02-21_pp_remapped_bps_pango_dated_mmps.trees.tsz",
+        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_mmps.trees.tsz",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_remapped_bps_pango_dated_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_recombinants.csv",
         # Full usher tree with mutations, but uncalibrated node time
         "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
