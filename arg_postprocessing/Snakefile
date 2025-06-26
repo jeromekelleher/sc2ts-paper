@@ -7,13 +7,13 @@
 rule all:
     input:
         # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_pp_dels_bps_pango_dated_mm.trees.tsz",
+        # "sc2ts_v1_2020-06-21_pp_remapped_pango_dated_bps_mm.trees.tsz",
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
-        "logs/sc2ts_v1_2023-02-21_pp_dels_deletion-report.ipynb",
+        "logs/sc2ts_v1_2023-02-21_pp_remapped_deletion-report.ipynb",
         "logs/usher_sc2ts_comparison.ipynb",
-        "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_mmps.trees.tsz",
+        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_mmps.trees.tsz",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_dels_bps_pango_dated_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_recombinants.csv",
         # Full usher tree with mutations, but uncalibrated node time
         "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
@@ -63,16 +63,16 @@ rule postprocess:
 
 # NOTE: this rule should be renamed to be more general if we 
 # do map sites not just for dels but things we omit also
-rule map_deletions:
+rule remap_sites:
     conda:
         "sc2ts.yml"
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
         "{MD_PREFIX}.trees",
-        "deletion_sites.txt",
+        "remapped_sites.txt",
     output:
-        "{MD_PREFIX}_dels.trees",
-        "{MD_PREFIX}_dels_parsimony.csv",
+        "{MD_PREFIX}_remapped.trees",
+        "{MD_PREFIX}_remapped_parsimony.csv",
     shell:
         """
         python -m sc2ts map-parsimony -vv \
@@ -202,7 +202,7 @@ rule write_fasta:
         node_flags[:] = tskit.NODE_IS_SAMPLE
         tables.nodes.flags = node_flags
         ts = tables.tree_sequence()
-        if ~np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
+        if not np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
             raise ValueError("Not all the nodes are samples.")
         samples = np.arange(ts.num_nodes)
         with open(f"{output}", "w") as f:
