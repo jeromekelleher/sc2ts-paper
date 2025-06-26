@@ -5,6 +5,7 @@ import numpy as np
 import tszip
 import tskit
 import sc2ts
+from tqdm import tqdm
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(
@@ -20,7 +21,7 @@ if __name__ == "__main__":
         default=None,
         help=(
             "Path to the ts file to output, tszip compressed by default (unless name ends in "
-            ".ts or .trees). If not given, adds '.bpshift' to input filename",
+            ".ts or .trees). If not given, adds '.bpshift' to input filename"
         )
     )
     argparser.add_argument("--verbose", "-v", action="store_true", help="Print extra info")
@@ -91,7 +92,12 @@ if __name__ == "__main__":
                             mutations = ts.site(site_pos_map[siteinfo[i].pos]).mutations
                             for m in mutations:
                                 if m.node == re_nodes[re_id]:
-                                    assert (m.derived_state == "-" or ts.mutation(m.parent).derived_state == "-")
+                                    if (m.derived_state != "-" and ts.mutation(m.parent).derived_state != "-"):
+                                        if args.verbose:
+                                            print(
+                                                f"Exceptional case for RE node {re_nodes[re_id]}: site"
+                                                f" at {siteinfo[i].pos} is not to or from a deletion"
+                                            )
                                     keep_mutation[m.id] = False
                     else:
                         continue
@@ -116,7 +122,7 @@ if __name__ == "__main__":
                             mutations = ts.site(site_pos_map[siteinfo[i].pos]).mutations
                             for m in mutations:
                                 if m.node == re_nodes[re_id]:
-                                    assert (m.derived_state == "-" or ts.mutation(m.parent).derived_state == "-")
+                                    assert (m.derived_state == "-" or ts.mutation(m.parent).derived_state == "-"), (m.derived_state, ts.mutation(m.parent).derived_state)
                                     keep_mutation[m.id] = False
                     else:
                         continue
@@ -149,8 +155,21 @@ if __name__ == "__main__":
     tables.sort()
     tables.build_index()
     tables.compute_mutation_parents()
+    # Set times as unknown, in case and mutations have changed edges
     tables.mutations.time = np.full_like(tables.mutations.time, tskit.UNKNOWN_TIME)
     new_ts = tables.tree_sequence()
+
+    for v1, v2 in tqdm(
+        zip(
+            ts.variants(samples=re_nodes, isolated_as_missing=False),
+            new_ts.variants(samples=re_nodes, isolated_as_missing=False),
+        ),
+        total=ts.num_sites,
+        desc="Check unchanged RE seq",
+        disable=not args.verbose,
+    ):
+        assert v1.site.position == v2.site.position
+        assert np.all(v1.states() == v2.states())
 
     if args.verbose:
         print(f"Out of {len(re_nodes)} RE nodes, {len(new_breaks)} breakpoints were shifted")
