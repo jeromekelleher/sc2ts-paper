@@ -277,9 +277,11 @@ rule minimise_metadata_pango_scorpio:
         "{MM_PREFIX}_mmps.trees",
     shell:
         # Convert the output of the add pangolin metadata command above
+        # and drop the vestigial root edge
         """
         python -m sc2ts minimise-metadata {input} {output} \
-            -m strain sample_id -m pango pango -m scorpio scorpio
+            -m strain sample_id -m pango pango -m scorpio scorpio \
+            --drop-vestigial-root
         """
 
 
