@@ -1,6 +1,7 @@
 import datetime
 import dataclasses
 import os
+import concurrent.futures as cf
 
 import sc2ts
 import pandas as pd
@@ -37,7 +38,17 @@ def run_match(m):
 @click.argument("samples_csv_path", type=click.Path(dir_okay=False, file_okay=True))
 @click.argument("output_path")
 @click.option("--num-mismatches", "-k", type=int, multiple=True)
-def run(ts_prefix, ds_path, samples_csv_path, output_path, num_mismatches):
+@click.option("--mismatch-threshold", "-m", type=int, default=100)
+@click.option("--workers", "-w", type=int, default=1)
+def run(
+    ts_prefix,
+    ds_path,
+    samples_csv_path,
+    output_path,
+    num_mismatches,
+    mismatch_threshold,
+    workers,
+):
 
     ds = sc2ts.Dataset(ds_path, date_field="Date_tree")
     recomb_df = pd.read_csv(samples_csv_path).set_index("sample_id")
@@ -60,12 +71,17 @@ def run(ts_prefix, ds_path, samples_csv_path, output_path, num_mismatches):
     with open(output_path, "w") as f:
         pass
 
-    # There's no real point in doing these in parallel as the amount
-    # of RAM needed can be very large.
-    for w in tqdm.tqdm(work):
-        run = run_match(w)
-        with open(output_path, "a") as f:
-            print(run.asjson(), file=f)
+    with cf.ProcessPoolExecutor(workers) as executor:
+        futures = [executor.submit(run_match, w) for w in work]
+        for future in tqdm.tqdm(cf.as_completed(futures), total=len(futures)):
+            run = future.result()
+            with open(output_path, "a") as f:
+                print(run.asjson(), file=f)
+
+    # for w in tqdm.tqdm(work):
+    #     run = run_match(w)
+    #     with open(output_path, "a") as f:
+    #         print(run.asjson(), file=f)
 
 
 run()

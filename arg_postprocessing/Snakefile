@@ -132,10 +132,18 @@ rule rematch_arg_recombinants:
     output:
         "{REMARG_PREFIX}_rematch.json",
     shell:
+        # Use mismatch-threshold=4 here as the matching takes
+        # an outrageous amount of time and memory otherwise.
+        # We have run this previously with much higher thresholds
+        # so can check against previous values to be sure. However,
+        # this is definitely a potential source of errors and should
+        # be treated with caution.
         """
-        python ../src/rematch_recombinants.py \\
+        python ../src/rematch_recombinants.py \
             ../inference/results/v1-beta1/v1-beta1_ \
-            {input} {output}.tmp -k 1000
+            {input} {output}.tmp -k 1000 \
+            --mismatch-threshold=4 \
+            --workers=8
         mv {output}.tmp {output}
         """
 
