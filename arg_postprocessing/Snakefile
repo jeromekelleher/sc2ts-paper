@@ -6,14 +6,23 @@
 
 rule all:
     input:
-        # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_pp_remapped_pango_dated_bps_mm.trees.tsz",
+        # Base debug report
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
-        "logs/sc2ts_v1_2023-02-21_pp_remapped_deletion-report.ipynb",
-        "logs/usher_sc2ts_comparison.ipynb",
-        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_mmps.trees.tsz",
+        # Final ARG
+        # Order of operations:
+        # 1) postprocess (various minor tweaks)
+        # 2) Dating (before adding lots of highly recurrent sites)
+        # 3) Parsimony mapping (adding in deletions and recurrent sites)
+        # 4) Shift breakpoints (must be after mapping)
+        # 5) Compute pango assignment (must be after parsimony mapping)
+        # 6) Minimise metadata (must be last step)
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rematch.json",
+        # Report on deletion and parsimony mapping
+        "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
+        # Usher tree and sc2ts intersections
         # Full usher tree with mutations, but uncalibrated node time
         "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
@@ -23,6 +32,8 @@ rule all:
         # All-sites parsimony files, to get the direct comparison
         "usher_2023-02-21_intersection_asp.trees",
         "sc2ts_2023-02-21_intersection_asp.trees",
+        # Report
+        "logs/usher_sc2ts_comparison.ipynb",
 
 
 rule initialise:
