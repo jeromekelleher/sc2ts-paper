@@ -15,6 +15,7 @@ class MatchWork:
     ds_path: str
     sample_id: str
     num_mismatches: int
+    mismatch_threshold: int
 
 
 def run_match(m):
@@ -23,8 +24,7 @@ def run_match(m):
         m.ts_path,
         strains=[m.sample_id],
         num_mismatches=m.num_mismatches,
-        mismatch_threshold=1000,
-        # direction=direction,
+        mismatch_threshold=m.mismatch_threshold,
         deletions_as_missing=True,
         num_threads=0,
         show_progress=False,
@@ -65,7 +65,9 @@ def run(
         if not os.path.exists(ts_path):
             raise ValueError(f"Missing path: {ts_path}")
         for k in num_mismatches:
-            work.append(MatchWork(ts_path, ds.path, s, k))
+            work.append(
+                MatchWork(ts_path, ds.path, s, k, mismatch_threshold=mismatch_threshold)
+            )
 
     # Clear the file
     with open(output_path, "w") as f:
