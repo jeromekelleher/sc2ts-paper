@@ -19,7 +19,7 @@ rule all:
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
         # Recombinant data
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv",
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rematch.json",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
         # Report on deletion and parsimony mapping
         "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
         # Usher tree and sc2ts intersections
