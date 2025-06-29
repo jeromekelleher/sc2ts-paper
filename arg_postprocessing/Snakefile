@@ -119,16 +119,8 @@ rule recombinants_report:
 
 
 # NOTE: these two rematch steps are very slow and take a lot 
-# of RAM if run with a high mismatch-threshold (which we did
-# initially). In the interest of making this workflow reproducible
-# in a reasonable amount of time, we've set a low mismatch-thresold
-# which means that the numbers of mutations reported could be too
-# high. We're checking these specific numbers against earlier 
-# results to be sure here, but in general the mismatch threshold
-# should really be higher as we don't fully understand the guarantees
-# made by the HMM with a given threshold in this regime (where we're 
-# matching things that don't fit well, by definition). 
-# YMMV if you run this on different examples, basically.
+# of RAM. There's definitely ways we can speed this up, but 
+# the simplest is to just let it run.
 rule rematch_arg_recombinants:
     conda:
         "sc2ts.yml"
@@ -138,18 +130,12 @@ rule rematch_arg_recombinants:
     output:
         "{REMARG_PREFIX}_rematch.json",
     shell:
-        # Use mismatch-threshold=4 here as the matching takes
-        # an outrageous amount of time and memory otherwise.
-        # We have run this previously with much higher thresholds
-        # so can check against previous values to be sure. However,
-        # this is definitely a potential source of errors and should
-        # be treated with caution.
         """
         python ../src/rematch_recombinants.py \
             ../inference/results/v1-beta1/v1-beta1_ \
             {input} {output}.tmp -k 1000 \
-            --mismatch-threshold=4 \
-            --workers=8
+            --mismatch-threshold=100 \
+            --workers=1
         mv {output}.tmp {output}
         """
 
@@ -162,15 +148,37 @@ rule rematch_non_arg_recombinants:
     output:
         "pango_x_absent_in_arg_rematch.json",
     shell:      
-        # See above for rationale for using mismatch-threshold=4
         """
         python ../src/rematch_recombinants.py \\
             ../inference/results/v1-beta1/v1-beta1_ \
-            --mismatch-threshold=4 \
-            --workers=8 \
+            --mismatch-threshold=100 \
+            --workers=1 \
             {input} {output}.tmp -k 1000 -k 4
         mv {output}.tmp {output}
         """
+
+# This is a temporary rule to get something that basically works
+# while we let the other two above "just run". We're just covering
+# the samples that changed from an earlier version because of how
+# sample choice was done.
+rule rematch_arg_recombinants_that_changed:
+    conda:
+        "sc2ts.yml"
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "samples_that_changed.csv",
+    output:
+        "samples_that_changed.json",
+    shell:      
+        """
+        python ../src/rematch_recombinants.py \\
+            ../inference/results/v1-beta1/v1-beta1_ \
+            --mismatch-threshold=100 \
+            --workers=1 \
+            {input} {output}.tmp -k 1000 
+        mv {output}.tmp {output}
+        """
+
 
 rule shift_breakpoints:
     conda:
