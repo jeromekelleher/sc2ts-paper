@@ -119,10 +119,16 @@ rule recombinants_report:
 
 
 # NOTE: these two rematch steps are very slow and take a lot 
-# of RAM. We should probabably have a ~80G resource limit
-# on them. They could be made a bit faster, but haven't put the 
-# effort to adaptively update the HMM match threshold for these
-# awkward cases.
+# of RAM if run with a high mismatch-threshold (which we did
+# initially). In the interest of making this workflow reproducible
+# in a reasonable amount of time, we've set a low mismatch-thresold
+# which means that the numbers of mutations reported could be too
+# high. We're checking these specific numbers against earlier 
+# results to be sure here, but in general the mismatch threshold
+# should really be higher as we don't fully understand the guarantees
+# made by the HMM with a given threshold in this regime (where we're 
+# matching things that don't fit well, by definition). 
+# YMMV if you run this on different examples, basically.
 rule rematch_arg_recombinants:
     conda:
         "sc2ts.yml"
@@ -155,10 +161,13 @@ rule rematch_non_arg_recombinants:
         "../data/samples_pangos_absent_in_arg.csv",
     output:
         "pango_x_absent_in_arg_rematch.json",
-    shell:
+    shell:      
+        # See above for rationale for using mismatch-threshold=4
         """
         python ../src/rematch_recombinants.py \\
             ../inference/results/v1-beta1/v1-beta1_ \
+            --mismatch-threshold=4 \
+            --workers=8 \
             {input} {output}.tmp -k 1000 -k 4
         mv {output}.tmp {output}
         """
