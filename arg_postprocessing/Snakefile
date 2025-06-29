@@ -6,14 +6,23 @@
 
 rule all:
     input:
-        # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_pp_remapped_pango_dated_bps_mm.trees.tsz",
+        # Base debug report
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
-        "logs/sc2ts_v1_2023-02-21_pp_remapped_deletion-report.ipynb",
-        "logs/usher_sc2ts_comparison.ipynb",
-        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_mmps.trees.tsz",
+        # Final ARG
+        # Order of operations:
+        # 1) postprocess (various minor tweaks)
+        # 2) Dating (before adding lots of highly recurrent sites)
+        # 3) Parsimony mapping (adding in deletions and recurrent sites)
+        # 4) Shift breakpoints (must be after mapping)
+        # 5) Compute pango assignment (must be after parsimony mapping)
+        # 6) Minimise metadata (must be last step)
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
+        # Report on deletion and parsimony mapping
+        "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
+        # Usher tree and sc2ts intersections
         # Full usher tree with mutations, but uncalibrated node time
         "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
@@ -23,6 +32,8 @@ rule all:
         # All-sites parsimony files, to get the direct comparison
         "usher_2023-02-21_intersection_asp.trees",
         "sc2ts_2023-02-21_intersection_asp.trees",
+        # Report
+        "logs/usher_sc2ts_comparison.ipynb",
 
 
 rule initialise:
@@ -121,10 +132,18 @@ rule rematch_arg_recombinants:
     output:
         "{REMARG_PREFIX}_rematch.json",
     shell:
+        # Use mismatch-threshold=4 here as the matching takes
+        # an outrageous amount of time and memory otherwise.
+        # We have run this previously with much higher thresholds
+        # so can check against previous values to be sure. However,
+        # this is definitely a potential source of errors and should
+        # be treated with caution.
         """
-        python ../src/rematch_recombinants.py \\
+        python ../src/rematch_recombinants.py \
             ../inference/results/v1-beta1/v1-beta1_ \
-            {input} {output}.tmp -k 1000
+            {input} {output}.tmp -k 1000 \
+            --mismatch-threshold=4 \
+            --workers=8
         mv {output}.tmp {output}
         """
 
@@ -266,9 +285,11 @@ rule minimise_metadata_pango_scorpio:
         "{MM_PREFIX}_mmps.trees",
     shell:
         # Convert the output of the add pangolin metadata command above
+        # and drop the vestigial root edge
         """
         python -m sc2ts minimise-metadata {input} {output} \
-            -m strain sample_id -m pango pango -m scorpio scorpio
+            -m strain sample_id -m pango pango -m scorpio scorpio \
+            --drop-vestigial-root
         """
 
 
