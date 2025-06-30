@@ -6,14 +6,23 @@
 
 rule all:
     input:
-        # Small for pipeline dev
-        # "sc2ts_v1_2020-06-21_pp_remapped_pango_dated_bps_mm.trees.tsz",
+        # Base debug report
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
-        "logs/sc2ts_v1_2023-02-21_pp_remapped_deletion-report.ipynb",
-        "logs/usher_sc2ts_comparison.ipynb",
-        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_mmps.trees.tsz",
+        # Final ARG
+        # Order of operations:
+        # 1) postprocess (various minor tweaks)
+        # 2) Dating (before adding lots of highly recurrent sites)
+        # 3) Parsimony mapping (adding in deletions and recurrent sites)
+        # 4) Shift breakpoints (must be after mapping)
+        # 5) Compute pango assignment (must be after parsimony mapping)
+        # 6) Minimise metadata (must be last step)
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_remapped_pango_dated_bps_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv",
+        # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
+        # Report on deletion and parsimony mapping
+        "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
+        # Usher tree and sc2ts intersections
         # Full usher tree with mutations, but uncalibrated node time
         "usher_v1_2024-06-06_mm.trees.tsz",
         # Usher intersection with sc2ts, with dated nodes
@@ -23,6 +32,8 @@ rule all:
         # All-sites parsimony files, to get the direct comparison
         "usher_2023-02-21_intersection_asp.trees",
         "sc2ts_2023-02-21_intersection_asp.trees",
+        # Report
+        "logs/usher_sc2ts_comparison.ipynb",
 
 
 rule initialise:
@@ -108,10 +119,13 @@ rule recombinants_report:
 
 
 # NOTE: these two rematch steps are very slow and take a lot 
-# of RAM. We should probabably have a ~80G resource limit
-# on them. They could be made a bit faster, but haven't put the 
-# effort to adaptively update the HMM match threshold for these
-# awkward cases.
+# of RAM. There's definitely ways we can speed this up, but 
+# the simplest is to just let it run.
+# To make this run in a tolerable amount of time we need to pass
+# the previous HMM solution to run_hmm so it has a starting point.
+# Otherwise we waste a lot of time generating solutions for most 
+# recombinants which are actually pretty easy, but don't fully
+# capture the really difficult ones (which are important).
 rule rematch_arg_recombinants:
     conda:
         "sc2ts.yml"
@@ -122,9 +136,11 @@ rule rematch_arg_recombinants:
         "{REMARG_PREFIX}_rematch.json",
     shell:
         """
-        python ../src/rematch_recombinants.py \\
+        python ../src/rematch_recombinants.py \
             ../inference/results/v1-beta1/v1-beta1_ \
-            {input} {output}.tmp -k 1000
+            {input} {output}.tmp -k 1000 \
+            --mismatch-threshold=100 \
+            --workers=1
         mv {output}.tmp {output}
         """
 
@@ -136,13 +152,38 @@ rule rematch_non_arg_recombinants:
         "../data/samples_pangos_absent_in_arg.csv",
     output:
         "pango_x_absent_in_arg_rematch.json",
-    shell:
+    shell:      
         """
         python ../src/rematch_recombinants.py \\
             ../inference/results/v1-beta1/v1-beta1_ \
+            --mismatch-threshold=100 \
+            --workers=1 \
             {input} {output}.tmp -k 1000 -k 4
         mv {output}.tmp {output}
         """
+
+# This is a temporary rule to get something that basically works
+# while we let the other two above "just run". We're just covering
+# the samples that changed from an earlier version because of how
+# sample choice was done.
+rule rematch_arg_recombinants_that_changed:
+    conda:
+        "sc2ts.yml"
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "samples_that_changed.csv",
+    output:
+        "samples_that_changed.json",
+    shell:      
+        """
+        python ../src/rematch_recombinants.py \\
+            ../inference/results/v1-beta1/v1-beta1_ \
+            --mismatch-threshold=100 \
+            --workers=1 \
+            {input} {output}.tmp -k 1000 
+        mv {output}.tmp {output}
+        """
+
 
 rule shift_breakpoints:
     conda:
@@ -266,9 +307,11 @@ rule minimise_metadata_pango_scorpio:
         "{MM_PREFIX}_mmps.trees",
     shell:
         # Convert the output of the add pangolin metadata command above
+        # and drop the vestigial root edge
         """
         python -m sc2ts minimise-metadata {input} {output} \
-            -m strain sample_id -m pango pango -m scorpio scorpio
+            -m strain sample_id -m pango pango -m scorpio scorpio \
+            --drop-vestigial-root
         """
 
 
