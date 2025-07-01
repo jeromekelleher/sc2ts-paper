@@ -500,3 +500,55 @@ rule usher_sc2ts_comparison:
     notebook:
         "notebooks/usher_sc2ts_comparison.py.ipynb"
 
+
+rule rebar_dataset:
+    conda: "rebar.yml"
+    output: "rebar/summary.json"
+    shell:
+      """
+      rebar dataset download \
+        --name sars-cov-2 \
+        --tag 2025-01-28 \
+        --verbosity error \
+        --output-dir rebar
+      """
+
+
+rule run_rebar:
+    conda: "rebar.yml"
+    input: 
+        "rebar/summary.json",
+        "{RR_PREFIX}_recombinants.fasta"
+    output:
+        "{RR_PREFIX}_recombinants_rebar.csv"
+    shell:
+      """
+      rebar run \
+          --dataset-dir rebar \
+          --threads {workflow.cores} \
+          --alignment {input[1]} \
+          --output-dir rebar_output
+      cp rebar_output/linelist.csv {output}
+      """
+  
+        
+rule extract_recombinant_alignments:
+    conda: "sc2ts.yml"
+    input:
+        "{ERA_PREFIX}.trees",
+        "{ERA_PREFIX}_recombinants.csv",
+    output:
+        "{ERA_PREFIX}_recombinants.fasta",
+    run:
+        import tszip
+        import pandas as pd
+
+        ts = tszip.load(input[0])
+        df = pd.read_csv(input[1])
+        samples = df["sample"]
+        sample_id = df["sample_id"]
+        with open(f"{output}", "w") as f:
+            for j, entry in enumerate(ts.alignments(samples=samples, left=1)):
+                f.write(f">{sample_id[j]}\n")
+                f.write(entry + "\n")
+
