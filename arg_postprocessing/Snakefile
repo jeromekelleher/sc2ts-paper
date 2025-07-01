@@ -18,7 +18,10 @@ rule all:
         # 6) Minimise metadata (must be last step)
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv", 
+        # TODO add rule to generate recombinants_matches_pangonet csv
+        # once we've sorted the reruns json.
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_matches_pangonet_nsl.csv",
         # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
         # Report on deletion and parsimony mapping
         "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
@@ -117,6 +120,21 @@ rule recombinants_report:
     notebook:
         "notebooks/recombinants_report.py.ipynb"
 
+
+
+rule add_net_supporting_loci:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{ASL_PREFIX}.trees",
+        "{ASL_PREFIX}_recombinants_matches_pangonet.csv",
+    output:
+        "{ASL_PREFIX}_recombinants_matches_pangonet_nsl.csv",
+
+    shell:
+        """
+        python ../scripts/run_recombinant_minlength_csv_add.py -v {input} {output}
+        """
 
 # NOTE: these two rematch steps are very slow and take a lot 
 # of RAM. There's definitely ways we can speed this up, but 
