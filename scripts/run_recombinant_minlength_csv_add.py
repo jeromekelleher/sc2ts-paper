@@ -22,12 +22,12 @@ def recombinant_supporting_locations(ts, adjacent_distance):
         nodes_used += list(ts.edges_parent[edges])
     nodes_used, inverse = np.unique(nodes_used, return_inverse=True)
     node_map = {index: id_ for id_, index in zip(inverse, nodes_used[inverse])}
-    
+
     last_pos = {u: np.full(len(v), -np.inf) for u, v in sorted_edges.items()}
     last_parent = {u: np.full(len(v), -1) for u, v in sorted_edges.items()}
     supporting_location_count = {u: np.full(len(v), 0) for u, v in sorted_edges.items()}
     edge_index = {u: 0 for u in sorted_edges.keys()}
-    
+
     sts = ts.simplify(nodes_used)
     for v in tqdm(sts.variants(), total=sts.num_sites, disable=not args.verbose):
         genotypes = v.genotypes
@@ -41,7 +41,7 @@ def recombinant_supporting_locations(ts, adjacent_distance):
             last_position = last_pos[re_node]
             re_geno = genotypes[node_map[re_node]]
             assert re_geno >= 0
-    
+
             # pick the correct edge for this RE node, advancing along the sequence if necessary
             edge = ts.edge(edge_list[edge_index[re_node]])
             while edge.right <= pos:
@@ -70,8 +70,7 @@ def main(args):
     net_min_supp_loci_cutoff = 4
     ts = tszip.load(args.input_ts)
     df = pd.read_csv(args.input_csv)
-    if args.output_csv is None:
-        output_csv = Path(args.input_csv).with_suffix(".minl.csv")
+    output_csv = args.output_csv
 
     supporting_loci_count, _ = recombinant_supporting_locations(
         ts, args.adjacent_distance
@@ -128,8 +127,8 @@ if __name__ == "__main__":
         "--adjacent_distance", "-d", type=int,
         help="The max distance between sites at the same locus",
         default=3)
-    
+
     args = argparser.parse_args()
     main(args)
 
-    
+
