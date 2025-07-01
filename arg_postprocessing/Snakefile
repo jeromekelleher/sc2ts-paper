@@ -22,6 +22,8 @@ rule all:
         # TODO add rule to generate recombinants_matches_pangonet csv
         # once we've sorted the reruns json.
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_matches_pangonet_nsl.csv",
+        # Rebar output. 
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rebar.tsv",
         # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
         # Report on deletion and parsimony mapping
         "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
