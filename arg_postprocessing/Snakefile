@@ -245,32 +245,17 @@ rule tszip:
 
 
 rule write_fasta:
+    conda:
+        "sc2ts.yml"
     input:
         "{WF_PREFIX}.trees",
     output:
         "{WF_PREFIX}.fasta",
-    run:
-        import tszip
-        import tskit
-        import numpy as np
 
-        # Set all nodes to be sample nodes.
-        ts = tszip.load(input[0])
-        tables = ts.dump_tables()
-        node_flags = tables.nodes.flags
-        node_flags[:] = tskit.NODE_IS_SAMPLE
-        tables.nodes.flags = node_flags
-        ts = tables.tree_sequence()
-        if not np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
-            raise ValueError("Not all the nodes are samples.")
-        samples = np.arange(ts.num_nodes)
-        with open(f"{output}", "w") as f:
-            # NOTE: this takes about 80G of RAM to do in one go. Can split
-            # into chunks of nodes to make it more managable
-            for j, entry in enumerate(ts.alignments(samples=samples, left=1)):
-                f.write(f">n{samples[j]}\n")
-                f.write(entry + "\n")
-
+    shell:
+        """
+        python scripts/get_all_nodes_fasta.py {input} {output}
+        """
 
 rule run_pangolin:
     conda:
@@ -539,14 +524,7 @@ rule extract_recombinant_alignments:
         "{ERA_PREFIX}_recombinants.csv",
     output:
         "{ERA_PREFIX}_recombinants.fasta",
-    run:
-        # FIXME this is broken because the conda env doesnt' 
-        # work with embedded python
-        import pandas as pd
-        import sc2ts
-
-        ds = sc2ts.Dataset(input[0])
-        df = pd.read_csv(input[1])
-        with open(f"{output}", "w") as f:
-            ds.write_fasta(f, sample_id=df["sample_id"])
-
+    shell:
+        """
+        python scripts/get_sample_fasta.py {input} {output}
+        """
