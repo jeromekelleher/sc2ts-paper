@@ -412,7 +412,7 @@ rule convert_topology:
     output:
         "usher_topology.trees"
     shell:
-        "python ../src/mat2tsk.py convert-topology {input} {output}"
+        "python scripts/mat2tsk.py convert-topology {input} {output}"
 
 rule add_mutations:
     conda:
@@ -424,7 +424,7 @@ rule add_mutations:
         "usher_v1_2024-06-06.trees"
     shell:
         """
-        python ../src/mat2tsk.py convert-mutations {input} reference.fasta {output}
+        python scripts/mat2tsk.py convert-mutations {input} reference.fasta {output}
         """
 
 rule date_samples:
@@ -437,7 +437,7 @@ rule date_samples:
         "{DS_PREFIX}_ds.trees",
     shell:
         """
-        python ../src/mat2tsk.py date-samples {input} {output}
+        python scripts/mat2tsk.py date-samples {input} {output}
         """
 
 rule date_internal_nodes:
@@ -451,7 +451,7 @@ rule date_internal_nodes:
     shell:
         """
         echo "NOTE: tsdate can take many minutes per EP iteration: this may be a while."
-        python ../src/mat2tsk.py date-internal {input} {output}
+        python scripts/mat2tsk.py date-internal {input} {output}
         """
 
 rule sc2ts_usher_intersection:
@@ -465,7 +465,7 @@ rule sc2ts_usher_intersection:
         "sc2ts_2023-02-21_intersection.trees",
     shell:
         """
-        python ../src/mat2tsk.py intersect {input} {output}
+        python scripts/mat2tsk.py intersect --intersect-sites {input} {output}
         """
 
 
