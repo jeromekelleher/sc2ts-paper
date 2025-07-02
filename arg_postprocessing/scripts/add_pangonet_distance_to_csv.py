@@ -4,6 +4,11 @@ import numpy as np
 from pangonet.pangonet import PangoNet
 
 def get_pangonet_distance(pango, label_1, label_2):
+    label_1 = pango.compress(label_1)
+    label_2 = pango.compress(label_2)
+    if label_1 == label_2:
+        return 0
+
     mrcas = pango.get_mrca([label_1, label_2])
     assert len(mrcas) == 1
     mrca = mrcas[0]
@@ -23,46 +28,16 @@ def get_pangonet_distance(pango, label_1, label_2):
     return len(left_path) + len(right_path) - 2
 
 
-#     """Get the number of edges separating two Pango labels on a reference phylogeny."""
-#     # Pangonet sometimes returns empty paths between uncompressed labels.
-#     # So, it is better to work with compressed labels instead.
-#     label_1_c = pangonet.compress(label_1)
-#     label_2_c = pangonet.compress(label_2)
-#     # Special case
-#     if label_1_c == label_2_c:
-#         return 0    # Distance
-#     # Check ancestor-descendant relationship
-#     label_1_anc = [pangonet.uncompress(p) for p in pangonet.get_ancestors(label_1_c)]
-#     label_2_anc = [pangonet.uncompress(p) for p in pangonet.get_ancestors(label_2_c)]
-#     if (label_1_c in label_2_anc) or (label_2_c in label_1_anc):
-#         # Paths include the focal nodes
-#         anc_desc_path = pangonet.get_paths(start=label_1_c, end=label_2_c)
-#         if len(anc_desc_path) != 1:
-#             raise ValueError("pangonet returns unexpected number of paths.")
-#         distance = len(anc_desc_path[0]) - 1
-#     else:
-#         mrca = pangonet.get_mrca([label_1_c, label_2_c])
-#         if len(mrca) != 1:
-#             raise ValueError("pangonet returns unexpected number of MRCAs.")
-#         # Paths include the focal nodes
-#         mrca_pango_1_path = pangonet.get_paths(start=label_1_c, end=mrca[0])
-#         mrca_pango_2_path = pangonet.get_paths(start=label_2_c, end=mrca[0])
-#         if (len(mrca_pango_1_path) != 1) or (len(mrca_pango_2_path) != 1):
-#             raise ValueError("pangonet returns unexpected number of paths.")
-#         mrca_pango_1_distance = len(mrca_pango_1_path[0]) - 1
-#         mrca_pango_2_distance = len(mrca_pango_2_path[0]) - 1
-#         distance = mrca_pango_1_distance + mrca_pango_2_distance
-#     return distance
-
-
 
 @click.command()
 @click.argument("recombinants_csv")
 @click.argument("output")
 def run(recombinants_csv, output):
     dfr = pd.read_csv(recombinants_csv)
-    print(dfr)
 
+    # Pangonet downloads these files by default, uncomment to work around rate limit
+    # problems
+    # pango = PangoNet().build(alias_key="alias_key.json", lineage_notes="lineage_notes.txt")
     pango = PangoNet().build()
 
     parent_path_len = []
@@ -72,12 +47,8 @@ def run(recombinants_csv, output):
         distance = get_pangonet_distance(pango, left_pp, right_pp)
         parent_path_len.append(distance)
 
-    print(parent_path_len)
-
-    # df_rebar = pd.read_csv(rebar_tsv, sep="\t").set_index("strain")
-    # dfr["is_rebar_recombinant"] = ~df_rebar["recombinant"].isna()
-    # print(np.sum(dfr["is_rebar_recombinant"]), "recombinants as per rebar")
-    # dfr.reset_index().to_csv(output, index=False)
+    dfr["parent_pangonet_distance"] = parent_path_len
+    dfr.to_csv(output, index=False)
 
 
 if __name__ == "__main__":

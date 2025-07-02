@@ -19,11 +19,11 @@ rule all:
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
         # Recombinant data
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv", 
+        # Full rebar output. 
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rebar_output.tsv",
         # TODO add rule to generate recombinants_matches_pangonet csv
         # once we've sorted the reruns json.
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_matches_pangonet_nsl.csv",
-        # Rebar output. 
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rebar.tsv",
+        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
         # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
         # Report on deletion and parsimony mapping
         "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
@@ -40,6 +40,7 @@ rule all:
         # Report
         "logs/usher_sc2ts_comparison.ipynb",
 
+  
 
 rule initialise:
     input:
@@ -122,6 +123,19 @@ rule recombinants_report:
     notebook:
         "notebooks/recombinants_report.py.ipynb"
 
+
+rule add_pangonet_to_csv:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{APC_PREFIX}.csv",
+    output:
+        "{APC_PREFIX}_pangonet.csv",
+
+    shell:
+        """
+        python scripts/add_pangonet_distance_to_csv.py {input} {output}
+        """
 
 
 rule add_net_supporting_loci:
@@ -484,6 +498,7 @@ rule usher_sc2ts_comparison:
         "sc2ts_2023-02-21_intersection_asp.csv",
     log:
         notebook="logs/usher_sc2ts_comparison.ipynb"
+
     notebook:
         "notebooks/usher_sc2ts_comparison.py.ipynb"
 
@@ -507,7 +522,7 @@ rule run_rebar:
         "rebar/summary.json",
         "{RR_PREFIX}_recombinants.fasta"
     output:
-        "{RR_PREFIX}_recombinants_rebar.tsv"
+        "{RR_PREFIX}_rebar_output.tsv"
     shell:
       """
       rebar run \
@@ -517,7 +532,6 @@ rule run_rebar:
           --output-dir rebar_output
       cp rebar_output/linelist.tsv {output}
       """
-  
         
 rule extract_recombinant_alignments:
     conda: "sc2ts.yml"
@@ -529,4 +543,17 @@ rule extract_recombinant_alignments:
     shell:
         """
         python scripts/get_sample_fasta.py {input} {output}
+        """
+
+
+rule add_rebar_to_csv:
+    conda: "sc2ts.yml"
+    input: 
+        "{ARC_PREFIX}_recombinants.csv",
+        "{ARC_PREFIX}_rebar_output.tsv",
+    output:
+        "{ARC_PREFIX}_recombinants_rebar.csv",
+    shell:
+        """
+        python scripts/add_rebar_to_csv.py {input} {output}
         """
