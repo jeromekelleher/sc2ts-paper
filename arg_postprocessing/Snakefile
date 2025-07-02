@@ -22,7 +22,7 @@ rule all:
         # Full rebar output. 
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rebar_output.tsv",
         # TODO add rule to generate _matches csv once we've sorted the reruns json.
-        # Currently this is computed in the recombinant_processing notebookt
+        # Currently this is computed in the recombinant_processing notebook
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
         # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
         # Report on deletion and parsimony mapping
