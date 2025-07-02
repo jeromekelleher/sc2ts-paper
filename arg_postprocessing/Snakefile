@@ -21,8 +21,8 @@ rule all:
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv", 
         # Full rebar output. 
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rebar_output.tsv",
-        # TODO add rule to generate recombinants_matches_pangonet csv
-        # once we've sorted the reruns json.
+        # TODO add rule to generate _matches csv once we've sorted the reruns json.
+        # Currently this is computed in the recombinant_processing notebookt
         "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
         # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
         # Report on deletion and parsimony mapping
@@ -138,18 +138,17 @@ rule add_pangonet_to_csv:
         """
 
 
-rule add_net_supporting_loci:
+rule add_net_supporting_loci_to_csv:
     conda:
         "sc2ts.yml"
     input:
         "{ASL_PREFIX}.trees",
-        "{ASL_PREFIX}_recombinants_matches_pangonet.csv",
+        "{ASL_PREFIX}_recombinants_{ASL_SUFFIX}.csv",
     output:
-        "{ASL_PREFIX}_recombinants_matches_pangonet_nsl.csv",
-
+        "{ASL_PREFIX}_recombinants_{ASL_SUFFIX}_nsl.csv",
     shell:
         """
-        python ../scripts/run_recombinant_minlength_csv_add.py -v {input} {output}
+        python scripts/add_recombinant_minlength_to_csv.py -v {input} {output}
         """
 
 # NOTE: these two rematch steps are very slow and take a lot 
