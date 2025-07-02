@@ -181,7 +181,7 @@ def date_samples(tsk_in, tsk_out):
     samples = np.array(list(sample_date.keys()))
     dates = np.array(list(sample_date.values()), dtype="datetime64[D]")
 
-    ts = ts.simplify(samples, keep_input_roots=True)
+    ts = ts.simplify(samples, keep_input_roots=True, filter_sites=False)
 
     time_zero = dates.max()
     time = (time_zero - dates).astype(int)
@@ -243,7 +243,7 @@ def date_internal(tsk_in, tsk_out):
         rescaling_intervals=0,
         max_iterations=1,  # single tree, so only one round needed
         time_units=ts.time_units,
-        constr_iterations=50000, 
+        constr_iterations=50000,
         allow_unary=True,
         progress=True,
         set_metadata=False,
