@@ -292,7 +292,7 @@ class D3ARG_viz:
 
 
         nodes = list((used_pango_samples | include) - exclude)
-        used = self.d3arg.subset_graph(nodes, parent_levels=parent_levels, child_levels=child_levels)
+        used = self.d3arg.subset_graph(nodes, depth=(parent_levels, child_levels))
         title=(
             f'Subgraph of {self.pangolin_field} {"/".join(pangos)}: '
             f'({len(pango_samples)} sample{"" if len(pango_samples) == 1 else "s"},'
