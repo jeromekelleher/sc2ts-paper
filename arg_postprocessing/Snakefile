@@ -459,7 +459,7 @@ rule sc2ts_usher_intersection:
         "sc2ts.yml"
     input:
         "usher_v1_2024-06-06_mmd.trees",
-        "sc2ts_v1_2023-02-21_mm.trees"
+        "sc2ts_v1_2023-02-21_pp_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
         "sc2ts_2023-02-21_intersection.trees",
