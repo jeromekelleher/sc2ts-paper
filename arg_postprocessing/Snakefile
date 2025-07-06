@@ -57,6 +57,9 @@ rule debug_report:
         "sc2ts.yml"
     input:
         "{DR_PREFIX}.trees",
+    output:
+        "{DR_PREFIX}_samples.csv",
+        "{DR_PREFIX}_resources.csv",
     log:
         notebook="logs/{DR_PREFIX}_debug-report.ipynb"
     notebook:
