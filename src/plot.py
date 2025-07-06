@@ -1,4 +1,7 @@
+import datetime
+
 import click
+import humanize
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,7 +21,9 @@ def samples_csv():
 
 
 def resources_csv():
-    return pd.read_csv("arg_postprocessing/sc2ts_v1_2023-02-21_resources.csv")
+    return pd.read_csv(
+        "arg_postprocessing/sc2ts_v1_2023-02-21_resources.csv"
+    ).set_index("date")
 
 
 def _wide_plot(*args, height=4, **kwargs):
@@ -28,6 +33,58 @@ def _wide_plot(*args, height=4, **kwargs):
 def savefig(name):
     plt.savefig(f"figures/{name}.png")
     plt.savefig(f"figures/{name}.pdf")
+
+
+@click.command()
+def inference_resources():
+    fig, ax = _wide_plot(3, height=8, sharex=True)
+
+    start_date = "2020-05-01"
+    end_date = "3000-01-01"
+
+    dfs = samples_csv().set_index("date")
+
+    dfa = dfs.groupby("date").sum()
+    dfa["mean_hmm_cost"] = dfa["total_hmm_cost"] / dfa["total"]
+    df = dfa.join(resources_csv(), how="inner")
+    df = df.rename(columns={"inserted": "smaples_in_arg", "total": "samples_processed"})
+    df = df[(df.index >= start_date) & (df.index < end_date)]
+
+    df["cpu_time"] = df.user_time + df.sys_time
+    x = np.array(df.index, dtype="datetime64[D]")
+
+    total_elapsed = datetime.timedelta(seconds=np.sum(df.elapsed_time))
+    total_cpu = datetime.timedelta(seconds=np.sum(df.cpu_time))
+    title = (
+        f"{humanize.naturaldelta(total_elapsed)} elapsed "
+        f"using {humanize.naturaldelta(total_cpu)} of CPU time "
+        f"(utilisation = {np.sum(df.cpu_time) / np.sum(df.elapsed_time):.2f})"
+    )
+
+    ax[0].set_title(title)
+    ax[0].plot(x, df.elapsed_time / 60, label="elapsed time")
+    ax[-1].set_xlabel("Date")
+    ax_twin = ax[0].twinx()
+    ax_twin.plot(x, df.samples_processed, color="tab:red", alpha=0.5, label="samples")
+    ax_twin.legend(loc="upper left")
+    ax_twin.set_ylabel("Samples processed")
+    ax[0].set_ylabel("Elapsed time (mins)")
+    ax[0].legend()
+    ax_twin.legend()
+    ax[1].plot(x, df.elapsed_time / df.samples_processed, label="Mean time per sample")
+    ax[1].set_ylabel("Elapsed time per sample (s)")
+    ax[1].legend(loc="upper right")
+
+    ax_twin = ax[1].twinx()
+    ax_twin.plot(x, df.mean_hmm_cost, color="tab:orange", alpha=0.5, label="HMM cost")
+    ax_twin.set_ylabel("HMM cost")
+    ax_twin.legend(loc="upper left")
+    ax[2].plot(x, df.max_memory / 1024**3)
+    ax[2].set_ylabel("Max memory (GiB)")
+
+    for a in ax:
+        a.grid()
+    savefig("inference-resources")
 
 
 @click.command()
@@ -110,4 +167,5 @@ def cli():
 
 
 cli.add_command(samples_per_day)
+cli.add_command(inference_resources)
 cli()
