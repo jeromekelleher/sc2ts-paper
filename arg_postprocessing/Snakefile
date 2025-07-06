@@ -469,19 +469,26 @@ rule sc2ts_usher_intersection:
         """
 
 
+rule generate_all_sites:
+    output: "all_sites.txt"
+    shell: "seq 1 29903 > {output}"
+
+
 rule all_sites_parsimony:
     conda:
         "sc2ts.yml"
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "{ASP_PREFIX}.trees"
+        "{ASP_PREFIX}.trees",
+        "all_sites.txt",
     output:
         "{ASP_PREFIX}_asp.trees",
         "{ASP_PREFIX}_asp.csv"
     shell:
         """
-        python -m sc2ts map-parsimony -v {input} {output[0]} \
-            --report={output[1]} --no-progress
+        python -m sc2ts map-parsimony -v {input[0]} {input[1]} {output[0]} \
+            --report={output[1]} --no-progress \
+            --sites={input[2]}
         """
 
 

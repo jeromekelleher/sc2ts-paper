@@ -23,6 +23,16 @@ import numpy.testing as nt
 
 def set_mutations(ts, ref, mutations_per_node):
     tables = ts.dump_tables()
+
+    assert ts.sequence_length == len(ref)
+    base_schema = tskit.MetadataSchema.permissive_json().schema
+    tables.reference_sequence.metadata_schema = tskit.MetadataSchema(base_schema)
+    tables.reference_sequence.metadata = {
+        "genbank_id": "MN908947",
+        "notes": "X prepended to alignment to map from 1-based to 0-based coordinates",
+    }
+    tables.reference_sequence.data = ref
+
     mutations = tables.mutations
     mutations.clear()
     sites = tables.sites
