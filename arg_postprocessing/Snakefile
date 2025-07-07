@@ -172,7 +172,7 @@ rule rematch_arg_recombinants:
         "{REMARG_PREFIX}_rematch.json",
     shell:
         """
-        python ../src/rematch_recombinants.py \
+        python scripts/rematch_recombinants.py \
             ../inference/results/v1-beta1/v1-beta1_ \
             {input} {output}.tmp -k 1000 \
             --mismatch-threshold=100 \
@@ -190,7 +190,7 @@ rule rematch_non_arg_recombinants:
         "pango_x_absent_in_arg_rematch.json",
     shell:      
         """
-        python ../src/rematch_recombinants.py \\
+        python scripts/rematch_recombinants.py \\
             ../inference/results/v1-beta1/v1-beta1_ \
             --mismatch-threshold=100 \
             --workers=1 \
@@ -212,7 +212,7 @@ rule rematch_arg_recombinants_that_changed:
         "samples_that_changed.json",
     shell:      
         """
-        python ../src/rematch_recombinants.py \\
+        python scripts/rematch_recombinants.py \\
             ../inference/results/v1-beta1/v1-beta1_ \
             --mismatch-threshold=100 \
             --workers=1 \
