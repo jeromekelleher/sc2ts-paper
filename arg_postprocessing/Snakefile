@@ -232,7 +232,7 @@ rule shift_breakpoints:
         "{BP_PREFIX}_shift_breakpoints.log",
     shell:
         """
-        python ../scripts/run_breakpoint_shift_for_deletions.py -v {input} {output} > {log} 2>&1
+        python scripts/run_breakpoint_shift_for_deletions.py -v {input} {output} > {log} 2>&1
         """
 
 
