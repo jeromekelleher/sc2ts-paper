@@ -1,3 +1,8 @@
+# This script contains code for imputing pango lineage status of internal
+# nodes, which was used in earlier versions of sc2ts (before we started
+# running pango directly on the alignments). It has not been maintained
+# but is kept here as it may be useful later.
+
 import argparse
 import fileinput
 import json
@@ -42,7 +47,7 @@ class MutationContainer:
             self.all_positions[position].add(alt)
         else:
             self.all_positions[position] = {alt}
-            
+
     def get_mutations(self, item):
         index = self.names[item]
         return self.positions[index], self.alts[index]
@@ -720,15 +725,15 @@ if __name__ == "__main__":
     ts = tszip.load(args.input_ts)
     ti = sc2ts.info.TreeInfo(ts)
 
-    
+
     new_ts = lineage_imputation(
         args.mutations_json_filepath,
-        ts, 
+        ts,
         ti,
         verbose=args.verbose,
         all_positions=args.all_positions,
     )
-    
+
     # Add provenance info
     tables = new_ts.dump_tables()
     arguments = [args.mutations_json_filepath, args.input_ts]
