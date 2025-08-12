@@ -127,8 +127,8 @@ rule apply_parsimony_heuristics:
         "{APH_PREFIX}_aph.csv",
     shell:
         """
-        python -m sc2ts -vv apply-node-parsimony {input} {output[0]} \
-            --report={output[1]} --no-progress
+        python -m sc2ts apply-node-parsimony {input} {output[0]} \
+            --report={output[1]} --no-progress -vv
         """
 
 
@@ -472,7 +472,8 @@ rule sc2ts_usher_intersection:
         "sc2ts.yml"
     input:
         "usher_v1_2024-06-06_mmd.trees",
-        "sc2ts_v1_2023-02-21_pp_mm.trees"
+        # We use the final trees after post-processing and applying parsimony mapping
+        "sc2ts_v1_2023-02-21_pp_mp_aph_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
         "sc2ts_2023-02-21_intersection.trees",
