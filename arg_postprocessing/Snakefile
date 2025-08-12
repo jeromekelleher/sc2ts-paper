@@ -216,28 +216,6 @@ rule rematch_non_arg_recombinants:
         mv {output}.tmp {output}
         """
 
-# This is a temporary rule to get something that basically works
-# while we let the other two above "just run". We're just covering
-# the samples that changed from an earlier version because of how
-# sample choice was done.
-rule rematch_arg_recombinants_that_changed:
-    conda:
-        "sc2ts.yml"
-    input:
-        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "samples_that_changed.csv",
-    output:
-        "samples_that_changed.json",
-    shell:      
-        """
-        python scripts/rematch_recombinants.py \\
-            ../inference/results/v1-beta1/v1-beta1_ \
-            --mismatch-threshold=100 \
-            --workers=1 \
-            {input} {output}.tmp -k 1000 
-        mv {output}.tmp {output}
-        """
-
 
 rule shift_breakpoints:
     conda:
