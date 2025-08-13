@@ -8,44 +8,45 @@ rule all:
     input:
         # Base debug report
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
-        # Final ARG
-        # Order of operations:
-        # 1) postprocess (various minor tweaks)
-        # 2) Dating (before adding lots of highly recurrent sites)
-        # 3) Parsimony mapping (adding in deletions and recurrent sites)
-        # 4) Shift breakpoints (must be after mapping)
-        # 5) Compute pango assignment (must be after parsimony mapping)
-        # 6) Minimise metadata (must be last step)
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
+        # "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.csv",
         # Recombinant data
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants.csv", 
-        # Full rebar output. 
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rebar_output.tsv",
-        # TODO add rule to generate _matches csv once we've sorted the reruns json.
-        # Currently this is computed in the recombinant_processing notebook
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
-        # "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_rematch.json",
-        # Report on deletion and parsimony mapping
-        "logs/sc2ts_v1_2023-02-21_pp_dated_remapped_deletion-report.ipynb",
-        # Usher tree and sc2ts intersections
-        # Full usher tree with mutations, but uncalibrated node time
-        "usher_v1_2024-06-06_mm.trees.tsz",
-        # Usher intersection with sc2ts, with dated nodes
-        "usher_2023-02-21_intersection_ds_di.trees.tsz",
-        # Sc2ts intersection, not dated (annoying metdata issues)
-        "sc2ts_2023-02-21_intersection.trees.tsz",
-        # All-sites parsimony files, to get the direct comparison
-        "usher_2023-02-21_intersection_asp.trees",
-        "sc2ts_2023-02-21_intersection_asp.trees",
-        # Report
-        "logs/usher_sc2ts_comparison.ipynb",
+        # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_recombinants.csv", 
+        # # Full rebar output. 
+        # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_rebar_output.tsv",
+        # # TODO add rule to generate _matches csv once we've sorted the reruns json.
+        # # Currently this is computed in the recombinant_processing notebook
+        # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
+        # # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_rematch.json",
+        # # Report on deletion and parsimony mapping
+        # "logs/sc2ts_v1_2023-02-21_pp_dated_mp_deletion-report.ipynb",
+        # # Usher tree and sc2ts intersections
+        # # Full usher tree with mutations, but uncalibrated node time
+        # "usher_v1_2024-06-06_mm.trees.tsz",
+        # # Usher intersection with sc2ts, with dated nodes
+        # "usher_2023-02-21_intersection_ds_di.trees.tsz",
+        # # Sc2ts intersection, not dated (annoying metdata issues)
+        # "sc2ts_2023-02-21_intersection.trees.tsz",
+        # # All-sites parsimony files, to get the direct comparison
+        # "usher_2023-02-21_intersection_asp.trees",
+        # "sc2ts_2023-02-21_intersection_asp.trees",
+        # # Report
+        # "logs/usher_sc2ts_comparison.ipynb",
         "logs/final_arg_report.ipynb",
 
 rule final_args:
     conda: 
         "sc2ts.yml"
     input:
-        "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz",
+        # Final ARG
+        # Order of operations:
+        # 1) postprocess (_pp: various minor tweaks)
+        # 2) Parsimony mapping (_mp: adding in deletions and recurrent sites)
+        # 3) Apply node parsimony heuristics (_aph: cleanup some mess after 2)
+        # 4) Shift breakpoints (must be after mapping: _bps)
+        # 5) Compute pango assignment (must be after parsimony mapping and heuristics)
+        # 6) Dating (_dated)
+        # 7) Minimise metadata (must be last step)
+        "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
         "usher_v1_2024-06-06_mm.trees.tsz",
         "sc2ts_2023-02-21_intersection.trees.tsz",
         "usher_2023-02-21_intersection_ds_di.trees.tsz",
@@ -99,24 +100,37 @@ rule postprocess:
             --match-db=../inference/results/v1-beta1.matches.db
         """
 
-# NOTE: this rule should be renamed to be more general if we 
-# do map sites not just for dels but things we omit also
-rule remap_sites:
+rule map_parsimony:
     conda:
         "sc2ts.yml"
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "{MD_PREFIX}.trees",
+        "{MP_PREFIX}.trees",
         "remapped_sites.txt",
     output:
-        "{MD_PREFIX}_remapped.trees",
-        "{MD_PREFIX}_remapped_parsimony.csv",
+        "{MP_PREFIX}_mp.trees",
+        "{MP_PREFIX}_mp.csv",
     shell:
         """
         python -m sc2ts map-parsimony -vv \
             {input[0]} {input[1]} {output[0]} \
             --sites={input[2]} --report={output[1]} --no-progress
         """
+
+rule apply_parsimony_heuristics:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{APH_PREFIX}.trees"
+    output:
+        "{APH_PREFIX}_aph.trees",
+        "{APH_PREFIX}_aph.csv",
+    shell:
+        """
+        python -m sc2ts apply-node-parsimony {input} {output[0]} \
+            --report={output[1]} --no-progress -vv
+        """
+
 
 rule deletion_report:
     conda:
@@ -458,7 +472,8 @@ rule sc2ts_usher_intersection:
         "sc2ts.yml"
     input:
         "usher_v1_2024-06-06_mmd.trees",
-        "sc2ts_v1_2023-02-21_pp_mm.trees"
+        # We use the final trees after post-processing and applying parsimony mapping
+        "sc2ts_v1_2023-02-21_pp_mp_aph_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
         "sc2ts_2023-02-21_intersection.trees",
