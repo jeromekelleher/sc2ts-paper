@@ -60,7 +60,9 @@ def recombinant_supporting_locations(ts, adjacent_distance):
             else:
                 run_positions[re_node].append(int(last_position[idx]))
                 if last_parent[re_node][idx] != edge.parent:
-                    raise ValueError(f"conflicting parents within {adjacent_distance}bp")
+                    raise ValueError(
+                        f"conflicting parents within {adjacent_distance}bp"
+                    )
             last_position[idx] = pos
             last_parent[re_node][idx] = edge.parent
     return supporting_location_count, run_positions
@@ -85,9 +87,12 @@ def main(args):
         arr.append([u, *support])
     new_cols = np.array(arr).T
 
-    new_cols = np.vstack((new_cols,
-        [np.minimum(new_cols[1, :], new_cols[2, :]) >= net_min_supp_loci_cutoff],
-    ))
+    new_cols = np.vstack(
+        (
+            new_cols,
+            [np.minimum(new_cols[1, :], new_cols[2, :]) >= net_min_supp_loci_cutoff],
+        )
+    )
 
     new_df = df.set_index("recombinant")
     colnames = {  # column in new_cols => name in new df
@@ -115,20 +120,23 @@ if __name__ == "__main__":
     argparser.add_argument("input_csv", help="Recombinant csv file in pandas format")
     argparser.add_argument(
         "output_csv",
-        nargs='?',
+        nargs="?",
         default=None,
         help=(
             "Path to the csv file to output. "
             "If not given, add '.minl' to input filename prefix."
-        )
+        ),
     )
-    argparser.add_argument("--verbose", "-v", action="store_true", help="Print extra info")
     argparser.add_argument(
-        "--adjacent_distance", "-d", type=int,
+        "--verbose", "-v", action="store_true", help="Print extra info"
+    )
+    argparser.add_argument(
+        "--adjacent_distance",
+        "-d",
+        type=int,
         help="The max distance between sites at the same locus",
-        default=3)
+        default=3,
+    )
 
     args = argparser.parse_args()
     main(args)
-
-

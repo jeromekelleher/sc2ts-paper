@@ -1,89 +1,74 @@
-import datetime
-import dataclasses
-import os
 import concurrent.futures as cf
-
-import sc2ts
-import pandas as pd
+import pathlib
+import tszip
 import click
+import sc2ts
+import numpy as np
+import dataclasses
 import tqdm
+import subprocess
+import json
 
 
 @dataclasses.dataclass
-class MatchWork:
-    ts_path: str
-    ds_path: str
-    sample_id: str
-    num_mismatches: int
-    mismatch_threshold: int
+class Work:
+    pattern: str
+    node: int
+    date: str
 
 
-def run_match(m):
-    runs = sc2ts.run_hmm(
-        m.ds_path,
-        m.ts_path,
-        strains=[m.sample_id],
-        num_mismatches=m.num_mismatches,
-        mismatch_threshold=m.mismatch_threshold,
-        deletions_as_missing=True,
-        num_threads=0,
-        show_progress=False,
+def worker(work):
+    cmd = (
+        f"python -m sc2ts rematch-recombinant {work.node} "
+        f"--path-pattern={work.pattern} --date={work.date} -vv"
     )
-    return runs[0]
+    out = subprocess.check_output(cmd, shell=True)
+    result = json.loads(out.decode())
+    result["recombinant"] = int(work.node)
+    return result
+
+
+def dump(json_data, path):
+    with open(path, "w") as f:
+        json.dump(json_data, f, indent=4)
 
 
 @click.command()
-@click.argument("ts_prefix")
-@click.argument("ds_path", type=click.Path(dir_okay=False, file_okay=True))
-@click.argument("samples_csv_path", type=click.Path(dir_okay=False, file_okay=True))
-@click.argument("output_path")
-@click.option("--num-mismatches", "-k", type=int, multiple=True)
-@click.option("--mismatch-threshold", "-m", type=int, default=100)
-@click.option("--workers", "-w", type=int, default=1)
-def run(
-    ts_prefix,
-    ds_path,
-    samples_csv_path,
-    output_path,
-    num_mismatches,
-    mismatch_threshold,
-    workers,
-):
+@click.argument("ts")
+@click.argument("pattern")
+@click.argument("output")
+@click.option("--cores", type=int)
+def run(ts, pattern, output, cores):
+    ts = tszip.load(ts)
 
-    ds = sc2ts.Dataset(ds_path, date_field="Date_tree")
-    recomb_df = pd.read_csv(samples_csv_path).set_index("sample_id")
+    recomb_nodes = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0)[0]
+    node_mutations = np.bincount(ts.mutations_node)
 
-    work = []
-    for s in recomb_df.index:
-        try:
-            date = datetime.datetime.fromisoformat(ds.metadata[s]["Date_tree"])
-        except KeyError:
-            print(f"missing {s}")
-            continue
-        match_date = str(date - datetime.timedelta(days=1)).split()[0]
-        ts_path = f"{ts_prefix}{match_date}.ts"
-        if not os.path.exists(ts_path):
-            raise ValueError(f"Missing path: {ts_path}")
-        for k in num_mismatches:
-            work.append(
-                MatchWork(ts_path, ds.path, s, k, mismatch_threshold=mismatch_threshold)
-            )
+    easy_work = []
+    hard_work = []
 
-    # Clear the file
-    with open(output_path, "w") as f:
-        pass
+    for u in recomb_nodes:
+        md = ts.node(u).metadata
+        date = md["sc2ts"]["date_added"]
+        muts = node_mutations[u]
+        if muts == 0:
+            easy_work.append(Work(pattern, u, date))
+        else:
+            hard_work.append(Work(pattern, u, date))
 
-    with cf.ProcessPoolExecutor(workers) as executor:
-        futures = [executor.submit(run_match, w) for w in work]
-        for future in tqdm.tqdm(cf.as_completed(futures), total=len(futures)):
-            run = future.result()
-            with open(output_path, "a") as f:
-                print(run.asjson(), file=f)
+    json_data = []
+    with cf.ProcessPoolExecutor(cores) as executor:
+        futures = [executor.submit(worker, work) for work in easy_work]
+        for future in tqdm.tqdm(cf.as_completed(futures), total=len(easy_work)):
+            result = future.result()
+            json_data.append(result)
+            dump(json_data, output)
 
-    # for w in tqdm.tqdm(work):
-    #     run = run_match(w)
-    #     with open(output_path, "a") as f:
-    #         print(run.asjson(), file=f)
+    for work in tqdm.tqdm(hard_work):
+        result = worker(work)
+        json_data.append(result)
+        dump(json_data, output)
 
 
-run()
+if __name__ == "__main__":
+    run()
