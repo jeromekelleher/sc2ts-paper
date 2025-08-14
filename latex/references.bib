@@ -1,5 +1,1414 @@
 % Encoding: UTF-8
 
+%%%% Main text
+@Article{Turakhia2021,
+author={Turakhia, Yatish
+and Thornlow, Bryan
+and Hinrichs, Angie S.
+and De Maio, Nicola
+and Gozashti, Landen
+and Lanfear, Robert
+and Haussler, David
+and Corbett-Detig, Russell},
+title={Ultrafast Sample placement on Existing tRees (UShER) enables real-time phylogenetics for the SARS-CoV-2 pandemic},
+journal={Nature Genetics},
+year={2021},
+month={Jun},
+day={01},
+volume={53},
+number={6},
+pages={809-816},
+abstract={As the SARS-CoV-2 virus spreads through human populations, the unprecedented accumulation of viral genome sequences is ushering in a new era of `genomic contact tracing'---that is, using viral genomes to trace local transmission dynamics. However, because the viral phylogeny is already so large---and will undoubtedly grow many fold---placing new sequences onto the tree has emerged as a barrier to real-time genomic contact tracing. Here, we resolve this challenge by building an efficient tree-based data structure encoding the inferred evolutionary history of the virus. We demonstrate that our approach greatly improves the speed of phylogenetic placement of new samples and data visualization, making it possible to complete the placements under the constraints of real-time contact tracing. Thus, our method addresses an important need for maintaining a fully updated reference phylogeny. We make these tools available to the research community through the University of California Santa Cruz SARS-CoV-2 Genome Browser to enable rapid cross-referencing of information in new virus sequences with an ever-expanding array of molecular and structural biology data. The methods described here will empower research and genomic contact tracing for SARS-CoV-2 specifically for laboratories worldwide.},
+issn={1546-1718},
+doi={10.1038/s41588-021-00862-7},
+url={https://doi.org/10.1038/s41588-021-00862-7}
+}
+
+@Article{DeMaio2023,
+author={De Maio, Nicola
+and Kalaghatgi, Prabhav
+and Turakhia, Yatish
+and Corbett-Detig, Russell
+and Minh, Bui Quang
+and Goldman, Nick},
+title={Maximum likelihood pandemic-scale phylogenetics},
+journal={Nature Genetics},
+year={2023},
+month={May},
+day={01},
+volume={55},
+number={5},
+pages={746-752},
+abstract={Phylogenetics has a crucial role in genomic epidemiology. Enabled by unparalleled volumes of genome sequence data generated to study and help contain the COVID-19 pandemic, phylogenetic analyses of SARS-CoV-2 genomes have shed light on the virus's origins, spread, and the emergence and reproductive success of new variants. However, most phylogenetic approaches, including maximum likelihood and Bayesian methods, cannot scale to the size of the datasets from the current pandemic. We present `MAximum Parsimonious Likelihood Estimation' (MAPLE), an approach for likelihood-based phylogenetic analysis of epidemiological genomic datasets at unprecedented scales. MAPLE infers SARS-CoV-2 phylogenies more accurately than existing maximum likelihood approaches while running up to thousands of times faster, and requiring at least 100 times less memory on large datasets. This extends the reach of genomic epidemiology, allowing the continued use of accurate phylogenetic, phylogeographic and phylodynamic analyses on datasets of millions of genomes.},
+issn={1546-1718},
+doi={10.1038/s41588-023-01368-0},
+url={https://doi.org/10.1038/s41588-023-01368-0}
+}
+
+@Article{McBroome2021,
+author={McBroome, Jakob
+and Thornlow, Bryan
+and Hinrichs, Angie S.
+and Kramer, Alexander
+and De Maio, Nicola
+and Goldman, Nick
+and Haussler, David
+and Corbett-Detig, Russell
+and Turakhia, Yatish},
+title={A Daily-Updated Database and Tools for Comprehensive SARS-CoV-2 Mutation-Annotated Trees},
+journal={Molecular Biology and Evolution},
+year={2021},
+month={Dec},
+day={01},
+volume={38},
+number={12},
+pages={5819-5824},
+abstract={The vast scale of SARS-CoV-2 sequencing data has made it increasingly challenging to comprehensively analyze all available data using existing tools and file formats. To address this, we present a database of SARS-CoV-2 phylogenetic trees inferred with unrestricted public sequences, which we update daily to incorporate new sequences. Our database uses the recently proposed mutation-annotated tree (MAT) format to efficiently encode the tree with branches labeled with parsimony-inferred mutations, as well as Nextstrain clade and Pango lineage labels at clade roots. As of June 9, 2021, our SARS-CoV-2 MAT consists of 834,521 sequences and provides a comprehensive view of the virus' evolutionary history using public data. We also present matUtils---a command-line utility for rapidly querying, interpreting, and manipulating the MATs. Our daily-updated SARS-CoV-2 MAT database and matUtils software are available at http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER{\_}SARS-CoV-2/ and https://github.com/yatisht/usher, respectively.},
+issn={1537-1719},
+doi={10.1093/molbev/msab264},
+url={https://doi.org/10.1093/molbev/msab264}
+}
+
+@Article{Hadfield2018,
+author={Hadfield, James
+and Megill, Colin
+and Bell, Sidney M.
+and Huddleston, John
+and Potter, Barney
+and Callender, Charlton
+and Sagulenko, Pavel
+and Bedford, Trevor
+and Neher, Richard A.},
+title={Nextstrain: real-time tracking of pathogen evolution},
+journal={Bioinformatics},
+year={2018},
+month={Dec},
+day={01},
+volume={34},
+number={23},
+pages={4121-4123},
+abstract={Understanding the spread and evolution of pathogens is important for effective public health measures and surveillance. Nextstrain consists of a database of viral genomes, a bioinformatics pipeline for phylodynamics analysis, and an interactive visualization platform. Together these present a real-time view into the evolution and spread of a range of viral pathogens of high public health importance. The visualization integrates sequence data with other data types such as geographic information, serology, or host species. Nextstrain compiles our current understanding into a single accessible location, open to health professionals, epidemiologists, virologists and the public alike.All code (predominantly JavaScript and Python) is freely available from github.com/nextstrain and the web-application is available at nextstrain.org.},
+issn={1367-4803},
+doi={10.1093/bioinformatics/bty407},
+url={https://doi.org/10.1093/bioinformatics/bty407}
+}
+
+@Article{Karthikeyan2022,
+author={Karthikeyan, Smruthi
+and Levy, Joshua I.
+and De Hoff, Peter
+and Humphrey, Greg
+and Birmingham, Amanda
+and Jepsen, Kristen
+and Farmer, Sawyer
+and Tubb, Helena M.
+and Valles, Tommy
+and Tribelhorn, Caitlin E.
+and Tsai, Rebecca
+and Aigner, Stefan
+and Sathe, Shashank
+and Moshiri, Niema
+and Henson, Benjamin
+and Mark, Adam M.
+and Hakim, Abbas
+and Baer, Nathan A.
+and Barber, Tom
+and Belda-Ferre, Pedro
+and Chac{\'o}n, Marisol
+and Cheung, Willi
+and Cresini, Evelyn S.
+and Eisner, Emily R.
+and Lastrella, Alma L.
+and Lawrence, Elijah S.
+and Marotz, Clarisse A.
+and Ngo, Toan T.
+and Ostrander, Tyler
+and Plascencia, Ashley
+and Salido, Rodolfo A.
+and Seaver, Phoebe
+and Smoot, Elizabeth W.
+and McDonald, Daniel
+and Neuhard, Robert M.
+and Scioscia, Angela L.
+and Satterlund, Alysson M.
+and Simmons, Elizabeth H.
+and Abelman, Dismas B.
+and Brenner, David
+and Bruner, Judith C.
+and Buckley, Anne
+and Ellison, Michael
+and Gattas, Jeffrey
+and Gonias, Steven L.
+and Hale, Matt
+and Hawkins, Faith
+and Ikeda, Lydia
+and Jhaveri, Hemlata
+and Johnson, Ted
+and Kellen, Vince
+and Kremer, Brendan
+and Matthews, Gary
+and McLawhon, Ronald W.
+and Ouillet, Pierre
+and Park, Daniel
+and Pradenas, Allorah
+and Reed, Sharon
+and Riggs, Lindsay
+and Sanders, Alison
+and Sollenberger, Bradley
+and Song, Angela
+and White, Benjamin
+and Winbush, Terri
+and Aceves, Christine M.
+and Anderson, Catelyn
+and Gangavarapu, Karthik
+and Hufbauer, Emory
+and Kurzban, Ezra
+and Lee, Justin
+and Matteson, Nathaniel L.
+and Parker, Edyth
+and Perkins, Sarah A.
+and Ramesh, Karthik S.
+and Robles-Sikisaka, Refugio
+and Schwab, Madison A.
+and Spencer, Emily
+and Wohl, Shirlee
+and Nicholson, Laura
+and McHardy, Ian H.
+and Dimmock, David P.
+and Hobbs, Charlotte A.
+and Bakhtar, Omid
+and Harding, Aaron
+and Mendoza, Art
+and Bolze, Alexandre
+and Becker, David
+and Cirulli, Elizabeth T.
+and Isaksson, Magnus
+and Schiabor Barrett, Kelly M.
+and Washington, Nicole L.
+and Malone, John D.
+and Schafer, Ashleigh Murphy
+and Gurfield, Nikos
+and Stous, Sarah
+and Fielding-Miller, Rebecca
+and Garfein, Richard S.
+and Gaines, Tommi
+and Anderson, Cheryl
+and Martin, Natasha K.
+and Schooley, Robert
+and Austin, Brett
+and MacCannell, Duncan R.
+and Kingsmore, Stephen F.
+and Lee, William
+and Shah, Seema
+and McDonald, Eric
+and Yu, Alexander T.
+and Zeller, Mark
+and Fisch, Kathleen M.
+and Longhurst, Christopher
+and Maysent, Patty
+and Pride, David
+and Khosla, Pradeep K.
+and Laurent, Louise C.
+and Yeo, Gene W.
+and Andersen, Kristian G.
+and Knight, Rob},
+title={Wastewater sequencing reveals early cryptic SARS-CoV-2 variant transmission},
+journal={Nature},
+year={2022},
+month={Sep},
+day={01},
+volume={609},
+number={7925},
+pages={101-108},
+abstract={As SARS-CoV-2 continues to spread and evolve, detecting emerging variants early is critical for public health interventions. Inferring lineage prevalence by clinical testing is infeasible at scale, especially in areas with limited resources, participation, or testing and/or sequencing capacity, which can also introduce biases1--3. SARS-CoV-2 RNA concentration in wastewater successfully tracks regional infection dynamics and provides less biased abundance estimates than clinical testing4,5. Tracking virus genomic sequences in wastewater would improve community prevalence estimates and detect emerging variants. However, two factors limit wastewater-based genomic surveillance: low-quality sequence data and inability to estimate relative lineage abundance in mixed samples. Here we resolve these critical issues to perform a high-resolution, 295-day wastewater and clinical sequencing effort, in the controlled environment of a large university campus and the broader context of the surrounding county. We developed and deployed improved virus concentration protocols and deconvolution software that fully resolve multiple virus strains from wastewater. We detected emerging variants of concern up to 14 days earlier in wastewater samples, and identified multiple instances of virus spread not captured by clinical genomic surveillance. Our study provides a scalable solution for wastewater genomic surveillance that allows early detection of SARS-CoV-2 variants and identification of cryptic transmission.},
+issn={1476-4687},
+doi={10.1038/s41586-022-05049-6},
+url={https://doi.org/10.1038/s41586-022-05049-6}
+}
+
+@Article{Obermeyer2022,
+author={Obermeyer, Fritz
+and Jankowiak, Martin
+and Barkas, Nikolaos
+and Schaffner, Stephen F.
+and Pyle, Jesse D.
+and Yurkovetskiy, Leonid
+and Bosso, Matteo
+and Park, Daniel J.
+and Babadi, Mehrtash
+and MacInnis, Bronwyn L.
+and Luban, Jeremy
+and Sabeti, Pardis C.
+and Lemieux, Jacob E.},
+title={Analysis of 6.4 million SARS-CoV-2 genomes identifies mutations associated with fitness},
+journal={Science},
+year={2022},
+month={Jun},
+day={17},
+publisher={American Association for the Advancement of Science},
+volume={376},
+number={6599},
+pages={1327-1332},
+abstract={Repeated emergence of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) variants with increased fitness underscores the value of rapid detection and characterization of new lineages. We have developed PyR0, a hierarchical Bayesian multinomial logistic regression model that infers relative prevalence of all viral lineages across geographic regions, detects lineages increasing in prevalence, and identifies mutations relevant to fitness. Applying PyR0 to all publicly available SARS-CoV-2 genomes, we identify numerous substitutions that increase fitness, including previously identified spike mutations and many nonspike mutations within the nucleocapsid and nonstructural proteins. PyR0 forecasts growth of new lineages from their mutational profile, ranks the fitness of lineages as new sequences become available, and prioritizes mutations of biological and public health concern for functional characterization. The severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) pandemic has been characterized by waves of transmission initiated by new variants replacing older ones. Given this pattern of emergence, there is an obvious need for the early detection of novel variants to prevent excess deaths. Obermeyer et al. have developed a Bayesian model to compare relative transmissibility of all viral lineages. Using this model, emerging lineages can be spotted together with the mutations that contribute toward transmissibility, not only in Spike, but also in other viral proteins. The model can prioritize lineages as they emerge for public health concern. ?CA A Bayesian hierarchical model of all SARS-CoV-2 viral genomes predicts lineage transmissibility and identifies associated mutations.},
+doi={10.1126/science.abm1208},
+url={https://doi.org/10.1126/science.abm1208}
+}
+
+@Article{Turakhia2022,
+author={Turakhia, Yatish
+and Thornlow, Bryan
+and Hinrichs, Angie
+and McBroome, Jakob
+and Ayala, Nicolas
+and Ye, Cheng
+and Smith, Kyle
+and De Maio, Nicola
+and Haussler, David
+and Lanfear, Robert
+and Corbett-Detig, Russell},
+title={Pandemic-scale phylogenomics reveals the SARS-CoV-2 recombination landscape},
+journal={Nature},
+year={2022},
+month={Sep},
+day={01},
+volume={609},
+number={7929},
+pages={994-997},
+abstract={Accurate and timely detection of recombinant lineages is crucial for interpreting genetic variation, reconstructing epidemic spread, identifying selection and variants of interest, and accurately performing phylogenetic analyses1--4. During the SARS-CoV-2 pandemic, genomic data generation has exceeded the capacities of existing analysis platforms, thereby crippling real-time analysis of viral evolution5. Here, we use a new phylogenomic method to search a nearly comprehensive SARS-CoV-2 phylogeny for recombinant lineages. In a 1.6 million sample tree from May 2021, we identify 589 recombination events, which indicate that around 2.7{\%} of sequenced SARS-CoV-2 genomes have detectable recombinant ancestry. Recombination breakpoints are inferred to occur disproportionately in the 3' portion of the genome that contains the spike protein. Our results highlight the need for timely analyses of recombination for pinpointing the emergence of recombinant lineages with the potential to increase transmissibility or virulence of the virus. We anticipate that this approach will empower comprehensive real-time tracking of viral recombination during the SARS-CoV-2 pandemic and beyond.},
+issn={1476-4687},
+doi={10.1038/s41586-022-05189-9},
+url={https://doi.org/10.1038/s41586-022-05189-9}
+}
+
+@Article{Bloom2023,
+author={Bloom, Jesse D.
+and Beichman, Annabel C.
+and Neher, Richard A.
+and Harris, Kelley},
+title={Evolution of the SARS-CoV-2 Mutational Spectrum},
+journal={Molecular Biology and Evolution},
+year={2023},
+month={Apr},
+day={01},
+volume={40},
+number={4},
+pages={msad085},
+abstract={SARS-CoV-2 evolves rapidly in part because of its high mutation rate. Here, we examine whether this mutational process itself has changed during viral evolution. To do this, we quantify the relative rates of different types of single-nucleotide mutations at 4-fold degenerate sites in the viral genome across millions of human SARS-CoV-2 sequences. We find clear shifts in the relative rates of several types of mutations during SARS-CoV-2 evolution. The most striking trend is a roughly 2-fold decrease in the relative rate of G{\textrightarrow}T mutations in Omicron versus early clades, as was recently noted by Ruis et al. (2022. Mutational spectra distinguish SARS-CoV-2 replication niches. bioRxiv, doi:10.1101/2022.09.27.509649). There is also a decrease in the relative rate of C{\textrightarrow}T mutations in Delta, and other subtle changes in the mutation spectrum along the phylogeny. We speculate that these changes in the mutation spectrum could arise from viral mutations that affect genome replication, packaging, and antagonization of host innate-immune factors, although environmental factors could also play a role. Interestingly, the mutation spectrum of Omicron is more similar than that of earlier SARS-CoV-2 clades to the spectrum that shaped the long-term evolution of sarbecoviruses. Overall, our work shows that the mutation process is itself a dynamic variable during SARS-CoV-2 evolution and suggests that human SARS-CoV-2 may be trending toward a mutation spectrum more similar to that of other animal sarbecoviruses.},
+issn={1537-1719},
+doi={10.1093/molbev/msad085},
+url={https://doi.org/10.1093/molbev/msad085}
+}
+
+@Article{McBroome2024,
+author={McBroome, Jakob
+and de Bernardi Schneider, Adriano
+and Roemer, Cornelius
+and Wolfinger, Michael T.
+and Hinrichs, Angie S.
+and O'Toole, Aine Niamh
+and Ruis, Christopher
+and Turakhia, Yatish
+and Rambaut, Andrew
+and Corbett-Detig, Russell},
+title={A framework for automated scalable designation of viral pathogen lineages from genomic data},
+journal={Nature Microbiology},
+year={2024},
+month={Feb},
+day={01},
+volume={9},
+number={2},
+pages={550-560},
+abstract={Pathogen lineage nomenclature systems are a key component of effective communication and collaboration for researchers and public health workers. Since February 2021, the Pango dynamic lineage nomenclature for SARS-CoV-2 has been sustained by crowdsourced lineage proposals as new isolates were sequenced. This approach is vulnerable to time-critical delays as well as regional and personal bias. Here we developed a simple heuristic approach for dividing phylogenetic trees into lineages, including the prioritization of key mutations or genes. Our implementation is efficient on extremely large phylogenetic trees consisting of millions of sequences and produces similar results to existing manually curated lineage designations when applied to SARS-CoV-2 and other viruses including chikungunya virus, Venezuelan equine encephalitis virus complex and Zika virus. This method offers a simple, automated and consistent approach to pathogen nomenclature that can assist researchers in developing and maintaining phylogeny-based classifications in the face of ever-increasing genomic datasets.},
+issn={2058-5276},
+doi={10.1038/s41564-023-01587-5},
+url={https://doi.org/10.1038/s41564-023-01587-5}
+}
+
+@Article{Jackson2021,
+author={Jackson, Ben
+and Boni, Maciej F.
+and Bull, Matthew J.
+and Colleran, Amy
+and Colquhoun, Rachel M.
+and Darby, Alistair C.
+and Haldenby, Sam
+and Hill, Verity
+and Lucaci, Anita
+and McCrone, John T.
+and Nicholls, Samuel M.
+and O'Toole, {\'A}ine
+and Pacchiarini, Nicole
+and Poplawski, Radoslaw
+and Scher, Emily
+and Todd, Flora
+and Webster, Hermione J.
+and Whitehead, Mark
+and Wierzbicki, Claudia
+and Loman, Nicholas J.
+and Connor, Thomas R.
+and Robertson, David L.
+and Pybus, Oliver G.
+and Rambaut, Andrew},
+title={Generation and transmission of interlineage recombinants in the SARS-CoV-2 pandemic},
+journal={Cell},
+year={2021},
+month={Sep},
+day={30},
+volume={184},
+number={20},
+pages={5179-5188.e8},
+keywords={SARS-CoV-2; genomics; evolution; recombination; genomic epidemiology; B.1.1.7; variants},
+abstract={Summary We present evidence for multiple independent origins of recombinant SARS-CoV-2 viruses sampled from late 2020 and early 2021 in the United Kingdom. Their genomes carry single-nucleotide polymorphisms and deletions that are characteristic of the B.1.1.7 variant of concern but lack the full complement of lineage-defining mutations. Instead, the remainder of their genomes share contiguous genetic variation with non-B.1.1.7 viruses circulating in the same geographic area at the same time as the recombinants. In four instances, there was evidence for onward transmission of a recombinant-origin virus, including one transmission cluster of 45 sequenced cases over the course of 2 months. The inferred genomic locations of recombination breakpoints suggest that every community-transmitted recombinant virus inherited its spike region from a B.1.1.7 parental virus, consistent with a transmission advantage for B.1.1.7's set of mutations.},
+issn={0092-8674},
+url={https://www.sciencedirect.com/science/article/pii/S0092867421009843}
+}
+
+@Article{VanInsberghe2021,
+author={VanInsberghe, David
+and Neish, Andrew S.
+and Lowen, Anice C.
+and Koelle, Katia},
+title={Recombinant SARS-CoV-2 genomes circulated at low levels over the first year of the pandemic},
+journal={Virus Evolution},
+year={2021},
+month={Dec},
+day={01},
+volume={7},
+number={2},
+pages={veab059},
+abstract={Viral recombination can generate novel genotypes with unique phenotypic characteristics, including transmissibility and virulence. Although the capacity for recombination among betacoronaviruses is well documented, recombination between strains of Severe Acute Respiratory Syndrome Coronavirus 2 (SARS-CoV-2) has not been characterized in detail. Here, we present a lightweight approach for detecting genomes that are potentially recombinant. This approach relies on identifying the mutations that primarily determine SARS-CoV-2 clade structure and then screening genomes for ones that contain multiple mutational markers from distinct clades. Among the over 537,000 genomes queried that were deposited on GISAID.org prior to 16 February 2021, we detected 1,175 potential recombinant sequences. Using a highly conservative criteria to exclude sequences that may have originated through de novo mutation, we find that at least 30{\thinspace}per cent (n{\thinspace}={\thinspace}358) are likely of recombinant origin. An analysis of deep-sequencing data for these putative recombinants, where available, indicated that the majority are high quality. Additional phylogenetic analysis and the observed co-circulation of predicted parent clades in the geographic regions of exposure further support the feasibility of recombination in this subset of potential recombinants. An analysis of these genomes did not reveal evidence for recombination hotspots in the SARS-CoV-2 genome. While most of the putative recombinant sequences we detected were genetic singletons, a small number of genetically identical or highly similar recombinant sequences were identified in the same geographic region, indicative of locally circulating lineages. Recombinant genomes were also found to have originated from parental lineages with substitutions of concern, including D614G, N501Y, E484K, and L452R. Adjusting for an unequal probability of detecting recombinants derived from different parent clades and for geographic variation in clade abundance, we estimate that at most 0.2--2.5{\thinspace}per cent of circulating viruses in the USA and UK are recombinant. Our identification of a small number of putative recombinants within the first year of SARS-CoV-2 circulation underscores the need to sustain efforts to monitor the emergence of new genotypes generated through recombination.},
+issn={2057-1577},
+doi={10.1093/ve/veab059},
+url={https://doi.org/10.1093/ve/veab059}
+}
+
+@Misc{Focosi2022,
+author={Focosi, Daniele
+and Maggi, Fabrizio},
+title={Recombination in Coronaviruses, with a Focus on SARS-CoV-2},
+year={2022},
+volume={14},
+number={6},
+keywords={Coronaviridae; recombination; superinfection; coinfection; PANGOLIN; SARS-CoV-2; COVID-19},
+abstract={Recombination is a common evolutionary tool for RNA viruses, and coronaviruses are no exception. We review here the evidence for recombination in SARS-CoV-2 and reconcile nomenclature for recombinants, discuss their origin and fitness, and speculate how recombinants could make a difference in the future of the COVID-19 pandemics.},
+issn={1999-4915},
+doi={10.3390/v14061239},
+url={https://doi.org/10.3390/v14061239}
+}
+
+@Article{Gutierrez2022,
+author={Gutierrez, Bernardo
+and Castel{\'a}n S{\'a}nchez, Hugo G.
+and Candido, Darlan da Silva
+and Jackson, Ben
+and Fleishon, Shay
+and Houzet, Renaud
+and Ruis, Christopher
+and Delaye, Luis
+and Faria, Nuno R.
+and Rambaut, Andrew
+and Pybus, Oliver G.
+and Escalera-Zamudio, Marina},
+title={Emergence and widespread circulation of a recombinant SARS-CoV-2 lineage in North America},
+journal={Cell Host {\&} Microbe},
+year={2022},
+month={Aug},
+day={10},
+publisher={Elsevier},
+volume={30},
+number={8},
+pages={1112-1123.e3},
+issn={1931-3128},
+doi={10.1016/j.chom.2022.06.010},
+url={https://doi.org/10.1016/j.chom.2022.06.010}
+}
+
+@Article{Ignatieva2022,
+author={Ignatieva, Anastasia
+and Hein, Jotun
+and Jenkins, Paul A.},
+title={Ongoing Recombination in SARS-CoV-2 Revealed through Genealogical Reconstruction},
+journal={Molecular Biology and Evolution},
+year={2022},
+month={Feb},
+day={01},
+volume={39},
+number={2},
+pages={msac028},
+abstract={The evolutionary process of genetic recombination has the potential to rapidly change the properties of a viral pathogen, and its presence is a crucial factor to consider in the development of treatments and vaccines. It can also significantly affect the results of phylogenetic analyses and the inference of evolutionary rates. The detection of recombination from samples of sequencing data is a very challenging problem and is further complicated for SARS-CoV-2 by its relatively slow accumulation of genetic diversity. The extent to which recombination is ongoing for SARS-CoV-2 is not yet resolved. To address this, we use a parsimony-based method to reconstruct possible genealogical histories for samples of SARS-CoV-2 sequences, which enables us to pinpoint specific recombination events that could have generated the data. We propose a statistical framework for disentangling the effects of recurrent mutation from recombination in the history of a sample, and hence provide a way of estimating the probability that ongoing recombination is present. We apply this to samples of sequencing data collected in England and South Africa and find evidence of ongoing recombination.},
+issn={1537-1719},
+doi={10.1093/molbev/msac028},
+url={https://doi.org/10.1093/molbev/msac028}
+}
+
+@Article{Tamura2023,
+author={Tamura, Tomokazu
+and Ito, Jumpei
+and Uriu, Keiya
+and Zahradnik, Jiri
+and Kida, Izumi
+and Anraku, Yuki
+and Nasser, Hesham
+and Shofa, Maya
+and Oda, Yoshitaka
+and Lytras, Spyros
+and Nao, Naganori
+and Itakura, Yukari
+and Deguchi, Sayaka
+and Suzuki, Rigel
+and Wang, Lei
+and Begum, MST Monira
+and Kita, Shunsuke
+and Yajima, Hisano
+and Sasaki, Jiei
+and Sasaki-Tabata, Kaori
+and Shimizu, Ryo
+and Tsuda, Masumi
+and Kosugi, Yusuke
+and Fujita, Shigeru
+and Pan, Lin
+and Sauter, Daniel
+and Yoshimatsu, Kumiko
+and Suzuki, Saori
+and Asakura, Hiroyuki
+and Nagashima, Mami
+and Sadamasu, Kenji
+and Yoshimura, Kazuhisa
+and Yamamoto, Yuki
+and Nagamoto, Tetsuharu
+and Schreiber, Gideon
+and Maenaka, Katsumi
+and Ito, Hayato
+and Misawa, Naoko
+and Kimura, Izumi
+and Suganami, Mai
+and Chiba, Mika
+and Yoshimura, Ryo
+and Yasuda, Kyoko
+and Iida, Keiko
+and Ohsumi, Naomi
+and Strange, Adam P.
+and Takahashi, Otowa
+and Ichihara, Kimiko
+and Shibatani, Yuki
+and Nishiuchi, Tomoko
+and Kato, Marie
+and Ferdous, Zannatul
+and Mouri, Hiromi
+and Shishido, Kenji
+and Sawa, Hirofumi
+and Hashimoto, Rina
+and Watanabe, Yukio
+and Sakamoto, Ayaka
+and Yasuhara, Naoko
+and Suzuki, Tateki
+and Kimura, Kanako
+and Nakajima, Yukari
+and Nakagawa, So
+and Wu, Jiaqi
+and Shirakawa, Kotaro
+and Takaori-Kondo, Akifumi
+and Nagata, Kayoko
+and Kazuma, Yasuhiro
+and Nomura, Ryosuke
+and Horisawa, Yoshihito
+and Tashiro, Yusuke
+and Kawai, Yugo
+and Irie, Takashi
+and Kawabata, Ryoko
+and Motozono, Chihiro
+and Toyoda, Mako
+and Ueno, Takamasa
+and Hashiguchi, Takao
+and Ikeda, Terumasa
+and Fukuhara, Takasuke
+and Saito, Akatsuki
+and Tanaka, Shinya
+and Matsuno, Keita
+and Takayama, Kazuo
+and Sato, Kei
+and to Phenotype Japan (G2P-Japan) Consortium, The Genotype},
+title={Virological characteristics of the SARS-CoV-2 XBB variant derived from recombination of two Omicron subvariants},
+journal={Nature Communications},
+year={2023},
+month={May},
+day={16},
+volume={14},
+number={1},
+pages={2800},
+abstract={In late 2022, SARS-CoV-2 Omicron subvariants have become highly diversified, and XBB is spreading rapidly around the world. Our phylogenetic analyses suggested that XBB emerged through the recombination of two cocirculating BA.2 lineages, BJ.1 and BM.1.1.1 (a progeny of BA.2.75), during the summer of 2022. XBB.1 is the variant most profoundly resistant to BA.2/5 breakthrough infection sera to date and is more fusogenic than BA.2.75. The recombination breakpoint is located in the receptor-binding domain of spike, and each region of the recombinant spike confers immune evasion and increases fusogenicity. We further provide the structural basis for the interaction between XBB.1 spike and human ACE2. Finally, the intrinsic pathogenicity of XBB.1 in male hamsters is comparable to or even lower than that of BA.2.75. Our multiscale investigation provides evidence suggesting that XBB is the first observed SARS-CoV-2 variant to increase its fitness through recombination rather than substitutions.},
+issn={2041-1723},
+doi={10.1038/s41467-023-38435-3},
+url={https://doi.org/10.1038/s41467-023-38435-3}
+}
+
+@Article{Wong2024,
+author={Wong, Yan
+and Ignatieva, Anastasia
+and Koskela, Jere
+and Gorjanc, Gregor
+and Wohns, Anthony W.
+and Kelleher, Jerome},
+title={A general and efficient representation of ancestral recombination graphs},
+journal={Genetics},
+year={2024},
+month={Sep},
+day={01},
+volume={228},
+number={1},
+pages={iyae100},
+abstract={As a result of recombination, adjacent nucleotides can have different paths of genetic inheritance and therefore the genealogical trees for a sample of DNA sequences vary along the genome. The structure capturing the details of these intricately interwoven paths of inheritance is referred to as an ancestral recombination graph (ARG). Classical formalisms have focused on mapping coalescence and recombination events to the nodes in an ARG. However, this approach is out of step with some modern developments, which do not represent genetic inheritance in terms of these events or explicitly infer them. We present a simple formalism that defines an ARG in terms of specific genomes and their intervals of genetic inheritance, and show how it generalizes these classical treatments and encompasses the outputs of recent methods. We discuss nuances arising from this more general structure, and argue that it forms an appropriate basis for a software standard in this rapidly growing field.},
+issn={1943-2631},
+doi={10.1093/genetics/iyae100},
+url={https://doi.org/10.1093/genetics/iyae100}
+}
+
+@Article{Kelleher2019,
+author={Kelleher, Jerome
+and Wong, Yan
+and Wohns, Anthony W.
+and Fadil, Chaimaa
+and Albers, Patrick K.
+and McVean, Gil},
+title={Inferring whole-genome histories in large population datasets},
+journal={Nature Genetics},
+year={2019},
+month={Sep},
+day={01},
+volume={51},
+number={9},
+pages={1330-1338},
+abstract={Inferring the full genealogical history of a set of DNA sequences is a core problem in evolutionary biology, because this history encodes information about the events and forces that have influenced a species. However, current methods are limited, and the most accurate techniques are able to process no more than a hundred samples. As datasets that consist of millions of genomes are now being collected, there is a need for scalable and efficient inference methods to fully utilize these resources. Here we introduce an algorithm that is able to not only infer whole-genome histories with comparable accuracy to the state-of-the-art but also process four orders of magnitude more sequences. The approach also provides an `evolutionary encoding' of the data, enabling efficient calculation of relevant statistics. We apply the method to human data from the 1000 Genomes Project, Simons Genome Diversity Project and UK Biobank, showing that the inferred genealogies are rich in biological signal and efficient to process.},
+issn={1546-1718},
+doi={10.1038/s41588-019-0483-y},
+url={https://doi.org/10.1038/s41588-019-0483-y}
+}
+
+@Article{Speidel2019,
+author={Speidel, Leo
+and Forest, Marie
+and Shi, Sinan
+and Myers, Simon R.},
+title={A method for genome-wide genealogy estimation for thousands of samples},
+journal={Nature Genetics},
+year={2019},
+month={Sep},
+day={01},
+volume={51},
+number={9},
+pages={1321-1329},
+abstract={Knowledge of genome-wide genealogies for thousands of individuals would simplify most evolutionary analyses for humans and other species, but has remained computationally infeasible. We have developed a method, Relate, scaling to{\thinspace}>10,000 sequences while simultaneously estimating branch lengths, mutational ages and variable historical population sizes, as well as allowing for data errors. Application to 1,000 Genomes Project haplotypes produces joint genealogical histories for 26 human populations. Highly diverged lineages are present in all groups, but most frequent in Africa. Outside Africa, these mainly reflect ancient introgression from groups related to Neanderthals and Denisovans, while African signals instead reflect unknown events unique to that continent. Our approach allows more powerful inferences of natural selection than has previously been possible. We identify multiple regions under strong positive selection, and multi-allelic traits including hair color, body mass index and blood pressure, showing strong evidence of directional selection, varying among human groups.},
+issn={1546-1718},
+doi={10.1038/s41588-019-0484-x},
+url={https://doi.org/10.1038/s41588-019-0484-x}
+}
+
+@Article{Zhang2023,
+author={Zhang, Brian C.
+and Biddanda, Arjun
+and Gunnarsson, {\'A}rni Freyr
+and Cooper, Fergus
+and Palamara, Pier Francesco},
+title={Biobank-scale inference of ancestral recombination graphs enables genealogical analysis of complex traits},
+journal={Nature Genetics},
+year={2023},
+month={May},
+day={01},
+volume={55},
+number={5},
+pages={768-776},
+abstract={Genome-wide genealogies compactly represent the evolutionary history of a set of genomes and inferring them from genetic data has the potential to facilitate a wide range of analyses. We introduce a method, ARG-Needle, for accurately inferring biobank-scale genealogies from sequencing or genotyping array data, as well as strategies to utilize genealogies to perform association and other complex trait analyses. We use these methods to build genome-wide genealogies using genotyping data for 337,464 UK Biobank individuals and test for association across seven complex traits. Genealogy-based association detects more rare and ultra-rare signals (N{\thinspace}={\thinspace}134, frequency range 0.0007−0.1{\%}) than genotype imputation using {\textasciitilde}65,000 sequenced haplotypes (N{\thinspace}={\thinspace}64). In a subset of 138,039 exome sequencing samples, these associations strongly tag (average r{\thinspace}={\thinspace}0.72) underlying sequencing variants enriched (4.8{\texttimes}) for loss-of-function variation. These results demonstrate that inferred genome-wide genealogies may be leveraged in the analysis of complex traits, complementing approaches that require the availability of large, population-specific sequencing panels.},
+issn={1546-1718},
+doi={10.1038/s41588-023-01379-x},
+url={https://doi.org/10.1038/s41588-023-01379-x}
+}
+
+@Article{Brandt2024,
+author={Brandt, D{\'e}bora Y. C.
+and Huber, Christian D.
+and Chiang, Charleston W. K.
+and Ortega-Del Vecchyo, Diego},
+title={The Promise of Inferring the Past Using the Ancestral Recombination Graph},
+journal={Genome Biology and Evolution},
+year={2024},
+month={Feb},
+day={01},
+volume={16},
+number={2},
+pages={evae005},
+abstract={The ancestral recombination graph (ARG) is a structure that represents the history of coalescent and recombination events connecting a set of sequences (Hudson RR. In: Futuyma D, Antonovics J, editors. Gene genealogies and the coalescent process. In: Oxford Surveys in Evolutionary Biology; 1991. p. 1 to 44.). The full ARG can be represented as a set of genealogical trees at every locus in the genome, annotated with recombination events that change the topology of the trees between adjacent loci and the mutations that occurred along the branches of those trees (Griffiths RC, Marjoram P. An ancestral recombination graph. In: Donnelly P, Tavare S, editors. Progress in population genetics and human evolution. Springer; 1997. p. 257 to 270.). Valuable insights can be gained into past evolutionary processes, such as demographic events or the influence of natural selection, by studying the ARG. It is regarded as the ``holy grail'' of population genetics (Hubisz M, Siepel A. Inference of ancestral recombination graphs using ARGweaver. In: Dutheil JY, editors. Statistical population genomics. New York, NY: Springer US; 2020. p. 231--266.) since it encodes the processes that generate all patterns of allelic and haplotypic variation from which all commonly used summary statistics in population genetic research (e.g. heterozygosity and linkage disequilibrium) can be derived. Many previous evolutionary inferences relied on summary statistics extracted from the genotype matrix. Evolutionary inferences using the ARG represent a significant advancement as the ARG is a representation of the evolutionary history of a sample that shows the past history of recombination, coalescence, and mutation events across a particular sequence. This representation in theory contains as much information, if not more, than the combination of all independent summary statistics that could be derived from the genotype matrix. Consistent with this idea, some of the first ARG-based analyses have proven to be more powerful than summary statistic-based analyses (Speidel L, Forest M, Shi S, Myers SR. A method for genome-wide genealogy estimation for thousands of samples. Nat Genet. 2019:51(9):1321 to 1329.; Stern AJ, Wilton PR, Nielsen R. An approximate full-likelihood method for inferring selection and allele frequency trajectories from DNA sequence data. PLoS Genet. 2019:15(9):e1008384.; Hubisz MJ, Williams AL, Siepel A. Mapping gene flow between ancient hominins through demography-aware inference of the ancestral recombination graph. PLoS Genet. 2020:16(8):e1008895.; Fan C, Mancuso N, Chiang CWK. A genealogical estimate of genetic relationships. Am J Hum Genet. 2022:109(5):812--824.; Fan C, Cahoon JL, Dinh BL, Ortega-Del Vecchyo D, Huber C, Edge MD, Mancuso N, Chiang CWK. A likelihood-based framework for demographic inference from genealogical trees. bioRxiv. 2023.10.10.561787. 2023.; Hejase HA, Mo Z, Campagna L, Siepel A. A deep-learning approach for inference of selective sweeps from the ancestral recombination graph. Mol Biol Evol. 2022:39(1):msab332.; Link V, Schraiber JG, Fan C, Dinh B, Mancuso N, Chiang CWK, Edge MD. Tree-based QTL mapping with expected local genetic relatedness matrices. bioRxiv. 2023.04.07.536093. 2023.; Zhang BC, Biddanda A, Gunnarsson {\'A}F, Cooper F, Palamara PF. Biobank-scale inference of ancestral recombination graphs enables genealogical analysis of complex traits. Nat Genet. 2023:55(5):768--776.). As such, there has been significant interest in the field to investigate 2 main problems related to the ARG: (i) How can we estimate the ARG based on genomic data, and (ii) how can we extract information of past evolutionary processes from the ARG? In this perspective, we highlight 3 topics that pertain to these main issues: The development of computational innovations that enable the estimation of the ARG; remaining challenges in estimating the ARG; and methodological advances for deducing evolutionary forces and mechanisms using the ARG. This perspective serves to introduce the readers to the types of questions that can be explored using the ARG and to highlight some of the most pressing issues that must be addressed in order to make ARG-based inference an indispensable tool for evolutionary research.},
+issn={1759-6653},
+doi={10.1093/gbe/evae005},
+url={https://doi.org/10.1093/gbe/evae005}
+}
+
+@Article{Lewanski2024,
+author={Lewanski, Alexander L.
+and Grundler, Michael C.
+and Bradburd, Gideon S.},
+title={The era of the ARG: An introduction to ancestral recombination graphs and their significance in empirical evolutionary genomics},
+journal={PLOS Genetics},
+year={2024},
+month={Jan},
+day={18},
+publisher={Public Library of Science},
+volume={20},
+number={1},
+pages={e1011110},
+abstract={In the presence of recombination, the evolutionary relationships between a set of sampled genomes cannot be described by a single genealogical tree. Instead, the genomes are related by a complex, interwoven collection of genealogies formalized in a structure called an ancestral recombination graph (ARG). An ARG extensively encodes the ancestry of the genome(s) and thus is replete with valuable information for addressing diverse questions in evolutionary biology. Despite its potential utility, technological and methodological limitations, along with a lack of approachable literature, have severely restricted awareness and application of ARGs in evolution research. Excitingly, recent progress in ARG reconstruction and simulation have made ARG-based approaches feasible for many questions and systems. In this review, we provide an accessible introduction and exploration of ARGs, survey recent methodological breakthroughs, and describe the potential for ARGs to further existing goals and open avenues of inquiry that were previously inaccessible in evolutionary genomics. Through this discussion, we aim to more widely disseminate the promise of ARGs in evolutionary genomics and encourage the broader development and adoption of ARG-based inference.},
+doi={10.1371/journal.pgen.1011110},
+url={https://doi.org/10.1371/journal.pgen.1011110}
+}
+
+@Article{Nielsen2025,
+author={Nielsen, Rasmus
+and Vaughn, Andrew H.
+and Deng, Yun},
+title={Inference and applications of ancestral recombination graphs},
+journal={Nature Reviews Genetics},
+year={2025},
+month={Jan},
+day={01},
+volume={26},
+number={1},
+pages={47-58},
+abstract={Ancestral recombination graphs (ARGs) summarize the complex genealogical relationships between individuals represented in a sample of DNA sequences. Their use is currently revolutionizing the field of population genetics and is leading to the development of powerful new methods to elucidate individual and population genetic processes, including population size history, migration, admixture, recombination, mutation and selection. In this Review, we introduce the readers to the structure of ARGs and discuss how they relate to processes such as recombination and genetic drift. We explore differences and similarities between methods of estimating ARGs and provide concrete illustrative examples of how ARGs can be used to elucidate population-level processes.},
+issn={1471-0064},
+doi={10.1038/s41576-024-00772-4},
+url={https://doi.org/10.1038/s41576-024-00772-4}
+}
+
+@Article{Rasmussen2014,
+author={Rasmussen, Matthew D.
+and Hubisz, Melissa J.
+and Gronau, Ilan
+and Siepel, Adam},
+title={Genome-Wide Inference of Ancestral Recombination Graphs},
+journal={PLOS Genetics},
+year={2014},
+month={May},
+day={15},
+publisher={Public Library of Science},
+volume={10},
+number={5},
+pages={e1004342},
+abstract={Author Summary The unusual and complex correlation structure of population samples of genetic sequences presents a fundamental statistical challenge that pervades nearly all areas of population genetics. Historical recombination events produce an intricate network of intertwined genealogies, which impedes demography inference, the detection of natural selection, association mapping, and other applications. It is possible to capture these complex relationships using a representation called the ancestral recombination graph (ARG), which provides a complete description of coalescence and recombination events in the history of the sample. However, previous methods for ARG inference have not been adequately fast and accurate for practical use with large-scale genomic sequence data. In this article, we introduce a new algorithm for ARG inference that has vastly improved scaling properties. Our algorithm is implemented in a computer program called ARGweaver, which is fast enough to be applied to sequences megabases in length. With the aid of a large computer cluster, ARGweaver can be used to sample full ARGs for entire mammalian genome sequences. We show that ARGweaver performs well in simulation experiments and demonstrate that it can be used to provide new insights about both demographic processes and natural selection when applied to real human genome sequence data.},
+doi={10.1371/journal.pgen.1004342},
+url={https://doi.org/10.1371/journal.pgen.1004342}
+}
+
+@Article{Shu2017,
+   author={Shu, Yuelong
+   and McCauley, John},
+   title={GISAID: Global initiative on sharing all influenza data – from vision to reality},
+   journal={Eurosurveillance},
+   year={2017},
+   volume={22},
+   number={13},
+   eid={30494},
+   pages={},
+   doi={https://doi.org/10.2807/1560-7917.ES.2017.22.13.30494},
+   url={https://www.eurosurveillance.org/content/10.2807/1560-7917.ES.2017.22.13.30494}
+}
+
+@Article{Hunt2024,
+author={Hunt, Martin
+and Hinrichs, Angie S.
+and Anderson, Daniel
+and Karim, Lily
+and Dearlove, Bethany L.
+and Knaggs, Jeff
+and Constantinides, Bede
+and Fowler, Philip W.
+and Rodger, Gillian
+and Street, Teresa
+and Lumley, Sheila
+and Webster, Hermione
+and Sanderson, Theo
+and Ruis, Christopher
+and Kotzen, Benjamin
+and de Maio, Nicola
+and Amenga-Etego, Lucas N.
+and Amuzu, Dominic S. Y.
+and Avaro, Martin
+and Awandare, Gordon A.
+and Ayivor-Djanie, Reuben
+and Barkham, Timothy
+and Bashton, Matthew
+and Batty, Elizabeth M.
+and Bediako, Yaw
+and Belder, Denise De
+and Benedetti, Estefania
+and Bergthaler, Andreas
+and Boers, Stefan A.
+and Campos, Josefina
+and Carr, Rosina Afua Ampomah
+and Chen, Yuan Yi Constance
+and Cuba, Facundo
+and Dattero, Maria Elena
+and Dejnirattisai, Wanwisa
+and Dilthey, Alexander
+and Duedu, Kwabena Obeng
+and Endler, Lukas
+and Engelmann, Ilka
+and Francisco, Ngiambudulu M.
+and Fuchs, Jonas
+and Gnimpieba, Etienne Z.
+and Groc, Soraya
+and Gyamfi, Jones
+and Heemskerk, Dennis
+and Houwaart, Torsten
+and Hsiao, Nei-yuan
+and Huska, Matthew
+and H{\"o}lzer, Martin
+and Iranzadeh, Arash
+and Jarva, Hanna
+and Jeewandara, Chandima
+and Jolly, Bani
+and Joseph, Rageema
+and Kant, Ravi
+and Ki, Karrie Ko Kwan
+and Kurkela, Satu
+and Lappalainen, Maija
+and Lataretu, Marie
+and Lemieux, Jacob
+and Liu, Chang
+and Malavige, Gathsaurie Neelika
+and Mashe, Tapfumanei
+and Mongkolsapaya, Juthathip
+and Montes, Brigitte
+and Mora, Jose Arturo Molina
+and Morang'a, Collins M.
+and Mvula, Bernard
+and Nagarajan, Niranjan
+and Nelson, Andrew
+and Ngoi, Joyce M.
+and da Paix{\~a}o, Joana Paula
+and Panning, Marcus
+and Poklepovich, Tomas
+and Quashie, Peter K.
+and Ranasinghe, Diyanath
+and Russo, Mara
+and San, James Emmanuel
+and Sanderson, Nicholas D.
+and Scaria, Vinod
+and Screaton, Gavin
+and Sessions, October Michael
+and Sironen, Tarja
+and Sisay, Abay
+and Smith, Darren
+and Smura, Teemu
+and Supasa, Piyada
+and Suphavilai, Chayaporn
+and Swann, Jeremy
+and Tegally, Houriiyah
+and Tegomoh, Bryan
+and Vapalahti, Olli
+and Walker, Andreas
+and Wilkinson, Robert J.
+and Williamson, Carolyn
+and Zair, Xavier
+and Consortium, IMSSC2 Laboratory Network
+and de Oliveira, Tulio
+and Peto, Timothy EA
+and Crook, Derrick
+and Corbett-Detig, Russell
+and Iqbal, Zamin},
+title={Addressing pandemic-wide systematic errors in the SARS-CoV-2 phylogeny},
+journal={bioRxiv},
+year={2024},
+month={Jan},
+day={01},
+pages={2024.04.29.591666},
+abstract={The SARS-CoV-2 genome occupies a unique place in infection biology -- it is the most highly sequenced genome on earth (making up over 20{\%} of public sequencing datasets) with fine scale information on sampling date and geography, and has been subject to unprecedented intense analysis. As a result, these phylogenetic data are an incredibly valuable resource for science and public health. However, the vast majority of the data was sequenced by tiling amplicons across the full genome, with amplicon schemes that changed over the pandemic as mutations in the viral genome interacted with primer binding sites. In combination with the disparate set of genome assembly workflows and lack of consistent quality control (QC) processes, the current genomes have many systematic errors that have evolved with the virus and amplicon schemes. These errors have significant impacts on the phylogeny, and therefore over the last few years, many thousands of hours of researchers time has been spent in ``eyeballing'' trees, looking for artefacts, and then patching the tree.Given the huge value of this dataset, we therefore set out to reprocess the complete set of public raw sequence data in a rigorous amplicon-aware manner, and build a cleaner phylogeny. Here we provide a global tree of 4,471,579 samples, built from a consistently assembled set of high quality consensus sequences from all available public data as of June 2024, viewable at https://viridian.taxonium.org. Each genome was constructed using a novel assembly tool called Viridian (https://github.com/iqbal-lab-org/viridian), developed specifically to process amplicon sequence data, eliminating artefactual errors and mask the genome at low quality positions. We provide simulation and empirical validation of the methodology, and quantify the improvement in the phylogeny. We hope the tree, consensus sequences and Viridian will be a valuable resource for researchers.Competing Interest StatementGavin Screaton sits on the GSK Vaccines Scientific Advisory Board, consults for AstraZeneca, and is a founding member of RQ Biotechnology.},
+doi={10.1101/2024.04.29.591666},
+url={http://biorxiv.org/content/early/2024/11/05/2024.04.29.591666.abstract},
+url={https://doi.org/10.1101/2024.04.29.591666}
+}
+
+@Article{Rambaut2020,
+author={Rambaut, Andrew
+and Holmes, Edward C.
+and O'Toole, {\'A}ine
+and Hill, Verity
+and McCrone, John T.
+and Ruis, Christopher
+and du Plessis, Louis
+and Pybus, Oliver G.},
+title={A dynamic nomenclature proposal for SARS-CoV-2 lineages to assist genomic epidemiology},
+journal={Nature Microbiology},
+year={2020},
+month={Nov},
+day={01},
+volume={5},
+number={11},
+pages={1403-1407},
+abstract={The ongoing pandemic spread of a new human coronavirus, SARS-CoV-2, which is associated with severe pneumonia/disease (COVID-19), has resulted in the generation of tens of thousands of virus genome sequences. The rate of genome generation is unprecedented, yet there is currently no coherent nor accepted scheme for naming the expanding phylogenetic diversity of SARS-CoV-2. Here, we present a rational and dynamic virus nomenclature that uses a phylogenetic framework to identify those lineages that contribute most to active spread. Our system is made tractable by constraining the number and depth of hierarchical lineage labels and by flagging and delabelling virus lineages that become unobserved and hence are probably inactive. By focusing on active virus lineages and those spreading to new locations, this nomenclature will assist in tracking and understanding the patterns and determinants of the global spread of SARS-CoV-2.},
+issn={2058-5276},
+doi={10.1038/s41564-020-0770-5},
+url={https://doi.org/10.1038/s41564-020-0770-5}
+}
+
+@Article{Li2003,
+author={Li, Na
+and Stephens, Matthew},
+title={Modeling Linkage Disequilibrium and Identifying Recombination Hotspots Using Single-Nucleotide Polymorphism Data},
+journal={Genetics},
+year={2003},
+month={Dec},
+day={01},
+volume={165},
+number={4},
+pages={2213-2233},
+abstract={We introduce a new statistical model for patterns of linkage disequilibrium (LD) among multiple SNPs in a population sample. The model overcomes limitations of existing approaches to understanding, summarizing, and interpreting LD by (i) relating patterns of LD directly to the underlying recombination process; (ii) considering all loci simultaneously, rather than pairwise; (iii) avoiding the assumption that LD necessarily has a ``block-like'' structure; and (iv) being computationally tractable for huge genomic regions (up to complete chromosomes). We examine in detail one natural application of the model: estimation of underlying recombination rates from population data. Using simulation, we show that in the case where recombination is assumed constant across the region of interest, recombination rate estimates based on our model are competitive with the very best of current available methods. More importantly, we demonstrate, on real and simulated data, the potential of the model to help identify and quantify fine-scale variation in recombination rate from population data. We also outline how the model could be useful in other contexts, such as in the development of more efficient haplotype-based methods for LD mapping.},
+issn={1943-2631},
+doi={10.1093/genetics/165.4.2213},
+url={https://doi.org/10.1093/genetics/165.4.2213}
+}
+
+@Article{Markov2023,
+author={Markov, Peter V.
+and Ghafari, Mahan
+and Beer, Martin
+and Lythgoe, Katrina
+and Simmonds, Peter
+and Stilianakis, Nikolaos I.
+and Katzourakis, Aris},
+title={The evolution of SARS-CoV-2},
+journal={Nature Reviews Microbiology},
+year={2023},
+month={Jun},
+day={01},
+volume={21},
+number={6},
+pages={361-379},
+abstract={Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) has caused millions of deaths and substantial morbidity worldwide. Intense scientific effort to understand the biology of SARS-CoV-2 has resulted in daunting numbers of genomic sequences. We witnessed evolutionary events that could mostly be inferred indirectly before, such as the emergence of variants with distinct phenotypes, for example transmissibility, severity and immune evasion. This Review explores the mechanisms that generate genetic variation in SARS-CoV-2, underlying the within-host and population-level processes that underpin these events. We examine the selective forces that likely drove the evolution of higher transmissibility and, in some cases, higher severity during the first year of the pandemic and the role of antigenic evolution during the second and third years, together with the implications of immune escape and reinfections, and the increasing evidence for and potential relevance of recombination. In order to understand how major lineages, such as variants of concern (VOCs), are generated, we contrast the evidence for the chronic infection model underlying the emergence of VOCs with the possibility of an animal reservoir playing a role in SARS-CoV-2 evolution, and conclude that the former is more likely. We evaluate uncertainties and outline scenarios for the possible future evolutionary trajectories of SARS-CoV-2.},
+issn={1740-1534},
+doi={10.1038/s41579-023-00878-2},
+url={https://doi.org/10.1038/s41579-023-00878-2}
+}
+
+@Article{Alfonsi2024,
+author={Alfonsi, Tommaso
+and Bernasconi, Anna
+and Chiara, Matteo
+and Ceri, Stefano},
+title={Data-driven recombination detection in viral genomes},
+journal={Nature Communications},
+year={2024},
+month={Apr},
+day={17},
+volume={15},
+number={1},
+pages={3313},
+abstract={Recombination is a key molecular mechanism for the evolution and adaptation of viruses. The first recombinant SARS-CoV-2 genomes were recognized in 2021; as of today, more than ninety SARS-CoV-2 lineages are designated as recombinant. In the wake of the COVID-19 pandemic, several methods for detecting recombination in SARS-CoV-2 have been proposed; however, none could faithfully confirm manual analyses by experts in the field. We hereby present RecombinHunt, an original data-driven method for the identification of recombinant genomes, capable of recognizing recombinant SARS-CoV-2 genomes (or lineages) with one or two breakpoints with high accuracy and within reduced turn-around times. ReconbinHunt shows high specificity and sensitivity, compares favorably with other state-of-the-art methods, and faithfully confirms manual analyses by experts. RecombinHunt identifies recombinant viral genomes from the recent monkeypox epidemic in high concordance with manually curated analyses by experts, suggesting that our approach is robust and can be applied to any epidemic/pandemic virus.},
+issn={2041-1723},
+doi={10.1038/s41467-024-47464-5},
+url={https://doi.org/10.1038/s41467-024-47464-5}
+}
+
+@Article{Li2024,
+author={Li, Jia-Ying
+and Wang, Hao-Yang
+and Cheng, Ye-Xiao
+and Ji, Chengyang
+and Weng, Shenghui
+and Han, Na
+and Yang, Rong
+and Zhou, Hang-Yu
+and Wu, Aiping},
+title={Comprehensive detection and dissection of interlineage recombination events in the SARS-CoV-2 pandemic},
+journal={Virus Evolution},
+year={2024},
+month={Oct},
+day={17},
+volume={10},
+number={1},
+pages={veae074},
+abstract={The global prevalence of the XBB lineage presents a formidable challenge posed by the recombinant SARS-CoV-2 virus. The understanding of SARS-CoV-2's recombination preference assumes utmost significance in predicting future recombinant variants and adequately preparing for subsequent pandemics. Thus, an urgent need arises to establish a comprehensive landscape concerning SARS-CoV-2 recombinants worldwide and elucidate their evolutionary mechanisms. However, the initial step, involving the detection of potential recombinants from a vast pool of over 10 million sequences, presents a significant obstacle. In this study, we present CovRecomb, a lightweight methodology specifically designed to effectively identify and dissect interlineage SARS-CoV-2 recombinants. Leveraging CovRecomb, we successfully detected 135,567 putative recombinants across the entirety of 14.5 million accessed SARS-CoV-2 genomes. These putative recombinants could be classified into 1451 distinct recombination events, of which 206 demonstrated transmission spanning multiple countries, continents, or globally. Hotspot regions were identified in six specific areas, with prominence observed in the latter halves of the N-terminal domain and receptor-binding domain within the spike (S) gene. Epidemiological investigations revealed extensive recombination events occurring among different SARS-CoV-2 (sub)lineages, independent of lineage prevalence frequencies.},
+issn={2057-1577},
+doi={10.1093/ve/veae074},
+url={https://doi.org/10.1093/ve/veae074}
+}
+
+@Article{Dong2020,
+author={Dong, Ensheng
+and Du, Hongru
+and Gardner, Lauren},
+title={An interactive web-based dashboard to track COVID-19 in real time},
+journal={The Lancet Infectious Diseases},
+year={2020},
+month={May},
+day={01},
+publisher={Elsevier},
+volume={20},
+number={5},
+pages={533-534},
+issn={1473-3099},
+doi={10.1016/S1473-3099(20)30120-1},
+url={https://doi.org/10.1016/S1473-3099(20)30120-1}
+}
+
+@Article{Wang2025,
+author={Wang, Yulu
+and Kumbhakar, Subal C.},
+title={COVID-19 under-reporting: spillovers and stringent containment strategies of global cases},
+journal={Journal of Productivity Analysis},
+year={2025},
+month={Feb},
+day={01},
+volume={63},
+number={1},
+pages={87-106},
+abstract={Due to the rapid spread of the COVID-19 pandemic, accurately determining the true global infection count has become an extremely challenging task. In this context, our study explores the spatial spillover analysis of COVID-19 cases and assesses the impact of containment policy stringency on these spillovers. Furthermore, we examine the extent of under-reporting of COVID-19 cases at the country level. To account for diverse spatial dependencies, we employ a semiparametric spatial autoregressive model, in which the coefficients are smooth, unknown functions of countries' stringency indices. Country-specific under-reporting, modeled as a one-sided deterministic function of exogenous variables, is estimated using the sieves method. Our analysis relies on COVID-19 infection data from 57 countries, which span from 2020 to 2021. We find that spillovers vary significantly across different levels of containment stringency. In addition, the true number of infections is estimated to be 1.72 to 5.73 times higher than the reported cases. These results align with previous research and have important policy implications for improving the precision of COVID-19 reporting and managing spillover effects more effectively.},
+issn={1573-0441},
+doi={10.1007/s11123-024-00741-3},
+url={https://doi.org/10.1007/s11123-024-00741-3}
+}
+
+@Misc{Burel2022,
+author={Burel, Emilie
+and Colson, Philippe
+and Lagier, Jean-Christophe
+and Levasseur, Anthony
+and Bedotto, Marielle
+and Lavrard-Meyer, Philippe
+and Fournier, Pierre-Edouard
+and La Scola, Bernard
+and Raoult, Didier},
+title={Sequential Appearance and Isolation of a SARS-CoV-2 Recombinant between Two Major SARS-CoV-2 Variants in a Chronically Infected Immunocompromised Patient},
+year={2022},
+volume={14},
+number={6},
+keywords={SARS-CoV-2; variant; recombination; chronic infection; immunosuppression},
+abstract={Genetic recombination is a major evolutionary mechanism among RNA viruses, and it is common in coronaviruses, including those infecting humans. A few SARS-CoV-2 recombinants have been reported to date whose genome harbored combinations of mutations from different mutants or variants, but only a single patient's sample was analyzed, and the virus was not isolated. Here, we report the gradual emergence of a hybrid genome of B.1.160 and Alpha variants in a lymphoma patient chronically infected for 14 months, and we isolated the recombinant virus. The hybrid genome was obtained by next-generation sequencing, and the recombination sites were confirmed by PCR. This consisted of a parental B.1.160 backbone interspersed with two fragments, including the spike gene, from an Alpha variant. An analysis of seven sequential samples from the patient decoded the recombination steps, including the initial infection with a B.1.160 variant, then a concurrent infection with this variant and an Alpha variant, the generation of hybrid genomes, and eventually the emergence of a predominant recombinant virus isolated at the end of the patient's follow-up. This case exemplifies the recombination process of SARS-CoV-2 in real life, and it calls for intensifying the genomic surveillance in patients coinfected with different SARS-CoV-2 variants, and more generally with several RNA viruses, as this may lead to the appearance of new viruses.},
+issn={1999-4915},
+doi={10.3390/v14061266},
+url={https://doi.org/10.3390/v14061266}
+}
+
+@Article{Baumdicker2022,
+author={Baumdicker, Franz
+and Bisschop, Gertjan
+and Goldstein, Daniel
+and Gower, Graham
+and Ragsdale, Aaron P.
+and Tsambos, Georgia
+and Zhu, Sha
+and Eldon, Bjarki
+and Ellerman, E. Castedo
+and Galloway, Jared G.
+and Gladstein, Ariella L.
+and Gorjanc, Gregor
+and Guo, Bing
+and Jeffery, Ben
+and Kretzschumar, Warren W.
+and Lohse, Konrad
+and Matschiner, Michael
+and Nelson, Dominic
+and Pope, Nathaniel S.
+and Quinto-Cort{\'e}s, Consuelo D.
+and Rodrigues, Murillo F.
+and Saunack, Kumar
+and Sellinger, Thibaut
+and Thornton, Kevin
+and van Kemenade, Hugo
+and Wohns, Anthony W.
+and Wong, Yan
+and Gravel, Simon
+and Kern, Andrew D.
+and Koskela, Jere
+and Ralph, Peter L.
+and Kelleher, Jerome},
+title={Efficient ancestry and mutation simulation with msprime 1.0},
+journal={Genetics},
+year={2022},
+month={Mar},
+day={01},
+volume={220},
+number={3},
+pages={iyab229},
+abstract={Stochastic simulation is a key tool in population genetics, since the models involved are often analytically intractable and simulation is usually the only way of obtaining ground-truth data to evaluate inferences. Because of this, a large number of specialized simulation programs have been developed, each filling a particular niche, but with largely overlapping functionality and a substantial duplication of effort. Here, we introduce msprime version 1.0, which efficiently implements ancestry and mutation simulations based on the succinct tree sequence data structure and the tskit library. We summarize msprime's many features, and show that its performance is excellent, often many times faster and more memory efficient than specialized alternatives. These high-performance features have been thoroughly tested and validated, and built using a collaborative, open source development model, which reduces duplication of effort and promotes software quality via community engagement.},
+issn={1943-2631},
+doi={10.1093/genetics/iyab229},
+url={https://doi.org/10.1093/genetics/iyab229}
+}
+
+@Article{Ralph2020,
+author={Ralph, Peter
+and Thornton, Kevin
+and Kelleher, Jerome},
+title={Efficiently Summarizing Relationships in Large Samples: A General Duality Between Statistics of Genealogies and Genomes},
+journal={Genetics},
+year={2020},
+month={Jul},
+day={01},
+volume={215},
+number={3},
+pages={779-797},
+abstract={As a genetic mutation is passed down across generations, it distinguishes those genomes that have inherited it from those that have not, providing a glimpse of the genealogical tree relating the genomes to each other at that site. Statistical summaries of genetic variation therefore also describe the underlying genealogies. We use this correspondence to define a general framework that efficiently computes single-site population genetic statistics using the succinct tree sequence encoding of genealogies and genome sequence. The general approach accumulates sample weights within the genealogical tree at each position on the genome, which are then combined using a summary function; different statistics result from different choices of weight and function. Results can be reported in three ways: by site, which corresponds to statistics calculated as usual from genome sequence; by branch, which gives the expected value of the dual site statistic under the infinite sites model of mutation, and by node, which summarizes the contribution of each ancestor to these statistics. We use the framework to implement many currently defined statistics of genome sequence (making the statistics' relationship to the underlying genealogical trees concrete and explicit), as well as the corresponding branch statistics of tree shape. We evaluate computational performance using simulated data, and show that calculating statistics from tree sequences using this general framework is several orders of magnitude more efficient than optimized matrix-based methods in terms of both run time and memory requirements. We also explore how well the duality between site and branch statistics holds in practice on trees inferred from the 1000 Genomes Project data set, and discuss ways in which deviations may encode interesting biological signals.},
+issn={1943-2631},
+doi={10.1534/genetics.120.303253},
+url={https://doi.org/10.1534/genetics.120.303253}
+}
+
+@Article{Czech2025,
+author={Czech, Eric
+and Tyler, Will
+and White, Tom
+and Jeffery, Ben
+and Millar, Timothy R.
+and Elsworth, Benjamin
+and Guez, J{\'e}r{\'e}my
+and Hancox, Jonny
+and Karczewski, Konrad J.
+and Miles, Alistair
+and Tallman, Sam
+and Unneberg, Per
+and Wojdyla, Rafal
+and Zabad, Shadi
+and Hammerbacher, Jeff
+and Kelleher, Jerome},
+title={Analysis-ready VCF at Biobank scale using Zarr},
+journal={GigaScience},
+year={2025},
+month={Jan},
+day={01},
+volume={14},
+pages={giaf049},
+abstract={Variant Call Format (VCF) is the standard file format for interchanging genetic variation data and associated quality control metrics. The usual row-wise encoding of the VCF data model (either as text or packed binary) emphasizes efficient retrieval of all data for a given variant, but accessing data on a field or sample basis is inefficient. The Biobank-scale datasets currently available consist of hundreds of thousands of whole genomes and hundreds of terabytes of compressed VCF. Row-wise data storage is fundamentally unsuitable and a more scalable approach is needed.Zarr is a format for storing multidimensional data that is widely used across the sciences, and is ideally suited to massively parallel processing. We present the VCF Zarr specification, an encoding of the VCF data model using Zarr, along with fundamental software infrastructure for efficient and reliable conversion at scale. We show how this format is far more efficient than standard VCF-based approaches, and competitive with specialized methods for storing genotype data in terms of compression ratios and single-threaded calculation performance. We present case studies on subsets of 3 large human datasets (Genomics England: {\$}n{\$}=78,195; Our Future Health: {\$}n{\$}=651,050; All of Us: {\$}n{\$}=245,394) along with whole genome datasets for Norway Spruce ({\$}n{\$}=1,063) and SARS-CoV-2 ({\$}n{\$}=4,484,157). We demonstrate the potential for VCF Zarr to enable a new generation of high-performance and cost-effective applications via illustrative examples using cloud computing and GPUs.Large row-encoded VCF files are a major bottleneck for current research, and storing and processing these files incurs a substantial cost. The VCF Zarr specification, building on widely used, open-source technologies, has the potential to greatly reduce these costs, and may enable a diverse ecosystem of next-generation tools for analysing genetic variation data directly from cloud-based object stores, while maintaining compatibility with existing file-oriented workflows.},
+issn={2047-217X},
+doi={10.1093/gigascience/giaf049},
+url={https://doi.org/10.1093/gigascience/giaf049}
+}
+
+@Article{Hinrichs2024,
+author={Hinrichs, Angie
+and Ye, Cheng
+and Turakhia, Yatish
+and Corbett-Detig, Russell},
+title={The ongoing evolution of UShER during the SARS-CoV-2 pandemic},
+journal={Nature Genetics},
+year={2024},
+month={Jan},
+day={01},
+volume={56},
+number={1},
+pages={4-7},
+abstract={While the number of SARS-CoV-2 genome sequences grew to over 15 million, the Ultrafast Sample placement on Existing tRees (UShER) tool suite maintained a comprehensive phylogenetic tree in near real time. This experience, and critical performance improvements throughout the pandemic, provide valuable lessons for rapidly scaling analyses.},
+issn={1546-1718},
+doi={10.1038/s41588-023-01622-5},
+url={https://doi.org/10.1038/s41588-023-01622-5}
+}
+
+@Article{Pérez-Losada2015,
+author={P{\'e}rez-Losada, Marcos
+and Arenas, Miguel
+and Gal{\'a}n, Juan Carlos
+and Palero, Ferran
+and Gonz{\'a}lez-Candelas, Fernando},
+title={Recombination in viruses: Mechanisms, methods of study, and evolutionary consequences},
+journal={Infection, Genetics and Evolution},
+year={2015},
+month={Mar},
+day={01},
+volume={30},
+pages={296-307},
+keywords={Recombination; Reassortment; Linkage disequilibrium; Population structure; Recombination rate; Mutation rate},
+abstract={Recombination is a pervasive process generating diversity in most viruses. It joins variants that arise independently within the same molecule, creating new opportunities for viruses to overcome selective pressures and to adapt to new environments and hosts. Consequently, the analysis of viral recombination attracts the interest of clinicians, epidemiologists, molecular biologists and evolutionary biologists. In this review we present an overview of three major areas related to viral recombination: (i) the molecular mechanisms that underlie recombination in model viruses, including DNA-viruses (Herpesvirus) and RNA-viruses (Human Influenza Virus and Human Immunodeficiency Virus), (ii) the analytical procedures to detect recombination in viral sequences and to determine the recombination breakpoints, along with the conceptual and methodological tools currently used and a brief overview of the impact of new sequencing technologies on the detection of recombination, and (iii) the major areas in the evolutionary analysis of viral populations on which recombination has an impact. These include the evaluation of selective pressures acting on viral populations, the application of evolutionary reconstructions in the characterization of centralized genes for vaccine design, and the evaluation of linkage disequilibrium and population structure.},
+issn={1567-1348},
+url={https://www.sciencedirect.com/science/article/pii/S156713481400478X}
+}
+
+@Article{Neches2020,
+author={Neches, Russell Y.
+and McGee, Matthew D.
+and Kyrpides, Nikos C.},
+title={Recombination should not be an afterthought},
+journal={Nature Reviews Microbiology},
+year={2020},
+month={Nov},
+day={01},
+volume={18},
+number={11},
+pages={606-606},
+abstract={This month's Genome Watch highlights how the search for the origins of SARS-CoV-2 emphasizes the need for integrated phylogenetic methods.},
+issn={1740-1534},
+doi={10.1038/s41579-020-00451-1},
+url={https://doi.org/10.1038/s41579-020-00451-1}
+}
+
+@Article{Saitou1987,
+author={Saitou, N.
+and Nei, M.},
+title={The neighbor-joining method: a new method for reconstructing phylogenetic trees.},
+journal={Molecular Biology and Evolution},
+year={1987},
+month={Jul},
+day={01},
+volume={4},
+number={4},
+pages={406-425},
+abstract={A new method called the neighbor-joining method is proposed for reconstructing phylogenetic trees from evolutionary distance data. The principle of this method is to find pairs of operational taxonomic units (OTUs [= neighbors]) that minimize the total branch length at each stage of clustering of OTUs starting with a starlike tree. The branch lengths as well as the topology of a parsimonious tree can quickly be obtained by using this method. Using computer simulation, we studied the efficiency of this method in obtaining the correct unrooted tree in comparison with that of five other tree-making methods: the unweighted pair group method of analysis, Farris's method, Sattath and Tversky's method, Li's method, and Tateno et al.'s modified Farris method. The new, neighbor-joining method and Sattath and Tversky's method are shown to be generally better than the other methods.},
+issn={0737-4038},
+doi={10.1093/oxfordjournals.molbev.a040454},
+url={https://doi.org/10.1093/oxfordjournals.molbev.a040454}
+}
+
+@Article{Kelleher2016,
+author={Kelleher, Jerome
+and Etheridge, Alison M.
+and McVean, Gilean},
+title={Efficient Coalescent Simulation and Genealogical Analysis for Large Sample Sizes},
+journal={PLOS Computational Biology},
+year={2016},
+month={May},
+day={04},
+publisher={Public Library of Science},
+volume={12},
+number={5},
+pages={e1004842},
+abstract={Author Summary Our understanding of the distribution of genetic variation in natural populations has been driven by mathematical models of the underlying biological and demographic processes. A key strength of such coalescent models is that they enable efficient simulation of data we might see under a variety of evolutionary scenarios. However, current methods are not well suited to simulating genome-scale data sets on hundreds of thousands of samples, which is essential if we are to understand the data generated by population-scale sequencing projects. Similarly, processing the results of large simulations also presents researchers with a major challenge, as it can take many days just to read the data files. In this paper we solve these problems by introducing a new way to represent information about the ancestral process. This new representation leads to huge gains in simulation speed and storage efficiency so that large simulations complete in minutes and the output files can be processed in seconds.},
+doi={10.1371/journal.pcbi.1004842},
+url={https://doi.org/10.1371/journal.pcbi.1004842}
+}
+
+@Article{Kelleher2018,
+author={Kelleher, Jerome
+and Thornton, Kevin R.
+and Ashander, Jaime
+and Ralph, Peter L.},
+title={Efficient pedigree recording for fast population genetics simulation},
+journal={PLOS Computational Biology},
+year={2018},
+month={Nov},
+day={01},
+publisher={Public Library of Science},
+volume={14},
+number={11},
+pages={e1006581},
+abstract={Author summary Sexually reproducing organisms are related to the others in their species by the complex web of parent-offspring relationships that constitute the pedigree. In this paper, we describe a way to record all of these relationships, as well as how genetic material is passed down through the pedigree, during a forwards-time population genetic simulation. To make effective use of this information, we describe both efficient storage methods for this embellished pedigree as well as a way to remove all information that is irrelevant to the genetic history of a given set of individuals, which dramatically reduces the required amount of storage space. Storing this information allows us to produce whole-genome sequence from simulations of large populations in which we have not explicitly recorded new genomic mutations; we find that this results in computational run times of up to 50 times faster than simulations forced to explicitly carry along that information.},
+doi={10.1371/journal.pcbi.1006581},
+url={https://doi.org/10.1371/journal.pcbi.1006581}
+}
+
+@Article{Haller2019,
+author={Haller, Benjamin C.
+and Messer, Philipp W.},
+title={SLiM 3: Forward Genetic Simulations Beyond the Wright--Fisher Model},
+journal={Molecular Biology and Evolution},
+year={2019},
+month={Mar},
+day={01},
+volume={36},
+number={3},
+pages={632-637},
+abstract={With the desire to model population genetic processes under increasingly realistic scenarios, forward genetic simulations have become a critical part of the toolbox of modern evolutionary biology. The SLiM forward genetic simulation framework is one of the most powerful and widely used tools in this area. However, its foundation in the Wright--Fisher model has been found to pose an obstacle to implementing many types of models; it is difficult to adapt the Wright--Fisher model, with its many assumptions, to modeling ecologically realistic scenarios such as explicit space, overlapping generations, individual variation in reproduction, density-dependent population regulation, individual variation in dispersal or migration, local extinction and recolonization, mating between subpopulations, age structure, fitness-based survival and hard selection, emergent sex ratios, and so forth. In response to this need, we here introduce SLiM 3, which contains two key advancements aimed at abolishing these limitations. First, the new non-Wright--Fisher or ``nonWF'' model type provides a much more flexible foundation that allows the easy implementation of all of the above scenarios and many more. Second, SLiM 3 adds support for continuous space, including spatial interactions and spatial maps of environmental variables. We provide a conceptual overview of these new features, and present several example models to illustrate their use.},
+issn={0737-4038},
+doi={10.1093/molbev/msy228},
+url={https://doi.org/10.1093/molbev/msy228}
+}
+
+@Article{Wohns2022,
+author={Wohns, Anthony Wilder
+and Wong, Yan
+and Jeffery, Ben
+and Akbari, Ali
+and Mallick, Swapan
+and Pinhasi, Ron
+and Patterson, Nick
+and Reich, David
+and Kelleher, Jerome
+and McVean, Gil},
+title={A unified genealogy of modern and ancient genomes},
+journal={Science},
+year={2022},
+month={Feb},
+publisher={American Association for the Advancement of Science},
+volume={375},
+number={6583},
+pages={eabi8264},
+abstract={The sequencing of modern and ancient genomes from around the world has revolutionized our understanding of human history and evolution. However, the problem of how best to characterize ancestral relationships from the totality of human genomic variation remains unsolved. Here, we address this challenge with nonparametric methods that enable us to infer a unified genealogy of modern and ancient humans. This compact representation of multiple datasets explores the challenges of missing and erroneous data and uses ancient samples to constrain and date relationships. We demonstrate the power of the method to recover relationships between individuals and populations as well as to identify descendants of ancient samples. Finally, we introduce a simple nonparametric estimator of the geographical location of ancestors that recapitulates key events in human history. Hundreds of thousands of modern human genomes and thousands of ancient human genomes have been generated to date. However, different methods and data quality can make comparisons among them difficult. Furthermore, every human genome contains segments from ancestries of varying ages. Wohns et al. applied a tree recording method to ancient and modern human genomes to generate a unified human genealogy (see the Perspective by Rees and Andr{\'e}s). This method allows for missing and erroneous data and uses ancient genomes to calibrate genomic coalescent times. This permits us to determine how our genomes have changed over time and between populations, informing upon the evolution of our species. ?LMZ A genealogy of modern and ancient genomes provides insight into human history and evolution.},
+doi={10.1126/science.abi8264},
+url={https://doi.org/10.1126/science.abi8264}
+}
+
+@Article{TerasakiHart2021,
+author={Terasaki Hart, Drew E.
+and Bishop, Anusha P.
+and Wang, Ian J.},
+title={Geonomics: Forward-Time, Spatially Explicit, and Arbitrarily Complex Landscape Genomic Simulations},
+journal={Molecular Biology and Evolution},
+year={2021},
+month={Oct},
+day={01},
+volume={38},
+number={10},
+pages={4634-4646},
+abstract={Understanding the drivers of spatial patterns of genomic diversity has emerged as a major goal of evolutionary genetics. The flexibility of forward-time simulation makes it especially valuable for these efforts, allowing for the simulation of arbitrarily complex scenarios in a way that mimics how real populations evolve. Here, we present Geonomics, a Python package for performing complex, spatially explicit, landscape genomic simulations with full spatial pedigrees that dramatically reduces user workload yet remains customizable and extensible because it is embedded within a popular, general-purpose language. We show that Geonomics results are consistent with expectations for a variety of validation tests based on classic models in population genetics and then demonstrate its utility and flexibility with a trio of more complex simulation scenarios that feature polygenic selection, selection on multiple traits, simulation on complex landscapes, and nonstationary environmental change. We then discuss runtime, which is primarily sensitive to landscape raster size, memory usage, which is primarily sensitive to maximum population size and recombination rate, and other caveats related to the model's methods for approximating recombination and movement. Taken together, our tests and demonstrations show that Geonomics provides an efficient and robust platform for population genomic simulations that capture complex spatial and evolutionary dynamics.},
+issn={1537-1719},
+doi={10.1093/molbev/msab175},
+url={https://doi.org/10.1093/molbev/msab175}
+}
+
+@Article{Fan2022,
+author={Fan, Caoqi
+and Mancuso, Nicholas
+and Chiang, Charleston W.K.},
+title={A genealogical estimate of genetic relationships},
+journal={The American Journal of Human Genetics},
+year={2022},
+month={May},
+day={05},
+publisher={Elsevier},
+volume={109},
+number={5},
+pages={812-824},
+issn={0002-9297},
+doi={10.1016/j.ajhg.2022.03.016},
+url={https://doi.org/10.1016/j.ajhg.2022.03.016}
+}
+
+@Article{Korfmann2023,
+author={Korfmann, Kevin
+and Gaggiotti, Oscar E.
+and Fumagalli, Matteo},
+title={Deep Learning in Population Genetics},
+journal={Genome Biology and Evolution},
+year={2023},
+month={Feb},
+day={01},
+volume={15},
+number={2},
+pages={evad008},
+abstract={Population genetics is transitioning into a data-driven discipline thanks to the availability of large-scale genomic data and the need to study increasingly complex evolutionary scenarios. With likelihood and Bayesian approaches becoming either intractable or computationally unfeasible, machine learning, and in particular deep learning, algorithms are emerging as popular techniques for population genetic inferences. These approaches rely on algorithms that learn non-linear relationships between the input data and the model parameters being estimated through representation learning from training data sets. Deep learning algorithms currently employed in the field comprise discriminative and generative models with fully connected, convolutional, or recurrent layers. Additionally, a wide range of powerful simulators to generate training data under complex scenarios are now available. The application of deep learning to empirical data sets mostly replicates previous findings of demography reconstruction and signals of natural selection in model organisms. To showcase the feasibility of deep learning to tackle new challenges, we designed a branched architecture to detect signals of recent balancing selection from temporal haplotypic data, which exhibited good predictive performance on simulated data. Investigations on the interpretability of neural networks, their robustness to uncertain training data, and creative representation of population genetic data, will provide further opportunities for technological advancements in the field.},
+issn={1759-6653},
+doi={10.1093/gbe/evad008},
+url={https://doi.org/10.1093/gbe/evad008}
+}
+
+@Article{Mahmoudi2022,
+author={Mahmoudi, Ali
+and Koskela, Jere
+and Kelleher, Jerome
+and Chan, Yao-ban
+and Balding, David},
+title={Bayesian inference of ancestral recombination graphs},
+journal={PLOS Computational Biology},
+year={2022},
+month={Mar},
+day={09},
+publisher={Public Library of Science},
+volume={18},
+number={3},
+pages={e1009960},
+abstract={Author summary One of the important challenges in population genetics is to reconstruct the historical mutation, recombination and shared ancestor events that underly a sample of DNA sequences drawn from a population. Aspects of this history can inform us about evolutionary processes, ages of mutations and times of common ancestors, and historical population sizes and migration rates. Performing such inferences is difficult, and progress has been slow over the past two decades. Recently, a new and more efficient way to store sequence data has led to improved simulations and also a fast way to reconstruct some aspects of the history. We augment the new data structure to infer many more details of the history, including the times of events. We also provide approximations of the full probability distributions for all the unknowns, not just plausible values. Because this task is highly challenging, we are limited to relatively small data sets, but we show that our inference algorithm represents an important step forward over those currently available in terms of the accuracy of its inferences.},
+doi={10.1371/journal.pcbi.1009960},
+url={https://doi.org/10.1371/journal.pcbi.1009960}
+}
+
+@Article{Petr2023,
+author={Petr, Martin
+and Haller, Benjamin C.
+and Ralph, Peter L.
+and Racimo, Fernando},
+title={slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes},
+journal={Peer Community Journal},
+year={2023},
+publisher={Peer Community In},
+volume={3},
+url={https://peercommunityjournal.org/articles/10.24072/pcjournal.354/},
+language={en}
+}
+
+@Article{Rasmussen2023,
+author={Rasmussen, David A.
+and Guo, Fangfang},
+title={Espalier: Efficient Tree Reconciliation and Ancestral Recombination Graphs Reconstruction Using Maximum Agreement Forests},
+journal={Systematic Biology},
+year={2023},
+month={Sep},
+day={01},
+volume={72},
+number={5},
+pages={1154-1170},
+abstract={In the presence of recombination individuals may inherit different regions of their genome from different ancestors, resulting in a mosaic of phylogenetic histories across their genome. Ancestral recombination graphs (ARGs) can capture how phylogenetic relationships vary across the genome due to recombination, but reconstructing ARGs from genomic sequence data is notoriously difficult. Here, we present a method for reconciling discordant phylogenetic trees and reconstructing ARGs using maximum agreement forests (MAFs). Given two discordant trees, a MAF identifies the smallest possible set of topologically concordant subtrees present in both trees. We show how discordant trees can be reconciled through their MAF in a way that retains discordances strongly supported by sequence data while eliminating conflicts likely attributable to phylogenetic noise. We further show how MAFs and our reconciliation approach can be combined to select a path of local trees across the genome that maximizes the likelihood of the genomic sequence data, minimizes discordance between neighboring local trees, and identifies the recombination events necessary to explain remaining discordances to obtain a fully connected ARG. While heuristic, our ARG reconstruction approach is often as accurate as more exact methods while being much more computationally efficient. Moreover, important demographic parameters such as recombination rates can be accurately estimated from reconstructed ARGs. Finally, we apply our approach to plant infecting RNA viruses in the genus Potyvirus to demonstrate how true recombination events can be disentangled from phylogenetic noise using our ARG reconstruction methods.},
+issn={1063-5157},
+doi={10.1093/sysbio/syad040},
+url={https://doi.org/10.1093/sysbio/syad040}
+}
+
+@Article{Gunnarsson2024,
+author={Gunnarsson, {\'A}rni Freyr
+and Zhu, Jiazheng
+and Zhang, Brian C.
+and Tsangalidou, Zoi
+and Allmont, Alex
+and Palamara, Pier Francesco},
+title={A scalable approach for genome-wide inference of ancestral recombination graphs},
+journal={bioRxiv},
+year={2024},
+month={Jan},
+day={01},
+pages={2024.08.31.610248},
+abstract={The ancestral recombination graph (ARG) is a graph-like structure that encodes a detailed genealogical history of a set of individuals along the genome. ARGs that are accurately reconstructed from genomic data have several downstream applications, but inference from data sets comprising millions of samples and variants remains computationally challenging. We introduce Threads, a threading-based method that significantly reduces the computational costs of ARG inference while retaining high accuracy. We apply Threads to infer the ARG of 487,409 genomes from the UK Biobank using ∼10 million high-quality imputed variants, reconstructing a detailed genealogical history of the samples while compressing the input genotype data. Additionally, we develop ARG-based imputation strategies that increase genotype imputation accuracy for ultra-rare variants (MAC ≤10) from UK Biobank exome sequencing data by 5-10{\%}. We leverage ARGs inferred by Threads to detect associations with 52 quantitative traits in non-European UK Biobank samples, identifying 22.5{\%} more signals than ARG-Needle. These analyses underscore the value of using computationally efficient genealogical modeling to improve and complement genotype imputation in large-scale genomic studies.Competing Interest StatementA.F.G. is an employee of deCODE genetics/Amgen; B.C.Z. is an employee of Adaptive Biotechnologies.},
+doi={10.1101/2024.08.31.610248},
+url={http://biorxiv.org/content/early/2024/09/02/2024.08.31.610248.abstract},
+url={https://doi.org/10.1101/2024.08.31.610248}
+}
+
+@Article{Katoh2013,
+author={Katoh, Kazutaka
+and Standley, Daron M.},
+title={MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability},
+journal={Molecular Biology and Evolution},
+year={2013},
+month={Apr},
+day={01},
+volume={30},
+number={4},
+pages={772-780},
+abstract={We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.},
+issn={0737-4038},
+doi={10.1093/molbev/mst010},
+url={https://doi.org/10.1093/molbev/mst010}
+}
+
+@Article{Scornavacca2011,
+author={Scornavacca, Celine
+and Zickmann, Franziska
+and Huson, Daniel H.},
+title={Tanglegrams for rooted phylogenetic trees and networks},
+journal={Bioinformatics},
+year={2011},
+month={Jul},
+day={01},
+volume={27},
+number={13},
+pages={i248-i256},
+abstract={Motivation: In systematic biology, one is often faced with the task of comparing different phylogenetic trees, in particular in multi-gene analysis or cospeciation studies. One approach is to use a tanglegram in which two rooted phylogenetic trees are drawn opposite each other, using auxiliary lines to connect matching taxa. There is an increasing interest in using rooted phylogenetic networks to represent evolutionary history, so as to explicitly represent reticulate events, such as horizontal gene transfer, hybridization or reassortment. Thus, the question arises how to define and compute a tanglegram for such networks.Results: In this article, we present the first formal definition of a tanglegram for rooted phylogenetic networks and present a heuristic approach for computing one, called the NN-tanglegram method. We compare the performance of our method with existing tree tanglegram algorithms and also show a typical application to real biological datasets. For maximum usability, the algorithm does not require that the trees or networks are bifurcating or bicombining, or that they are on identical taxon sets.Availability: The algorithm is implemented in our program Dendroscope 3, which is freely available from www.dendroscope.org.Contact:  scornava@informatik.uni-tuebingen.de; huson@informatik.uni-tuebingen.de},
+issn={1367-4803},
+doi={10.1093/bioinformatics/btr210},
+url={https://doi.org/10.1093/bioinformatics/btr210}
+}
+
+@Article{Huson2012,
+author={Huson, Daniel H.
+and Scornavacca, Celine},
+title={Dendroscope 3: An Interactive Tool for Rooted Phylogenetic Trees and Networks},
+journal={Systematic Biology},
+year={2012},
+month={Dec},
+day={01},
+volume={61},
+number={6},
+pages={1061-1067},
+abstract={Dendroscope 3 is a new program for working with rooted phylogenetic trees and networks. It provides a number of methods for drawing and comparing rooted phylogenetic networks, and for computing them from rooted trees. The program can be used interactively or in command-line mode. The program is written in Java, use of the software is free, and installers for all 3 major operating systems can be downloaded from www.dendroscope.org. [Phylogenetic trees; phylogenetic networks; software.]},
+issn={1063-5157},
+doi={10.1093/sysbio/sys062},
+url={https://doi.org/10.1093/sysbio/sys062}
+}
+
 %%%% Article with 1 author
 
 @article{cates1984statics,
