@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from pangonet.pangonet import PangoNet
 
+
 def get_pangonet_distance(pango, label_1, label_2):
     label_1 = pango.compress(label_1)
     label_2 = pango.compress(label_2)
@@ -26,7 +27,6 @@ def get_pangonet_distance(pango, label_1, label_2):
     right_path = parent_paths["right"]
     assert left_path[-1] == right_path[-1]
     return len(left_path) + len(right_path) - 2
-
 
 
 @click.command()

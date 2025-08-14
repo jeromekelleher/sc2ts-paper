@@ -84,6 +84,17 @@ rule debug_report:
     notebook:
         "notebooks/debug_report.py.ipynb"
 
+rule base_recombinants:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{BR_PREFIX}.trees",
+    output:
+        "{BR_PREFIX}_base_recombinants.csv",
+    shell:
+        """
+        python scripts/extract_recombinants.py {input} {output}
+        """
 
 # Add exact matches to the dataset and do some minor mutation
 # rearrangements like pushing unary recombinant mutations.
