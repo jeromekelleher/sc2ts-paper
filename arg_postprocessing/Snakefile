@@ -85,6 +85,19 @@ rule debug_report:
         "notebooks/debug_report.py.ipynb"
 
 
+rule rematch_recombinants:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{RR_PREFIX}.trees"
+    output:
+        "{RR_PREFIX}_recombinants.json",
+    shell:
+        """
+        python scripts/rematch_recombinants.py {input} \
+            ../inference/results/v1-beta1/v1-beta1_{{date}}.ts \
+            --cores=20 {output}
+        """
 
 
 # Add exact matches to the dataset and do some minor mutation
@@ -188,49 +201,6 @@ rule add_net_supporting_loci_to_csv:
         python scripts/add_recombinant_minlength_to_csv.py -v {input} {output}
         """
 
-# NOTE: these two rematch steps are very slow and take a lot 
-# of RAM. There's definitely ways we can speed this up, but 
-# the simplest is to just let it run.
-# To make this run in a tolerable amount of time we need to pass
-# the previous HMM solution to run_hmm so it has a starting point.
-# Otherwise we waste a lot of time generating solutions for most 
-# recombinants which are actually pretty easy, but don't fully
-# capture the really difficult ones (which are important).
-rule rematch_arg_recombinants:
-    conda:
-        "sc2ts.yml"
-    input:
-        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "{REMARG_PREFIX}_recombinants.csv",
-    output:
-        "{REMARG_PREFIX}_rematch.json",
-    shell:
-        """
-        python scripts/rematch_recombinants.py \
-            ../inference/results/v1-beta1/v1-beta1_ \
-            {input} {output}.tmp -k 1000 \
-            --mismatch-threshold=100 \
-            --workers=1
-        mv {output}.tmp {output}
-        """
-
-rule rematch_non_arg_recombinants:
-    conda:
-        "sc2ts.yml"
-    input:
-        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
-        "../data/samples_pangos_absent_in_arg.csv",
-    output:
-        "pango_x_absent_in_arg_rematch.json",
-    shell:      
-        """
-        python scripts/rematch_recombinants.py \\
-            ../inference/results/v1-beta1/v1-beta1_ \
-            --mismatch-threshold=100 \
-            --workers=1 \
-            {input} {output}.tmp -k 1000 -k 4
-        mv {output}.tmp {output}
-        """
 
 
 rule shift_breakpoints:
