@@ -304,8 +304,9 @@ Input genome alignments are masked in sc2ts
 so that deletions and ambiguous bases are treated as missing data by the HMM, 
 and once the samples are incorporated into the ARG, 
 these bases are imputed to carry the values inherited by the node in question. 
-Deletions are an important part of SARS-CoV-2 evolution [cites], however, 
-and to incorporate them into the ARG we identified a set of [XXX] sites most frequently involved in deletions [cite source?] 
+Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023}, however, 
+and to incorporate them into the ARG we identified a set of [XXX] sites 
+most frequently involved in deletions [cite source?] 
 and post-hoc mapped alignment data for these sites to the ARG using parsimony. 
 Although sites are treated independently in this approach, 
 the approximation successfully identified the most frequent deletions, 
@@ -316,7 +317,7 @@ is correctly associated with key lineage-defining deletions:
 21765-21770 (Spike del69-70), 
 21991-21993 (Spike del144), and 
 28271 (non-coding). 
-The Spike 69-70 deletion, which causes S-Gene Target Failure (REF), 
+The Spike 69-70 deletion, which causes S-Gene Target Failure \cite{Walker2021}, 
 also emerges twice in the origin of Omicron - 
 in the node leading to the BA.1 variant (342,099 descendants), 
 and the node leading to the BA.4 variant (189,746 descendants). 
