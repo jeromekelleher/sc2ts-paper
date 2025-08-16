@@ -41,6 +41,10 @@ def dump(json_data, path):
 def run(ts, pattern, output, cores):
     ts = tszip.load(ts)
 
+    # First, make sure we've pushed up all unary recombinant nodes so we
+    # get accurate information on easy/hard
+    ts = sc2ts.push_up_unary_recombinant_mutations(ts)
+
     recomb_nodes = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0)[0]
     node_mutations = np.bincount(ts.mutations_node)
 
@@ -51,7 +55,7 @@ def run(ts, pattern, output, cores):
         md = ts.node(u).metadata
         date = md["sc2ts"]["date_added"]
         muts = node_mutations[u]
-        if muts == 0:
+        if muts <= 2:
             easy_work.append(Work(pattern, u, date))
         else:
             hard_work.append(Work(pattern, u, date))
