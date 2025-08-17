@@ -96,7 +96,7 @@ rule rematch_recombinants:
         """
         python scripts/rematch_recombinants.py {input} \
             ../inference/results/v1-beta1/v1-beta1_{{date}}.ts \
-            --cores=20 {output}
+            {output}
         """
 
 
