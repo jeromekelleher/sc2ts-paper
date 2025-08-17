@@ -42,50 +42,43 @@ def dump(json_data, path):
 def run(ts, pattern, output):
     ts = tszip.load(ts)
 
-    # First, make sure we've pushed up all unary recombinant nodes so we
-    # get accurate information on easy/hard
-    ts = sc2ts.push_up_unary_recombinant_mutations(ts)
+    recombinants = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0)[0]
 
-    recomb_nodes = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT > 0)[0]
-    node_mutations = np.bincount(ts.mutations_node)
-
-    all_work = collections.defaultdict(list)
-
-    for u in recomb_nodes:
+    all_work = []
+    for u in recombinants:
         md = ts.node(u).metadata
         date = md["sc2ts"]["date_added"]
-        muts = node_mutations[u]
-        all_work[muts].append(Work(pattern, u, date))
+        all_work.append(Work(pattern, u, date))
+
+    # The Delta wave was particularly difficult in terms of memory usage,
+    # so limiting parallelism based on date. Post-Omicron wasn't quite as bad
+    bins = ["2020-01", "2021-09", "2022-01", "2024-01"]
+    cores_per_bin = [20, 4, 8]
+    assert len(cores_per_bin) == len(bins) - 1
 
     random.seed(42)
-    for k, v in all_work.items():
+
+    split_work = {}
+    for j in range(len(bins) - 1):
+        start = bins[j]
+        stop = bins[j + 1]
+        cores = cores_per_bin[j]
+        work = [w for w in all_work if start <= w.date < stop]
         # Randomise so we're not doing all the later onces (which need more RAM)
         # at the same time
-        random.shuffle(v)
-        print(f"muts: {k} has {len(v)}")
+        random.shuffle(work)
+        split_work[cores] = work
 
-    cores_for_muts = {0: 20, 1: 10, 2: 5, 3: 2}
     json_data = []
-    for muts, cores in cores_for_muts.items():
-        easy_work = all_work[muts]
-        print(f"Running {len(easy_work)} for {muts} mutations")
+    for cores in cores_per_bin:
+        work = split_work[cores]
+        print(f"Running {len(work)} on {cores}")
         with cf.ProcessPoolExecutor(cores) as executor:
-            futures = [executor.submit(worker, work) for work in easy_work]
-            for future in tqdm.tqdm(cf.as_completed(futures), total=len(easy_work)):
+            futures = [executor.submit(worker, w) for w in work]
+            for future in tqdm.tqdm(cf.as_completed(futures), total=len(work)):
                 result = future.result()
                 json_data.append(result)
                 dump(json_data, output)
-
-    hard_work = []
-    for k, v in all_work.items():
-        if k > max(cores_for_muts.keys()):
-            hard_work.extend(v)
-
-    print(f"Running remaining {len(hard_work)} one by one")
-    for work in tqdm.tqdm(hard_work):
-        result = worker(work)
-        json_data.append(result)
-        dump(json_data, output)
 
 
 if __name__ == "__main__":
