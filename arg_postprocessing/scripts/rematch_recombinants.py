@@ -26,7 +26,6 @@ def worker(work):
     )
     out = subprocess.check_output(cmd, shell=True)
     result = json.loads(out.decode())
-    result["recombinant"] = int(work.node)
     return result
 
 
@@ -52,7 +51,7 @@ def run(ts, pattern, output):
 
     # The Delta wave was particularly difficult in terms of memory usage,
     # so limiting parallelism based on date. Post-Omicron wasn't quite as bad
-    bins = ["2020-01", "2021-09", "2022-01", "2024-01"]
+    bins = ["2020-01", "2021-09", "2022-01", "2030-01"]
     cores_per_bin = [20, 4, 8]
     assert len(cores_per_bin) == len(bins) - 1
 
@@ -70,7 +69,7 @@ def run(ts, pattern, output):
         split_work[cores] = work
 
     json_data = []
-    for cores in cores_per_bin:
+    for cores in reversed(cores_per_bin):
         work = split_work[cores]
         print(f"Running {len(work)} on {cores}")
         with cf.ProcessPoolExecutor(cores) as executor:
