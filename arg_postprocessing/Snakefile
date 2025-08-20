@@ -39,14 +39,15 @@ rule final_args:
     input:
         # Final ARG
         # Order of operations:
-        # 1) postprocess (_pp: various minor tweaks)
-        # 2) Parsimony mapping (_mp: adding in deletions and recurrent sites)
-        # 3) Apply node parsimony heuristics (_aph: cleanup some mess after 2)
-        # 4) Shift breakpoints (must be after mapping: _bps)
-        # 5) Compute pango assignment (must be after parsimony mapping and heuristics)
-        # 6) Dating (_dated)
-        # 7) Minimise metadata (must be last step)
-        "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
+        # 1) prune recombinants (_pp: rematching + long branch split)
+        # 2) postprocess (_pp: various minor tweaks)
+        # 3) Parsimony mapping (_mp: adding in deletions and recurrent sites)
+        # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 2)
+        # 5) Shift breakpoints (must be after mapping: _bps)
+        # 6) Compute pango assignment (must be after parsimony mapping and heuristics)
+        # 7) Dating (_dated)
+        # 8) Minimise metadata (must be last step)
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
         "usher_v1_2024-06-06_mm.trees.tsz",
         "sc2ts_2023-02-21_intersection.trees.tsz",
         "usher_2023-02-21_intersection_ds_di.trees.tsz",
@@ -96,6 +97,20 @@ rule rematch_recombinants_lbs:
         """
         python scripts/rematch_recombinants.py {input} {output}
         """
+
+rule rewire_recombinants:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{PR_PREFIX}.trees",
+        "{PR_PREFIX}_recombinants_lbs.json",
+    output:
+        "{PR_PREFIX}_pr.trees"
+    shell:
+        """
+        python -m sc2ts rewire-lbs {input} {output} -vv
+        """
+
 
 rule rematch_recombinants:
     conda:
