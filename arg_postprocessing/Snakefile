@@ -10,6 +10,8 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
         # Rewiring recombinants report
         "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
+        # Comparison between sc2ts and usher ARGs
+        "logs/usher_sc2ts_comparison.ipynb",
     
         # "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.csv",
         # Recombinant data
@@ -45,7 +47,7 @@ rule final_args:
         # 1) prune recombinants (_pp: rematching + long branch split)
         # 2) postprocess (_pp: various minor tweaks)
         # 3) Parsimony mapping (_mp: adding in deletions and recurrent sites)
-        # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 2)
+        # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 3)
         # 5) Shift breakpoints (must be after mapping: _bps)
         # 6) Compute pango assignment (must be after parsimony mapping and heuristics)
         # 7) Dating (_dated)
