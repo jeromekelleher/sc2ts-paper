@@ -8,6 +8,9 @@ rule all:
     input:
         # Base debug report
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
+        # Rewiring recombinants report
+        "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
+    
         # "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.csv",
         # Recombinant data
         # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_recombinants.csv", 
@@ -110,6 +113,18 @@ rule rewire_recombinants:
         """
         python -m sc2ts rewire-lbs {input} {output} -vv
         """
+
+rule rewire_recombinants_report:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{RRR_PREFIX}.trees",
+        "{RRR_PREFIX}_recombinants_lbs.json",
+        "{RRR_PREFIX}_pr.trees",
+    log:
+        notebook="logs/{RRR_PREFIX}_rewire-recombinants-report.ipynb"
+    notebook:
+        "notebooks/rewire-recombinants-report.py.ipynb"
 
 
 rule rematch_recombinants:
