@@ -56,11 +56,15 @@ rule final_args:
         "usher_v1_2024-06-06_mm.trees.tsz",
         "sc2ts_2023-02-21_intersection.trees.tsz",
         "usher_2023-02-21_intersection_ds_di.trees.tsz",
-    output:
-        "sc2ts_viridian_v1.trees.tsz",
-        "usher_viridian_v1.trees.tsz",
-        "sc2ts_viridian_inter_v1.trees.tsz",
-        "usher_viridian_inter_v1.trees.tsz",
+    output: 
+        # Version numbers - mainly driven by the sc2ts_viridian_v1 version
+        # as the others except usher_viridian are derived from this. These 
+        # are major.minor, with major versions meaning significant changes,
+        # minor being relatively minor tweaks to the ARG
+        "sc2ts_viridian_v1.1.trees.tsz",
+        "usher_viridian_v1.0.trees.tsz",
+        "sc2ts_viridian_inter_v1.1.trees.tsz",
+        "usher_viridian_inter_v1.1.trees.tsz",
     log:
         notebook="logs/final_arg_report.ipynb"
     notebook:
