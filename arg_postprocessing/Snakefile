@@ -487,7 +487,7 @@ rule sc2ts_usher_intersection:
     input:
         "usher_v1_2024-06-06_mmd.trees",
         # We use the final trees after post-processing and applying parsimony mapping
-        "sc2ts_v1_2023-02-21_pp_mp_aph_mm.trees"
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
         "sc2ts_2023-02-21_intersection.trees",
