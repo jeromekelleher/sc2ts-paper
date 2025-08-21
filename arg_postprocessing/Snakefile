@@ -16,24 +16,10 @@ rule all:
         # towards the end of the pipeline so that the parsimony
         # heuristics have a chance to work with the remapped deletions
         "logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion-report.ipynb",
-
-        # Recombinant data
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl.csv",
- 
- #        # Starting-point recombinant data
- #        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants.csv",
- #        # Full rebar output. 
- #        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_rebar_output.tsv",
-    
-        # "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.csv",
-        # Recombinant data
-        # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_recombinants.csv", 
-        # # Full rebar output. 
-        # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_rebar_output.tsv",
-        # # TODO add rule to generate _matches csv once we've sorted the reruns json.
-        # # Currently this is computed in the recombinant_processing notebook
-        # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
-        # # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_rematch.json",
+        # Recombinant data. Suffixes after _recombinants denote the operations
+        # that are applied to. This file is the source for the "recombinants.csv"
+        # file in the top-level data directory.
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
         "logs/final_arg_report.ipynb",
 
 rule final_args:
@@ -246,7 +232,18 @@ rule add_net_supporting_loci_to_csv:
         python scripts/add_recombinant_minlength_to_csv.py -v {input} {output}
         """
 
-
+rule add_k1000_muts:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{AKM_PREFIX}_recombinants.json",
+        "{AKM_PREFIX}_recombinants_{AKM_SUFFIX}.csv",
+    output:
+        "{AKM_PREFIX}_recombinants_{AKM_SUFFIX}_akm.csv",
+    shell:
+        """
+        python scripts/add_recombinant_k1000_muts_to_csv.py {input} {output}
+        """
 
 rule shift_breakpoints:
     conda:
@@ -539,6 +536,10 @@ rule usher_sc2ts_comparison:
     notebook:
         "notebooks/usher_sc2ts_comparison.py.ipynb"
 
+
+################
+# Rebar stuff
+################
 
 rule rebar_dataset:
     conda: "rebar.yml"
