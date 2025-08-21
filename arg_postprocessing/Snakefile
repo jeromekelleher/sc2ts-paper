@@ -10,6 +10,8 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
         # Rewiring recombinants report
         "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
+        # Comparison between sc2ts and usher ARGs
+        "logs/usher_sc2ts_comparison.ipynb",
     
         # "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.csv",
         # Recombinant data
@@ -45,7 +47,7 @@ rule final_args:
         # 1) prune recombinants (_pp: rematching + long branch split)
         # 2) postprocess (_pp: various minor tweaks)
         # 3) Parsimony mapping (_mp: adding in deletions and recurrent sites)
-        # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 2)
+        # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 3)
         # 5) Shift breakpoints (must be after mapping: _bps)
         # 6) Compute pango assignment (must be after parsimony mapping and heuristics)
         # 7) Dating (_dated)
@@ -54,11 +56,15 @@ rule final_args:
         "usher_v1_2024-06-06_mm.trees.tsz",
         "sc2ts_2023-02-21_intersection.trees.tsz",
         "usher_2023-02-21_intersection_ds_di.trees.tsz",
-    output:
-        "sc2ts_viridian_v1.trees.tsz",
-        "usher_viridian_v1.trees.tsz",
-        "sc2ts_viridian_inter_v1.trees.tsz",
-        "usher_viridian_inter_v1.trees.tsz",
+    output: 
+        # Version numbers - mainly driven by the sc2ts_viridian_v1 version
+        # as the others except usher_viridian are derived from this. These 
+        # are major.minor, with major versions meaning significant changes,
+        # minor being relatively minor tweaks to the ARG
+        "sc2ts_viridian_v1.1.trees.tsz",
+        "usher_viridian_v1.0.trees.tsz",
+        "sc2ts_viridian_inter_v1.1.trees.tsz",
+        "usher_viridian_inter_v1.1.trees.tsz",
     log:
         notebook="logs/final_arg_report.ipynb"
     notebook:
@@ -487,7 +493,7 @@ rule sc2ts_usher_intersection:
     input:
         "usher_v1_2024-06-06_mmd.trees",
         # We use the final trees after post-processing and applying parsimony mapping
-        "sc2ts_v1_2023-02-21_pp_mp_aph_mm.trees"
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_mm.trees"
     output:
         "usher_2023-02-21_intersection.trees",
         "sc2ts_2023-02-21_intersection.trees",
