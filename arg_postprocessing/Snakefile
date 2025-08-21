@@ -12,6 +12,14 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
         # Comparison between sc2ts and usher ARGs
         "logs/usher_sc2ts_comparison.ipynb",
+        # Report on deletion and parsimony mapping. We do this 
+        # towards the end of the pipeline so that the parsimony
+        # heuristics have a chance to work with the remapped deletions
+        "logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion-report.ipynb",
+        # Starting-point recombinant data
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants.csv",
+        # Full rebar output. 
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_rebar_output.tsv",
     
         # "sc2ts_v1_2023-02-21_pp_mp_aph_bps_pango_dated_mmps.csv",
         # Recombinant data
@@ -22,20 +30,6 @@ rule all:
         # # Currently this is computed in the recombinant_processing notebook
         # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_recombinants_rebar_matches_pangonet_nsl.csv",
         # # "sc2ts_v1_2023-02-21_pp_dated_mp_bps_pango_rematch.json",
-        # # Report on deletion and parsimony mapping
-        # "logs/sc2ts_v1_2023-02-21_pp_dated_mp_deletion-report.ipynb",
-        # # Usher tree and sc2ts intersections
-        # # Full usher tree with mutations, but uncalibrated node time
-        # "usher_v1_2024-06-06_mm.trees.tsz",
-        # # Usher intersection with sc2ts, with dated nodes
-        # "usher_2023-02-21_intersection_ds_di.trees.tsz",
-        # # Sc2ts intersection, not dated (annoying metdata issues)
-        # "sc2ts_2023-02-21_intersection.trees.tsz",
-        # # All-sites parsimony files, to get the direct comparison
-        # "usher_2023-02-21_intersection_asp.trees",
-        # "sc2ts_2023-02-21_intersection_asp.trees",
-        # # Report
-        # "logs/usher_sc2ts_comparison.ipynb",
         "logs/final_arg_report.ipynb",
 
 rule final_args:
@@ -200,7 +194,6 @@ rule deletion_report:
         "sc2ts.yml"
     input:
         "{DELR_PREFIX}.trees",
-        "{DELR_PREFIX}_parsimony.csv",
     output:
         "{DELR_PREFIX}_deletion_events.csv",
     log:
