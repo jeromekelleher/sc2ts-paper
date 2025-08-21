@@ -35,10 +35,12 @@ def get_pangonet_distance(pango, label_1, label_2):
 def run(recombinants_csv, output):
     dfr = pd.read_csv(recombinants_csv)
 
-    # Pangonet downloads these files by default, uncomment to work around rate limit
-    # problems
-    # pango = PangoNet().build(alias_key="alias_key.json", lineage_notes="lineage_notes.txt")
-    pango = PangoNet().build()
+    # Pangonet downloads these files by default if you use
+    # pango = PangoNet().build()
+    # We fix on specific files here to make this reproducible.
+    pango = PangoNet().build(
+        alias_key="pangonet_data/alias_key.json",
+        lineage_notes="pangonet_data/lineage_notes.txt")
 
     parent_path_len = []
     for _, row in dfr.iterrows():
