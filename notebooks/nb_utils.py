@@ -26,45 +26,46 @@ PARENT_COLOURS = [  # Chose to be light enough that black text on top is readabl
 ]
 
 TSDIR = "../data"
- 
-def load(filename = "sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz"):
-    ts = tszip.decompress(os.path.join(TSDIR, filename))
-    if ts.edge(-1).parent == 0 and ts.edge(-1).child == 1:
-        # remove the edge to the vestigial node
-        tables = ts.dump_tables()
-        tables.edges.truncate(ts.num_edges - 1)
-        ts = tables.tree_sequence()
+
+
+def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
+    ts = tszip.load(os.path.join(TSDIR, filename))
     time_zero_date = ts.metadata.get("time_zero_date", "Unknown date")
-    print(f"Loaded {ts.nbytes/1e6:0.1f} megabyte SARS-CoV2 ARG to {time_zero_date}: {ts.num_samples} strains")
-    n_RE = np.sum(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT != 0)    
+    print(
+        f"Loaded {ts.nbytes/1e6:0.1f} megabyte SARS-CoV2 ARG to "
+        f"{time_zero_date}: {ts.num_samples} strains"
+    )
+    n_RE = np.sum(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT != 0)
     print(
         f"({ts.num_trees} trees, {ts.num_mutations} mutations "
         f"over {ts.sequence_length}bp with {n_RE} recomb. events)"
-        )
+    )
     return ts
 
-def load_dataset(filename = "viridian_mafft_2024-10-14_v1.vcz"):
+
+def load_dataset(filename="viridian_mafft_2024-10-14_v1.vcz.zip"):
     return sc2ts.Dataset(os.path.join(TSDIR, filename), date_field="Date_tree")
 
+
 def date(ts, node_id):
-    return (
-        date.fromisoformat(ts.metadata["time_zero_date"]) -
-        timedelta(days=ts.node(node_id).time)
+    return date.fromisoformat(ts.metadata["time_zero_date"]) - timedelta(
+        days=ts.node(node_id).time
     )
+
 
 def list_of_months(start_date, end_date):
     first_days = []
     current_year = start_date.year
     current_month = start_date.month if start_date.day == 1 else start_date.month + 1
-    
+
     # Handle case where we need to increment the year
     if current_month > 12:
         current_year += 1
         current_month = 1
-    
+
     while datetime(current_year, current_month, 1) < end_date:
         first_days.append(datetime(current_year, current_month, 1))
-        
+
         # Move to next month
         current_month += 1
         if current_month > 12:
@@ -72,19 +73,28 @@ def list_of_months(start_date, end_date):
             current_month = 1
     return first_days
 
+
 def remove_single_descendant_re_nodes(ts):
     re_nodes = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT)[0]
     single_sample_re_nodes = []
     for u in re_nodes:
-        children = np.unique(ts.edges_child[ts.edges_parent==u])
+        children = np.unique(ts.edges_child[ts.edges_parent == u])
         if len(children) == 1 and children[0] in ts.samples():
             single_sample_re_nodes.append(u)
     tables = ts.dump_tables()
     nodes_flags = tables.nodes.flags
     nodes_flags[single_sample_re_nodes] = 0
     tables.nodes.flags = nodes_flags
-    tables.simplify(list(set(ts.samples()) - set(ts.edges_child[np.isin(ts.edges_parent, single_sample_re_nodes)])), filter_nodes=False, keep_unary=True)
+    tables.simplify(
+        list(
+            set(ts.samples())
+            - set(ts.edges_child[np.isin(ts.edges_parent, single_sample_re_nodes)])
+        ),
+        filter_nodes=False,
+        keep_unary=True,
+    )
     return tables.tree_sequence()
+
 
 def oldest_imputed(ts):
     oldest_imputed = collections.defaultdict(lambda: tskit.Node(-1, 0, 0, 0, 0, b""))
@@ -94,14 +104,16 @@ def oldest_imputed(ts):
             oldest_imputed[pango] = nd
     return oldest_imputed
 
+
 def fetch_genbank_comment(accession):
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&rettype=gb&retmode=text"
     url += f"&id={accession}"
     response = requests.get(url)
-    for line in response.text.split('\n'):
-        if line.strip().startswith('COMMENT'):
-            return line.strip()        
+    for line in response.text.split("\n"):
+        if line.strip().startswith("COMMENT"):
+            return line.strip()
     return ""
+
 
 def cumulative_branch_length(tree):
     """
@@ -112,10 +124,10 @@ def cumulative_branch_length(tree):
 
     Note that if there are any mutations above local roots, these do
     not occur on edges, and hence are not relevant to this function.
-    
+
     Parameters:
     tree: tskit.Tree object
-    
+
     Returns:
     tuple: (times, cumulative_lengths)
         times: array of unique node times where branches start or end, sorted descending
@@ -126,17 +138,22 @@ def cumulative_branch_length(tree):
     ts = tree.tree_sequence
     starts = -ts.nodes_time[ts.edges_parent[used_ids]]
     ends = -ts.nodes_time[ts.edges_child[used_ids]]
-    
+
     # Create event arrays: each event has a position and a num lineage change
     # Start events add lineages, end events subtract lineages
     event_times = np.concatenate([starts, ends])
-    event_lineage_count = np.concatenate([np.ones(len(used_ids)), -np.ones(len(used_ids))])
+    event_lineage_count = np.concatenate(
+        [np.ones(len(used_ids)), -np.ones(len(used_ids))]
+    )
     times = np.unique(event_times)
     dt = np.diff(times)
     assert np.all(dt) > 0
     event_ind = np.searchsorted(times, event_times)
-    cumulative_areas = np.cumsum(dt * np.cumsum(np.bincount(event_ind, weights=event_lineage_count))[:-1])
+    cumulative_areas = np.cumsum(
+        dt * np.cumsum(np.bincount(event_ind, weights=event_lineage_count))[:-1]
+    )
     return -times, np.concatenate([[0.0], cumulative_areas])
+
 
 def mutation_p_values(ts, min_time=1, progress=True):
     """
@@ -157,8 +174,8 @@ def mutation_p_values(ts, min_time=1, progress=True):
 
         """
         if cdf_t[-1] != 1:
-            cdf_t = cdf_t/cdf_t[-1]
-        if np.all(np.diff(t) <= 0): # make times go from 0 .. max_time
+            cdf_t = cdf_t / cdf_t[-1]
+        if np.all(np.diff(t) <= 0):  # make times go from 0 .. max_time
             t = t[::-1]
             cdf_t = cdf_t[::-1]
         assert np.all(np.diff(t) >= 0)
@@ -166,11 +183,10 @@ def mutation_p_values(ts, min_time=1, progress=True):
         assert cdf_t[0] == 1
         assert cdf_t[-1] == 0
         prob_gt_time_deltas = np.interp(focal_times + time_deltas, t, cdf_t)
-        prob_lt_time_deltas = 1-np.interp(focal_times - time_deltas, t, cdf_t)
+        prob_lt_time_deltas = 1 - np.interp(focal_times - time_deltas, t, cdf_t)
         prob_outside = prob_gt_time_deltas + prob_lt_time_deltas
-    
-        return 1 - prob_outside**num_muts
 
+        return 1 - prob_outside**num_muts
 
     with tqdm(total=ts.num_mutations, disable=not progress) as pbar:
         for tree in ts.trees():
@@ -181,22 +197,32 @@ def mutation_p_values(ts, min_time=1, progress=True):
                 ds = {m.id: m.derived_state for m in site.mutations}
                 ds[-1] = site.ancestral_state
                 for m in site.mutations:
-                    mut_classes[frozenset((m.derived_state, ds[m.parent]))].append((m.id, m.time))
+                    mut_classes[frozenset((m.derived_state, ds[m.parent]))].append(
+                        (m.id, m.time)
+                    )
                 for mutations in mut_classes.values():
                     if len(mutations) != 1:
                         mut_ids = np.array([m[0] for m in mutations])
                         mut_times = np.array([m[1] for m in mutations])
                         nearest = np.zeros(len(mutations))
                         for i, focal_time in enumerate(mut_times):
-                            nearest[i] = np.min(np.abs(focal_time - np.concatenate((mut_times[:i], mut_times[i+1:]))))
+                            nearest[i] = np.min(
+                                np.abs(
+                                    focal_time
+                                    - np.concatenate(
+                                        (mut_times[:i], mut_times[i + 1 :])
+                                    )
+                                )
+                            )
                         # e.g. if less than 1 day apart, assume a day's worth of difference (avoids p==0.0)
-                        nearest = np.where(nearest< min_time, min_time, nearest)
+                        nearest = np.where(nearest < min_time, min_time, nearest)
                         mut_p_val[mut_ids] = prob_closest_mut_within_timedelta(
-                            times, lengths, mut_times, nearest, len(mutations)-1
+                            times, lengths, mut_times, nearest, len(mutations) - 1
                         )
                     pbar.update(len(mutations))
     return mut_p_val
-    
+
+
 class D3ARG_viz:
     def __init__(self, ts, df, lineage_consensus_muts=None, pangolin_field="pango"):
         self.ts = ts
@@ -204,21 +230,27 @@ class D3ARG_viz:
         self.pangolin_field = pangolin_field
         self.lineage_consensus_muts = lineage_consensus_muts
         self.d3arg = argviz.D3ARG.from_ts(ts, progress=True)
-        self.d3arg.nodes.loc[self.d3arg.nodes.id == 1, 'label'] = "Wuhan"
-        self.pango_lineage_samples = df[df.is_sample].groupby(pangolin_field)['node_id'].apply(list).to_dict()
+        self.d3arg.nodes.loc[self.d3arg.nodes.id == 1, "label"] = "Wuhan"
+        self.pango_lineage_samples = (
+            df[df.is_sample].groupby(pangolin_field)["node_id"].apply(list).to_dict()
+        )
 
     def set_sc2ts_node_labels(self, add_strain_names=True):
         # Set node labels to Pango lineage + strain, if it exists
         def label_lines(row):
             if getattr(row, "sample_id", "") == "Vestigial_ignore":
-                return([""])
+                return [""]
             lab = getattr(row, self.pangolin_field)
             return [lab, f"({row.Index})"] if add_strain_names else [lab]
 
         node_labels = {}
-        for row in tqdm(self.df.itertuples(), total=len(self.df), desc="Setting all labels"):
-            node_labels[row.node_id] = "\n".join([s for s in label_lines(row) if s not in ("()", "?")])
-        boldnumbers = {str(i):s for i, s in enumerate("𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗")}
+        for row in tqdm(
+            self.df.itertuples(), total=len(self.df), desc="Setting all labels"
+        ):
+            node_labels[row.node_id] = "\n".join(
+                [s for s in label_lines(row) if s not in ("()", "?")]
+            )
+        boldnumbers = {str(i): s for i, s in enumerate("𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗")}
         for u in np.where(self.ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT)[0]:
             ec = self.ts.edges_child == u
             breaks = set(self.ts.edges_left[ec]) | set(self.ts.edges_right[ec])
@@ -233,11 +265,17 @@ class D3ARG_viz:
         self.d3arg.nodes["fill"] = "darkgrey"
         self.d3arg.nodes["stroke_width"] = 1
         is_sample = np.isin(self.d3arg.nodes["id"], self.ts.samples())
-        self.d3arg.nodes.loc[is_sample, "symbol"] = 'd3.symbolSquare'
+        self.d3arg.nodes.loc[is_sample, "symbol"] = "d3.symbolSquare"
         self.d3arg.nodes.loc[is_sample, "size"] = 100
         self.d3arg.nodes.loc[is_sample, "fill"] = "lightgrey"
-        is_recombinant = (self.d3arg.nodes.ts_flags.values & sc2ts.NODE_IS_RECOMBINANT).astype(bool)
-        self.d3arg.nodes.loc[is_recombinant, "ts_flags"] |= msprime.NODE_IS_RE_EVENT  # tskit_arg_visualizer hack to put label in centre
+        is_recombinant = (
+            self.d3arg.nodes.ts_flags.values & sc2ts.NODE_IS_RECOMBINANT
+        ).astype(bool)
+        self.d3arg.nodes.loc[
+            is_recombinant, "ts_flags"
+        ] |= (
+            msprime.NODE_IS_RE_EVENT
+        )  # tskit_arg_visualizer hack to put label in centre
         self.d3arg.nodes.loc[is_recombinant, "fill"] = "white"
         self.d3arg.nodes.loc[is_recombinant, "size"] = 150
 
@@ -247,7 +285,7 @@ class D3ARG_viz:
         extra_html=None,
         *,
         width=750,
-        height=950, 
+        height=950,
         parent_levels=20,
         child_levels=1,
         restrict_to_first=None,  # restrict every pango to the first N samples
@@ -256,12 +294,12 @@ class D3ARG_viz:
         highlight_nodes=True,
         parent_pangos=None,
         positions_file=None,
-        **kwargs
+        **kwargs,
     ):
         """
         A specific routine to plot sc2ts subgraphs for a specific Pango lineage or
         list of Pango lineages (designed for recombiant pangos, e.g. "XA")
-        
+
         If positions_file is None, look for a file called "'-'.join(sorted(pangos)) + '.json'", e.g. XA-XB.json
         """
         pangos = [pangos] if isinstance(pangos, str) else pangos
@@ -270,8 +308,10 @@ class D3ARG_viz:
         if positions_file is None:
             positions_file = f"subgraph_layouts/{'-'.join(pangos)}.json"
         try:
-           self.d3arg.set_node_x_positions(
-                pos=argviz.extract_x_positions_from_json(json.loads(Path(positions_file).read_text()))
+            self.d3arg.set_node_x_positions(
+                pos=argviz.extract_x_positions_from_json(
+                    json.loads(Path(positions_file).read_text())
+                )
             )
         except FileNotFoundError:
             pass
@@ -284,25 +324,24 @@ class D3ARG_viz:
             shown_pango = set(self.pango_lineage_samples[p][:restrict_to_first])
             # plus any samples in that lineage that are specifically included
             ps = set(self.pango_lineage_samples[p])
-            shown_pango |= (ps & include)
+            shown_pango |= ps & include
             # minus any excluded
             shown_pango = shown_pango - set(exclude)
             used_pango_samples.update(shown_pango)
             pango_samples |= ps
 
-
         nodes = list((used_pango_samples | include) - exclude)
         used = self.d3arg.subset_graph(nodes, depth=(parent_levels, child_levels))
-        title=(
+        title = (
             f'Subgraph of {self.pangolin_field} {"/".join(pangos)}: '
             f'({len(pango_samples)} sample{"" if len(pango_samples) == 1 else "s"},'
-            f' {len(used_pango_samples)} shown)'
+            f" {len(used_pango_samples)} shown)"
         )
         lineage_muts = None
         if parent_pangos is not None and self.lineage_consensus_muts is not None:
             lm = self.lineage_consensus_muts.get_unique_mutations(p, parent_pangos)
             if lineage_muts is None:
-                lineage_muts = lm 
+                lineage_muts = lm
             else:
                 lineage_muts = np.hstack((lm, lineage_muts))
 
@@ -313,10 +352,11 @@ class D3ARG_viz:
             height=height,
             title=title,
             highlight_mutations=lineage_muts,
-            highlight_nodes=highlight_nodes, 
+            highlight_nodes=highlight_nodes,
             parent_levels=parent_levels,
             child_levels=child_levels,
-            **kwargs)
+            **kwargs,
+        )
 
     def plot_sc2ts_subgraph(
         self,
@@ -325,7 +365,7 @@ class D3ARG_viz:
         child_levels=1,
         *,
         cmap=plt.cm.tab10,
-        y_axis_scale="time", # use "rank" to highlight topology more
+        y_axis_scale="time",  # use "rank" to highlight topology more
         y_axis_labels=None,
         colour_recurrent_mutations=True,
         label_mutations=False,
@@ -348,78 +388,99 @@ class D3ARG_viz:
         # Find mutations with duplicate position values and the same alleles (could be parallel eg. A->T & A->T, or reversions, e.g. A->T, T->A)
         # Create a composite key for basic duplicates
         if colour_recurrent_mutations:
-            df = self.d3arg.subset_graph(nodes, (parent_levels, child_levels)).mutations.copy()
-            df['fill'] = "lightgrey"
-            df['stroke'] = "grey" # default stroke color
-            df['duplicate_key'] = df.apply(lambda row: f"{row['position']}_{sorted([row['inherited'], row['derived']])}", axis=1)
+            df = self.d3arg.subset_graph(
+                nodes, (parent_levels, child_levels)
+            ).mutations.copy()
+            df["fill"] = "lightgrey"
+            df["stroke"] = "grey"  # default stroke color
+            df["duplicate_key"] = df.apply(
+                lambda row: f"{row['position']}_{sorted([row['inherited'], row['derived']])}",
+                axis=1,
+            )
             # Create a polarization key to identify the polarization of the allele arrangements
-            df['polarization_key'] = df.apply(lambda row: f"{row['position']}_{row['inherited']}_{row['derived']}", axis=1)
-            
+            df["polarization_key"] = df.apply(
+                lambda row: f"{row['position']}_{row['inherited']}_{row['derived']}",
+                axis=1,
+            )
+
             # Identify which rows are duplicates
-            duplicate_mask = df.duplicated(subset=['duplicate_key'], keep=False)
-                
+            duplicate_mask = df.duplicated(subset=["duplicate_key"], keep=False)
+
             # Get only the duplicate keys that appear multiple times
-            duplicate_keys = df[duplicate_mask]['duplicate_key'].unique()
-            colors = {key: rgb2hex(cmap(i))
-                for i, key in enumerate(duplicate_keys)
-            }
-            
+            duplicate_keys = df[duplicate_mask]["duplicate_key"].unique()
+            colors = {key: rgb2hex(cmap(i)) for i, key in enumerate(duplicate_keys)}
+
             # Process only the duplicate groups
             for duplicate_key in duplicate_keys:
-                group = df[df['duplicate_key'] == duplicate_key]
-                polarization_keys = group['polarization_key'].unique()
-                    
+                group = df[df["duplicate_key"] == duplicate_key]
+                polarization_keys = group["polarization_key"].unique()
+
                 # Assign fill color based on duplicate_key
                 fill = colors[duplicate_key]
                 # If there are multiple direction keys, assign different strokes
                 has_multiple_directions = len(polarization_keys) > 1
                 for idx in group.index:
-                    df.loc[idx, 'fill'] = fill
-                    df.loc[idx, 'stroke'] = (
-                        'grey' if not has_multiple_directions else 
-                        ('grey' if group.loc[idx, 'polarization_key'] == polarization_keys[0] else 'black')
+                    df.loc[idx, "fill"] = fill
+                    df.loc[idx, "stroke"] = (
+                        "grey"
+                        if not has_multiple_directions
+                        else (
+                            "grey"
+                            if group.loc[idx, "polarization_key"]
+                            == polarization_keys[0]
+                            else "black"
+                        )
                     )
-            
-            self.d3arg.mutations.loc[df.index, 'fill'] = df['fill']
-            self.d3arg.mutations.loc[df.index, 'stroke'] = df['stroke']
+
+            self.d3arg.mutations.loc[df.index, "fill"] = df["fill"]
+            self.d3arg.mutations.loc[df.index, "stroke"] = df["stroke"]
 
         # For deletions, swap the stroke for the fill colour, and fill in black
         is_deletion = self.d3arg.mutations.derived == "-"
-        stroke = self.d3arg.mutations.loc[is_deletion, 'fill']
+        stroke = self.d3arg.mutations.loc[is_deletion, "fill"]
         stroke = np.where(stroke == "white", "lightgrey", stroke)
-        self.d3arg.mutations.loc[is_deletion, 'stroke'] = stroke
-        self.d3arg.mutations.loc[is_deletion, 'fill'] = "black"
+        self.d3arg.mutations.loc[is_deletion, "stroke"] = stroke
+        self.d3arg.mutations.loc[is_deletion, "fill"] = "black"
 
         # For going from a deletion back to the original state (insertion: very unexpected),
         # swap the stroke for the fill colour, and fill in magenta to highlight
         is_insertion = self.d3arg.mutations.inherited == "-"
-        self.d3arg.mutations.loc[is_insertion, 'stroke'] = self.d3arg.mutations.loc[is_insertion, 'fill']
-        self.d3arg.mutations.loc[is_insertion, 'fill'] = "magenta"
+        self.d3arg.mutations.loc[is_insertion, "stroke"] = self.d3arg.mutations.loc[
+            is_insertion, "fill"
+        ]
+        self.d3arg.mutations.loc[is_insertion, "fill"] = "magenta"
 
         if highlight_mutations is not None:
             if hasattr(highlight_mutations, "positions"):
                 use = np.char.add(
                     np.array(highlight_mutations.positions, dtype=str),
-                    highlight_mutations.derived_states
+                    highlight_mutations.derived_states,
                 )
                 match = np.char.add(
                     self.d3arg.mutations.position.astype(int).astype(str),
-                    self.d3arg.mutations.derived
+                    self.d3arg.mutations.derived,
                 )
-                self.d3arg.mutations.loc[np.isin(match, use), 'stroke'] = highlight_colour
+                self.d3arg.mutations.loc[np.isin(match, use), "stroke"] = (
+                    highlight_colour
+                )
             else:
                 raise NotImplementedError("Cannot list mutations by ID yet")
 
         if highlight_nodes:
-            self.d3arg.nodes.loc[select_nodes, 'fill'] = highlight_colour
+            self.d3arg.nodes.loc[select_nodes, "fill"] = highlight_colour
             if isinstance(highlight_nodes, dict):
                 for colour, nodelist in highlight_nodes.items():
-                    self.d3arg.nodes.loc[np.isin(self.d3arg.nodes.id, nodelist), 'fill'] = colour
+                    self.d3arg.nodes.loc[
+                        np.isin(self.d3arg.nodes.id, nodelist), "fill"
+                    ] = colour
 
         if y_axis_labels is None:
-            times = self.d3arg.nodes.loc[select_nodes, 'time']
+            times = self.d3arg.nodes.loc[select_nodes, "time"]
             zero_date = node_1_date + timedelta(
-                days=int(self.d3arg.nodes.loc[self.d3arg.nodes.id == 1, 'time'].values[0]))
+                days=int(
+                    self.d3arg.nodes.loc[self.d3arg.nodes.id == 1, "time"].values[0]
+                )
+            )
             if oldest_y_label is None:
                 # Can't just use the oldest of select_nodes here, because that doesn't include parents
                 oldest_y_label = node_1_date
@@ -432,7 +493,9 @@ class D3ARG_viz:
                     pass
             y_axis_labels = {
                 (zero_date - d).days: str(d)[:7]
-                for d in list_of_months(oldest_y_label, zero_date-timedelta(days=times.min()))
+                for d in list_of_months(
+                    oldest_y_label, zero_date - timedelta(days=times.min())
+                )
             }
 
         return self.d3arg.draw_nodes(
@@ -445,21 +508,25 @@ class D3ARG_viz:
             **kwargs,
         )
 
+
 def make_joint_ts(ts1, ts2, metadata_name1, metadata_name2):
     """
     Combine two tree sequences of one tree each into a single tree sequence of 2 trees using
     the metadata name "strain" from the first and "sample_id" from the second.
     """
     if ts1.num_trees > 1 or ts2.num_trees > 1:
-        raise ValueError(f"Found {ts1.num_trees} trees in the first ts and {ts2.num_trees} trees in the second ts. Expected exactly one tree in each.")
-    ts1_node_map = {nd.metadata[metadata_name1]: nd.id for nd in ts1.nodes() if nd.is_sample()}
+        raise ValueError(
+            f"Found {ts1.num_trees} trees in the first ts and {ts2.num_trees} trees in the second ts. Expected exactly one tree in each."
+        )
+    ts1_node_map = {
+        nd.metadata[metadata_name1]: nd.id for nd in ts1.nodes() if nd.is_sample()
+    }
     ts2_to_ts1_node_map = [
         ts1_node_map.get(nd.metadata.get(metadata_name2), tskit.NULL)
         for nd in ts2.nodes()
     ]
     ts = ts1.concatenate(ts2, node_mappings=[ts2_to_ts1_node_map])
     return ts
-
 
 
 def tanglegram(
@@ -482,7 +549,7 @@ def tanglegram(
     y_ticks=None,
     y_gridlines=None,
     tweak_rh_lab=0,
-    **kwargs
+    **kwargs,
 ):
     r"""
     Create an SvgTree object describing a "tanglegram" that compares the topology leading
@@ -543,6 +610,7 @@ def tanglegram(
         A tuple of an SvgTree object (that can be plotted by calling obj.draw()) and a left
         and a right node mapping.
     """
+
     def node_positions(svgtree):
         x = svgtree.node_x_coord
         node_times = svgtree.ts.nodes_time
@@ -570,7 +638,9 @@ def tanglegram(
         if len(np.unique(node_order)) != len(node_order):
             raise ValueError("Order must contain unique integers")
         node_map, tree = reorder_tree_nodes(tree, node_order)
-        leaves = np.array([u for u in tree.nodes(order="minlex_postorder") if tree.is_leaf(u)])
+        leaves = np.array(
+            [u for u in tree.nodes(order="minlex_postorder") if tree.is_leaf(u)]
+        )
         return node_map[leaves]
 
     if y_ticks is not None:
@@ -596,21 +666,26 @@ def tanglegram(
     if size is None:
         # Note that the width is twice the default tree height, as these are rotated
         size = (200 * 2, 200)
-    w = size[0] / 2  # width (tree height) of one of the plotted trees, after 90° rotation
+    w = (
+        size[0] / 2
+    )  # width (tree height) of one of the plotted trees, after 90° rotation
     height = size[1]
     style = (
-        ".lft_tree > g.tree, .lft_tree > g.tangle_lines {transform: translate(0, " + str(height) + "px) rotate(-90deg);}" +
-        ".lft_tree > g.tree .node > .lab {text-anchor: start; transform: rotate(90deg) translate(4px);}"
-        ".lft_tree > .title {transform: translate(" + str(w/2) + "px);}"
+        ".lft_tree > g.tree, .lft_tree > g.tangle_lines {transform: translate(0, "
+        + str(height)
+        + "px) rotate(-90deg);}"
+        + ".lft_tree > g.tree .node > .lab {text-anchor: start; transform: rotate(90deg) translate(4px);}"
+        ".lft_tree > .title {transform: translate(" + str(w / 2) + "px);}"
         ".rgt_tree > g.tree {transform: translate(" + str(w) + "px, 0) rotate(90deg);}"
-        ".rgt_tree > g.tree .node > .lab {text-anchor: end; transform: rotate(-90deg) translate(" + str(-4-tweak_rh_lab) + "px);}"     
-        ".rgt_tree > .title {transform: translate(" + str(w/2) + "px);}"
+        ".rgt_tree > g.tree .node > .lab {text-anchor: end; transform: rotate(-90deg) translate("
+        + str(-4 - tweak_rh_lab)
+        + "px);}"
+        ".rgt_tree > .title {transform: translate(" + str(w / 2) + "px);}"
         ".lft_tree .axes .y-axis .title text {transform: translate(11px) rotate(90deg);}"
         ".rgt_tree .axes .y-axis .title text {transform: translate(-11px) rotate(-90deg);}"
         ".rgt_tree .axes .y-axis .ticks .lab {text-anchor: end; transform: rotate(180deg);}"
     ) + (style or "")
 
-    
     # For tree 1 we need to reverse the plotting order of leaves, so the leftmost
     # tip appears at the top when the tree is rotated 90° anticlockwise. We do this
     # by reordering using `subset()`, so minlex order will reverse the current order
@@ -619,14 +694,18 @@ def tanglegram(
         node_labels = {u: str(u) for u in np.arange(ts.num_nodes)}
 
     if order[0] is None:
-        leaves = np.array([u for u in lft.nodes(order="minlex_postorder") if lft.is_leaf(u)])[::-1]
+        leaves = np.array(
+            [u for u in lft.nodes(order="minlex_postorder") if lft.is_leaf(u)]
+        )[::-1]
     else:
         leaves = get_valid_leaf_order(lft, order[0][::-1])
-        
+
     lft_node_map, lft = reorder_tree_nodes(lft, leaves)
     lft_rev_map = make_reverse_map(lft_node_map)
     # Have to change the node labels, because even provided ones will be targetting the wrong IDs
-    lft_node_labels = {u: node_labels[v] for u, v in enumerate(lft_node_map) if v in node_labels}
+    lft_node_labels = {
+        u: node_labels[v] for u, v in enumerate(lft_node_map) if v in node_labels
+    }
     if order[1] is None:
         # We do not reorder the RH tree, so the node IDs should stay as-is
         # TODO - we could check the leaf IDs match here
@@ -637,7 +716,9 @@ def tanglegram(
         rgt_node_map, rgt = reorder_tree_nodes(rgt, rleaves)
         if set(rleaves) != set(leaves):
             raise ValueError("Leaf IDs in the two trees are not the same")
-        rgt_node_labels = {u: node_labels[v] for u, v in enumerate(rgt_node_map) if v in node_labels}
+        rgt_node_labels = {
+            u: node_labels[v] for u, v in enumerate(rgt_node_map) if v in node_labels
+        }
         rgt_rev_map = make_reverse_map(rgt_node_map)
     kwargs["size"] = (height, w)
     kwargs["order"] = "minlex_postorder"
@@ -651,9 +732,9 @@ def tanglegram(
         title=titles[0],
         canvas_size=(w * 2 + extra_sep, height),
         node_labels=lft_node_labels,
-        root_svg_attributes={'class': 'lft_tree'},
+        root_svg_attributes={"class": "lft_tree"},
         y_axis=x_axis,
-        y_ticks = None if x_ticks is None else x_ticks[0],
+        y_ticks=None if x_ticks is None else x_ticks[0],
         **kwargs,
     )
     svgtree_rgt = tskit.drawing.SvgTree(
@@ -661,9 +742,9 @@ def tanglegram(
         title=titles[1],
         canvas_size=(w, height),
         node_labels=rgt_node_labels,
-        root_svg_attributes={'class': 'rgt_tree', 'x': w + extra_sep},
-        y_axis='right' if x_axis else x_axis,   # Swapped because of 90° rotation
-        y_ticks = None if x_ticks is None else x_ticks[1],
+        root_svg_attributes={"class": "rgt_tree", "x": w + extra_sep},
+        y_axis="right" if x_axis else x_axis,  # Swapped because of 90° rotation
+        y_ticks=None if x_ticks is None else x_ticks[1],
         style=style,
         **kwargs,
     )
@@ -672,20 +753,24 @@ def tanglegram(
     # Here we just need any list of leaves (order doesn't matter, as long as it's consistent)
     tip_h_lft = [x_lft[u] for u in lft_rev_map[leaves]]
     tip_w_lft = y_lft[lft_rev_map[leaves]]
-    tip_w_lft = np.full_like(tip_w_lft, w - 10) if line_gap is None else (tip_w_lft + line_gap)
+    tip_w_lft = (
+        np.full_like(tip_w_lft, w - 10) if line_gap is None else (tip_w_lft + line_gap)
+    )
 
     x_rgt, y_rgt = node_positions(svgtree_rgt)
     tip_h_rgt = [x_rgt[u] for u in rgt_rev_map[leaves]]
     tip_w_rgt = y_rgt[rgt_rev_map[leaves]]
-    tip_w_rgt = np.full_like(tip_w_rgt, w - 10) if line_gap is None else (tip_w_rgt + line_gap)
-    
+    tip_w_rgt = (
+        np.full_like(tip_w_rgt, w - 10) if line_gap is None else (tip_w_rgt + line_gap)
+    )
+
     lines = [
         f'<line stroke="blue" x1="{x1}" y1="{y1}" x2="{height-x2}" y2="{w*2 + extra_sep - y2}" />'
         for x1, y1, x2, y2 in zip(tip_h_lft, tip_w_lft, tip_h_rgt, tip_w_rgt)
     ]
 
     svgtree_lft.preamble = (  # Add the RH tree plus lines as the preamble
-        '<g class="tangle_lines">' + ''.join(lines) + '</g>' + svgtree_rgt.draw()
+        '<g class="tangle_lines">' + "".join(lines) + "</g>" + svgtree_rgt.draw()
     )
     return svgtree_lft, lft_rev_map, rgt_rev_map
 
@@ -721,12 +806,12 @@ class MutationContainer:
             self.all_positions[position].add(alt)
         else:
             self.all_positions[position] = {alt}
- 
+
     def get_mutations(self, pango):
         index = self.names[pango]
         return np.rec.fromarrays(
             [self.positions[index], self.alts[index]],
-            names='positions,derived_states',
+            names="positions,derived_states",
         )
 
     def get_unique_mutations(self, pango, parent_pangos):
@@ -734,13 +819,21 @@ class MutationContainer:
         if isinstance(parent_pangos, str):
             parent_pangos = [parent_pangos]
         idx = self.names[pango]
-        use = np.rec.fromarrays([self.positions[idx], self.alts[idx]], names='positions,derived_states')
+        use = np.rec.fromarrays(
+            [self.positions[idx], self.alts[idx]], names="positions,derived_states"
+        )
         indexes = [self.names[p] for p in parent_pangos]
-        omit = np.concatenate([
-            np.rec.fromarrays([self.positions[i], self.alts[i]], names='positions,derived_states') for i in indexes
-        ])
+        omit = np.concatenate(
+            [
+                np.rec.fromarrays(
+                    [self.positions[i], self.alts[i]], names="positions,derived_states"
+                )
+                for i in indexes
+            ]
+        )
         return np.setdiff1d(use, omit)
-    
+
+
 ## from run_lineage_imputation.py
 def read_in_mutations(
     json_filepath,
@@ -795,7 +888,7 @@ def read_in_mutations(
         if len(excluded_pos) > 0:
             print(
                 f"Excluded {len(excluded_pos)} positions not in ts:",
-                f"{list(excluded_pos.keys())}"
+                f"{list(excluded_pos.keys())}",
             )
         if len(excluded_del) > 0:
             print("Excluded deletions at positions", list(excluded_del.keys()))
