@@ -235,7 +235,7 @@ should provide a strong basis for future studies of SARS-CoV-2.
 
 Sc2ts reconstructs an ARG by incrementally adding batches of sequences as they become available
 (\ref{fig:methodology}; for details, see STAR Methods).
-First, sc2ts infers likely “copying paths” connecting each sample in the batch to node(s) in the current ARG
+First, sc2ts infers likely ``copying paths'' connecting each sample in the batch to node(s) in the current ARG
 (allowing recombination) using the Li and Stephens (LS) model \cite{Li2003},
 which is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination on genetic inheritance.
@@ -614,7 +614,7 @@ In contrast with matUtils and most phylogenetic software,
 which provide a command line interface and suite of predefined operations that typically output text files,
 tskit is a Python API (with C and Rust interfaces also supported) which has many advantages \cite{Baumdicker2022}.
 As an illustration of the open-ended and efficient nature of the analyses this enables,
-we computed the number of polytomies (nodes that have > 2 children)
+we computed the number of polytomies (nodes that have $> 2$ children)
 and the maximum number of children per node in the Usher and sc2ts outputs.
 In the Usher tree it took 116 ms and 4 lines of code to count polytomies (171,148)
 and compute the maximum number of children (5918).
@@ -670,7 +670,7 @@ resulting in a clean dataset rid of samples with erroneous collection dates that
 Future work may be estimating dates for the suspected time traveling samples using the ARG provided here
 and the sc2ts sample matching engine.
 
-Recombination is an important evolutionary force in viruses \cite{Pérez-Losada2015},
+Recombination is an important evolutionary force in viruses \cite{Perez-Losada2015},
 but has been understudied in part due to a lack of suitable data models, methods, and tools \cite{Neches2020}.
 While the methods and tools developed here are tailored for SARS-CoV-2,
 they can be extended and adapted for other viruses.
@@ -841,101 +841,98 @@ and edited the content as needed and take(s) full responsibility for the content
   \item Table S1. A descriptive title for an Excel file that was too large to appear in the PDF
 \end{description}
 
-\newpage
+% \newpage
 
 
+% \section*{MAIN FIGURE TITLES AND LEGENDS}
+
+% %%%  At final submission, figure files MUST be
+% %%%  provided separately as high-resolution image
+% %%%  files. All of the panels for a figure should
+% %%%  be in the same file. Figures should have
+% %%%  clear labels/file names (Figure 1, Figure 2,
+% %%%  etc.).
+
+% %%%  Figure titles and legends should be placed
+% %%%  at the end of the main text. You do not
+% %%%  need to place the figures, nor their titles
+% %%%  and legends, within the main text. While
+% %%%  typesetting your article, our team will
+% %%%  place each figure in the best location
+% %%%  based on the final layout and on your
+% %%%  figure citations, e.g., (Figures 1A and 1B).
+
+% %%%  Please review the figure guidelines before
+% %%%  submitting your final materials:
+% %%%  https://www.cell.com/figureguidelines.
+
+% \noindent\includegraphics[width=0.85\linewidth]{Figure1.jpg}
+
+% \subsection*{Figure 1. A brief title that describes the entire figure without citing specific panels}
+
+% The figure legend can be all one paragraph and describe the images (A), graphs (B), and plots (C), etc., together.
+% \newline
+% (A) Or each panel or group of panels can be described separately, as shown here and below.
+% \newline
+% (B) Graph of X, Y, and Z.
+% \newline
+% (C and D) If panels are grouped like this, please explicitly describe each panel, e.g., “Images showing SEM (C) and TEM (D).”
+% \newline
+% Please define all scale and error bars, and please review the Cell Press figure guidelines before submission: \href{https://www.cell.com/figureguidelines}{https://www.cell.com/figureguidelines}. Example figure created by Cassie Comeau, Cell Press.
+
+% \newpage
+
+% \section*{MAIN TABLES, INCLUDING TITLES AND LEGENDS}
+
+% %%%  Whenever possible, we encourage you to submit
+% %%%  your main-text tables as Microsoft Word documents,
+% %%%  using Word's table function. This will ensure
+% %%%  the best results during conversion. Tables
+% %%%  should be numbered Table 1, Table 2, etc. and
+% %%%  should not include subpanels (do not use Table 1A,
+% %%%  1B, etc.). Give each table a brief descriptive
+% %%%  title. Table legends are optional but encouraged.
+% %%%  Footnotes (superscript lowercase letters) should
+% %%%  be used where necessary to indicate some feature
+% %%%  of the data; please do not use bold, italic,
+% %%%  colored text, or shading for this purpose. Use
+% %%%  separate cells, not line breaks or spaces, for
+% %%%  all discrete data elements. Small embedded
+% %%%  graphics with color are OK.
+
+% %%%  Like figures, all tables must be cited within
+% %%%  the main text, and our typesetting team will
+% %%%  place the tables within the typeset paper at
+% %%%  the appropriate locations.
 
 
+% \subsection*{Table 1. A table with clear organization of data}
 
-\section*{MAIN FIGURE TITLES AND LEGENDS}
+% \begin{tabular}{|l | l | l | l|}
+%  \hline
+%  \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} & \textbf{Column 4} \\ [1ex]
+%  \hline
+%  Row A\textsuperscript{a} & 6 & 87,837 & 787 \\ [1ex]
+%  \hline
+%  Row B & 7 & 78 & 5,415 \\ [1ex]
+%  \hline
+%  Row C & 545 & 778 & 7507 \\ [1ex]
+%  \hline
+%  Row D & 545 & 18,744 & 7,560 \\ [1ex]
+%  \hline
+%  Row E & 88 & 788 & 6,344 \\ [1ex]
+%  \hline
+% \end{tabular}
 
-%%%  At final submission, figure files MUST be
-%%%  provided separately as high-resolution image
-%%%  files. All of the panels for a figure should
-%%%  be in the same file. Figures should have
-%%%  clear labels/file names (Figure 1, Figure 2,
-%%%  etc.).
+% \bigskip
 
-%%%  Figure titles and legends should be placed
-%%%  at the end of the main text. You do not
-%%%  need to place the figures, nor their titles
-%%%  and legends, within the main text. While
-%%%  typesetting your article, our team will
-%%%  place each figure in the best location
-%%%  based on the final layout and on your
-%%%  figure citations, e.g., (Figures 1A and 1B).
+% The table legend (optional) follows the table itself.
+% The legend should be used to provide additional info that relates to the table as a whole.
 
-%%%  Please review the figure guidelines before
-%%%  submitting your final materials:
-%%%  https://www.cell.com/figureguidelines.
+% \textsuperscript{a}Footnotes can be used to provide additional info on specific content within the table,
+% such as this footnote to the first row (row A). Do not use footnotes in the table title.
 
-\noindent\includegraphics[width=0.85\linewidth]{Figure1.jpg}
-
-\subsection*{Figure 1. A brief title that describes the entire figure without citing specific panels}
-
-The figure legend can be all one paragraph and describe the images (A), graphs (B), and plots (C), etc., together.
-\newline
-(A) Or each panel or group of panels can be described separately, as shown here and below.
-\newline
-(B) Graph of X, Y, and Z.
-\newline
-(C and D) If panels are grouped like this, please explicitly describe each panel, e.g., “Images showing SEM (C) and TEM (D).”
-\newline
-Please define all scale and error bars, and please review the Cell Press figure guidelines before submission: \href{https://www.cell.com/figureguidelines}{https://www.cell.com/figureguidelines}. Example figure created by Cassie Comeau, Cell Press.
-
-\newpage
-
-\section*{MAIN TABLES, INCLUDING TITLES AND LEGENDS}
-
-%%%  Whenever possible, we encourage you to submit
-%%%  your main-text tables as Microsoft Word documents,
-%%%  using Word's table function. This will ensure
-%%%  the best results during conversion. Tables
-%%%  should be numbered Table 1, Table 2, etc. and
-%%%  should not include subpanels (do not use Table 1A,
-%%%  1B, etc.). Give each table a brief descriptive
-%%%  title. Table legends are optional but encouraged.
-%%%  Footnotes (superscript lowercase letters) should
-%%%  be used where necessary to indicate some feature
-%%%  of the data; please do not use bold, italic,
-%%%  colored text, or shading for this purpose. Use
-%%%  separate cells, not line breaks or spaces, for
-%%%  all discrete data elements. Small embedded
-%%%  graphics with color are OK.
-
-%%%  Like figures, all tables must be cited within
-%%%  the main text, and our typesetting team will
-%%%  place the tables within the typeset paper at
-%%%  the appropriate locations.
-
-
-\subsection*{Table 1. A table with clear organization of data}
-
-\begin{tabular}{|l | l | l | l|}
- \hline
- \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} & \textbf{Column 4} \\ [1ex]
- \hline
- Row A\textsuperscript{a} & 6 & 87,837 & 787 \\ [1ex]
- \hline
- Row B & 7 & 78 & 5,415 \\ [1ex]
- \hline
- Row C & 545 & 778 & 7507 \\ [1ex]
- \hline
- Row D & 545 & 18,744 & 7,560 \\ [1ex]
- \hline
- Row E & 88 & 788 & 6,344 \\ [1ex]
- \hline
-\end{tabular}
-
-\bigskip
-
-The table legend (optional) follows the table itself.
-The legend should be used to provide additional info that relates to the table as a whole.
-
-\textsuperscript{a}Footnotes can be used to provide additional info on specific content within the table,
-such as this footnote to the first row (row A). Do not use footnotes in the table title.
-
-\textsuperscript{b}More footnotes
+% \textsuperscript{b}More footnotes
 
 \newpage
 
@@ -1079,7 +1076,7 @@ Tskit is widely used in population genetics, and has been incorporated into many
 (e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2022,Mahmoudi2022,Petr2022,Rasmussen2022,Zhang2023}).
 
 
-\subsubsection{Li and Stephens haplotype-copying model}
+\subsubsection*{Li and Stephens haplotype-copying model}
 
 LS model \cite{Li2003} is an approximation of the coalescent with recombination
 that captures many of the key features of the joint processes of mutation and recombination.
@@ -1107,7 +1104,7 @@ ignoring transition-transversion biases and variation of mutation rate along the
 As data sampling was dense for SARS-CoV-2, this assumption was considered tolerable.
 
 In our early attempts to build ARGs, we explored using several values of $k$.
-We ran sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020 \cite{Zhan2023}}(REF).
+We ran sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020 \cite{Zhan2023}(REF).
 We would expect that a good value for $k$ should lead to parsimonious ARGs
 that capture plausible recombination events without incurring too many mutations, particularly reversions.
 A value of $k$ too low could result in many artifactual recombination events,
@@ -1246,7 +1243,8 @@ It is dated later than SRR17041376 (the BA.1 seed),
 allowing time for the BA.1 lineage to accumulate enough sampled descendants
 and to get established in the ARG.
 For the full list of seeds,
-see https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml.
+see
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}
 
 In practice, it is difficult to find optimal seeds for saltation lineages,
 which ideally would require no reversion to be added to the ARG
@@ -1303,7 +1301,8 @@ Only six of these sites overlapped with the “Problematic Sites”
 downloaded from the UCSC Genome Browser website (URL),
 which did not have a high number of mutations in the preliminary ARG.
 To infer the final ARG, we masked the problematic sites
-in our custom set (https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml).
+in our custom set
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
 
 \subsubsection*{Reconstructing a pandemic-scale ARG}
 
@@ -1384,7 +1383,7 @@ as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in BA.2.9.
 
 
-\subsubsection{Counting supporting loci for recombinant parents}
+\subsubsection*{Counting supporting loci for recombinant parents}
 When counting such loci, we considered nearly adjacent sites (separated by at most three bases) as single loci,
 to avoid over-counting support from correlated loci, which would lead to artificial signals of recombination.
 Also, when counting supporting loci for a focal parent,
@@ -1396,7 +1395,8 @@ We define a “pseudo-phylogenetic” distance to quantify the divergence betwee
 The idea is to count the number of edges separating two given Pango lineages in a “pseudo-phylogeny”
 which relates all the designated Pango lineages.
 To construct this pseudo-phylogeny, we used \textit{pangonet},
-which mines the information on the Pango lineages in the “alias_key.json” and “lineage_notes.txt” files
+which mines the information on the Pango lineages in the ``alias\_key.json''
+and ``lineage\_notes.txt'' files
 from the Pango designation issues (https://github.com/cov-lineages/pango-designation).
 If two Pango lineages are siblings in the pseudo-phylogeny,
 the distance is defined as the sum of the number of edges from each lineage to their MRCA;
@@ -1426,7 +1426,7 @@ if they are identical, the distance is defined as zero.
 %%%  used to determine whether the data met
 %%%  assumptions of the statistical approach.
 
-\subsubsection{Estimating interval lengths}
+\subsubsection*{Estimating interval lengths}
 Recombination intervals are imprecise
 when the recombining parents are identical in sequence at sites spanning the breakpoint.
 Here we estimate the interval lengths expected around a breakpoint,
@@ -1447,7 +1447,7 @@ Summing the two intervals ($I_{left}+I_{right}$) gives the expected interval len
 As detectable recombination events are nearer the center of the chromosome, we use $P=½$ in Figure X.
 
 
-\subsubsection{Analyzing global case counts}
+\subsubsection*{Analyzing global case counts}
 To explore the timing of emergence of recombinants,
 case count data were downloaded from
 the COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE)

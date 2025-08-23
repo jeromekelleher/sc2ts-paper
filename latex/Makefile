@@ -5,7 +5,7 @@ all: main.pdf
 
 main.pdf: main.tex references.bib ${DATA} ${FIGURES}
 	pdflatex -shell-escape main.tex
-	bibtex references
+	bibtex main
 	pdflatex main.tex
 	pdflatex main.tex
 
