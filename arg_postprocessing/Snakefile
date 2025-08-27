@@ -20,6 +20,9 @@ rule all:
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
+        # Events corresponding to Pango X lineages. This is the pango_x_events.csv file
+        # in the top-level data directory
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
         "logs/final_arg_report.ipynb",
 
 rule final_args:
@@ -205,6 +208,18 @@ rule recombinants_report:
         "notebooks/recombinants_report.py.ipynb"
 
 
+rule pango_x_events:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{PXE_PREFIX}.trees",
+    output:
+        "{PXE_PREFIX}_pango_x_events.csv",
+    shell:
+        """
+        python scripts/compute_pango_x_events.py {input} {output}
+        """
+
 rule add_pangonet_to_csv:
     conda:
         "sc2ts.yml"
@@ -212,7 +227,6 @@ rule add_pangonet_to_csv:
         "{APC_PREFIX}.csv",
     output:
         "{APC_PREFIX}_pangonet.csv",
-
     shell:
         """
         python scripts/add_pangonet_distance_to_csv.py {input} {output}
