@@ -184,7 +184,7 @@ Beyond supporting real-time genomic epidemiology,
 UShER phylogenies have been used in a multitude of evolutionary and epidemiological studies of SARS-CoV-2
 (e.g., \cite{Karthikeyan2022,Obermeyer2022,Turakhia2022,Bloom2023}).
 UShER uses a tree to represent evolutionary change via mutation, assuming no recombination \cite{Turakhia2021}.
-Given extensive evidence for recombination in SARS-CoV-2 \cite{Jackson2021,VanInsberghe2021,Focosi2022,Gutierrez2022,Ignatieva2022,Tamura2022},
+However, given extensive evidence for recombination in SARS-CoV-2 \cite{Jackson2021,VanInsberghe2021,Focosi2022,Gutierrez2022,Ignatieva2022,Tamura2022},
 the tree-like representation of UShER is no longer tenable.
 
 Ancestral Recombination Graphs (ARGs) are reticulate genealogies that incorporate both mutation and recombination events \cite{Wong2024},
@@ -273,7 +273,7 @@ we reevaluate the evidence for each lineage with a high HMM cost as additional s
 If on subsequent days these lineages form a sufficiently large group of samples,
 sc2ts adds the group back to the ARG.
 This “retrospective sample grouping” successfully captured the emergence of most saltation lineages (Figure SX).
-The emergence of the Delta, BA.1 and BA.2 lineages required some manual intervention,
+The emergence of the Delta, BA.1, and BA.2 lineages required some manual intervention,
 in which specific "seed" samples were identified for unconditional inclusion
 (for details of how seed samples were chosen, see STAR Methods).
 First arising in geographic regions with low sampling density,
@@ -294,9 +294,9 @@ Inference took 21 days on a server equipped with dual EPYC (details) and 500 GB 
 The ARG contains 2,689,054 nodes representing the genealogical relationships
 among 2,482,157 sampled genomes in the Viridian v04 dataset,
 which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
-Of the nodes, 929 represent recombination events,
-of which 386 have a minimum of four nucleotides supporting the non-focal parent on both sides of the breakpoint
-(we refer to these as “robust” recombination events, Figure S1; see Document S1),
+Of the nodes, 855 represent recombination events,
+of which 356 have a minimum of four loci supporting the non-focal parent on both sides of the breakpoint
+(we refer to these as “robust” recombination events, Figure SX; see Document S1),
 reflecting the overwhelming tree-like structure of SARS-CoV-2 evolutionary history.
 
 The ARG represents the full evolutionary history of SARS-CoV-2 and
@@ -490,7 +490,7 @@ with improved sampling if still possible.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.85\linewidth]{averted_mutations.png}
-    \caption{Evidence for recombination events in the ARG. The 386 “robust” recombination events detected by sc2ts are colored according to their classification by rebar (recombinant: purple, non-recombinant: gray). (A) Distribution of time to the MRCA of the sc2ts-identified parents. (B) Distribution of the Pango lineage distance between the sc2ts-identified parents. (C) Distribution of the number of mutations averted by recombination (bottom x-axis), defined as the difference in the number of mutations between a copying path allowing recombination (right y-axis) and an alternative copying path disallowing recombination (top x-axis). (D) Copying patterns of five select recombinants.}
+    \caption{Evidence for recombination events in the ARG. The 356 “robust” recombination events detected by sc2ts are colored according to their classification by rebar (recombinant: purple, non-recombinant: gray). (A) Distribution of time to the MRCA of the sc2ts-identified parents. (B) Distribution of the Pango lineage distance between the sc2ts-identified parents. (C) Distribution of the number of mutations averted by recombination (bottom x-axis), defined as the difference in the number of mutations between a copying path allowing recombination (right y-axis) and an alternative copying path disallowing recombination (top x-axis). (D) Copying patterns of five select recombinants.}
     \label{fig:averted_mutations}
 \end{figure}
 
@@ -538,7 +538,7 @@ given a single parameter (the mutation rate) (STAR Methods).}
 
 \subsection*{Emergence of recombinants over time}
 
-We examined the frequency of emergence of the recombinants over the course of the COVID-19 pandemic (\ref{recombinants_over_time}).
+We examined the frequency of emergence of the recombinants over the course of the COVID-19 pandemic (Figure \ref{fig:recombinants_over_time}).
 We explored two hypotheses for the timing of recombination.
 First, we would expect recombination events to occur more often when case counts are high,
 which increases the chance of co-infection within an individual, allowing recombination.
@@ -549,26 +549,26 @@ increasing our power to detect recombination.
 We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
 to relate the timing of recombination events with global case numbers.
 Case numbers ($n$) were binned by week from January, 2020 to March, 2023 and
-sub-divided by the proportion in each Scorpio label inferred within the ARG (shading in \ref{recombinants_over_time}).
+sub-divided by the proportion in each Scorpio label inferred within the ARG (shading in \ref{fig:recombinants_over_time}).
 These lineages correspond loosely to a group of related lineages within a major VOC in the Viridian dataset.
 Alongside the case numbers,
 the black curve shows the number of recombinants inferred within each week along the ARG,
-focusing on the 386 “robust” events.
+focusing on the 356 “robust” events.
 Recombination events were inferred more often during the Delta and Omicron waves, when case counts were high.
 Overall, the number of recombinant events rose with the global number of cases
-(Figure 5B; linear regression: $1.2 + 2.9 10^{-7} x$, $p = 3.2e^{-7}$).
+(Figure \ref{fig:recombinants_over_time}B; linear regression: $1.0 + 2.7 \; 10^{-7} x$, $p = 1.1 \; 10^{-7}$).
 Recombination events also rose with the diversity of lineages in each week
-(Figure 5C; linear regression: $1.0 + 5.3 x$, $p = 1.3e^{-7}$),
+(Figure \ref{fig:recombinants_over_time}C; linear regression: $0.9 + 4.8 x$, $p = 3.4\;10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
 ($H$, referred to as the “expected heterozygosity”).
 
 We then asked which single measure best explains the number of recombination events inferred each week,
-considering $n$, $H$, $n H$, $n^2$, $n^2 H$.
+considering $n$, $H$, $n \; H$, $n^2$, $n^2 H$.
 We included the squared number of cases each week thinking that it might better predict co-infections.
-The best single predictor of recombination events involved the product of cases and expected heterozygosity ($n H$),
-with an adjusted $R^2$ of 25.3\%.
-This measure of case diversity ($n H$) explained 62\% more of the variation in recombination events per week
-than the next best predictor ($H$, adjusted $R^2$ of 15.7\%).
+The best single predictor of recombination events involved the product of cases and expected heterozygosity ($n \; H$),
+with an adjusted $R^2$ of 23.7\%.
+This measure of case diversity ($n \; H$) explained 49\% more of the variation in recombination events per week
+than the next best predictor ($H$, adjusted $R^2$ of 15.9\%).
 While consistent with the hypotheses that recombination events occur more often when infection rates are common
 and are detected more often when viral diversity is high, we note several sources of uncertainty.
 Global case numbers were underreported, particularly during the Delta and Omicron waves \cite{Wang2025}.
@@ -576,13 +576,13 @@ Furthermore, there may be substantial uncertainty in the timing of a recombinati
 particularly if these occur in chronically infected individuals (as reported by \cite{Burel2022})
 with substantial delays before onward cases are detected.
 Finally, the filters that we applied removed all but the most strongly supported recombination events,
-although similar conclusions were obtained when all 929 recombinants were considered (STAR Methods).
+although similar conclusions were obtained when all 855 recombinants were considered (STAR Methods).
 
 %%% TODO: Old version as placeholder. This figure is not yet finalised.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.85\linewidth]{recombinants_over_time.png}
-    \caption{Recombination events across the pandemic. (A) Timing of the recombination events (black curve, right y-axis) relative to the global case numbers (\cite{Dong2020}; left y-axis). Cases are color-coded by their Scorpio labels, with the key showing those groupings with $\geq 1,000$ samples in the Viridian dataset. Recombinants more commonly occur (B) in weeks with high case numbers and (C) in weeks with extensive lineage variation, as estimated by high expected heterozygosity (C); solid lines show fits by linear regression, allowing for non-zero intercepts to account for unknown cases and heterozygosity not captured by the Scorpio labels.}
+    \includegraphics[width=0.85\linewidth]{recombinants_over_time.pdf}
+    \caption{Recombination events across the pandemic. (A) Timing of the recombination events (black curve, right y-axis) relative to the global case numbers (\cite{Dong2020}; left y-axis). Cases are color-coded by their Scorpio labels, with the key showing those groupings with $\geq 1,000$ samples in the Viridian dataset. Recombinants more commonly occur (B) in weeks with high case numbers and (C) in weeks with extensive lineage variation, as estimated by high expected heterozygosity; solid lines show fits by linear regression, allowing for non-zero intercepts to account for unknown cases and heterozygosity not captured by the Scorpio labels.}
     \label{fig:recombinants_over_time}
 \end{figure}
 
@@ -1463,28 +1463,28 @@ The proportion of each lineage $i$ in each week ($p_i$) was then inferred
 from the Scorpio designation at each node within the ARG for that week.
 Genetic variation was measured as the “expected heterozygosity” across lineages,
 which is the chance that two lineages chosen at random
-from that week had different Scorpio designations ($\sum_{i} \sum_{j} 2 p_i p_j$).
+from that week had different Scorpio designations ($\sum_{i} \sum_{j>i} 2 p_i p_j$).
 The linear regression models reported in \textbf{Figure} \ref{fig:recombinants_over_time} allowed for a non-zero intercept,
 because there may be unreported cases even without any reported cases.
 The slopes were highly significant, and
-the p-values were confirmed to be robust by randomly permuting the predictor variable 10,000 times.
-ANOVAs were conducted to determine which single predictor ($n$, $H$, $n H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
-These statistical tests and graphics were conducted in Mathematica 14.2 (Wolfram 2024) and available at GITHUB LINK.
+the p-values were confirmed by randomly permuting the predictor variable 10,000 times.
+ANOVAs were conducted to determine which single predictor ($n$, $H$, $n \; H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
+These statistical tests and graphics were conducted in \textit{Mathematica} 14.2 (Wolfram 2024) and available at GITHUB LINK.
 
-In addition to the analysis of the 386 “robust” recombination events with a minimum of four nucleotides supporting each parent,
-we analyzed the relationship between the full set of 929 recombinants and case numbers.
+In addition to the analysis of the 356 “robust” recombination events with a minimum of four nucleotides supporting each parent,
+we analyzed the relationship between the full set of 855 recombinants and case numbers.
 These additional recombinants occurred disproportionately during the Delta and first Omicron wave (July, 2021 to February, 2022).
 Again, the number of recombinant events rose with the global number of cases
-(linear regression: $3.4 + 5.8 10-7 x$, $p = 0.0004$)
+(linear regression: $3.1 + 5.3 \; 10^{-7} x$, $p = 0.0006$)
 and with the diversity of lineages in each week
-(linear regression: $0.5 + 19.7 x$, $p = 5.1 10^{-13}$).
-The single best predictor of recombination events among the predictors tested ($n$, $H$, $n H$, $n^2$, $n^2 H$)
-was again case diversity ($n H$),
-with an adjusted $R^2$ of 28.7\%,
+(linear regression: $0.42 + 18.3 x$, $p = 2 \; 10^{-12}$).
+The single best predictor of recombination events among the predictors tested ($n$, $H$, $n \; H$, $n^2$, $n^2 H$)
+was again the product of cases and diversity ($n \; H$),
+with an adjusted $R^2$ of 26.9\%,
 although this was now followed closely by expected heterozygosity on its own ($H$),
-with an adjusted $R^2$ of 27.7\%.
+with an adjusted $R^2$ of 26.5\%.
 Thus, similar conclusions are reached with either dataset,
-although filtering the recombination events to the 386 with better support revealed a stronger relationship with case numbers.
+although filtering the recombination events to the 356 with better support revealed a stronger relationship with case numbers.
 
 
 \subsection*{Additional resources}
