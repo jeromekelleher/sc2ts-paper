@@ -1,6 +1,5 @@
 import collections
 from datetime import datetime, timedelta
-import hashlib
 import json
 import os
 import requests
@@ -17,16 +16,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import rgb2hex
 import tskit_arg_visualizer as argviz
 
-
-PARENT_COLOURS = [  # Chose to be light enough that black text on top is readable
-    "#8D8",  # First parent: light green
-    "#6AD",  # Second parent: light blue
-    "#B9D",  # Third parent (if any): light purple
-    "#A88",  # Fourth parent (if any): light brown
-]
-
 TSDIR = "../data"
-
 
 def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
     ts = tszip.load(os.path.join(TSDIR, filename))
@@ -339,6 +329,7 @@ class D3ARG_viz:
         )
         lineage_muts = None
         if parent_pangos is not None and self.lineage_consensus_muts is not None:
+            # Could replace with https://github.com/andersen-lab/Freyja/blob/main/freyja/data/lineage_mutations.json
             lm = self.lineage_consensus_muts.get_unique_mutations(p, parent_pangos)
             if lineage_muts is None:
                 lineage_muts = lm
@@ -372,6 +363,7 @@ class D3ARG_viz:
         highlight_mutations=None,
         highlight_nodes=True,  # Can also be a mapping of colour to node IDs
         highlight_colour="plum",
+        positions_file=None,
         oldest_y_label=None,
         node_1_date=datetime(2019, 12, 26),  # date of Wuhan, node #1
         **kwargs,
@@ -384,6 +376,15 @@ class D3ARG_viz:
         or a PosAlt named tuple with positions and derived states (e.g. from
         `MutationContainer.get_mutations(Pango)` )
         """
+        if positions_file is not None:
+            try:
+                self.d3arg.set_node_x_positions(
+                    pos=argviz.extract_x_positions_from_json(json.loads(Path(positions_file).read_text()))
+                )
+            except FileNotFoundError:
+                pass
+                # self.clear_x_01(self.d3arg)
+
         select_nodes = np.isin(self.d3arg.nodes.id, nodes)
         # Find mutations with duplicate position values and the same alleles (could be parallel eg. A->T & A->T, or reversions, e.g. A->T, T->A)
         # Create a composite key for basic duplicates
@@ -525,6 +526,13 @@ def make_joint_ts(ts1, ts2, metadata_name1, metadata_name2):
         ts1_node_map.get(nd.metadata.get(metadata_name2), tskit.NULL)
         for nd in ts2.nodes()
     ]
+    tables1 = ts1.dump_tables()
+    tables1.reference_sequence.clear()
+    ts1 = tables1.tree_sequence()
+    tables2 = ts2.dump_tables()
+    tables2.reference_sequence.clear()
+    ts2 = tables2.tree_sequence()
+
     ts = ts1.concatenate(ts2, node_mappings=[ts2_to_ts1_node_map])
     return ts
 
