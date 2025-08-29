@@ -33,7 +33,7 @@ def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
     return ts
 
 
-def load_dataset(filename="viridian_mafft_2024-10-14_v1.vcz.zip"):
+def load_dataset(filename="viridian_mafft_2024-10-14_v1.vcz"):
     return sc2ts.Dataset(os.path.join(TSDIR, filename), date_field="Date_tree")
 
 
