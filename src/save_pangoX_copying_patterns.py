@@ -58,6 +58,10 @@ for node_id, label in tqdm(pangoX_RE_node_labels().items()):
     img_bytes = imgkit.from_string(
     sc2ts.info.CopyingTable(ts, node_id).html(hide_extra_rows=True, hide_labels=True, show_bases=None),
         False,  # return the bytes, rather than saving to file
-        options={"width": 2000, "format": "png", "quiet": ""})
+        options={"width": 2000, "format": "png", "quiet": "", "transparent": "",})
     img = Image.open(BytesIO(img_bytes))
+    img = img.convert('RGBA')
+    # Crop whitespace
+    bbox = img.getbbox()
+    img = img.crop(bbox)
     img.save(png_dir / f"{label}.png", "PNG", optimize=True, compress_level=9)
