@@ -293,4 +293,26 @@ The authors extracted mutation counts from a global UShER phylogeny (https://git
 
 % \noindent\includegraphics[width=0.85\linewidth]{FigureS3.png}
 
+
+\begin{figure} \centering
+\includegraphics[width=0.5\textwidth]{LS_model_schematic}
+\caption{\label{fig:ls_diagram} A schematic of the Li and Stephens (LS)
+model, in which a focal sequence (bottom) is described as an
+imperfect mosaic of the sequences in a reference panel.
+Black crosses along the focal sequence show sequencing
+errors or mutations.
+In the standard formulation, at site $\ell$, the recombination probability is $r_\ell$,
+the mutation probability is $\mu_\ell$ and $n$
+denotes the size of the reference panel.
+The Viterbi algorithm can be used to find a
+``copying path'' through the reference panel for a given focal sequence that
+maximises the likelihood under these parameters. Unseen states in the reference panel are shown as coloured lines enclosed by
+the grey box. The black arrow describes the true path through the data which leads to the emitted
+focal sequence below. Examples of transition and
+emission probabilities along this trajectory are shown by the red and blue
+arrows, respectively.
+}
+\end{figure}
+
+
 \end{document}
