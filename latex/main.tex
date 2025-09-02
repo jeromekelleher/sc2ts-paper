@@ -552,8 +552,17 @@ with improved sampling if still possible.
 %%% TODO: Old version as placeholder. This figure is not yet finalised.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.85\linewidth]{averted_mutations.png}
-    \caption{Evidence for recombination events in the ARG. The 356 “robust” recombination events detected by sc2ts are colored according to their classification by rebar (recombinant: purple, non-recombinant: gray). (A) Distribution of time to the MRCA of the sc2ts-identified parents. (B) Distribution of the Pango lineage distance between the sc2ts-identified parents. (C) Distribution of the number of mutations averted by recombination (bottom x-axis), defined as the difference in the number of mutations between a copying path allowing recombination (right y-axis) and an alternative copying path disallowing recombination (top x-axis). (D) Copying patterns of five select recombinants.}
+    \includegraphics[width=1\linewidth]{fig_recombinant_evidence.pdf}
+    \caption{Evidence for recombination in the ARG. All plots show “robust” sc2ts recombination nodes, colored according
+to their classification by rebar (recombinant: purple, non-recombinant: gray).
+(A) Upper: jittered scatterplot comparing number of mutations when recombination allowed ($y$: right axis)
+versus an alternative copying path disallowing recombination ($x$: top axis);
+recombination nodes in Table \ref{tab:pango_x_lineages} are labelled, point sizes reflect number of descendants;
+Lower: recombination nodes classified by number of mutations averted by allowing recombination (i.e. $x$-$y$).
+(B) Distribution of time to the MRCA of the parents of each robust recombination node.
+(C) Distribution of the Pango lineage distance between parents.
+(D) Copying patterns leading to XA, XBB, XBB.1, and the recombinant origin of XZ+XAC+XAD+XAE+XAP;
+each recombination node is a mix of variants matching the left parent (green), the right parent (blue), and de-novo mutations (gold).}
     \label{fig:averted_mutations}
 \end{figure}
 
