@@ -131,7 +131,7 @@
 Widely used phylogenetic methods to study SARS-CoV-2 evolution assume that genetic recombination is negligible and
 viral relationships can be represented by a single tree.
 However, important SARS-CoV-2 recombinant lineages have emerged.
-A more suitable approach is to use ancestral recombination graphs (ARG),
+A more suitable approach is to use ancestral recombination graphs (ARGs),
 which jointly model recombination, mutation, and genetic inheritance in a cohesive framework.
 Recent computational advances have made ARG inference possible for datasets of millions of genome sequences.
 Building on these new advances, we have developed sc2ts, a scalable method to simultaneously detect recombinants and
@@ -290,7 +290,7 @@ the initial origins of these VOC are challenging to infer (REF).
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
-Using sc2ts, we built an ARG of ~2.48 million-samples spanning the COVID-19 pandemic.
+Using sc2ts, we built an ARG of $\sim$2.48 million samples spanning the COVID-19 pandemic.
 Inference took 21 days on a server equipped with dual EPYC (details) and 500 GB of RAM (~5 CPU years; Figure SX).
 The ARG contains 2,689,054 nodes representing the genealogical relationships
 among 2,482,157 sampled genomes in the Viridian v04 dataset,
@@ -298,7 +298,7 @@ which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
 Of the nodes, 855 represent recombination events,
 of which 356 have a minimum of four loci supporting the non-focal parent on both sides of the breakpoint
 (we refer to these as “robust” recombination events, Figure SX; see Document S1),
-reflecting the overwhelming tree-like structure of SARS-CoV-2 evolutionary history.
+reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary history.
 
 The ARG represents the full evolutionary history of SARS-CoV-2 and
 is in close agreement with the state-of-the-art UShER phylogeny built using the Viridian dataset \cite{Hunt2024}.
@@ -705,7 +705,7 @@ maximum number of children (7708) across all 348 local trees.
 %%% and place them into a broader context. Subheadings are permitted.
 
 We present sc2ts, a real-time ARG inference method,
-and applied it to build a \~2.48 million-sample pandemic-scale ARG of SARS-CoV-2.
+and applied it to build a $\sim$2.48 million-sample pandemic-scale ARG of SARS-CoV-2.
 By identifying specific samples as parents,
 sc2ts enables more precise interpretation of recombinants than state-of-the-art recombination detection methods,
 which find recombinants by matching a given sample to pre-defined population-averaged mutational profiles of Pango lineages.
@@ -723,10 +723,40 @@ The ARG displays remarkable phylogenetic congruence with a state-of-the-art phyl
 Also, the ARG compactly encodes genetic variation in millions of SARS-CoV-2 genomes,
 allowing for convenient and efficient reuse of this valuable dataset
 for a variety of evolutionary and genetic analyses beyond those presented here.
-We hope that the ARG will spur on new research areas,
-in which recombination is naturally and fully accounted for,
-and will make an impact comparable to the impact that a recently published human ARG \cite{Wohns2022}
-has made on our understanding of human genetic ancestry and demographic past (e.g., REF).
+% We hope that the ARG will spur on new research areas,
+% in which recombination is naturally and fully accounted for,
+% and will make an impact comparable to the impact that a recently published human ARG \cite{Wohns2022}
+% has made on our understanding of human genetic ancestry and demographic past (e.g., REF).
+So far, recent developments in ARG methods have focused almost 
+exclusively on applications to human sequencing data. In that space,
+the availability of ARGs reconstructed from large datasets has already
+had tremendous impact on improving our understanding of human genetic
+ancestry and past demography \cite{Wohns2022}. We expect
+similar leaps to be enabled through tailoring ARG reconstruction methods
+to data from other species and pathogens. Specifically, existing
+inference methods can be adapted to use the sc2ts ARG for the 
+genealogy-based study of selection \cite{hejase2022deep} or the
+geographic spread of the virus through time
+\cite{grundler2025geographic}. This is in addition to simpler
+analyses, such as calculating mutation spectra or querying the number
+or frequency of mutations at a given locus, which the ARG makes 
+significantly more efficient, and ultimately more easily reproducible.
+Since the ARG is a condensed representation of the genetic information
+contained in the sequencing data, it can also be used to understand,
+for instance, how the variability in sequencing efforts across time 
+and location affects our ability to reconstruct the origin of 
+important lineages and detect new recombinants.
+Since reconstructing the ARG is computationally expensive, 
+and checking and improving various aspects of its quality is laborious, 
+we hope that making this resource openly available will save
+significant time and 
+effort for other researchers and enable immediate focus on analysing 
+the information contained within this data. In-depth analysis of the
+ARG is also incredibly useful for identifying important directions for
+further research, both regarding methods (where current models do not
+correctly capture features of the data) and data processing 
+(where gaps in sequencing or data artifacts result in clear
+reconstruction errors).
 
 We contribute several novel methods and concepts which may find applications beyond sc2ts.
 First, we devise a simplified LS model that extends the classic concept of parsimony.
