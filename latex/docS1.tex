@@ -55,7 +55,7 @@ in contrast to 15 of the “robust” events (Figure 2A), strongly implicating i
 Through further inspection, we observed that many artifactual recombination events
 contain stretches of missing data characteristic of amplicon dropouts (REF).
 
-\subsection*{Analysis of Pango lineage “origination” events}
+\subsection*{Analysis of Pango lineage ``origination'' events}
 Notebook
 
 To analyse how well the ARG reflects the phylogenetic structure implicit in the Pango lineage naming system,
@@ -191,96 +191,73 @@ Below threshold.
 This was proposed as a recombinant between BA.5,5 and BE.4.
 We find two net supporting loci for a recombination breakpoint to be around 22599.
 
-\subsection*{Analysis of the Jackson et al. (2022) recombinants}
-Jackson et al. (2022) conducted detailed analyses on some early recombinants involving B.1.1.7 (Alpha),
-including the first designated Pango X lineage XA.
-The authors first performed a targeted search for candidate recombinants
-by scanning sampled sequences for sequence motifs associated with Alpha,
-followed by an analysis to reduce the list of plausible recombinants displaying signs of onward transmission.
-Here we compared our sc2ts detection results of these recombinants with the detection results reported by Jackson et al. (2022).
+\subsection*{Analysis of the Jackson et al. (2021) recombinants}
+Jackson et al. (2021) conducted detailed analyses on some early recombinants
+involving B.1.1.7 (Alpha), including the first designated Pango X lineage, XA.
+The authors first performed a targeted search for candidate recombinants by
+scanning sampled sequences for sequence motifs associated with Alpha, followed
+by an analysis to reduce the list of plausible recombinants displaying signs of
+onward transmission. Here we compared our sc2ts detection results of these
+recombinants with the detection results reported by Jackson et al.
 
-Jackson et al. (2022) described four groups of recombinants (named A to D) and four singleton recombinants,
-which have distinct inheritance structures (i.e. distinct parental Pango lineages and/or distinct recombination breakpoint intervals).
-All the four groups and 3 out of the 4 singletons were detected as recombinants in the ARG.
-The other singleton was detected as a recombinant by sc2ts,
-but it was not added to the ARG due to a high HMM cost (two breakpoints with X mutations).
-The sc2ts detection results are overall concordant with the results of Jackson et al. (2022) in terms of
-parental Pango lineages (agreeing to at least three-level resolution) and breakpoint intervals (Table S1).
+Jackson et al.\ described four groups of recombinants (named A to D) and
+four singleton recombinants.
+Of the 16 samples analysed by Jackson et al, 12 were included in the ARG;
+the remaining 4 were excluded because the sequences did not pass the 
+QC filtering criteria, or due to a high HMM cost. Groups A-D are summarised 
+in Table~\ref{tab:jackson} and show excellent concordance in terms 
+of the parental Pango lineages and breakpoint intervals. All four groups
+are directly associated with strongly supported recombination events 
+in the ARG in terms of the number of averted mutations 
+(A: 16, B: 6, C: 30, D: 18). 
+The singleton CAMC-CBA018 has parents
+B.1.177+B.1.1.7 and breakpoint interval 16,177--20,133 
+in the ARG 
+and is strongly supported by 14 averted mutations.
+The Jackson et al.\ results are almost identical with the same parent 
+lineages, and breakpoint interval of interval 20,390--21,256.
+The singleton MILK-103C712 
+has parents B.1.177.16+B.1.1.7 and a breakpoint interval of 
+24915--27972 
+in the ARG, again strongly supported by 11 averted mutations.
+The Jackson et al.\ results for this lineage 
+has parents B.1.177.17+B.1.1.7 but two breakpoints
+409--446 and 26,802--27,878.
 
-Table S1: Sc2ts detection results for the recombinants documented by Jackson et al. (2022).
-https://github.com/jeromekelleher/sc2ts-paper/issues/293
 
-
-% FIXME there's too much vspace between the rows here. Probably best to redo
-% the formatting.
 \begin{table} \centering
-\begin{tabular}{l|c|c|c|c|c} \hline
-\multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Jackson et al. (2021)}} &
-\multicolumn{2}{c}{\textbf{sc2ts (Wide ARG)}} \\ \hline
-\textbf{Sample} &
-\textbf{Group} & \textbf{Parents} & \thead{Breakpoint \\
-interval(s)} &
-\textbf{Parents} & \thead{Breakpoint \\ interval(s)} \\
-\hline ALDP-11CF93B & A &
-    \thead{B.1.177 \\ Alpha} & 21,256--21,615 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
-ALDP-125C4D7 & A &
-    \thead{B.1.177 \\ Alpha} & 21,256--21,615 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
-ALDP-130BB95 & A &
-    \thead{B.1.177 \\ Alpha} & 21,256--21,615 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
-LIVE-DFCFFE & A &
-    \thead{B.1.177 \\ Alpha} & 18,999--20,296 &
-    \thead{B.1.177.18 \\ Alpha} & 21,256--22,228 \\
-QEUH-CCCB30 & B &
-    \thead{B.1.36.28 \\ Alpha} & 6,529--6,955 &
-    \thead{B.1.36 \\ Alpha} & 6,529--6,955 \\
-QEUH-CD0F1F & B &
-    \thead{B.1.36.28 \\ Alpha} & 6,529--6,955 &
-    \thead{B.1.36 \\ Alpha} & 6,529--6,955 \\
-MILK-1166F52 & C &
-    \thead{Alpha \\ B.1.221.1} & 25,997--27,443 &
-    \thead{Alpha \\ B.1.221} & 25,997--27,973 \\
-MILK-11C95A6 & C &
-    \thead{Alpha \\ B.1.221.1} & 25,997--27,443 &
-    \thead{Alpha \\ B.1.221} & 25,997--27,973 \\
-QEUH-109B25C & C &
-    \thead{Alpha \\ B.1.221.1} & 25,997--27,443 &
-    \thead{Alpha \\ B.1.221} & 25,997--27,973 \\
-MILK-126FE1F & D &
-    \thead{B.1.36.39 \\ Alpha} & 20,704--23,064 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445--23,064 \\
-RAND-12671E1 & D &
-    \thead{B.1.36.39 \\ Alpha} & 20,704--23,064 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445--23,064 \\
-RAND-128FA33 & D &
-    \thead{B.1.36.39 \\ Alpha} & 20,704--23,064 &
-    \thead{B.1.36.39 \\ Alpha} & 22,445--23,064 \\
-CAMC-CBA018 & n/a &
-    \thead{B.1.177 \\ Alpha} & 20,390--21,256 &
-    \thead{B.1.177 \\ Alpha} & 17,616--21,256 \\
-CAMC-CB7AB3 & n/a &
-    \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,268--4,476 \\ 20,390--21,256} &
-    \thead{Alpha \\ B.1.177 \\ Alpha} & \thead{3,268--5,389\\17,616--21,256} \\
-MILK-103C712 & n/a &
-    \thead{B.1.177.17 \\ Alpha} & \thead{409--446 \\ 26,802--27,878} &
-    n/a & n/a \\
-QEUH-1067DEF & n/a &
-    \thead{Alpha \\ B.1.177.9} & 10,524--10,871 &
-    \thead{Alpha \\ B.1.177} & 7,729--10,871 \\ \hline
+\caption{\label{tab:jackson}Comparison of recombination breakpoint
+intervals and parent lineages for Groups A-D
+reported by Jackson et al.\ with the corresponding
+recombination events in the sc2ts ARG.
+The second column gives the number of sequences in the group.
+See the text for details of the groups and the sequences included.
+limited to the samples considered by Jackson et al.
+The 3SEQ coordinates
+reported by Jackson et al.\ have been altered as follows: we
+add one to both left and right coordinates to correspond to the
+\texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals
+right-exclusive. }
+\begin{tabular}{lllr@{--}lr@{+}l}
+\toprule
+Group        & Sequences & Method & \multicolumn{2}{c}{Interval}
+    & \multicolumn{2}{r}{Parent lineages} \\
+\midrule
+A (XA)       & 2   & Jackson        &  21,256&21,615 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
+\cmidrule{3-7}
+B            & 2   & Jackson        &  6,529&6,955 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+\cmidrule{3-7}
+C            & 3   &Jackson         &  25,997&27,443 &  B.1.1.7&B.1.221 \\
+             &     & \texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+\cmidrule{3-7}
+D            & 3   & Jackson        &  21,576&23,064 &  B.1.36.17&B.1.1.7 \\
+             &     & \texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\bottomrule
 \end{tabular}
-\caption{\label{tab:jackson_supplement}
-Recombinant sequences involving the
-Alpha (B.1.1.7) variant reported by \cite{Jackson2021-ik} have recombinant
-ancestry in the Wide ARG. The breakpoint intervals and Pango lineage
-assignments of the parents were taken from Table 2 (3SEQ results) of Jackson et
-al., except the Pango lineage assignment of the parents of group B
-recombinants, which were taken from Table 1 (motif-based results).
-3SEQ interval coordinate modifications are described in the caption for
-Table~\ref{tab:jackson}.}
 \end{table}
-
 
 
 \section*{Supplementary Figures}
