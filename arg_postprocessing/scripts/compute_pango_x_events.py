@@ -7,6 +7,13 @@ import sc2ts
 from pangonet.pangonet import PangoNet
 
 
+def descending_samples(ts, u):
+    samples = set()
+    for tree in ts.trees():
+        samples.update(tree.samples(u))
+    return list(samples)
+
+
 def pango_x_events(ts, df_node, df_pango):
     """
     Returns a list of dictionaries describing the ARG events for the specified
@@ -57,6 +64,7 @@ def pango_x_events(ts, df_node, df_pango):
 
         closest_recombinant_path_len = np.inf
         closest_recombinant_time = np.inf
+        closest_recombinant_descendants = {}
         averted_muts = -1
         if closest_recombinant != -1:
             recomb_record = df_node.loc[closest_recombinant]
@@ -64,7 +72,18 @@ def pango_x_events(ts, df_node, df_pango):
             closest_recombinant_time = (
                 ts.nodes_time[closest_recombinant] - ts.nodes_time[root]
             )
-            # recomb_info = df_recombinants.loc[closest_recombinant]
+            if tree.num_samples(closest_recombinant) < 100_000:
+                descendants = descending_samples(ts, closest_recombinant)
+                closest_recombinant_descendants = {
+                    k: int(v)
+                    for k, v in df_node.loc[descendants]["pango"].value_counts().items()
+                }
+            else:
+                closest_recombinant_descendants = {
+                    "too_many_to_classify": tree.num_samples(closest_recombinant)
+                }
+
+            # recomb_info = df_recombinants.loc[closest_recombinant
             # averted_muts = recomb_info["k1000_muts"] - recomb_info["num_mutations"]
 
         events.append(
@@ -81,6 +100,9 @@ def pango_x_events(ts, df_node, df_pango):
                 "closest_recombinant": closest_recombinant,
                 "closest_recombinant_path_len": closest_recombinant_path_len,
                 "closest_recombinant_time": closest_recombinant_time,
+                "closest_recombinant_descendants": dict(
+                    closest_recombinant_descendants
+                ),
                 # "closest_recombinant_averted_mutations": averted_muts,
             }
         )
