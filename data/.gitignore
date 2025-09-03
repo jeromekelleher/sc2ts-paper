@@ -1,3 +1,5 @@
 *.tsz
 consensus_mutations.json
 *.nex
+*.zip
+*.vcz
