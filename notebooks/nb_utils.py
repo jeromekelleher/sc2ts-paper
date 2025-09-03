@@ -22,8 +22,8 @@ def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
     ts = tszip.load(os.path.join(TSDIR, filename))
     time_zero_date = ts.metadata.get("time_zero_date", "Unknown date")
     print(
-        f"Loaded {ts.nbytes/1e6:0.1f} megabyte SARS-CoV2 ARG to "
-        f"{time_zero_date}: {ts.num_samples} strains"
+        f"Using a {ts.nbytes/1e6:0.1f} megabyte ARG up to "
+        f"{time_zero_date}, with {ts.num_samples} sampled SARS-CoV2 sequences"
     )
     n_RE = np.sum(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT != 0)
     print(
@@ -214,18 +214,18 @@ def mutation_p_values(ts, min_time=1, progress=True):
 
 
 class D3ARG_viz:
-    def __init__(self, ts, df, lineage_consensus_muts=None, pangolin_field="pango"):
+    def __init__(self, ts, df, lineage_consensus_muts=None, pangolin_field="pango", progress=True):
         self.ts = ts
         self.df = df
         self.pangolin_field = pangolin_field
         self.lineage_consensus_muts = lineage_consensus_muts
-        self.d3arg = argviz.D3ARG.from_ts(ts, progress=True)
+        self.d3arg = argviz.D3ARG.from_ts(ts, progress=progress)
         self.d3arg.nodes.loc[self.d3arg.nodes.id == 1, "label"] = "Wuhan"
         self.pango_lineage_samples = (
             df[df.is_sample].groupby(pangolin_field)["node_id"].apply(list).to_dict()
         )
 
-    def set_sc2ts_node_labels(self, add_strain_names=True):
+    def set_sc2ts_node_labels(self, add_strain_names=True, progress=True):
         # Set node labels to Pango lineage + strain, if it exists
         def label_lines(row):
             if getattr(row, "sample_id", "") == "Vestigial_ignore":
@@ -235,7 +235,8 @@ class D3ARG_viz:
 
         node_labels = {}
         for row in tqdm(
-            self.df.itertuples(), total=len(self.df), desc="Setting all labels"
+            self.df.itertuples(), total=len(self.df), desc="Setting all labels",
+            disable=not progress,
         ):
             node_labels[row.node_id] = "\n".join(
                 [s for s in label_lines(row) if s not in ("()", "?")]
@@ -246,7 +247,7 @@ class D3ARG_viz:
             breaks = set(self.ts.edges_left[ec]) | set(self.ts.edges_right[ec])
             breaks = {int(b) for b in breaks} - {0, int(self.ts.sequence_length)}
             breaks = ["".join(boldnumbers[i] for i in str(x)) for x in sorted(breaks)]
-            node_labels[u] = "/" + ("/".join(breaks)) + "/"
+            node_labels[u] += "\n/" + ("/".join(breaks)) + "/"
         self.d3arg.set_node_labels(node_labels)
 
     def set_sc2ts_node_styles(self):
@@ -512,8 +513,8 @@ class D3ARG_viz:
 
 def make_joint_ts(ts1, ts2, metadata_name1, metadata_name2):
     """
-    Combine two tree sequences of one tree each into a single tree sequence of 2 trees using
-    the metadata name "strain" from the first and "sample_id" from the second.
+    Combine two tree sequences of one tree each into a single tree sequence of
+    2 trees on the basis of the metadata names in each ts.
     """
     if ts1.num_trees > 1 or ts2.num_trees > 1:
         raise ValueError(
