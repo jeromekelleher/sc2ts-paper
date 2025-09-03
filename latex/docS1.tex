@@ -203,27 +203,27 @@ recombinants with the detection results reported by Jackson et al.
 % Data derived from the notebooks/jackson_recombinants.ipynb notebook
 Jackson et al.\ described four groups of recombinants (named A to D) and
 four singleton recombinants.
-Of the 16 samples analysed by Jackson et al, 12 were included in the ARG;
+Of the 16 samples analyzed by Jackson et al, 12 were included in the ARG;
 the remaining 4 were excluded because the sequences did not pass the 
-QC filtering criteria, or due to a high HMM cost. Groups A-D are summarised 
+QC filtering criteria, or due to a high HMM cost. Groups A-D are summarized 
 in Table~\ref{tab:jackson} and show excellent concordance in terms 
 of the parental Pango lineages and breakpoint intervals. All four groups
 are directly associated with strongly supported recombination events 
 in the ARG in terms of the number of averted mutations 
 (A: 16, B: 6, C: 30, D: 18). 
-The singleton CAMC-CBA018 has parents
-B.1.177+B.1.1.7 and breakpoint interval 16,177--20,133 
+
+The singleton CAMC-CBA018 has 
+the parents B.1.177+B.1.1.7 and the breakpoint interval 16,177--20,133 
 in the ARG 
 and is strongly supported by 14 averted mutations.
-The Jackson et al.\ results are almost identical with the same parent 
-lineages, and breakpoint interval of interval 20,390--21,256.
-The singleton MILK-103C712 
-has parents B.1.177.16+B.1.1.7 and a breakpoint interval of 
-24915--27972 
+The Jackson et al.\ results are almost identical with the same parent lineages, 
+and breakpoint interval of interval 20,388–-21,256.
+
+The singleton MILK-103C712 has 
+the parents B.1.177.16+B.1.1.7 and a breakpoint interval of 24915--27972 
 in the ARG, again strongly supported by 11 averted mutations.
-The Jackson et al.\ results for this lineage 
-has parents B.1.177.17+B.1.1.7 but two breakpoints
-409--446 and 26,802--27,878.
+The Jackson et al.\ results for this lineage has 
+the parents B.1.177.17+B.1.1.7 but two breakpoints 407–-446 and 26,800–-27,878.
 
 
 \begin{table} \centering
@@ -234,27 +234,25 @@ recombination events in the sc2ts ARG.
 The second column gives the number of sequences in the group.
 See the text for details of the groups and the sequences included.
 limited to the samples considered by Jackson et al.
-The 3SEQ coordinates
-reported by Jackson et al.\ have been altered as follows: we
-add one to both left and right coordinates to correspond to the
-\texttt{tskit} definition of inheritance on either side of a breakpoint,
-and add one to the right coordinate to make the intervals
-right-exclusive. }
+The 3SEQ coordinates reported by Jackson et al.\ have been altered as follows: 
+we subtract one to the left coordinates and add one to the right coordinates 
+to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals right-exclusive. }
 \begin{tabular}{lllr@{--}lr@{+}l}
 \toprule
 Group        & Sequences & Method & \multicolumn{2}{c}{Interval}
     & \multicolumn{2}{r}{Parent lineages} \\
 \midrule
-A (XA)       & 2   & Jackson        &  21,256&21,615 & B.1.177&B.1.1.7 \\
+A (XA)       & 2   & Jackson        &  21,255&21,613 & B.1.177&B.1.1.7 \\
              &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
 \cmidrule{3-7}
-B            & 2   & Jackson        &  6,529&6,955 & B.1.36.28&B.1.1.7  \\
+B            & 2   & Jackson        &  6,528&6,953 & B.1.36.28&B.1.1.7  \\
              &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
 \cmidrule{3-7}
-C            & 3   &Jackson         &  25,997&27,443 &  B.1.1.7&B.1.221 \\
+C            & 3   &Jackson         &  25,996&27,441 &  B.1.1.7&B.1.221 \\
              &     & \texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
 \cmidrule{3-7}
-D            & 3   & Jackson        &  21,576&23,064 &  B.1.36.17&B.1.1.7 \\
+D            & 3   & Jackson        &  21,575&23,063 &  B.1.36.17&B.1.1.7 \\
              &     & \texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
 \bottomrule
 \end{tabular}
