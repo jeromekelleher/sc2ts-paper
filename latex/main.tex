@@ -409,53 +409,124 @@ Each row corresponds to the oldest node assigned the specified
 Pango lineage and the ancestor of all nodes assigned that label
 (except XBB, XBB.1 and XM; see STAR methods). [MORE DETAILS]
 \label{tab:pango_x_lineages}}
-\begin{tabular}{lrrrrll}
+\begin{footnotesize}
+\begin{tabular}{lrrrllrl}
 \toprule
 \multicolumn{5}{l}{Type I RE event: monophyletic for pango}\\
-pango & averted & left & right & samples & nested \\
+pango & avt & left & right & left p & right p & samp & nested \\
 \midrule
-XC & 37 & 26768 & 27390 & 5 & \{\} \\
-XBR & 22 & 22034 & 22190 & 1 & \{\} \\
-XA & 16 & 20411 & 21765 & 39 & \{\} \\
-XS & 11 & 9054 & 10449 & 17 & \{\} \\
-XL & 8 & 5925 & 8393 & 64 & \{\} \\
-XBG & 8 & 22305 & 22917 & 25 & \{\} \\
-XBD & 7 & 23020 & 24620 & 30 & \{\} \\
-XQ & 7 & 4322 & 5386 & 55 & \{BA.2:37, $\star$\} \\
-XBB & 6 & 22332 & 22577 & 6452 & \{BA.2:1\} \\
-XM & 6 & 17411 & 21595 & 26 & \{BA.2:16, XAL:3\} \\
-XBF & 5 & 5184 & 9866 & 185 & \{\} \\
-XF & 5 & 5387 & 6402 & 16 & \{\} \\
-XY & 5 & 11538 & 12880 & 23 & \{\} \\
-XG & 4 & 5925 & 6513 & 3 & \{\} \\
-XW & 4 & 2833 & 4321 & 32 & \{\} \\
+XC & 37 & 26768 & 27390 & \textbf{AY.29} & \textbf{B.1.1.7} & 5 & {} \\
+XBR & 22 & 22034 & 22190 & \textbf{BN.3.1} & BQ.1.25 & 1 & {} \\
+XA & 16 & 20411 & 21765 & \textbf{B.1.177.18} & \textbf{B.1.1.7} & 39 & {} \\
+XS & 11 & 9054 & 10449 & AY.103 & \textbf{BA.1.1} & 17 & {} \\
+XL & 8 & 5925 & 8393 & \textbf{BA.1.17.2} & \textbf{BA.2} & 64 & {} \\
+XBG & 8 & 22305 & 22917 & \textbf{BA.2.76} & \textbf{BA.5.2} & 25 & {} \\
+XBD & 7 & 23020 & 24620 & \textbf{BA.2.75.2} & \textbf{BA.5.2.1} & 30 & {} \\
+XQ & 7 & 4322 & 5386 & \textbf{BA.1.1.15} & \textbf{BA.2.9} & 55 & {BA.2:37,
+XR:17, XAA:17, XU:1, XAM:21, XAG:6} \\
+XBB & 6 & 22332 & 22577 & \textbf{BA.2.10} & BM.1.1.1 & 6452 & {BA.2:1} \\
+XM & 6 & 17411 & 21595 & \textbf{BA.1.1} & \textbf{BA.2} & 26 & {BA.2:16,
+XAL:3} \\
+XBF & 5 & 5184 & 9866 & \textbf{BA.5.2.1} & CJ.1 & 185 & {} \\
+XF & 5 & 5387 & 6402 & \textbf{AY.4} & \textbf{BA.1} & 16 & {} \\
+XY & 5 & 11538 & 12880 & \textbf{BA.1.1} & \textbf{BA.2} & 23 & {} \\
+XG & 4 & 5925 & 6513 & \textbf{BA.1.17} & \textbf{BA.2} & 3 & {} \\
+XW & 4 & 2833 & 4321 & \textbf{BA.1.1.15} & \textbf{BA.2} & 32 & {} \\
 \midrule
 \multicolumn{5}{l}{Type II RE event}\\
-alias & averted & left & right & total & by pango \\
+alias & avt & left & right & left p & right p & desc & by pango \\
 \midrule
-XAE+ & 6 & 24504 & 26060 & 253 & {BA.2:156, XZ:48, XAP:20, XAC:18, XAE:9, XAD:2} \\
-XE/XH & 6 & 10448 & 11283 & 1156 & {XE:1116, BA.2:37, XH:2, XAF:1} \\
-XBH & 6 & 15452 & 22001 & 6 & {BA.2:4, XBH:2} \\
-XBM & 6 & 22305 & 22917 & 12 & {XBM:10, BF.3:2} \\
-XAF & 5 & 10199 & 10447 & 36 & {BA.2:35, XAF:1} \\
-XJ & 5 & 13196 & 17410 & 85 & {XJ:68, BA.2:17} \\
+XAE+ & 6 & 24504 & 26060 & \textbf{BA.2} & \textbf{BA.1.17.2} & 253 &
+{BA.2:156, XZ:48, XAP:20, XAC:18, XAE:9, XAD:2} \\
+XE/XH & 6 & 10448 & 11283 & \textbf{BA.1.17.2} & \textbf{BA.2} & 1156 &
+{XE:1116, BA.2:37, XH:2, XAF:1} \\
+XBH & 6 & 15452 & 22001 & \textbf{BA.2.1} & BA.2.75.2 & 6 & {BA.2:4, XBH:2} \\
+XBM & 6 & 22305 & 22917 & \textbf{BA.2.76} & \textbf{BF.3} & 12 & {XBM:10,
+BF.3:2} \\ XAF & 5 & 10199 & 10447 & \textbf{BA.1.1} & \textbf{BA.2} & 36 & {BA.2:35,
+XAF:1} \\
+XJ & 5 & 13196 & 17410 & \textbf{BA.1.17.2} & \textbf{BA.2} & 85 & {XJ:68,
+BA.2:17} \\
+\bottomrule
+\multicolumn{5}{l}{Events closely derived from RE}\\
+pango & alias & path len & time & mutations & samples \\
 \midrule
-\multicolumn{5}{l}{Nested monophyletic Pango X lineage}\\
-pango & alias & path len & time & mutations & samples & nested \\
+XR & XQ & 3 & 11 & 4 & 17 \\
+XU & XQ & 6 & 103 & 4 & 1 \\
+XAM & XQ & 6 & 43 & 3 & 21 \\
+XAA & XQ & 6 & 33 & 3 & 17 \\
+XAG & XQ & 6 & 55 & 4 & 6 \\
+XAP & XAE+ & 4 & 67 & 1 & 20 \\
+XZ & XAE+ & 4 & 48 & 1 & 48 \\
+XAE & XAE+ & 2 & 47 & 7 & 9 \\
+XAF & XAF & 5 & 140 & 8 & 1 \\
+XAL & XM & 3 & 66 & 2 & 3 \\
 \midrule
-XAP & XAE+ & 4 & 67 & 1 & 20 & \{\} \\
-XZ & XAE+ & 4 & 48 & 1 & 48 & \{\} \\
-XAE & XAE+ & 2 & 47 & 7 & 9 & \{\} \\
-XAF & XAF & 5 & 140 & 8 & 1 & \{\} \\
-XAL & XM & 3 & 66 & 2 & 3 & \{\} \\
-XR & XQ & 3 & 11 & 4 & 17 & \{BA.2:1\} \\
-XU & XQ & 6 & 103 & 4 & 1 & \{\} \\
-XAM & XQ & 6 & 43 & 3 & 21 & \{\} \\
-XAA & XQ & 6 & 33 & 3 & 17 & \{\} \\
-XAG & XQ & 6 & 55 & 4 & 6 & \{\} \\
-
+\multicolumn{5}{l}{Non recombinant}\\
+pango & muts & parent & samples & nested \\
+\midrule
+XP & 1 & \textbf{BA.1.1} & 45 & {} \\
+XN & 1 & \textbf{BA.2} & 120 & {BA.2:1} \\
+XBQ & 1 & CJ.1 & 14 & {} \\
+XBK & 1 & CJ.1 & 7 & {} \\
+XBE & 3 & BA.5.2 & 65 & {} \\
+XB & 2 & B.1 & 192 & {} \\
+XAZ & 3 & \textbf{BA.5} & 133 & {} \\
+XAV & 3 & BA.5.1.24 & 13 & {} \\
+XAU & 1 & BA.2 & 8 & {} \\
+XAS & 1 & BA.4 & 77 & {} \\
+XAN & 5 & \textbf{BA.5.1} & 7 & {} \\
+XAJ & 11 & \textbf{BA.2.12} & 18 & {} \\
 \bottomrule
 \end{tabular}
+\end{footnotesize}
+ 
+% pango & averted & left & right & samples & nested \\
+
+
+
+% \midrule
+% XC & 37 & 26768 & 27390 & 5 & \{\} \\
+% XBR & 22 & 22034 & 22190 & 1 & \{\} \\
+% XA & 16 & 20411 & 21765 & 39 & \{\} \\
+% XS & 11 & 9054 & 10449 & 17 & \{\} \\
+% XL & 8 & 5925 & 8393 & 64 & \{\} \\
+% XBG & 8 & 22305 & 22917 & 25 & \{\} \\
+% XBD & 7 & 23020 & 24620 & 30 & \{\} \\
+% XQ & 7 & 4322 & 5386 & 55 & \{BA.2:37, $\star$\} \\
+% XBB & 6 & 22332 & 22577 & 6452 & \{BA.2:1\} \\
+% XM & 6 & 17411 & 21595 & 26 & \{BA.2:16, XAL:3\} \\
+% XBF & 5 & 5184 & 9866 & 185 & \{\} \\
+% XF & 5 & 5387 & 6402 & 16 & \{\} \\
+% XY & 5 & 11538 & 12880 & 23 & \{\} \\
+% XG & 4 & 5925 & 6513 & 3 & \{\} \\
+% XW & 4 & 2833 & 4321 & 32 & \{\} \\
+% \midrule
+% \multicolumn{5}{l}{Type II RE event}\\
+% alias & averted & left & right & total & by pango \\
+% \midrule
+% XAE+ & 6 & 24504 & 26060 & 253 & {BA.2:156, XZ:48, XAP:20, XAC:18, XAE:9, XAD:2} \\
+% XE/XH & 6 & 10448 & 11283 & 1156 & {XE:1116, BA.2:37, XH:2, XAF:1} \\
+% XBH & 6 & 15452 & 22001 & 6 & {BA.2:4, XBH:2} \\
+% XBM & 6 & 22305 & 22917 & 12 & {XBM:10, BF.3:2} \\
+% XAF & 5 & 10199 & 10447 & 36 & {BA.2:35, XAF:1} \\
+% XJ & 5 & 13196 & 17410 & 85 & {XJ:68, BA.2:17} \\
+% \midrule
+% \multicolumn{5}{l}{Nested monophyletic Pango X lineage}\\
+% pango & alias & path len & time & mutations & samples & nested \\
+% \midrule
+% XAP & XAE+ & 4 & 67 & 1 & 20 & \{\} \\
+% XZ & XAE+ & 4 & 48 & 1 & 48 & \{\} \\
+% XAE & XAE+ & 2 & 47 & 7 & 9 & \{\} \\
+% XAF & XAF & 5 & 140 & 8 & 1 & \{\} \\
+% XAL & XM & 3 & 66 & 2 & 3 & \{\} \\
+% XR & XQ & 3 & 11 & 4 & 17 & \{BA.2:1\} \\
+% XU & XQ & 6 & 103 & 4 & 1 & \{\} \\
+% XAM & XQ & 6 & 43 & 3 & 21 & \{\} \\
+% XAA & XQ & 6 & 33 & 3 & 17 & \{\} \\
+% XAG & XQ & 6 & 55 & 4 & 6 & \{\} \\
+
+% \bottomrule
+% \end{tabular}
 
 
 \end{table}
