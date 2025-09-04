@@ -214,6 +214,7 @@ def mutation_p_values(ts, min_time=1, progress=True):
 
 
 class D3ARG_viz:
+    colours = ['#332288', '#88CCEE', '#44AA99', '#117733', '#999933', '#DDCC77']  # from https://personal.sron.nl/~pault/
     def __init__(self, ts, df, lineage_consensus_muts=None, pangolin_field="pango", progress=True):
         self.ts = ts
         self.df = df
