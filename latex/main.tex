@@ -1733,9 +1733,37 @@ indels into the ARG, making it an even more powerful resource overall. Also,
 indels are encoded by the Mutation-Annotated Tree format used by UShER
 phylogenies (though PanMAT does this).
 
+List of indels from Table S1 of Li et al. \cite{Li2023}
+occurring at minimum frequency of 0.01 (out of 9,149,680 GISAID sequences passing filters) and 
+their frequencies in the sc2ts ARG (maximum of max inheritors divided by 2,482,157 sampled sequences).
+
+
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/472
-At minimum, we want to show compare the frequencies of the top N indels in the
-ARG and those reported in Li et al. (2023). This can be shown in a table.
+\begin{table}
+\caption{Major indels.}
+\label{tab:indels}
+\begin{tabular}{rrcrrrr}
+\toprule & \multicolumn{4}{c}{Li et al.} & \multicolumn{2}{c}{Sc2ts ARG} \\
+\cmidrule(lr){1-5} \cmidrule(lr){6-7}
+Start & Length & Region & Count & Frequency & Count & Frequency \\
+\midrule
+28362 & 9 & N & 3939164 & 0.4305 & 871774 & 0.3512 \\
+28271 & 1 & Intergenic & 3853692 & 0.4212 & 1118363 & 0.4506 \\
+21765 & 6 & S & 3179887 & 0.3475 & 339681 & 0.1368 \\
+11288 & 9 & ORF1ab-nsp6 & 3040576 & 0.3323 & 290408 & 0.1170 \\
+28248 & 6 & ORF8 & 3026186 & 0.3307 & 1114669 & 0.4491 \\
+22029 & 6 & S & 3010665 & 0.3290 & 1112410 & 0.4482 \\
+11283 & 9 & ORF1ab-nsp6 & 2011934 & 0.2199 & 40 & 0.0000 \\
+6513 & 3 & ORF1ab-nsp3 & 1984683 & 0.2169 & 340765 & 0.1373 \\
+21633 & 9 & S & 1941962 & 0.2122 & 532072 & 0.2144 \\
+21987 & 9 & S & 1918094 & 0.2096 & N/A & N/A \\
+22194 & 3 & S & 1833050 & 0.2003 & 312706 & 0.1260 \\
+21991 & 3 & S & 912944 & 0.0998 & 288831 & 0.1164 \\
+686 & 9 & ORF1ab-nsp1 & 115450 & 0.0126 & N/A & N/A \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 \subsection{Analysis of Pango lineage ``origination'' events}
 \label{sec:supplement_pango_lineages}
