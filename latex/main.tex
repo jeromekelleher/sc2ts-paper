@@ -378,7 +378,8 @@ to identify parental lineages and breakpoint locations.
 This process has resulted in the designation of recombinant Pango lineages
 (whose aliases begin with an ``X''), to which we refer as ``Pango X''.
 Below, we summarize our analysis of the Pango Xs in the ARG
-(for extended analyses, see Document S1 and Document S2).
+(for extended analyses, see Document~\ref{sec:supplement_pango_lineages} 
+and Document S2).
 
 We find strong evidence for the recombination events leading to 17 Pango Xs in
 the ARG (Table~\ref{tab:pango_x_lineages}), all of which pass the 
@@ -391,7 +392,8 @@ Among these Pango Xs are XA, which
 is the first designated Pango X that showed signs of community transmission
 \cite{Jackson2021}, and XBB, which escaped vaccine-induced immunity and gained
 global prevalence \cite{Tamura2023}. The recombinant origin of XA is well
-explained in the ARG by two parents and one mutation (Figure \ref{fig:subgraphs};
+explained in the ARG by two parents and one mutation
+(Figure~\ref{fig:subgraphs}A;
 Table~\ref{tab:pango_x_lineages}), 
 with sc2ts correctly identifying its parental Pango lineages and
 breakpoint location.
@@ -399,7 +401,8 @@ breakpoint location.
 Furthermore, some of the Pango Xs above originate from shared recombination events in the 
 ARG (Table~\ref{tab:pango_x_lineages}).
 An example of a set of ``nested'' closely related Pango Xs consists of XZ, XAC, XAD, XAE, and XAP,
-which descend from a single recombination event rather than five independent events in the ARG (\ref{fig:subgraphs}).
+which descend from a single recombination event rather than five independent
+events in the ARG (Figure~\ref{fig:subgraphs}B).
 These Pango Xs were designated around the same time.
 These results highlight that the ARG can help clarify the relationships between recombinants,
 allowing more precise interpretation of evidence for recombination.
@@ -410,7 +413,8 @@ For all these Pango Xs, the number of recombination-informative sites fell below
 The fact that most of these Pango Xs (except XAJ and XAN) differ from a single parent node in the ARG
 by at most three mutations (Table~\ref{tab:pango_x_lineages}) strongly supports 
 their origins as non-recombinants.
-For example, the closely related XN and XAU can be explained by two mutations and one mutation in the ARG, respectively (\ref{fig:subgraphs}).
+For example, the closely related XN and XAU can be explained by two mutations
+and one mutation in the ARG, respectively (Figure~\ref{fig:subgraphs}C).
 %%% TODO: Say something about XAJ and XAN.
 %JK: we should weaken this statement a bit, as we're not certain that they 
 % really are recombinants, especially XP.
@@ -505,58 +509,7 @@ XAJ & 11 & \textbf{BA.2.12} & 18 & {} \\
 \bottomrule
 \end{tabular}
 \end{footnotesize}
- 
-% pango & averted & left & right & samples & nested \\
-
-
-
-% \midrule
-% XC & 37 & 26768 & 27390 & 5 & \{\} \\
-% XBR & 22 & 22034 & 22190 & 1 & \{\} \\
-% XA & 16 & 20411 & 21765 & 39 & \{\} \\
-% XS & 11 & 9054 & 10449 & 17 & \{\} \\
-% XL & 8 & 5925 & 8393 & 64 & \{\} \\
-% XBG & 8 & 22305 & 22917 & 25 & \{\} \\
-% XBD & 7 & 23020 & 24620 & 30 & \{\} \\
-% XQ & 7 & 4322 & 5386 & 55 & \{BA.2:37, $\star$\} \\
-% XBB & 6 & 22332 & 22577 & 6452 & \{BA.2:1\} \\
-% XM & 6 & 17411 & 21595 & 26 & \{BA.2:16, XAL:3\} \\
-% XBF & 5 & 5184 & 9866 & 185 & \{\} \\
-% XF & 5 & 5387 & 6402 & 16 & \{\} \\
-% XY & 5 & 11538 & 12880 & 23 & \{\} \\
-% XG & 4 & 5925 & 6513 & 3 & \{\} \\
-% XW & 4 & 2833 & 4321 & 32 & \{\} \\
-% \midrule
-% \multicolumn{5}{l}{Type II RE event}\\
-% alias & averted & left & right & total & by pango \\
-% \midrule
-% XAE+ & 6 & 24504 & 26060 & 253 & {BA.2:156, XZ:48, XAP:20, XAC:18, XAE:9, XAD:2} \\
-% XE/XH & 6 & 10448 & 11283 & 1156 & {XE:1116, BA.2:37, XH:2, XAF:1} \\
-% XBH & 6 & 15452 & 22001 & 6 & {BA.2:4, XBH:2} \\
-% XBM & 6 & 22305 & 22917 & 12 & {XBM:10, BF.3:2} \\
-% XAF & 5 & 10199 & 10447 & 36 & {BA.2:35, XAF:1} \\
-% XJ & 5 & 13196 & 17410 & 85 & {XJ:68, BA.2:17} \\
-% \midrule
-% \multicolumn{5}{l}{Nested monophyletic Pango X lineage}\\
-% pango & alias & path len & time & mutations & samples & nested \\
-% \midrule
-% XAP & XAE+ & 4 & 67 & 1 & 20 & \{\} \\
-% XZ & XAE+ & 4 & 48 & 1 & 48 & \{\} \\
-% XAE & XAE+ & 2 & 47 & 7 & 9 & \{\} \\
-% XAF & XAF & 5 & 140 & 8 & 1 & \{\} \\
-% XAL & XM & 3 & 66 & 2 & 3 & \{\} \\
-% XR & XQ & 3 & 11 & 4 & 17 & \{BA.2:1\} \\
-% XU & XQ & 6 & 103 & 4 & 1 & \{\} \\
-% XAM & XQ & 6 & 43 & 3 & 21 & \{\} \\
-% XAA & XQ & 6 & 33 & 3 & 17 & \{\} \\
-% XAG & XQ & 6 & 55 & 4 & 6 & \{\} \\
-
-% \bottomrule
-% \end{tabular}
-
-
 \end{table}
-
 
 
 \subsection*{Comparison with other recombination detection methods}
@@ -567,7 +520,8 @@ We compared sc2ts against three state-of-the-art methods that detect inter-linea
 (2) CovRecomb \cite{Li2024}, and
 (3) rebar (https://github.com/phac-nml/rebar).
 These non-phylogenetic methods use the same underlying approach: 
-they scan candidate recombinant sequences for mutations associated with different Pango lineages.
+they scan candidate recombinant sequences for mutations associated with different 
+Pango lineages.
 
 To evaluate the concordance of the methods in identifying the parental Pango lineages
 and locating the breakpoints of the recombinants, we focus on the Pango Xs, using the data
@@ -578,7 +532,8 @@ and for rebar, we obtained results by using it to classify the Pango X-associate
 For each method, we determined whether the inferred parental lineages and breakpoint intervals are
 concordant with those identified by the community (STAR Methods).
 We find that the methods performed well overall,
-with no significant difference in concordance among them (Table 2; p-value = XX, chi-square test),
+with no significant difference in concordance among them
+(Table~\ref{tab:x_method_concordance}; p-value = XX, chi-square test),
 indicating that sc2ts can characterize recombinants as well as the state-of-the-art recombination detection methods.
 
 We also compared the sensitivity of sc2ts and rebar.
@@ -587,12 +542,13 @@ Of all the ``robust'' recombination events detected by sc2ts,
 We hypothesize that this disagreement arose from differences in sensitivity between these methods.
 Consistent with this, we find that rebar needs a higher level of divergence between parents
 to correctly classify a sequence as recombinant, as shown by
-a shorter time to their MRCA (\ref{fig:averted_mutations}) and
-lower distance between their Pango identity (\ref{fig:averted_mutations}).
-
-\subsection*{Table 2. Concordance among methods in detecting Pango Xs.}
+a shorter time to their MRCA (Figure \ref{fig:averted_mutations}B) and
+lower distance between their Pango identity (Figure
+\ref{fig:averted_mutations}C).
 
 \begin{table}
+\caption{Concordance among methods in detecting Pango Xs.
+\label{tab:x_method_concordance}}
 \begin{tabular}{llll}
  \hline
  \textbf{Method} & \textbf{Concordant in parental lineages (\%)} & \textbf{Concordant in breakpoint interval (\%)} & \textbf{Distance (bp)} \\ [1ex]
@@ -610,29 +566,36 @@ lower distance between their Pango identity (\ref{fig:averted_mutations}).
 \end{tabular}
 \end{table}
 
-
 \subsection*{Quantification of evidence for recombination}
-
 %%% SHZ: We may not need this section at all, but I'm keeping it for now.
 %%% We should probably have a condensed version of the first paragraph in the Pango X section.
 %%% The second and third paragraphs should probably be removed entirely.
-
 Sc2ts provides a method to facilitate the discovery of recombination events,
 by comparing how well a sample fits the ARG under a model allowing recombination
-versus a model disallowing recombination, as measured by the number of resulting mutations (\ref{fig:methodology}).
-The more mutations are ``averted'' by allowing recombination, the stronger the evidence for recombination.
-We calculated the number of averted mutations for all the ``robust'' recombination events (STAR Methods),
-which include all the Pango X-associated recombination events (Table 1).
+versus a model disallowing recombination, as measured by the number of resulting 
+mutations (Figure~\ref{fig:methodology}).
+The more mutations are ``averted'' by allowing recombination, the stronger the 
+evidence for recombination.
+We calculated the number of averted mutations for all the ``robust'' recombination 
+events (STAR Methods),
+which include all the Pango X-associated recombination events
+(Table~\ref{tab:pango_x_lineages}) and those studied by Jackson et
+al.\cite{Jackson2021}
 
 Our analysis of the number of averted mutations reveals a spectrum of plausibility
-across all the ``robust'' recombination events (\ref{fig:averted_mutations}).
-Examples of highly plausible recombinants are XA and XBB (for an extended analysis, see Document S1).
+across all the ``robust'' recombination events
+(Figure~\ref{fig:averted_mutations}A).
+Examples of highly plausible recombinants are XA and XBB (for an extended analysis, 
+see Document~\ref{sec:supplement_pango_lineages}).
 The ``copying pattern'' of XA visually confirms
-that a high number of recombination-informative sites support the suggested parents (\ref{fig:averted_mutations}).
+that a high number of recombination-informative sites support the suggested parents 
+(Figure~\ref{fig:averted_mutations}D).
 XW is an example of a marginally well-supported recombinant.
 The initial evidence for proposing XW for designation is four nucleotides associated with the suggested BA.1 parent.
+% FIXME What's document S3?
 The copying patterns of all the recombination events are shown in Document S3.
 
+[FIXME - discuss BA.5 and the BA.2 event instead.]
 Our results suggest that Delta and Omicron BA.2 might have recombinant origins,
 but we interpret these results with caution,
 as these VOCs are undersampled around the time of their emergence (REF).
@@ -642,7 +605,6 @@ many genetically distinct, unsampled ancestors.
 Future work is needed to test whether these VOCs descended from recombination events,
 with improved sampling if still possible.
 
-%%% TODO: Old version as placeholder. This figure is not yet finalised.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{fig_recombinant_evidence.pdf}
