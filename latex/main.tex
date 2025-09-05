@@ -293,7 +293,8 @@ the initial origins of these VOC are challenging to infer (REF).
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
 Using sc2ts, we built an ARG of $\sim$2.48 million samples spanning the COVID-19 pandemic.
-Inference took 21 days on a server equipped with dual EPYC (details) and 500 GB of RAM (~5 CPU years; Figure SX).
+Inference took 21 days on a server equipped with dual EPYC (details) and 500 GB of RAM 
+(~5 CPU years; Figure~\ref{fig:inference_resources}).
 The ARG contains 2,689,054 nodes representing the genealogical relationships
 among 2,482,157 sampled genomes in the Viridian v04 dataset,
 which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
@@ -1943,10 +1944,18 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 
 
 \section*{Supplementary Figures}
+
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{samples-per-day}
     \caption{TODO caption}\label{fig:samples_per_day}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{inference-resources}
+    \caption{TODO caption}\label{fig:inference_resources}
 \end{figure}
 
 
