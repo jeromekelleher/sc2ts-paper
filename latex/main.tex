@@ -235,9 +235,9 @@ should provide a strong basis for future studies of SARS-CoV-2.
 \subsection*{Brief description of sc2ts}
 
 Sc2ts reconstructs an ARG by incrementally adding batches of sequences as they become available
-(\ref{fig:methodology}; for details, see STAR Methods).
+(Figure~\ref{fig:methodology}; for details, see STAR Methods).
 First, sc2ts infers likely ``copying paths'' connecting each sample in the batch to node(s) in the current ARG
-(allowing recombination) using the Li and Stephens (LS) model \cite{Li2003},
+(allowing recombination) using the Li and Stephens (LS) model\cite{Li2003},
 which is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination on genetic inheritance.
 As recombination is relatively rare in viruses,
@@ -259,12 +259,13 @@ We define the “HMM cost” of a sample to be
 the total penalty cost for switches and mismatches (mutations) in its copying path.
 We parameterize the LS model such that each mismatch has a penalty cost of one
 and a switch has a penalty cost of $k$ (here, set to 4),
-which determines how much mutation is favored over recombination when accounting for a sample (\ref{fig:methodology}).
+which determines how much mutation is favored over recombination when accounting for a 
+sample (Figure~\ref{fig:methodology}).
 If the HMM cost of a sample exceeds a threshold (here, set to 7),
 sc2ts does not immediately add the sample to the ARG.
 
 This approach resulted in preliminary ARGs that had noticeably fewer time travelers,
-but we found that it also excluded the major “saltation” events that characterize many VOCs.
+but we found that it also excluded the major ``saltation'' events that characterize many VOCs.
 These saltation lineages are characterized by a high number of accumulated mutations,
 and are hypothesized to emerge from chronic infections
 during which the virus is exposed to individual-specific immune selective pressures \cite{Markov2023}.
@@ -273,7 +274,8 @@ To distinguish time travelers with erroneous dates from true saltation lineages,
 we reevaluate the evidence for each lineage with a high HMM cost as additional samples are added.
 If on subsequent days these lineages form a sufficiently large group of samples,
 sc2ts adds the group back to the ARG.
-This “retrospective sample grouping” successfully captured the emergence of most saltation lineages (Figure SX).
+This ``retrospective sample grouping'' successfully captured the emergence of
+most saltation lineages (Figure~\ref{fig:samples_per_day}).
 The emergence of the Delta, BA.1, and BA.2 lineages required some manual intervention,
 in which specific "seed" samples were identified for unconditional inclusion
 (for details of how seed samples were chosen, see STAR Methods).
@@ -1699,7 +1701,7 @@ although filtering the recombination events to the 356 with better support revea
 \renewcommand{\thesection}{S\arabic{section}}
 
 
-\section{Major deletions in the ARG}
+\section{Major deletions in the ARG}\label{sec_supplement_dels}
 % Referenced by the main Results.
 Basically, we want to say we did a lot of work to integrate signals of major
 indels into the ARG, making it an even more powerful resource overall. Also,
@@ -1711,7 +1713,8 @@ At minimum, we want to show compare the frequencies of the top N indels in the
 ARG and those reported in Li et al. (2023). This can be shown in a table.
 
 
-\section{Identification of robust recombination events}
+\section{Identification of robust recombination
+events}\label{sec_supplement_robust_recombs}
 Before characterizing recombination events in detail, we sought to remove
 probable artifacts. Systematic errors in SARS-CoV-2 sequences associated with
 sequencing protocols have been documented (Turakhia et al., 2022), which can
@@ -1940,6 +1943,12 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 
 
 \section*{Supplementary Figures}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{samples-per-day}
+    \caption{TODO caption}\label{fig:samples_per_day}
+\end{figure}
+
 
 \begin{figure}
     \centering
