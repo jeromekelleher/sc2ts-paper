@@ -1185,7 +1185,8 @@ is a method for inferring Ancestral Recombination Graphs (ARGs)
 from densely sampled genome sequence data in real time,
 in which recombination occurs at a low but significant rate.
 The basic idea is to incrementally update an ARG regularly
-with the sequences collected since the previous batch \ref{fig:methodology}.
+with the sequences collected since the previous batch (Figure
+\ref{fig:methodology}).
 We used daily batches for SARS-CoV-2,
 and use days as the time interval for clarity in what follows.
 The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{Li2003}
@@ -1223,7 +1224,7 @@ that is both general (in terms of the types of ancestry that can be described)
 and computationally efficient \cite{Wong2024}.
 Initially developed to facilitate large-scale coalescent simulations \cite{Kelleher2016},
 STS has been extended and applied to
-forward-time simulations \cite{Kelleher2018,Haller2019},
+forward-time simulations \cite{Kelleher2018efficient,Haller2019},
 calculation of population genetics statistics \cite{Ralph2020} and
 ARG inference \cite{Kelleher2019,Wohns2022}.
 The STS is based on a simple tabular representation,
@@ -1241,13 +1242,14 @@ we can efficiently construct the local genealogical trees along the genome (aris
 and perform a range of calculations efficiently
 by reasoning about the differences between these local trees \cite{Kelleher2016,Ralph2020}.
 These algorithms have led to performance increases of several orders of magnitude over
-the state-of-the-art in a range of applications \cite{Kelleher2016,Kelleher2018,Kelleher2019,Ralph2020,Baumdicker2022}.
+the state-of-the-art in a range of applications
+\cite{Kelleher2016,Kelleher2018efficient,Kelleher2019,Ralph2020,Baumdicker2022}.
 The STS encoding is also very concise, allowing, for example,
 for millions of complete human genomes to be stored in a few GB of space \cite{Kelleher2019},
 and so it is particularly well suited to representing large SARS-CoV-2 genealogies.
 
 The SARS-CoV-2 ARGs inferred using sc2ts can be conveniently and efficiently analyzed
-using the mature and feature-rich tskit library \cite{Kelleher2018,Ralph2020}.
+using the mature and feature-rich tskit library \cite{Kelleher2018efficient,Ralph2020}.
 Tskit is widely used in population genetics, and has been incorporated into many downstream applications
 (e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2022,Mahmoudi2022,Petr2022,Rasmussen2022,Zhang2023}).
 
@@ -1256,7 +1258,9 @@ Tskit is widely used in population genetics, and has been incorporated into many
 
 LS model \cite{Li2003} is an approximation of the coalescent with recombination
 that captures many of the key features of the joint processes of mutation and recombination.
-It is widely used in a range of applications in population genetics, including ARG inference \cite{Kelleher2019,Gunnarsson2024}.
+It is widely used in a range of applications in population genetics, including ARG 
+% Does Threads use LS?
+inference \cite{Kelleher2019,Gunnarsson2024}.
 The LS model is an HMM that models a focal genome as a sequence of nucleotides (i.e. the observed states),
 which are probabilistically emitted as an imperfect mosaic of a set of genomes in a reference panel (i.e., the hidden states).
 The process of switching between the genomes in the reference panel is governed by a transition matrix,
@@ -1267,27 +1271,28 @@ the probability of switching between the hidden states (i.e., genomes in a refer
 when going from one site to the next is dependent on
 (1) the rate of recombination between the sites and
 (2) the number of genomes in the reference panel ($n$).
-Sc2ts uses the same formulation except that n is set to 1.
+Sc2ts uses the same formulation except that $n$ is set to 1.
 This special case of the LS model leads to an intuitive interpretation of the ratio
 between the probability of switching and the probability of mismatch:
-When considering only two copying paths, the path having k mismatches
+When considering only two copying paths, the path having $k$ mismatches
 and the other path having one switch but no mismatch are equally probable.
-We call this parameter k the ``recombination penalty''.
+We call this parameter $k$ the ``recombination penalty''.
+% TODO mention that this can be thought of as extended parsimony.
 This parameter thus allows us to adjust the relative importance of recombination and mutation
 when finding the best explanation for a given sample.
 For simplicity, we assume that any single base mutation causing a mismatch is equally probable,
 ignoring transition-transversion biases and variation of mutation rate along the genome.
 As data sampling was dense for SARS-CoV-2, this assumption was considered tolerable.
 
-In our early attempts to build ARGs, we explored using several values of $k$.
-We ran sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020 \cite{Zhan2023}(REF).
+We explored using several values of $k$,
+by running sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020.
 We would expect that a good value for $k$ should lead to parsimonious ARGs
 that capture plausible recombination events without incurring too many mutations, particularly reversions.
 A value of $k$ too low could result in many artifactual recombination events,
 whereas a value of $k$ too high could miss many genuine recombination events.
 We found that ARGs built with $k$ set to 3 contained many dubious recombination events,
 but ARGs built with $k$ set to 5 failed
-to include the well supported recombination events documented in a previous study \cite{Jackson2021}.
+to include the well supported recombination events documented in a previous study\cite{Jackson2021}.
 Hence, we decided to use $k$ set to 4 to infer the final ARG described in this study.
 
 A Viterbi algorithm can be used to find the most likely ``copying path'' of a focal sample
@@ -1332,13 +1337,16 @@ and then attach the phylogeny (and mutations) to the ARG at the node
 identified by the LS model.
 
 Sc2ts builds a local phylogeny relating the samples in each cluster as follows.
-First, it infers a tree using a standard neighbor-joining algorithm \cite{Saitou1987}.
-Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony algorithm \cite{Fitch1971,Hartigan1973}.
+First, it infers a tree using a standard neighbor-joining
+algorithm\cite{Saitou1987}. We first compute the Hamming distance between
+all pairs of samples using scipy~\cite{Virtanen2020scipy},
+and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
+to compute the neighbor-joining tree.
+Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony 
+algorithm \cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
 Finally, the resulting tree is added to the ARG at an attachment node
-and the ARG is locally modified using heuristics to improve parsimony (Figure SX).
-For a recombinant, the attachment node is the inserted (non-sample) recombination node associated with it.
-For a non-recombinant, it is the common parent in the copying paths of the samples.
-
+and the ARG is locally modified using heuristics to improve parsimony.
+[TODO we need to define these?]
 
 \subsubsection*{Handling outlier samples}
 
@@ -1457,7 +1465,7 @@ During inference, we filtered out the samples with low-quality sequences and low
 We kept the quality check-passing sequences used to infer the Viridian UShER phylogeny \cite{Hunt2024}.
 We skipped low-quality sequences that had more than 500 missing sites
 (except when building the ``base'' ARG, when the maximum number of allowed missing bases was set to 10,000 instead).
-We also skipped ~40,000 samples which had a collection date of December 31, 2020.
+We also skipped $\sim$40,000 samples which had a collection date of December 31, 2020.
 The sampling frequency of this date is alarmingly high compared to other dates (at most 15,000 samples per day).
 We suspect that this batch of samples might be unusually enriched for wrong collection dates,
 likely due to arbitrary assignment of the originally reported collection date of ``2020'' to be ``31-12-2020''.
@@ -1508,7 +1516,17 @@ to enrich the ARG with additional information:
 7. Assigning Pango lineages to non-sample nodes.
 
 \subsubsection*{Identification of robust recombination events}
-[TODO update refs!]
+[TODO This section needs a full pass. I've merged in a section that was in the
+supplement with an extremely terse section on counting supporting loci.]
+
+% This para was *{Counting supporting loci for recombinant parents}
+
+When counting such loci, we considered nearly adjacent sites (separated by at
+most three bases) as single loci, to avoid over-counting support from
+correlated loci, which would lead to artificial signals of recombination. Also,
+when counting supporting loci for a focal parent, we penalized loci where the
+character(s) in the recombinant matches that in the non-focal parent but not in
+the focal parent.
 
 Before characterizing recombination events in detail, we sought to remove
 probable artifacts. Systematic errors in SARS-CoV-2 sequences associated with
@@ -1536,18 +1554,20 @@ characteristic of amplicon dropouts (REF).
 
 \subsubsection*{Comparing phylogenetic backbones}
 
-We used Pango lineage designations to select \textit{representative} samples
+We used Pango lineage designations to select representative samples
 for the majority of the 2026 Pango lineages in the ARG.
 We first identify an "origination node" for a focal Pango lineage,
 defined as the oldest internal node in the ARG
 whose descendants in any tree include more than 50\% of the Pango samples of the focal type,
 and where the internal node is itself designated as the focal Pango.
-The representative sample is then chosen as the oldest sample under the origination node
+The representative sample is then chosen as the oldest sample descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
-We simplify the ARG to include only the representative samples,
+We ``simplify''\cite{Kelleher2018efficient,Wong2024} 
+the ARG to include only the representative samples,
 resulting in an intermediate ARG of 1867 samples,
 then additionally remove internal samples,
-known recombinants (i.e. the Pango Xs) and three "singleton recombinant samples"
+known recombinants (i.e. the Pango Xs) and three ``singleton recombinant
+samples''
 in which a single Pango lineage appears immediately below a recombination node.
 This results in a simplified ARG of 1667 samples, each with a different Pango designation.
 
@@ -1566,7 +1586,7 @@ and treat as non-recombinant for the purposes of plotting
 and supported by only 4 distinguishing sites / 3 loci).
 To reduce plot density, we consider only those Pango lineages with fewer than 10 samples,
 and extract non-recombinant structures from the ARG
-by creating a "base tree" of 535 Pangos (i.e. excluding all descendants of Delta, BA.2, and BA.5),
+by creating a ``base tree'' of 535 Pangos (i.e. excluding all descendants of Delta, BA.2, and BA.5),
 a Delta subtree of 160 Pangos,
 a BA.2 subtree of 151 sample (excluding BA.5 descendants) and
 a BA.5 subtree of 251 samples.
@@ -1583,13 +1603,6 @@ In the few cases where the trees differ, this is often in terms of degree of res
 In these cases, sometimes the sc2ts ARG shows greater resolution,
 as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in BA.2.9.
-
-
-\subsubsection*{Counting supporting loci for recombinant parents}
-When counting such loci, we considered nearly adjacent sites (separated by at most three bases) as single loci,
-to avoid over-counting support from correlated loci, which would lead to artificial signals of recombination.
-Also, when counting supporting loci for a focal parent,
-we penalized loci where the character(s) in the recombinant matches that in the non-focal parent but not in the focal parent.
 
 
 \subsubsection*{Calculating Pango lineage distance using pangonet}
