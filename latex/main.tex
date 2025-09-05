@@ -1185,7 +1185,8 @@ is a method for inferring Ancestral Recombination Graphs (ARGs)
 from densely sampled genome sequence data in real time,
 in which recombination occurs at a low but significant rate.
 The basic idea is to incrementally update an ARG regularly
-with the sequences collected since the previous batch \ref{fig:methodology}.
+with the sequences collected since the previous batch (Figure
+\ref{fig:methodology}).
 We used daily batches for SARS-CoV-2,
 and use days as the time interval for clarity in what follows.
 The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{Li2003}
@@ -1256,8 +1257,10 @@ Tskit is widely used in population genetics, and has been incorporated into many
 
 LS model \cite{Li2003} is an approximation of the coalescent with recombination
 that captures many of the key features of the joint processes of mutation and recombination.
-It is widely used in a range of applications in population genetics, including ARG inference \cite{Kelleher2019,Gunnarsson2024}.
-The LS model is an HMM that models a focal genome as a sequence of nucleotides (i.e. the observed states),
+It is widely used in a range of applications in population genetics, including ARG 
+% Does Threads use LS?
+inference \cite{Kelleher2019,Gunnarsson2024}.
+?he LS model is an HMM that models a focal genome as a sequence of nucleotides (i.e. the observed states),
 which are probabilistically emitted as an imperfect mosaic of a set of genomes in a reference panel (i.e., the hidden states).
 The process of switching between the genomes in the reference panel is governed by a transition matrix,
 and mismatches between a focal genome and a genome of the reference panel (from which it is ``copied'') are permitted as emissions.
@@ -1267,27 +1270,28 @@ the probability of switching between the hidden states (i.e., genomes in a refer
 when going from one site to the next is dependent on
 (1) the rate of recombination between the sites and
 (2) the number of genomes in the reference panel ($n$).
-Sc2ts uses the same formulation except that n is set to 1.
+Sc2ts uses the same formulation except that $n$ is set to 1.
 This special case of the LS model leads to an intuitive interpretation of the ratio
 between the probability of switching and the probability of mismatch:
-When considering only two copying paths, the path having k mismatches
+When considering only two copying paths, the path having $k$ mismatches
 and the other path having one switch but no mismatch are equally probable.
-We call this parameter k the ``recombination penalty''.
+We call this parameter $k$ the ``recombination penalty''.
+% TODO mention that this can be thought of as extended parsimony.
 This parameter thus allows us to adjust the relative importance of recombination and mutation
 when finding the best explanation for a given sample.
 For simplicity, we assume that any single base mutation causing a mismatch is equally probable,
 ignoring transition-transversion biases and variation of mutation rate along the genome.
 As data sampling was dense for SARS-CoV-2, this assumption was considered tolerable.
 
-In our early attempts to build ARGs, we explored using several values of $k$.
-We ran sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020 \cite{Zhan2023}(REF).
+We explored using several values of $k$,
+by running sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020.
 We would expect that a good value for $k$ should lead to parsimonious ARGs
 that capture plausible recombination events without incurring too many mutations, particularly reversions.
 A value of $k$ too low could result in many artifactual recombination events,
 whereas a value of $k$ too high could miss many genuine recombination events.
 We found that ARGs built with $k$ set to 3 contained many dubious recombination events,
 but ARGs built with $k$ set to 5 failed
-to include the well supported recombination events documented in a previous study \cite{Jackson2021}.
+to include the well supported recombination events documented in a previous study\cite{Jackson2021}.
 Hence, we decided to use $k$ set to 4 to infer the final ARG described in this study.
 
 A Viterbi algorithm can be used to find the most likely ``copying path'' of a focal sample
@@ -1332,13 +1336,16 @@ and then attach the phylogeny (and mutations) to the ARG at the node
 identified by the LS model.
 
 Sc2ts builds a local phylogeny relating the samples in each cluster as follows.
-First, it infers a tree using a standard neighbor-joining algorithm \cite{Saitou1987}.
-Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony algorithm \cite{Fitch1971,Hartigan1973}.
+First, it infers a tree using a standard neighbor-joining
+algorithm\cite{Saitou1987}. We first compute the Hamming distance between
+all pairs of samples using scipy~\cite{Virtanen2020scipy},
+and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
+to compute the neighbor-joining tree.
+Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony 
+algorithm \cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
 Finally, the resulting tree is added to the ARG at an attachment node
-and the ARG is locally modified using heuristics to improve parsimony (Figure SX).
-For a recombinant, the attachment node is the inserted (non-sample) recombination node associated with it.
-For a non-recombinant, it is the common parent in the copying paths of the samples.
-
+and the ARG is locally modified using heuristics to improve parsimony.
+[TODO we need to define these?]
 
 \subsubsection*{Handling outlier samples}
 
