@@ -53,15 +53,32 @@ def pangoX_RE_node_labels(exclude_dups=True):
     else:
         return dict(px)
 
-
-for node_id, label in tqdm(pangoX_RE_node_labels().items()):
-    img_bytes = imgkit.from_string(
-    sc2ts.info.CopyingTable(ts, node_id).html(hide_extra_rows=True, hide_labels=True, show_bases=None),
-        False,  # return the bytes, rather than saving to file
-        options={"width": 2000, "format": "png", "quiet": "", "transparent": "",})
+def save_copying_pattern_image(node_id, label, ts, save_dir, zoom=None,**kwargs):
+    # NB - do not zoom if no ATCG letters are printed, as boxes will be of varying size
+    html_str = sc2ts.info.CopyingTable(ts, node_id).html(**kwargs)
+    html_str = html_str.replace('transform:', '-webkit-transform:')
+    html_str = html_str.replace('writing-mode:', '-webkit-writing-mode:')
+    options = {"format": "png", "quiet": "", "transparent": ""}  # use transparent so we can crop
+    if zoom is not None:
+        options['zoom'] = zoom 
+    img_bytes = imgkit.from_string(html_str, output_path=False, options=options)
     img = Image.open(BytesIO(img_bytes))
     img = img.convert('RGBA')
     # Crop whitespace
     bbox = img.getbbox()
     img = img.crop(bbox)
-    img.save(png_dir / f"{label}.png", "PNG", optimize=True, compress_level=9)
+    img.save(save_dir / f"{label}.png", "PNG", optimize=True, compress_level=9)
+
+for u, label in tqdm(pangoX_RE_node_labels().items()):
+    save_copying_pattern_image(
+       u, label, ts, png_dir, hide_extra_rows=True, hide_labels=True, show_bases=None, font_family='Verdana')
+
+for u, lab in tqdm([
+    (1372032, "causedby-ERR10306608"),
+    (456023, "causedby-ERR6760245"),
+    (1137450, "causedby-SRR21087725"),
+    (427863, "causedby-SRR15864165"),
+]):
+    save_copying_pattern_image(
+        u, lab, ts, png_dir, hide_extra_rows=False, hide_labels=True, show_bases=True, zoom=4, font_family='Verdana'
+    )
