@@ -380,38 +380,50 @@ This process has resulted in the designation of recombinant Pango lineages
 Below, we summarize our analysis of the Pango Xs in the ARG
 (for extended analyses, see Document S1 and Document S2).
 
-We find strong evidence for the recombination events leading to 17 Pango Xs in the ARG (Table 1),
-which passed the detection-level sc2ts quality control filters (Figure S1).
-These events are supported by
-high numbers of averted mutations (Table 1) and
-high numbers of loci matching their suggested parents (see their copying patterns in Figure SX).
-Among these Pango Xs are
-XA, which is the first designated Pango X that showed signs of community transmission \cite{Jackson2021}, and
-XBB, which escaped vaccine-induced immunity and gained global prevalence \cite{Tamura2023}.
-The recombinant origin of XA is well explained in the ARG by two parents and one mutation (\ref{fig:subgraphs}; Table 1),
-with sc2ts correctly identifying its parental Pango lineages and breakpoint location.
+We find strong evidence for the recombination events leading to 17 Pango Xs in
+the ARG (Table~\ref{tab:pango_x_lineages}), all of which pass the 
+robustness filtering criteria (Figure~\ref{fig:recombinant_qc}). 
+%% JK: Does saying this here help at all? I think we may be better off without 
+% These events are supported by high numbers of averted
+% mutations (Table 1) and high numbers of loci matching their suggested parents
+% (see their copying patterns in Figure SX). 
+Among these Pango Xs are XA, which
+is the first designated Pango X that showed signs of community transmission
+\cite{Jackson2021}, and XBB, which escaped vaccine-induced immunity and gained
+global prevalence \cite{Tamura2023}. The recombinant origin of XA is well
+explained in the ARG by two parents and one mutation (Figure \ref{fig:subgraphs};
+Table~\ref{tab:pango_x_lineages}), 
+with sc2ts correctly identifying its parental Pango lineages and
+breakpoint location.
 
 Furthermore, some of the Pango Xs above originate from shared recombination events in the 
-ARG (Table 1).
+ARG (Table~\ref{tab:pango_x_lineages}).
 An example of a set of ``nested'' closely related Pango Xs consists of XZ, XAC, XAD, XAE, and XAP,
 which descend from a single recombination event rather than five independent events in the ARG (\ref{fig:subgraphs}).
 These Pango Xs were designated around the same time.
 These results highlight that the ARG can help clarify the relationships between recombinants,
 allowing more precise interpretation of evidence for recombination.
 
-Sc2ts identified 12 Pango Xs in the ARG as non-recombinants (Table 1), on the basis of the HMM and available data.
+Sc2ts identified 12 Pango Xs in the ARG as non-recombinants
+(Table~\ref{tab:pango_x_lineages}), on the basis of the HMM and available data.
 For all these Pango Xs, the number of recombination-informative sites fell below our threshold of detection (i.e. $k = 4$ in the HMM).
 The fact that most of these Pango Xs (except XAJ and XAN) differ from a single parent node in the ARG
-by at most three mutations (Table 1) strongly supports their origins as non-recombinants.
+by at most three mutations (Table~\ref{tab:pango_x_lineages}) strongly supports 
+their origins as non-recombinants.
 For example, the closely related XN and XAU can be explained by two mutations and one mutation in the ARG, respectively (\ref{fig:subgraphs}).
 %%% TODO: Say something about XAJ and XAN.
+%JK: we should weaken this statement a bit, as we're not certain that they 
+% really are recombinants, especially XP.
 However, sc2ts did not detect several Pango Xs (XB, XP, and XAJ) as recombinants
 because the HMM treated characteristic deletions as missing data.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\linewidth]{pango_x_subgraphs.png}
-\caption{Illustrative subgraphs in the ARG. Subgraphs around the XA-associated recombination node (A); the recombination node associated with a group of ``nested'' Pango Xs (B); and the MRCA of the non-recombinants XN and XAU (C). For more detailed visualizations of these subgraphs, see Document S2.}
+\caption{Illustrative subgraphs in the ARG. Subgraphs around the XA-associated
+recombination node (A); the recombination node associated with a group of
+``nested'' Pango Xs (B); and the MRCA of the non-recombinants XN and XAU (C).
+For more detailed visualizations of these subgraphs, see Document S2.}
 \label{fig:subgraphs}
 \end{figure}
 
