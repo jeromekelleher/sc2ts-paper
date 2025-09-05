@@ -1224,7 +1224,7 @@ that is both general (in terms of the types of ancestry that can be described)
 and computationally efficient \cite{Wong2024}.
 Initially developed to facilitate large-scale coalescent simulations \cite{Kelleher2016},
 STS has been extended and applied to
-forward-time simulations \cite{Kelleher2018,Haller2019},
+forward-time simulations \cite{Kelleher2018efficient,Haller2019},
 calculation of population genetics statistics \cite{Ralph2020} and
 ARG inference \cite{Kelleher2019,Wohns2022}.
 The STS is based on a simple tabular representation,
@@ -1242,13 +1242,14 @@ we can efficiently construct the local genealogical trees along the genome (aris
 and perform a range of calculations efficiently
 by reasoning about the differences between these local trees \cite{Kelleher2016,Ralph2020}.
 These algorithms have led to performance increases of several orders of magnitude over
-the state-of-the-art in a range of applications \cite{Kelleher2016,Kelleher2018,Kelleher2019,Ralph2020,Baumdicker2022}.
+the state-of-the-art in a range of applications
+\cite{Kelleher2016,Kelleher2018efficient,Kelleher2019,Ralph2020,Baumdicker2022}.
 The STS encoding is also very concise, allowing, for example,
 for millions of complete human genomes to be stored in a few GB of space \cite{Kelleher2019},
 and so it is particularly well suited to representing large SARS-CoV-2 genealogies.
 
 The SARS-CoV-2 ARGs inferred using sc2ts can be conveniently and efficiently analyzed
-using the mature and feature-rich tskit library \cite{Kelleher2018,Ralph2020}.
+using the mature and feature-rich tskit library \cite{Kelleher2018efficient,Ralph2020}.
 Tskit is widely used in population genetics, and has been incorporated into many downstream applications
 (e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2022,Mahmoudi2022,Petr2022,Rasmussen2022,Zhang2023}).
 
@@ -1464,7 +1465,7 @@ During inference, we filtered out the samples with low-quality sequences and low
 We kept the quality check-passing sequences used to infer the Viridian UShER phylogeny \cite{Hunt2024}.
 We skipped low-quality sequences that had more than 500 missing sites
 (except when building the ``base'' ARG, when the maximum number of allowed missing bases was set to 10,000 instead).
-We also skipped ~40,000 samples which had a collection date of December 31, 2020.
+We also skipped $\sim$40,000 samples which had a collection date of December 31, 2020.
 The sampling frequency of this date is alarmingly high compared to other dates (at most 15,000 samples per day).
 We suspect that this batch of samples might be unusually enriched for wrong collection dates,
 likely due to arbitrary assignment of the originally reported collection date of ``2020'' to be ``31-12-2020''.
@@ -1515,7 +1516,17 @@ to enrich the ARG with additional information:
 7. Assigning Pango lineages to non-sample nodes.
 
 \subsubsection*{Identification of robust recombination events}
-[TODO update refs!]
+[TODO This section needs a full pass. I've merged in a section that was in the
+supplement with an extremely terse section on counting supporting loci.]
+
+% This para was *{Counting supporting loci for recombinant parents}
+
+When counting such loci, we considered nearly adjacent sites (separated by at
+most three bases) as single loci, to avoid over-counting support from
+correlated loci, which would lead to artificial signals of recombination. Also,
+when counting supporting loci for a focal parent, we penalized loci where the
+character(s) in the recombinant matches that in the non-focal parent but not in
+the focal parent.
 
 Before characterizing recombination events in detail, we sought to remove
 probable artifacts. Systematic errors in SARS-CoV-2 sequences associated with
@@ -1543,18 +1554,20 @@ characteristic of amplicon dropouts (REF).
 
 \subsubsection*{Comparing phylogenetic backbones}
 
-We used Pango lineage designations to select \textit{representative} samples
+We used Pango lineage designations to select representative samples
 for the majority of the 2026 Pango lineages in the ARG.
 We first identify an "origination node" for a focal Pango lineage,
 defined as the oldest internal node in the ARG
 whose descendants in any tree include more than 50\% of the Pango samples of the focal type,
 and where the internal node is itself designated as the focal Pango.
-The representative sample is then chosen as the oldest sample under the origination node
+The representative sample is then chosen as the oldest sample descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
-We simplify the ARG to include only the representative samples,
+We ``simplify''\cite{Kelleher2018efficient,Wong2024} 
+the ARG to include only the representative samples,
 resulting in an intermediate ARG of 1867 samples,
 then additionally remove internal samples,
-known recombinants (i.e. the Pango Xs) and three "singleton recombinant samples"
+known recombinants (i.e. the Pango Xs) and three ``singleton recombinant
+samples''
 in which a single Pango lineage appears immediately below a recombination node.
 This results in a simplified ARG of 1667 samples, each with a different Pango designation.
 
@@ -1573,7 +1586,7 @@ and treat as non-recombinant for the purposes of plotting
 and supported by only 4 distinguishing sites / 3 loci).
 To reduce plot density, we consider only those Pango lineages with fewer than 10 samples,
 and extract non-recombinant structures from the ARG
-by creating a "base tree" of 535 Pangos (i.e. excluding all descendants of Delta, BA.2, and BA.5),
+by creating a ``base tree'' of 535 Pangos (i.e. excluding all descendants of Delta, BA.2, and BA.5),
 a Delta subtree of 160 Pangos,
 a BA.2 subtree of 151 sample (excluding BA.5 descendants) and
 a BA.5 subtree of 251 samples.
@@ -1590,13 +1603,6 @@ In the few cases where the trees differ, this is often in terms of degree of res
 In these cases, sometimes the sc2ts ARG shows greater resolution,
 as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in BA.2.9.
-
-
-\subsubsection*{Counting supporting loci for recombinant parents}
-When counting such loci, we considered nearly adjacent sites (separated by at most three bases) as single loci,
-to avoid over-counting support from correlated loci, which would lead to artificial signals of recombination.
-Also, when counting supporting loci for a focal parent,
-we penalized loci where the character(s) in the recombinant matches that in the non-focal parent but not in the focal parent.
 
 
 \subsubsection*{Calculating Pango lineage distance using pangonet}
