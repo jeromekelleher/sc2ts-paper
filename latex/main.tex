@@ -580,7 +580,7 @@ We calculated the number of averted mutations for all the ``robust'' recombinati
 events (STAR Methods),
 which include all the Pango X-associated recombination events
 (Table~\ref{tab:pango_x_lineages}) and those studied by Jackson et
-al.\cite{Jackson2021}
+al.\cite{Jackson2021} (Table \ref{tab:jackson}).
 
 Our analysis of the number of averted mutations reveals a spectrum of plausibility
 across all the ``robust'' recombination events
@@ -613,7 +613,7 @@ to their classification by rebar (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
 recombination nodes in Table \ref{tab:pango_x_lineages} are labelled starting with `X' and
-those identified by \cite{Jackson2021} (see Table \ref{tab:jackson}) are prefixed with a `J', e.g.
+those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.g.
 Jackson Group B (JGB) and Jackson Singleton recombinant 1 (JS1). 
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted by allowing recombination (i.e. $x$-$y$).
@@ -626,28 +626,28 @@ each recombination node is a mix of variants matching the left parent (green), t
 
 
 \subsection*{Recombination breakpoint intervals along the genome}
-
 We explored the spatial distribution of the breakpoint locations of
 the ``robust'' recombination events along the genome, and quantified how precisely breakpoints were localized.
 For each event, we computed an interval estimate of its breakpoint location,
-using its size as a measure of precision (median, 2,207 bases; STAR Method).
+using its size as a measure of precision (median, 2,207 bases; STAR Methods).
 
 We find an overall preponderance of breakpoint intervals towards the 3’ end of the genome,
-particularly at the left boundary of the Spike gene (\ref{fig:recombinant_intervals}),
-consistent with the pattern of excess observed in previous studies \cite{Turakhia2022,Li2024}.
+particularly at the left boundary of the Spike gene
+(Figure~\ref{fig:recombinant_intervals}A,B),
+consistent with patterns observed in previous 
+studies\cite{Turakhia2022,Li2024}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
-Reassuringly, sites having unusually high mutation counts are absent in this region (\ref{fig:recombinant_intervals}),
-which would confound recombination detection.
 
 Furthermore, we find a negative relationship between
 breakpoint interval size and the amount of divergence between recombinant parents,
-which is measured by time to their MRCA (\ref{fig:recombinant_intervals}).
+which is measured by time to their MRCA (Figure~\ref{fig:recombinant_intervals}).
 When the two parental lineages have diverged for longer periods of time (the rightmost points),
 more information becomes available on either side of a breakpoint to pinpoint its location, resulting in shorter intervals.
 For instance, the breakpoint intervals tend to be the smallest for events involving recombination
-between the deeply divergent Omicron BA.1 and BA.2 sublineages (the red points in \ref{fig:recombinant_intervals}).
+between the deeply divergent Omicron BA.1 and BA.2 sublineages 
+(the red points in Figure~\ref{fig:recombinant_intervals}).
 
 %%% TODO: Old version as placeholder. This figure is not yet finalised.
 \begin{figure}[h]
@@ -679,25 +679,30 @@ increasing our power to detect recombination.
 We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
 to relate the timing of recombination events with global case numbers.
 Case numbers ($n$) were binned by week from January, 2020 to March, 2023 and
-sub-divided by the proportion in each Scorpio label inferred within the ARG (shading in \ref{fig:recombinants_over_time}).
+sub-divided by the proportion in each Scorpio label inferred within the ARG (shading in 
+Figure~\ref{fig:recombinants_over_time}).
 These lineages correspond loosely to a group of related lineages within a major VOC in the Viridian dataset.
 Alongside the case numbers,
 the black curve shows the number of recombinants inferred within each week along the ARG,
 focusing on the 356 ``robust'' events.
 Recombination events were inferred more often during the Delta and Omicron waves, when case counts were high.
 Overall, the number of recombinant events rose with the global number of cases
-(Figure \ref{fig:recombinants_over_time}B; linear regression: $1.0 + 2.7 \; 10^{-7} x$, $p = 1.1 \; 10^{-7}$).
+(Figure~\ref{fig:recombinants_over_time}B; 
+% JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
+linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
 Recombination events also rose with the diversity of lineages in each week
-(Figure \ref{fig:recombinants_over_time}C; linear regression: $0.9 + 4.8 x$, $p = 3.4\;10^{-7}$),
+(Figure \ref{fig:recombinants_over_time}C; linear regression: 
+$0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
 ($H$, referred to as the ``expected heterozygosity'').
 
 We then asked which single measure best explains the number of recombination events inferred each week,
-considering $n$, $H$, $n \; H$, $n^2$, $n^2 H$.
+considering $n$, $H$, $n H$, $n^2$, $n^2 H$.
 We included the squared number of cases each week thinking that it might better predict co-infections.
-The best single predictor of recombination events involved the product of cases and expected heterozygosity ($n \; H$),
+The best single predictor of recombination events involved the product of cases and 
+expected heterozygosity ($n H$),
 with an adjusted $R^2$ of 23.7\%.
-This measure of case diversity ($n \; H$) explained 49\% more of the variation in recombination events per week
+This measure of case diversity ($n H$) explained 49\% more of the variation in recombination events per week
 than the next best predictor ($H$, adjusted $R^2$ of 15.9\%).
 While consistent with the hypotheses that recombination events occur more often when infection rates are common
 and are detected more often when viral diversity is high, we note several sources of uncertainty.
