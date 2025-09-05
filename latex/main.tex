@@ -1728,19 +1728,24 @@ although filtering the recombination events to the 356 with better support revea
 
 \subsection{Major deletions in the ARG}\label{sec:supplement_dels}
 % Referenced by the main Results.
-Basically, we want to say we did a lot of work to integrate signals of major
-indels into the ARG, making it an even more powerful resource overall. Also,
-indels are encoded by the Mutation-Annotated Tree format used by UShER
-phylogenies (though PanMAT does this).
-
-List of indels from Table S1 of Li et al. \cite{Li2023}
-occurring at minimum frequency of 0.01 (out of 9,149,680 GISAID sequences passing filters) and 
-their frequencies in the sc2ts ARG (maximum of max inheritors divided by 2,482,157 sampled sequences).
+Li et al. \cite{Li2023} performed a large-scale analysis of indels 
+using a global GISAID dataset (sampled up to August, 2022). 
+We examined the major indels reported in Table S1 of that study 
+which have a minimum frequency of 0.01 
+(sequence count divided by 9,149,680 filtered sequences).
+Most of these indels (all deletions) are encoded in the ARG (\ref{tab:indels}) 
+and have high frequencies in the ARG
+(sequence count divided by the total number of samples), 
+except a 9-base deletion at 11283, a 9-based deletion at 21987, and a 9-base deletion at 686.
+During site remapping, the 9-base deletion at 11283 was split up into 
+a 5-base deletion at 11283 (count of 339867) and 
+a 4-base deletion at 11288 (count of 871782).
+The 686 deletion occurs below our threshold for inclusion into the ARG.
 
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/472
 \begin{table}
-\caption{Major indels.}
+\caption{Major deletions in Li et al. (2023).}
 \label{tab:indels}
 \begin{tabular}{rrcrrrr}
 \toprule & \multicolumn{4}{c}{Li et al.} & \multicolumn{2}{c}{Sc2ts ARG} \\
