@@ -1,6 +1,6 @@
 pango,github_issue,type,parent_left_pango,parent_right_pango,parents_extra,interval_left,interval_right,intervals_extra
 XA,https://github.com/cov-lineages/pango-designation/issues/63,simple,B.1.177,B.1.1.7,,21254,21765,
-XAA,https://github.com/cov-lineages/pango-designation/issues/664,simple,BA.1*,BA.2*,,8938,9344,
+XAA,https://github.com/cov-lineages/pango-designation/issues/664,simple,BA.1*,BA.2*,,8392,9344,
 XAB,https://github.com/cov-lineages/pango-designation/issues/665,simple,BA.1*,BA.2*,,6515,8393,
 XAC,https://github.com/cov-lineages/pango-designation/issues/590,complex,BA.2*,BA.1*,BA.2*,25812,26060,27384-29510
 XAD,https://github.com/cov-lineages/pango-designation/issues/607,simple,BA.2*,BA.1*,,26062,26529,
@@ -34,7 +34,7 @@ XBM,https://github.com/cov-lineages/pango-designation/issues/1441,simple,BA.2.76
 XBN,https://github.com/cov-lineages/pango-designation/issues/1296,simple,BA.2.75,XBB.3,,-,-,
 XBP,https://github.com/cov-lineages/pango-designation/issues/1393,simple,BA.2.75*,BQ.1*,,22192,22331,
 XBQ,https://github.com/cov-lineages/pango-designation/issues/1440,simple,BA.5.2,CJ.1,,-,-,
-XBR,https://github.com/cov-lineages/pango-designation/issues/1637,simple,BA.2.75,BQ.1,,-,-,
+XBR,https://github.com/cov-lineages/pango-designation/issues/1637,simple,BA.2.75,BQ.1,,22033,22190,
 XBS,https://github.com/cov-lineages/pango-designation/issues/1567,simple,BA.2.75,BQ.1,,-,-,
 XBT,https://github.com/cov-lineages/pango-designation/issues/1576,complex,BA.5.2.34,BA.2.75,BA.5.2.34,-,-,
 XBU,https://github.com/cov-lineages/pango-designation/issues/1425,complex,BA.2.75*,BQ.1*,BA.2.75*,22576,22894,25415-26276
@@ -44,7 +44,7 @@ XC,https://github.com/cov-lineages/pango-designation/issues/263,simple,AY.29,B.1
 XCA,https://github.com/cov-lineages/pango-designation/issues/1752,simple,BA.2.75*,BQ.1*,,-,-,
 XCG,not_found,simple,BA.5.2*,XBB.1,,-,-,
 XE,https://github.com/cov-lineages/pango-designation/issues/454,simple,BA.1*,BA.2*,,10447,11288,
-XF,https://github.com/cov-lineages/pango-designation/issues/445,simple,B.1.617.2*,BA.1*,,5385,6512,
+XF,https://github.com/cov-lineages/pango-designation/issues/445,simple,B.1.617.2*,BA.1*,,5386,6512,
 XG,https://github.com/cov-lineages/pango-designation/issues/447,simple,BA.1*,BA.2*,,5926,6512,
 XH,https://github.com/cov-lineages/pango-designation/issues/448,simple,BA.1*,BA.2*,,10447,11288,
 XJ,https://github.com/cov-lineages/pango-designation/issues/449,simple,BA.1*,BA.2*,,13199,17401,
