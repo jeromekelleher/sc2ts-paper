@@ -1205,6 +1205,11 @@ The result of inference for a given day is then a genealogy recording genetic in
 as well as mutation and recombination events
 for all of the samples added to the ARG up to that day.
 
+Sc2ts is implemented in Python building on core PyData infrastructure
+such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
+and Pandas ,
+using pyfaidx\cite{Shirley2015efficient} to access alignment data
+[TODO JK to fill this out]
 
 \subsubsection*{Ancestral Recombination Graphs}
 
@@ -1760,6 +1765,7 @@ The 686 deletion occurs below our threshold for inclusion into the ARG.
 \begin{table}
 \caption{Major deletions in Li et al. (2023).}
 \label{tab:indels}
+\begin{center}
 \begin{tabular}{rrcrrrr}
 \toprule & \multicolumn{4}{c}{Li et al.} & \multicolumn{2}{c}{Sc2ts ARG} \\
 \cmidrule(lr){1-5} \cmidrule(lr){6-7}
@@ -1780,6 +1786,7 @@ Start & Length & Region & Count & Frequency & Count & Frequency \\
 686 & 9 & ORF1ab-nsp1 & 115450 & 0.0126 & N/A & N/A \\
 \bottomrule
 \end{tabular}
+\end{center}
 \end{table}
 
 
