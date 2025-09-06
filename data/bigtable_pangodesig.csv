@@ -15,7 +15,7 @@ XAM,https://github.com/cov-lineages/pango-designation/issues/759,simple,BA.1.1,B
 XAN,https://github.com/cov-lineages/pango-designation/issues/771,simple,BA.2*,BA.5.1,,17822,21766,
 XAP,https://github.com/cov-lineages/pango-designation/issues/789,simple,BA.2*,BA.1*,,26062,26529,
 XAS,https://github.com/cov-lineages/pango-designation/issues/882,simple,BA.5*,BA.2*,,23039,27788,
-XAU,https://github.com/cov-lineages/pango-designation/issues/894,simple,BA.1.1*,BA.2.9*,,2834,4184,
+XAU,https://github.com/cov-lineages/pango-designation/issues/894,simple,BA.1.1*,BA.2.9*,,2833,4184,
 XAV,https://github.com/cov-lineages/pango-designation/issues/911,simple,BA.2*,BA.5*,,15959,17279,
 XAY,https://github.com/cov-lineages/pango-designation/issues/844,complex,BA.2*,AY.45,BA.2*;AY.45;BA.2*,-,-,
 XAZ,https://github.com/cov-lineages/pango-designation/issues/797,complex,BA.2.5,BA.5,BA.2.5,3358,9866,27384-27387
@@ -36,7 +36,7 @@ XBP,https://github.com/cov-lineages/pango-designation/issues/1393,simple,BA.2.75
 XBQ,https://github.com/cov-lineages/pango-designation/issues/1440,simple,BA.5.2,CJ.1,,-,-,
 XBR,https://github.com/cov-lineages/pango-designation/issues/1637,simple,BA.2.75,BQ.1,,22033,22190,
 XBS,https://github.com/cov-lineages/pango-designation/issues/1567,simple,BA.2.75,BQ.1,,-,-,
-XBT,https://github.com/cov-lineages/pango-designation/issues/1576,complex,BA.5.2.34,BA.2.75,BA.5.2.34,-,-,
+XBT,https://github.com/cov-lineages/pango-designation/issues/1576,complex,BA.5.2.34,BA.2.75,BA.5.2.34,5182,9767,22576-22899
 XBU,https://github.com/cov-lineages/pango-designation/issues/1425,complex,BA.2.75*,BQ.1*,BA.2.75*,22576,22894,25415-26276
 XBW,https://github.com/cov-lineages/pango-designation/issues/1505,simple,XBB.1.5,BQ.1.14,,25416,26275,
 XBZ,https://github.com/cov-lineages/pango-designation/issues/1666,simple,BA.5.2*,EF.1.3,,-,-,
