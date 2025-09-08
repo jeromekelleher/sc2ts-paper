@@ -519,40 +519,46 @@ We compared sc2ts against three state-of-the-art methods that detect inter-linea
 (1) RecombinHunt \cite{Alfonsi2024},
 (2) CovRecomb \cite{Li2024}, and
 (3) rebar (https://github.com/phac-nml/rebar).
-These non-phylogenetic methods use the same underlying approach: 
-they scan candidate recombinant sequences for mutations associated with different 
-Pango lineages.
+These methods use the same underlying approach: 
+they scan candidate recombinant sequences for mutations associated with different Pango lineages 
+without using a phylogeny.
 
-To evaluate the concordance of the methods in identifying the parental Pango lineages
-and locating the breakpoints of the recombinants, we focus on the Pango Xs, using the data
-from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
-For RecombinHunt, we took the detection results for the Pango Xs presented in the original study;
-for CovRecomb, we summarized the results from the supplementary data of the original study (STAR Methods);
-and for rebar, we obtained results by using it to classify the Pango X-associated recombination events in the ARG (STAR Methods).
-For each method, we determined whether the inferred parental lineages and breakpoint intervals are
-concordant with those identified by the community (STAR Methods).
-We find that the methods performed well overall,
-with no significant difference in concordance among them
-(Table~\ref{tab:x_method_concordance}; p-value = XX, chi-square test),
-indicating that sc2ts can characterize recombinants as well as the state-of-the-art recombination detection methods.
+To evaluate the concordance of the methods in 
+identifying the Pango lineages of recombinant parents and locating recombination breakpoints, 
+we focus on the Pango Xs descending from the Type I recombination events (Table \ref{tab:pango_x_lineages}), 
+using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
+For RecombinHunt, we took available detection results for these Pango Xs reported in the original study;
+for CovRecomb, we summarized the results from the original study (STAR Methods);
+For each Pango X, we determined whether the inferred parental lineages and breakpoint intervals 
+are concordant with those suggested by the community (STAR Methods).
+We found that the methods performed well overall, 
+with no evidence for significant difference in the concordance rate among them (Table \ref{tab:x_method_concordance}),
+indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
 
-We also compared the sensitivity of sc2ts and rebar.
-Of all the ``robust'' recombination events detected by sc2ts,
-167 (43\%) were also detected as recombinants by rebar (STAR Methods).
+Furthermore, we compared the sensitivity of sc2ts and rebar.
+We ran rebar on the ``robust'' recombination events detected by sc2ts (STAR Methods), 
+and found that 167 (43\%) of them were also detected as recombinants by rebar.
 We hypothesize that this disagreement arose from differences in sensitivity between these methods.
-Consistent with this, we find that rebar needs a higher level of divergence between parents
-to correctly classify a sequence as recombinant, as shown by
+Consistent with this, we found that rebar needs a higher level of divergence between parents
+to correctly classify a sequence as recombinant, as shown by 
 a shorter time to their MRCA (Figure \ref{fig:averted_mutations}B) and
-lower distance between their Pango identity (Figure
-\ref{fig:averted_mutations}C).
+a lower distance between their Pango identity (Figure \ref{fig:averted_mutations}C).
 
 
 \begin{table}
-\caption{Concordance among methods in detecting Pango X lineages.}
+\caption{
+Concordance among methods in characterizing Pango X lineages. 
+The Pango X lineages analyzed here are associated with the Type 1 recombination events (related to Table 1).
+For RecombinHunt and CovRecomb, the concordance rates are calculated 
+based on the Pango Xs for which results are available from the original studies.
+Also, for RecombinHunt, there are two sets of detection results, 
+one set obtained using mutational profiles computed from a global GISAID dataset and another from a Nextstrain dataset.
+
+}
 \label{tab:method_concordance}
 \begin{tabular}{llll}
 \hline
-\textbf{Method} & \textbf{Concordant in parental lineages (\%)} & \textbf{Concordant in breakpoint interval (\%)} & \textbf{Distance (bp)} \\ [1ex]
+\textbf{Method} & \textbf{Concordant in parental lineages (\%)} & \textbf{Concordant in breakpoint interval (\%)} & \textbf{Distance (bases)} \\ [1ex]
 \hline
 Sc2ts & 14 (93.3) & 13 (86.7) & 540.5 (315, 766) \\ [1ex]
 \hline
