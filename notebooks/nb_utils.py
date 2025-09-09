@@ -298,7 +298,7 @@ class D3ARG_viz:
         exclude = set() if exclude is None else set(list(exclude))
         include = set() if include is None else set(list(include))
         if positions_file is None:
-            positions_file = f"subgraph_layouts/{'-'.join(pangos)}.json"
+            positions_file = f"layout_data/{'-'.join(pangos)}.json"
         try:
             self.d3arg.set_node_x_positions(
                 pos=argviz.extract_x_positions_from_json(
