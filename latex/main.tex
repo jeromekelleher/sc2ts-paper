@@ -522,9 +522,10 @@ To evaluate the concordance of the methods in
 identifying the Pango lineages of recombinant parents and locating recombination breakpoints,
 we focus on the Pango Xs associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
 using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
-For RecombinHunt and CovRecomb, we summarized detection results for these Pango Xs, if available,
+For RecombinHunt and CovRecomb, we summarized the detection results for these Pango X lineages (if available)
 reported in the original studies\cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
-For each method, we determined the Pango Xs for which the inferred parental lineages and breakpoint intervals
+For each method, we determined the Pango X lineages
+for which the inferred parental lineages and breakpoint intervals
 are concordant with those identified by the community (STAR Methods).
 We found that the methods performed well overall,
 with comparable concordance rates (Table~\ref{tab:method_concordance}),
@@ -617,7 +618,7 @@ with improved sampling if still possible.
 to their classification by rebar (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
-recombination nodes in Table \ref{tab:pango_x_lineages} are labelled starting with `X' and
+recombination nodes in Table \ref{tab:pango_x_lineages} are labeled starting with `X' and
 those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.g.
 Jackson Group B (JGB) and Jackson Singleton recombinant 1 (JS1). 
 Point sizes reflect number of descendants.
@@ -1825,49 +1826,111 @@ although filtering the recombination events to the 356 with better support revea
 
 
 \subsection{Analysis of deletions}\label{sec:supplement_dels}
+
+% See https://github.com/jeromekelleher/sc2ts-paper/issues/628
 % Referenced by the main Results.
-Li et al.\cite{LiStephens2003} performed a large-scale analysis of indels 
-using a global GISAID dataset (sampled up to August, 2022). 
-We examined the major indels reported in Table S1 of that study 
-which have a minimum frequency of 1\% 
-(sequence count divided by 9,149,680 filtered sequences).
-Most of these indels (all deletions) are encoded in the ARG (Table~\ref{tab:indels}) 
-and have high frequencies in the ARG
-(sequence count divided by the total number of samples), 
+We found that the ARG captures highly prevalent deletions in SARS-CoV-2 (Table~\ref{tab:major_dels}).
+Li et al.\cite{Li2023indels} performed a large-scale analysis of indels
+using a global GISAID dataset (sampled up to August, 2022).
+We examined the major indels reported in Table S1 of that study
+which have a minimum frequency of 1\% (sequence count divided by 9,149,680 filtered sequences).
+Most of these indels (all deletions) are encoded in the ARG (Table~\ref{tab:indels})
+and have high frequencies in the ARG (sequence count divided by the total number of samples),
 except a 9-base deletion at 11283, a 9-based deletion at 21987, and a 9-base deletion at 686.
-During site remapping, the 9-base deletion at 11283 was split up into 
-a 5-base deletion at 11283 (count of 339867) and 
-a 4-base deletion at 11288 (count of 871782).
-The 686 deletion occurs below our threshold for inclusion into the ARG.
+During site remapping, the 9-base deletion at 11283 was split up into
+a 5-base deletion at 11283 (count of 339867) and a 4-base deletion at 11288 (count of 871782).
 
 
-% See https://github.com/jeromekelleher/sc2ts-paper/issues/472
+
+
 \begin{table}
-\caption{Major indels.}
-\label{tab:indels}
-\begin{center}
-\begin{tabular}{rrcrrrr}
-\toprule 
-& \multicolumn{4}{c}{Li et al. (2023)} & \multicolumn{2}{c}{Sc2ts ARG} \\
-\cmidrule(lr){1-5} \cmidrule(lr){6-7}
-Start & Length & Region & Count & Frequency (\%) & Count & Frequency (\%)\\
+\caption{
+Major deletion events in the ARG.
+These events are observed in at least 10,000 samples encoded in the ARG.
+The counts and frequencies of these events from Li et al.\cite{Li2023indels} are also shown.
+}
+\label{tab:major_dels}
+\begin{tabular}{rrcrcrrrr}
+\centering
+\toprule & \multicolumn{6}{c}{Sc2ts ARG} & \multicolumn{2}{c}{Li et al. (2023)} \\
+\cmidrule(lr){1-7} \cmidrule(lr){8-9}
+Start & Length & Region & Node & Pango & Count & Frequency (\%) & Count & Frequency (\%)\\
 \midrule
-28362 & 9 & N & 3939164 & 43.0525 & 871774 & 35.1216 \\
-28271 & 1 & Intergenic & 3853692 & 42.1183 & 1118363 & 45.0561 \\
-21765 & 6 & S & 3179887 & 34.7541 & 339681 & 13.6849 \\
-11288 & 9 & ORF1ab-nsp6 & 3040576 & 33.2315 & 290408 & 11.6998 \\
-28248 & 6 & ORF8 & 3026186 & 33.0742 & 1114669 & 44.9073 \\
-22029 & 6 & S & 3010665 & 32.9046 & 1112410 & 44.8163 \\
-11283 & 9 & ORF1ab-nsp6 & 2011934 & 21.9891 & 40 & 0.0016 \\
-6513 & 3 & ORF1ab-nsp3 & 1984683 & 21.6913 & 340765 & 13.7286 \\
-21633 & 9 & S & 1941962 & 21.2244 & 532072 & 21.4359 \\
-21987 & 9 & S & 1918094 & 20.9635 & N/A & N/A \\
-22194 & 3 & S & 1833050 & 20.0340 & 312706 & 12.5982 \\
-21991 & 3 & S & 912944 & 9.9779 & 288831 & 11.6363 \\
-686 & 9 & ORF1ab-nsp1 & 115450 & 1.2618 & N/A & N/A \\
+28271 & 1 & non-coding & 1436808 & B.1 & 1118363 & 45.0561 & 3853692 & 42.1183 \\
+28248 & 6 & ORF8 & 220186 & B.1.617.2 & 1114669 & 44.9073 & 3026186 & 33.0742 \\
+22029 & 6 & S / S1 - NTD & 200039 & B.1.617.2 & 1112410 & 44.8163 & 3010665 & 32.9046 \\
+11288 & 4 & ORF1AB / NSP6 & 1436802 & B.1.1.529 & 871782 & 35.1220 & N/A & N/A \\
+28362 & 9 & N & 1436802 & B.1.1.529 & 871774 & 35.1216 & 3939164 & 43.0525 \\
+21633 & 9 & S / S1 - NTD & 822854 & BA.2 & 532072 & 21.4359 & 1941962 & 21.2244 \\
+11292 & 5 & ORF1AB / NSP6 & 822854 & BA.2 & 531894 & 21.4287 & N/A & N/A \\
+6513 & 3 & ORF1AB / NSP3 & 851246 & BA.1 & 340765 & 13.7286 & 1984683 & 21.6913 \\
+11283 & 5 & ORF1AB / NSP6 & 851246 & BA.1 & 339867 & 13.6924 & 8360 & 0.0914 \\
+21765 & 6 & S / S1 - NTD & 851246 & BA.1 & 339681 & 13.6849 & 3179887 & 34.7541 \\
+21988 & 8 & S / S1 - NTD & 851246 & BA.1 & 339651 & 13.6837 & 590 & 0.0064 \\
+22194 & 3 & S / S1 - NTD & 851246 & BA.1 & 312706 & 12.5982 & 1833050 & 20.0340 \\
+28271 & 1 & non-coding & 86456 & B.1.1.7 & 290446 & 11.7014 & 3853692 & 42.1183 \\
+11288 & 9 & ORF1AB / NSP6 & 86456 & B.1.1.7 & 290408 & 11.6998 & 3040576 & 33.2315 \\
+21991 & 3 & S / S1 - NTD & 86456 & B.1.1.7 & 288831 & 11.6363 & 912944 & 9.9779 \\
+21765 & 6 & S / S1 - NTD & 86456 & B.1.1.7 & 290438 & 11.7010 & 3179887 & 34.7541 \\
+21765 & 6 & S / S1 - NTD & 1265302 & BA.4 & 190425 & 7.6718 & 3179887 & 34.7541 \\
+28361 & 1 & N & 1246012 & BA.5.2.1 & 20822 & 0.8389 & 287 & 0.0031 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
+
+
+\begin{table}
+\caption{
+Deletion events associated with the Alpha variant in the ARG.
+These events occur above node 86456, which represents the origin of Alpha.
+}
+\label{tab:alpha_dels}
+\centering
+\begin{tabular}{rrrrr}
+\toprule
+Start & Length & Region & Count & Frequency (\%)\\
+\midrule
+28271 & 1 & non-coding & 290446 & 11.7014 \\
+11288 & 9 & ORF1AB / NSP6 & 290408 & 11.6998 \\
+21991 & 3 & S / S1 - NTD & 288831 & 11.6363 \\
+21765 & 6 & S / S1 - NTD & 290438 & 11.7010 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{
+Highly recurrent deletions.
+}
+\label{tab:rec_dels}
+\centering
+\begin{tabular}{rrcrr}
+\toprule
+Start & Length & Region & Occurrences \\
+\midrule
+29781 & 1 & non-coding & 12713 \\
+29762 & 1 & non-coding & 11356 \\
+29779 & 1 & non-coding & 10925 \\
+29769 & 1 & non-coding & 10783 \\
+29774 & 1 & non-coding & 10707 \\
+29700 & 1 & non-coding & 8543 \\
+29614 & 1 & ORF10 & 5041 \\
+29555 & 1 & non-coding & 4816 \\
+29543 & 1 & non-coding & 4806 \\
+29541 & 1 & non-coding & 4804 \\
+203 & 1 & non-coding & 3602 \\
+222 & 1 & non-coding & 3441 \\
+22013 & 6 & S / S1 - NTD & 2111 \\
+21991 & 3 & S / S1 - NTD & 2087 \\
+28254 & 1 & ORF8 & 1967 \\
+27556 & 64 & ORF7a & 1281 \\
+27579 & 3 & ORF7a & 1014 \\
+28093 & 1 & ORF8 & 898 \\
+21765 & 6 & S / S1 - NTD & 478 \\
+27532 & 1 & ORF7a & 403 \\
+\bottomrule
+\end{tabular}
 \end{table}
 
 
