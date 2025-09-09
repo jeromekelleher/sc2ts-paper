@@ -376,8 +376,7 @@ to identify parental lineages and breakpoint locations.
 This process has resulted in the designation of recombinant Pango lineages
 (whose aliases begin with an ``X''), to which we refer as ``Pango X''.
 Below, we summarize our analysis of the Pango Xs in the ARG
-(for extended analyses, see Document~\ref{sec:supplement_pango_lineages} 
-and Document S2).
+(for extended analyses, see Document~\ref{sec:supplement_pango_lineages} and Document S2).
 
 We find strong evidence for the recombination events leading to 17 Pango Xs in
 the ARG (Table~\ref{tab:pango_x_lineages}), all of which pass the 
@@ -386,15 +385,12 @@ robustness filtering criteria (Figure~\ref{fig:recombinant_qc}).
 % These events are supported by high numbers of averted
 % mutations (Table 1) and high numbers of loci matching their suggested parents
 % (see their copying patterns in Figure SX). 
-Among these Pango Xs are XA, which
-is the first designated Pango X that showed signs of community transmission
-\cite{Jackson2021}, and XBB, which escaped vaccine-induced immunity and gained
-global prevalence \cite{Tamura2023}. The recombinant origin of XA is well
-explained in the ARG by two parents and one mutation
-(Figure~\ref{fig:subgraphs}A;
-Table~\ref{tab:pango_x_lineages}), 
-with sc2ts correctly identifying its parental Pango lineages and
-breakpoint location.
+Among these Pango Xs are XA,
+which is the first designated Pango X that showed signs of onward transmission\cite{Jackson2021}, and
+XBB, which escaped vaccine-induced immunity and gained global prevalence\cite{Tamura2023}.
+The recombinant origin of XA is well explained in the ARG by two parents and one mutation
+(Figure~\ref{fig:subgraphs}A; Table~\ref{tab:pango_x_lineages}), 
+with sc2ts correctly identifying its parental Pango lineages and breakpoint location.
 
 Furthermore, some of the Pango Xs above originate from shared recombination events in the 
 ARG (Table~\ref{tab:pango_x_lineages}).
@@ -419,13 +415,16 @@ and one mutation in the ARG, respectively (Figure~\ref{fig:subgraphs}C).
 However, sc2ts did not detect several Pango Xs (XB, XP, and XAJ) as recombinants
 because the HMM treated characteristic deletions as missing data.
 
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{pango_x_subgraphs}
-\caption{Illustrative subgraphs in the ARG. Subgraphs around the XA-associated
+\caption{
+Illustrative subgraphs in the ARG. Subgraphs around the XA-associated
 recombination node (A); the recombination node associated with a group of
 ``nested'' Pango Xs (B); and the MRCA of the non-recombinants XN and XAU (C).
-For more detailed visualizations of these subgraphs, see Document S2.}
+For more detailed visualizations of these subgraphs, see Document S2.
+}
 \label{fig:subgraphs}
 \end{figure}
 
@@ -571,6 +570,7 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 
 
 \subsection*{Quantification of evidence for recombination}
+
 %%% SHZ: We may not need this section at all, but I'm keeping it for now.
 %%% We should probably have a condensed version of the first paragraph in the Pango X section.
 %%% The second and third paragraphs should probably be removed entirely.
@@ -609,6 +609,7 @@ many genetically distinct, unsampled ancestors.
 Future work is needed to test whether these VOCs descended from recombination events,
 with improved sampling if still possible.
 
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
@@ -630,6 +631,7 @@ each recombination node is a mix of variants matching the left parent (green), t
 
 
 \subsection*{Recombination breakpoint intervals along the genome}
+
 We explored the spatial distribution of the breakpoint locations of
 the ``robust'' recombination events along the genome, and quantified how precisely breakpoints were localized.
 For each event, we computed an interval estimate of its breakpoint location,
@@ -653,7 +655,7 @@ For instance, the breakpoint intervals tend to be the smallest for events involv
 between the deeply divergent Omicron BA.1 and BA.2 sublineages 
 (the red points in Figure~\ref{fig:recombinant_intervals}).
 
-%%% TODO: Old version as placeholder. This figure is not yet finalised.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{recombinant_intervals}
@@ -734,6 +736,7 @@ captured by the Scorpio labels.}
 
 
 \subsection*{Efficient inference and analysis of a pandemic-scale ARG}
+
 The COVID-19 pandemic resulted in the collection of viral genome sequence data on an unprecedented scale,
 which overwhelmed existing computational approaches,
 motivating the rapid development of new methods\cite{Turakhia2021,DeMaio2023,Hinrichs2024}.
@@ -1563,7 +1566,7 @@ artifactual recombination events contain stretches of missing data
 characteristic of amplicon dropouts (REF).
 
 
-\subsubsection*{Comparing phylogenetic backbones}
+\subsubsection*{Comparison of phylogenetic backbones}
 
 We used Pango lineage designations to select representative samples
 for the majority of the 2026 Pango lineages in the ARG.
@@ -1616,27 +1619,28 @@ as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in BA.2.9.
 
 
-\subsubsection*{Mutational spectra}
+\subsubsection*{Comparison of mutational spectra}
 To validate the mutational information contained in the sc2ts ARG,
 we compared the all-site mutational spectra of major VOCs in the ARG,
-a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024}, and
-a global UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
-Mutational spectra are relative proportions of each type of nucleotide mutation.
+a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
+and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
+Mutational spectra are defined as the relative proportions of each possible type of nucleotide mutation.
 
 First, we calculated the mutational spectra of Alpha, Delta, Omicron BA.1, BA.2, BA.4, and BA.5
 in the sc2ts ARG, considering all the mutations above the sample nodes and internal nodes
-which have Scorpio labels associated with the VOCs (e.g., B.1.1.7-like and B.1.1.7-like+E484K for Alpha).
+which have Scorpio labels associated with the VOCs
+(e.g., for Alpha, B.1.1.7-like and B.1.1.7-like+E484K).
 These Scorpio labels were assigned to the aligned sequences of the nodes in the ARG using pangolin.
 Note that $\sim$98\% of all the mutations in the ARG occur
-above the nodes which have a Scorpio label associated with Alpha, Delta, BA.1, BA.2, BA.4, or BA.5
+above the nodes that have a Scorpio label associated with these VOCs
 (excluding the nodes with unassigned Scorpio labels).
 
 Next, we calculated the mutational spectra of the same VOCs
 using the mutational counts from an UShER phylogeny analyzed in Bloom et al.\cite{Bloom2023},
 which was built using Nextclade and has samples collected globally up to November, 2022.
-We used the following mapping between the WHO labels and the Nextstrain labels:
+We used the following mapping between the WHO labels and the Nextstrain clade labels:
 Alpha, 20I; Detal, 21I and 21J; BA.1, 21K; BA.2, 21L; BA.4, 22A, and BA.5, 22B.
-The mutation count data are available at https://github.com/jbloomlab/SARS2-mut-spectrum/.
+The mutation counts were downloaded from https://github.com/jbloomlab/SARS2-mut-spectrum/.
 
 Lastly, we calculated the mutational spectra of the same VOCs
 in the Viridian UShER phylogeny\cite{Hunt2024},
@@ -1645,40 +1649,48 @@ We used the mutations above the samples based on their Scorpio labels,
 which are available in the Viridian metadata provided by Hunt et al.\cite{Hunt2024}.
 
 
-\subsubsection*{Concordance among recombination detection methods}
-For RecombinHunt, we obtained two sets of detection results. 
-One set is based on mutational profiles calculated from a global GISAID dataset, 
-and the other set from a global Nextstrain dataset. 
-We adjusted the RecombinHunt-identified breakpoint interval 
-so that they are right-exclusive by adding one to the right coordinate.
+\subsubsection*{Comparison with recombination detection methods}
+For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
+from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
+One set of results is based on mutational profiles calculated from a global GISAID dataset,
+and the other set from a global NextStrain dataset.
+The breakpoint intervals identified using RecombinHunt are defined
+as the left and right recombination-informative sites.
+We adjusted their coordinates by adding one to the right coordinate
+so that the intervals are right-exclusive.
 
-For CovRecomb, we summarized the detection results for the Pango Xs as follows. 
-First, we obtained the "independent" recombination events 
-corresponding to the Pango Xs (if available) 
+For CovRecomb, we summarized the detection results for the Pango X lineages as follows.
+First, we obtained the "independent" recombination events
+which correspond to the Pango X lineages (if available)
 identified by Li et al.\cite{Li2024CovRecomb} (see Table S4 of the study).
-When multiple events corresponded to a Pango X, 
-we took the results of the event having the most epidemic recombinants. 
-Then, for other Pango Xs, we collated the data from a file (URL) 
-containing all the detection results produced by the study. 
-For each of these Pango Xs, 
-we took the most commonly observed combination of 
-left parent, right parent, and breakpoint interval.
-We adjusted the CovRecomb-identified breakpoint interval 
-so that they are right-exclusive by adding one to the right coordinate.
+When multiple events corresponded to a Pango X lineage,
+we took the results of the event which had the highest number of epidemic recombinants.
+For other Pango X lineages, we downloaded the full list of putative recombinants
+identified in the study
+(https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv)
+For each of these Pango Xs,
+we took the most commonly observed combination of
+the left parent, the right parent, and the breakpoint interval.
+The breakpoint intervals are defined as the left and right recombination-informative sites.
+We adjusted the breakpoint intervals by adding one to the right coordinate
+so that they are right-exclusive.
 
 We ran rebar on the sampled sequences associated with each robust recombination event. 
 Rebar identifies a sequence as a recombinant if it contains sets of mutations 
-predetermined to be associated with different Pango lineages.
+which are pre-determined to be associated with different Pango lineages.
 
-The parents of a Pango X inferred using a method are considered concordant 
-if their Pango lineage assignments are at least as specific as the community-identified parents.
-Also, a breakpoint interval of a Pango X inferred using a method is considered concordant 
-if it overlaps with the community-identified breakpoint interval by at least one base.
-We adjusted the breakpoint intervals from the community 
-by subtract one from the left coordinate and adding two to the right coordinate.
+The parents of a Pango X inferred using a method are deemed concordant
+if they have Pango lineage assignments
+that are at least as specific as those proposed by the community.
+The breakpoint interval of a Pango X inferred using a method is deemed concordant
+if it overlaps with that proposed by the community by at least one base.
+These breakpoint intervals are defined as ranges of possible site positions
+where a breakpoint is inferred to occur.
+To make these breakpoint intervals right-exclusive,
+we adjusted them by subtracting one from the left coordinate and adding two to the right coordinate.
 
 
-\subsubsection*{Calculating Pango lineage distance using pangonet}
+\subsubsection*{Calculation of Pango lineage distance using pangonet}
 We define a ``pseudo-phylogenetic'' distance to quantify the divergence between two Pango lineages.
 The idea is to count the number of edges separating two given Pango lineages in a ``pseudo-phylogeny''
 which relates all the designated Pango lineages.
@@ -1991,13 +2003,15 @@ We find two net supporting loci for a recombination breakpoint to be around 2259
 
 
 \subsection{Analysis of the Jackson et al. recombinants}
-Jackson et al.\cite{Jackson2021} conducted detailed analyses of some early recombinants
+
+Jackson et al.\cite{Jackson2021} conducted detailed analyses of early recombinants
 involving B.1.1.7 (Alpha), including the first designated Pango X lineage, XA.
 The authors first performed a targeted search for candidate recombinants by
-scanning sampled sequences for sequence motifs associated with Alpha, followed
-by an analysis to reduce the list of plausible recombinants displaying signs of
-onward transmission. Here we compared our sc2ts detection results of these
-recombinants with the detection results reported by Jackson et al.
+scanning sampled sequences for sequence motifs associated with Alpha,
+followed by an analysis to reduce the list of plausible recombinants
+displaying signs of onward transmission.
+Here we compared the sc2ts detection results of these recombinants
+with the detection results reported by Jackson et al.
 
 % Data derived from the notebooks/jackson_recombinants.ipynb notebook
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/293
@@ -2009,8 +2023,7 @@ QC filtering criteria, or due to a high HMM cost. Groups A-D are summarized
 in Table~\ref{tab:jackson} and show excellent concordance in terms 
 of the parental Pango lineages and breakpoint intervals. All four groups
 are directly associated with strongly supported recombination events 
-in the ARG in terms of the number of averted mutations 
-(A: 16, B: 6, C: 30, D: 18).
+in the ARG in terms of the number of averted mutations (A: 16, B: 6, C: 30, D: 18).
 The singleton CAMC-CBA018 has 
 the parents B.1.177+B.1.1.7 and the breakpoint interval 16,177--20,133 in the ARG, 
 and is strongly supported by 14 averted mutations.
@@ -2103,8 +2116,9 @@ Recombination events associated with the origins of Pango Xs are labeled.
     \centering
     %TODO fix this to make the figures smaller.
     \includegraphics[width=\linewidth]{mutational_spectra}
-    \caption{All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
-    the mutation count data from Bloom et al. (2023) (B), and
+    \caption{
+    All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
+    the mutation count data from Bloom et al. (2023)\cite{Bloom2023} (B), and
     the Viridian UShER phylogeny from Hunt et al. (2024)\cite{Hunt2024}.
     \label{fig:mutational_spectra}
 }
