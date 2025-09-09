@@ -237,7 +237,7 @@ should provide a strong basis for future studies of SARS-CoV-2.
 Sc2ts reconstructs an ARG by incrementally adding batches of sequences as they become available
 (Figure~\ref{fig:methodology}; for details, see STAR Methods).
 First, sc2ts infers likely ``copying paths'' connecting each sample in the batch to node(s) in the current ARG
-(allowing recombination) using the Li and Stephens (LS) model\cite{Li2003},
+(allowing recombination) using the Li and Stephens (LS) model\cite{LiStephens2003},
 which is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination on genetic inheritance.
 As recombination is relatively rare in viruses,
@@ -514,7 +514,7 @@ XAJ & 11 & \textbf{BA.2.12} & 18 & {} \\
 
 %%% TODO: Mention RIPPLES somewhere here? Or just in Discussion?
 We compared sc2ts against three state-of-the-art methods that detect inter-lineage recombinants:
-RecombinHunt\cite{Alfonsi2024}, CovRecomb\cite{Li2024}, and rebar (https://github.com/phac-nml/rebar).
+RecombinHunt\cite{Alfonsi2024}, CovRecomb\cite{Li2024CovRecomb}, and rebar (https://github.com/phac-nml/rebar).
 These methods use the same underlying approach:
 they scan candidate recombinant sequences for mutations associated with different Pango lineages
 without using a phylogeny.
@@ -524,7 +524,7 @@ identifying the Pango lineages of recombinant parents and locating recombination
 we focus on the Pango Xs associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
 using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
 For RecombinHunt and CovRecomb, we summarized detection results for these Pango Xs, if available,
-reported in the original studies\cite{Alfonsi2024,Li2024} (STAR Methods).
+reported in the original studies\cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
 For each method, we determined the Pango Xs for which the inferred parental lineages and breakpoint intervals
 are concordant with those identified by the community (STAR Methods).
 We found that the methods performed well overall,
@@ -544,17 +544,16 @@ a lower distance between their Pango identity (Figure \ref{fig:averted_mutations
 \begin{table}
 \caption{
 Concordance among methods in characterizing Pango X lineages.
-Only the Pango X lineages associated with the Type 1 recombination events
-are considered in these comparisons.
+These comparisons focus on the Pango X lineages associated with
+the Type 1 recombination events (Table \ref{tab:pango_x_lineages})
 For each method, we calculated the number of Pango X lineages
 which have inferred parent Pango lineages and breakpoint intervals
 concordant with those proposed by the community.
 The denominators indicate the number of Pango X lineages
-for which detection results are available from the original studies.
+for which detection results are available from the original studies\cite{Alfonsi2024,Li2024CovRecomb}.
 For the Pango X lineages with non-overlapping breakpoint intervals,
 the distances between the inferred breakpoint intervals and 
 those proposed by the community are shown (median and range).
-Related to Table \ref{tab:pango_x_lineages}.
 }
 \label{tab:method_concordance}
 \begin{tabular}{lccc}
@@ -640,7 +639,7 @@ We find an overall preponderance of breakpoint intervals towards the 3’ end of
 particularly at the left boundary of the Spike gene
 (Figure~\ref{fig:recombinant_intervals}A,B),
 consistent with patterns observed in previous 
-studies\cite{Turakhia2022,Li2024}.
+studies\cite{Turakhia2022,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
@@ -1194,7 +1193,7 @@ with the sequences collected since the previous batch (Figure
 \ref{fig:methodology}).
 We used daily batches for SARS-CoV-2,
 and use days as the time interval for clarity in what follows.
-The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{Li2003}
+The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{LiStephens2003}
 for each sequence in the daily batch to the current ARG.
 These copying paths will mostly consist of a new sample sequence copying
 from a node in the ARG with a small number of mutations,
@@ -1266,7 +1265,7 @@ Tskit is widely used in population genetics, and has been incorporated into many
 
 \subsubsection*{Li and Stephens haplotype-copying model}
 
-LS model \cite{Li2003} is an approximation of the coalescent with recombination
+LS model \cite{LiStephens2003} is an approximation of the coalescent with recombination
 that captures many of the key features of the joint processes of mutation and recombination.
 It is widely used in a range of applications in population genetics, including ARG 
 % Does Threads use LS?
@@ -1276,7 +1275,7 @@ which are probabilistically emitted as an imperfect mosaic of a set of genomes i
 The process of switching between the genomes in the reference panel is governed by a transition matrix,
 and mismatches between a focal genome and a genome of the reference panel (from which it is ``copied'') are permitted as emissions.
 
-In the original formulation of the LS model (see Appendix S1 of \cite{Li2003}),
+In the original formulation of the LS model (see Appendix S1 of \cite{LiStephens2003}),
 the probability of switching between the hidden states (i.e., genomes in a reference panel)
 when going from one site to the next is dependent on
 (1) the rate of recombination between the sites and
@@ -1656,7 +1655,7 @@ so that they are right-exclusive by adding one to the right coordinate.
 For CovRecomb, we summarized the detection results for the Pango Xs as follows. 
 First, we obtained the "independent" recombination events 
 corresponding to the Pango Xs (if available) 
-identified by Li et al.\cite{Li2024} (see Table S4 of the study).
+identified by Li et al.\cite{Li2024CovRecomb} (see Table S4 of the study).
 When multiple events corresponded to a Pango X, 
 we took the results of the event having the most epidemic recombinants. 
 Then, for other Pango Xs, we collated the data from a file (URL) 
@@ -1815,7 +1814,7 @@ although filtering the recombination events to the 356 with better support revea
 
 \subsection{Analysis of deletions}\label{sec:supplement_dels}
 % Referenced by the main Results.
-Li et al.\cite{Li2023} performed a large-scale analysis of indels 
+Li et al.\cite{LiStephens2003} performed a large-scale analysis of indels 
 using a global GISAID dataset (sampled up to August, 2022). 
 We examined the major indels reported in Table S1 of that study 
 which have a minimum frequency of 1\% 
