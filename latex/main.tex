@@ -609,7 +609,7 @@ with improved sampling if still possible.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{fig_recombinant_evidence.pdf}
+    \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
     \caption{Evidence for recombination in the ARG. All plots show ``robust'' sc2ts recombination nodes, colored according
 to their classification by rebar (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations when recombination allowed ($y$: right axis)
@@ -1614,7 +1614,7 @@ as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in BA.2.9.
 
 
-\subsubsection{Mutational spectra}
+\subsubsection*{Mutational spectra}
 To validate the mutational information contained in the sc2ts ARG,
 we compared the all-site mutational spectra of major VOCs in the ARG,
 a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024}, and
@@ -1643,7 +1643,7 @@ We used the mutations above the samples based on their Scorpio labels,
 which are available in the Viridian metadata provided by Hunt et al.\cite{Hunt2024}.
 
 
-\subsubsection{Concordance among recombination detection methods}
+\subsubsection*{Concordance among recombination detection methods}
 For RecombinHunt, we obtained two sets of detection results. 
 One set is based on mutational profiles calculated from a global GISAID dataset, 
 and the other set from a global Nextstrain dataset. 
@@ -1830,10 +1830,12 @@ The 686 deletion occurs below our threshold for inclusion into the ARG.
 \begin{table}
 \caption{Major deletions in Li et al. (2023).}
 \label{tab:indels}
+\begin{center}
 \begin{tabular}{rrcrrrr}
-\toprule & \multicolumn{4}{c}{Li et al. (2023)} & \multicolumn{2}{c}{Sc2ts ARG} \\
+\toprule 
+& \multicolumn{4}{c}{Li et al. (2023)} & \multicolumn{2}{c}{Sc2ts ARG} \\
 \cmidrule(lr){1-5} \cmidrule(lr){6-7}
-Start & Length & Region & Count & Frequency (%) & Count & Frequency (%)\\
+Start & Length & Region & Count & Frequency (\%) & Count & Frequency (\%)\\
 \midrule
 28362 & 9 & N & 3939164 & 43.0525 & 871774 & 35.1216 \\
 28271 & 1 & Intergenic & 3853692 & 42.1183 & 1118363 & 45.0561 \\
@@ -1850,6 +1852,7 @@ Start & Length & Region & Count & Frequency (%) & Count & Frequency (%)\\
 686 & 9 & ORF1ab-nsp1 & 115450 & 1.2618 & N/A & N/A \\
 \bottomrule
 \end{tabular}
+\end{center}
 \end{table}
 
 
