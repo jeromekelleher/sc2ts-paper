@@ -7,6 +7,7 @@ import fileinput
 from pathlib import Path
 
 import msprime  # only for the NODE_IS_RE_EVENT flag
+import pandas as pd
 import sc2ts
 import tskit
 import tszip
@@ -32,6 +33,77 @@ def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
     )
     return ts
 
+def standard_recombinant_labels(ts, pango_x_events_file):
+    """
+    Return a standard set of labels for "known" recombination nodes
+    (Pango Xs plus hord-coded Jackson recombinants). The
+    pango_x_events_file should be a path to pango_x_events.csv
+    """
+    df = sc2ts.node_data(ts).set_index("sample_id")
+    pango_x_events = pd.read_csv(pango_x_events_file)
+    tree = ts.first()  # Assume the first tree gives  areasonable number of descendant samples for a RE node
+    # First keep all the standard recombinants
+    use = pango_x_events.root_type == "R"
+    # Cases where one PangoX has multiple RE nodes (only XM), use the one with the most descendants
+    for p in np.unique(pango_x_events[use].root_pango):
+        match = pango_x_events.root_pango == p
+        if sum(match) > 1:
+            use[match] = False
+            sorted_indexes = sorted(
+                np.where(match)[0],
+                key=lambda i: tree.num_samples(pango_x_events.closest_recombinant[i])
+            )
+            use[sorted_indexes[-1]] = True
+    
+    labels = {row.closest_recombinant: row.root_pango for row in pango_x_events[use].itertuples()}
+    assert len(labels) == np.sum(use)
+    
+    labels = {row.closest_recombinant: row.root_pango for row in pango_x_events[use].itertuples()}
+    for re_node, rows in pango_x_events[pango_x_events.root_type != "R"].groupby("closest_recombinant"):
+        if re_node >=0:
+            # exclude those with > 100,000 descendants (to exclude BA.5 as a RE node)
+            if re_node not in labels and tree.num_samples(re_node) < 1e5:
+                if len(rows) == 1:
+                    labels[re_node] = rows.iloc[0].root_pango
+                else:
+                    labels[re_node] = "/".join(rows.root_pango.values)
+    
+    # Tweak the "XBB.1" RE node label, which should have a bespoke label because it's not
+    # reflective of the majority of XBB.1 samples
+    XBB_1 = [k for k, v in labels.items() if v == "XBB.1"][0]
+    labels[XBB_1] = "XBB.x1"
+    Xx = [k for k, v in labels.items() if "XZ" in v][0]
+    labels[Xx] = "Xx"
+    
+    # Add particular pangos that are not X but are recombinants
+    
+    for re_pango in ["BQ.1.21"]:
+        potential_re_node = ts.first().mrca(*df.loc[df.pango == re_pango, "node_id"])
+        assert ts.node(potential_re_node).flags & sc2ts.NODE_IS_RECOMBINANT
+        labels[potential_re_node] = re_pango
+    
+    # Add the Jackson recombinants
+    XA = [k for k, v in labels.items() if v == "XA"][0]
+    labels[XA] = "XA(JA)"
+    
+    jackson_recombs = {
+        "JB": "ERR5058070",
+        "JC": "ERR5232711",
+        "JD": "ERR5335088",
+        "J1": "ERR5054123", # CAMC-CBA018
+        "J2": "ERR5304348", # MILK-103C712
+        "J3": "ERR5238288", # QEUH-1067DEF
+    }
+    
+    for label, sample_id in jackson_recombs.items():
+        u = df.loc[sample_id, "node_id"]
+        it = tree.ancestors(u)
+        while not(ts.nodes_flags[u] & sc2ts.NODE_IS_RECOMBINANT):
+            u = next(it)
+        assert u != -1
+        labels[int(u)] = label
+    
+    return labels
 
 def load_dataset(filename="viridian_mafft_2024-10-14_v1.vcz.zip"):
     return sc2ts.Dataset(os.path.join(TSDIR, filename), date_field="Date_tree")
