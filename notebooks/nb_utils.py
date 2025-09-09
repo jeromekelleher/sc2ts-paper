@@ -77,10 +77,10 @@ def standard_recombinant_labels(ts, pango_x_events_file):
     
     # Add particular pangos that are not X but are recombinants
     
-    for re_pango in ["BQ.1.21"]:
-        potential_re_node = ts.first().mrca(*df.loc[df.pango == re_pango, "node_id"])
-        assert ts.node(potential_re_node).flags & sc2ts.NODE_IS_RECOMBINANT
-        labels[potential_re_node] = re_pango
+    #for re_pango in ["BQ.1.21"]:  # BQ.1.21 is not robust, so skip it
+    #    potential_re_node = ts.first().mrca(*df.loc[df.pango == re_pango, "node_id"])
+    #    assert ts.node(potential_re_node).flags & sc2ts.NODE_IS_RECOMBINANT
+    #    labels[potential_re_node] = re_pango
     
     # Add the Jackson recombinants
     XA = [k for k, v in labels.items() if v == "XA"][0]
