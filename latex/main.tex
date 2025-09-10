@@ -162,13 +162,12 @@ ancestral recombination graphs, population genetics, recombination, tree sequenc
 %%% No subheadings, please. Use of abbreviations should be kept to a minimum,
 %%% and nonstandard abbreviations should be defined when first used in the text.
 
-The genomic revolution has brought about a paradigm shift
-in the way we study the evolution and spread of pathogens,
+The genomic revolution has transformed how we study the evolution and spread of pathogens,
 allowing real-time tracking of pathogens over time and space.
 During the COVID-19 pandemic, thousands of SARS-CoV-2 genome sequences were generated daily,
 quickly overwhelming typical phylogenetic approaches.
 Although real-time phylogenetic methods now exist to cope with this flood of genomic data
-(e.g., UShER\cite{Turakhia2021,DeMaio2023}),
+(e.g., UShER \cite{Turakhia2021} and MAPLE \cite{DeMaio2023}),
 we lack methods to build phylogenies that can integrate recombination
 in the face of ongoing sampling of infected cases.
 
@@ -184,13 +183,18 @@ for example, increased transmissibility, disease severity, and immune escape.
 Beyond supporting real-time genomic epidemiology,
 UShER phylogenies have been used in a multitude of evolutionary and epidemiological studies of SARS-CoV-2
 (e.g., \cite{Karthikeyan2022,Obermeyer2022,Turakhia2022,Bloom2023}).
-UShER uses a tree to represent evolutionary change via mutation, assuming no recombination \cite{Turakhia2021}.
-However, given extensive evidence for recombination in SARS-CoV-2 \cite{Jackson2021,VanInsberghe2021,Focosi2022,Gutierrez2022,Ignatieva2022,Tamura2023},
+UShER uses a tree to represent evolutionary change via mutation,
+assuming no recombination \cite{Turakhia2021}.
+However, given extensive evidence for recombination in SARS-CoV-2
+\cite{Jackson2021,VanInsberghe2021,Focosi2022,Gutierrez2022,Ignatieva2022,Tamura2023},
 the tree-like representation of UShER is no longer tenable.
 
-Ancestral Recombination Graphs (ARGs) are reticulate genealogies that incorporate both mutation and recombination events \cite{Wong2024},
-potentially allowing more comprehensive evolutionary representations of SARS-CoV-2 and other viruses undergoing recombination.
-Until recently, ARGs lacked software support and sufficiently scalable inference methods to be of practical use.
+Ancestral Recombination Graphs (ARGs) are reticulate genealogies
+that incorporate both mutation and recombination events \cite{Wong2024},
+potentially allowing more comprehensive evolutionary representations of SARS-CoV-2
+and other viruses undergoing recombination.
+Until recently, ARGs lacked software support and
+sufficiently scalable inference methods to be of practical use.
 Recent advances enable ARG inference for tens to hundreds of thousands of human genomes \cite{Kelleher2019,Speidel2019,Zhang2023},
 with high levels of recombination.
 These advances now enable evolutionary genealogies to be built quickly and at scale, and
@@ -198,14 +202,16 @@ there is a surge of excitement in the inference and applications of ARGs \cite{B
 
 Previous ARG methods are retrospective \cite{Rasmussen2014,Kelleher2019,Speidel2019,Ignatieva2022,Zhang2023},
 reconstructing the past from a sample of genome sequences drawn at one moment in time,
-but scientists are increasingly tracking evolutionary change as it happens, accumulating data forward in time.
+but scientists are increasingly tracking evolutionary change as it happens,
+accumulating data forward in time.
 For example, sequences from daily samples of SARS-CoV-2 were made globally available on a daily basis,
 leading to over 17 million sequences in the GISAID database \cite{Shu2017}.
 
 Here, we present
 (1) sc2ts, a new method to infer ARGs in real time by building genealogies forward in time, and
 (2) an ARG for SARS-CoV-2 with ~2.48 million genome sequences.
-We used the ``Viridian'' dataset, which is purged of various systematic errors and artifacts \cite{Hunt2024} and
+We used the ``Viridian'' dataset,
+which is purged of various systematic errors and artifacts \cite{Hunt2024} and
 show that this ARG is highly congruent to an UShER phylogeny built from the same dataset.
 Compared to previously identified recombinants,
 we show that this ARG contains the vast majority of epidemiologically relevant signals of recombination,
@@ -237,7 +243,7 @@ should provide a strong basis for future studies of SARS-CoV-2.
 Sc2ts reconstructs an ARG by incrementally adding batches of sequences as they become available
 (Figure~\ref{fig:methodology}; for details, see STAR Methods).
 First, sc2ts infers likely ``copying paths'' connecting each sample in the batch to node(s) in the current ARG
-(allowing recombination) using the Li and Stephens (LS) model\cite{LiStephens2003},
+(allowing recombination) using the Li and Stephens (LS) model \cite{LiStephens2003},
 which is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination on genetic inheritance.
 As recombination is relatively rare in viruses,
@@ -250,7 +256,8 @@ Finally, sc2ts attaches the phylogenies of the clusters to the current ARG, and
 applies parsimony-improving heuristics to address issues introduced by the inherent greediness of this strategy.
 
 Sc2ts uses collection dates to build a time-resolved ARG.
-When examining preliminary ARGs, we found samples that introduced large numbers of mutations (and reversions),
+When examining preliminary ARGs,
+we found samples that introduced large numbers of mutations (and reversions),
 likely due to errors in their collection dates
 (for example, a large batch of samples dated 31 December, 2020 contains samples from Omicron BA.1,
 which is estimated to have emerged in November, 2021; REF).
@@ -259,8 +266,8 @@ We define the ``HMM cost'' of a sample to be
 the total penalty cost for switches and mismatches (mutations) in its copying path.
 We parameterize the LS model such that each mismatch has a penalty cost of one
 and a switch has a penalty cost of $k$ (here, set to 4),
-which determines how much mutation is favored over recombination when accounting for a 
-sample (Figure~\ref{fig:methodology}).
+which determines how much mutation is favored over recombination
+when accounting for a sample (Figure~\ref{fig:methodology}).
 If the HMM cost of a sample exceeds a threshold (here, set to 7),
 sc2ts does not immediately add the sample to the ARG.
 
@@ -283,10 +290,22 @@ First arising in geographic regions with low sampling density,
 the initial origins of these VOC are challenging to infer (REF).
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.85\linewidth]{sc2ts_methodology}
-    \caption{Schematic overview of sc2ts. (A) Procedure to build an ARG by incrementally updating it with samples sorted by collection dates. Sample 0 is used to initialize the ARG as the root. Next, Sample 1 is attached, mapping mutations onto the new branch to explain it. When Sample 4 is detected as a recombinant, a node representing the recombination event is inserted with two edges connecting to its parents, with Sample 4 itself attached to this node as its child. The resulting ARG contains two local trees, one on each side of the inferred breakpoint. (B) Copying paths for Sample 4 inferred under the LS model while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).}
-    \label{fig:methodology}
+\centering
+\includegraphics[width=0.85\linewidth]{sc2ts_methodology}
+\caption{
+Schematic overview of sc2ts.
+(A) Procedure to build an ARG by incrementally updating it with samples sorted by collection dates.
+Sample 0 is used to initialize the ARG as the root.
+Next, Sample 1 is attached, mapping mutations onto the new branch to explain it.
+When Sample 4 is detected as a recombinant,
+a node representing the recombination event is inserted with two edges connecting to its parents,
+with Sample 4 itself attached to this node as its child.
+The resulting ARG contains two local trees,
+one on each side of the inferred breakpoint.
+(B) Copying paths for Sample 4 inferred under the LS model
+while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
+}
+\label{fig:methodology}
 \end{figure}
 
 
@@ -305,13 +324,13 @@ Figure~\ref{fig:recombinant_qc}; see STAR Methods)
 reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary history.
 
 The ARG represents the full evolutionary history of SARS-CoV-2 and 
-is in close agreement with a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024}.
-First, we validated the broad structure of the ARG against the UShER phylogeny\cite{Hunt2024}
+is in close agreement with a state-of-the-art UShER phylogeny built using the Viridian dataset \cite{Hunt2024}.
+First, we validated the broad structure of the ARG against the UShER phylogeny \cite{Hunt2024}
 by pruning both down to representative samples for 1097 deeply-sampled lineages (STAR Methods).
 Tanglegrams reveal that the ARG captures known phylogenetic relationships
 both within sublineages and at the level of major lineages (including VOCs),
-with good agreement between the phylogenetic bipartitions in the ARG and the UShER 
-phylogeny (Figure~\ref{fig:phylo_backbones}).
+with good agreement between the phylogenetic bipartitions
+in the ARG and the UShER phylogeny (Figure~\ref{fig:phylo_backbones}).
 Next, we compared the high-level properties of the sc2ts and UShER inferences from the Viridian dataset
 by pruning both to their intersection of 2,475,418 samples and 27,431 sites.
 % TODO this is out of date and needs to be rewritten along with supplementary 
@@ -320,7 +339,7 @@ Remarkably, given the differences in inference methods and data processing pipel
 they are almost identically parsimonious,
 with sc2ts requiring 4,208 (0.23\%) fewer mutations than UShER (1,843,132 for UShER vs 1,838,924 for sc2ts).
 We also compared the mutational spectra of major VOCs in the ARG against the mutational spectra 
-from the Viridian UShER phylogeny\cite{Hunt2024} and a previous study\cite{Bloom2023} (STAR Methods),
+from the Viridian UShER phylogeny \cite{Hunt2024} and a previous study \cite{Bloom2023} (STAR Methods),
 finding a close match to them (Figure~\ref{fig:mutational_spectra}).
 
 Input genome alignments are masked in sc2ts
@@ -367,44 +386,46 @@ nodes (Document~\ref{sec:supplement_pango_lineages}).
 As new data became available during the pandemic,
 volunteers continually detected recombinants which might have concerning features,
 particularly increased transmissibility, disease severity, and
-ability to escape natural or vaccine-induced immunity (e.g., XBB\cite{Tamura2023}).
+ability to escape natural or vaccine-induced immunity (e.g., \cite{Tamura2023}).
 The process of gathering evidence for and characterizing such recombinants is manual,
 involving visual inspection of phylogenies for unusual branches
 caused by forcibly placing recombinant sequences onto them,
 typically followed by visual analysis of genome sequence alignments
 to identify parental lineages and breakpoint locations.
 This process has resulted in the designation of recombinant Pango lineages
-(whose aliases begin with an ``X''), to which we refer as ``Pango X''.
-Below, we summarize our analysis of the Pango Xs in the ARG
+(whose aliases begin with an ''X'', e.g., XA and XBB).
+Below, we summarize our analysis of the Pango X lineages in the ARG
 (for extended analyses, see Document~\ref{sec:supplement_pango_lineages} and Document S2).
 
-We find strong evidence for the recombination events leading to 17 Pango Xs in
-the ARG (Table~\ref{tab:pango_x_lineages}), all of which pass the 
-robustness filtering criteria (Figure~\ref{fig:recombinant_qc}). 
+We find strong evidence for the recombination events leading to 17 Pango X lineages
+in the ARG (Table~\ref{tab:pango_x_lineages}),
+all of which pass the robustness filtering criteria (Figure~\ref{fig:recombinant_qc}).
 %% JK: Does saying this here help at all? I think we may be better off without 
 % These events are supported by high numbers of averted
 % mutations (Table 1) and high numbers of loci matching their suggested parents
 % (see their copying patterns in Figure SX). 
-Among these Pango Xs are XA,
-which is the first designated Pango X that showed signs of onward transmission\cite{Jackson2021}, and
-XBB, which escaped vaccine-induced immunity and gained global prevalence\cite{Tamura2023}.
+Among these Pango X lineages are XA,
+which is the first designated Pango X lineage that
+showed signs of onward transmission \cite{Jackson2021}, and
+XBB, which escaped vaccine-induced immunity and gained global prevalence \cite{Tamura2023}.
 The recombinant origin of XA is well explained in the ARG by two parents and one mutation
 (Figure~\ref{fig:subgraphs}A; Table~\ref{tab:pango_x_lineages}), 
 with sc2ts correctly identifying its parental Pango lineages and breakpoint location.
 
-Furthermore, some of the Pango Xs above originate from shared recombination events in the 
-ARG (Table~\ref{tab:pango_x_lineages}).
+Furthermore, some of the Pango X lineages above originate from
+shared recombination events in the ARG (Table~\ref{tab:pango_x_lineages}).
 An example of a set of ``nested'' closely related Pango Xs consists of XZ, XAC, XAD, XAE, and XAP,
 which descend from a single recombination event rather than five independent
 events in the ARG (Figure~\ref{fig:subgraphs}B).
-These Pango Xs were designated around the same time.
+These Pango X lineages were designated around the same time.
 These results highlight that the ARG can help clarify the relationships between recombinants,
 allowing more precise interpretation of evidence for recombination.
 
-Sc2ts identified 12 Pango Xs in the ARG as non-recombinants
+Sc2ts identified 12 Pango X lineages in the ARG as non-recombinants
 (Table~\ref{tab:pango_x_lineages}), on the basis of the HMM and available data.
-For all these Pango Xs, the number of recombination-informative sites fell below our threshold of detection (i.e. $k = 4$ in the HMM).
-The fact that most of these Pango Xs (except XAJ and XAN) differ from a single parent node in the ARG
+For all these Pango X lineages, the number of recombination-informative sites
+fell below our threshold of detection (i.e. $k = 4$ in the HMM).
+The fact that most of these Pango X lineages (except XAJ and XAN) differ from a single parent node in the ARG
 by at most three mutations (Table~\ref{tab:pango_x_lineages}) strongly supports 
 their origins as non-recombinants.
 For example, the closely related XN and XAU can be explained by two mutations
@@ -412,7 +433,7 @@ and one mutation in the ARG, respectively (Figure~\ref{fig:subgraphs}C).
 %%% TODO: Say something about XAJ and XAN.
 %JK: we should weaken this statement a bit, as we're not certain that they 
 % really are recombinants, especially XP.
-However, sc2ts did not detect several Pango Xs (XB, XP, and XAJ) as recombinants
+However, sc2ts did not detect several Pango X lineages (XB, XP, and XAJ) as recombinants
 because the HMM treated characteristic deletions as missing data.
 
 
@@ -422,7 +443,7 @@ because the HMM treated characteristic deletions as missing data.
 \caption{
 Illustrative subgraphs in the ARG.
 (A) Subgraph around the recombination node associated with the XA.
-Two "Group A" recombinant samples reported by Jackson et al.\cite{Jackson2021}) are shown.
+Two "Group A" recombinant samples reported by Jackson et al. \cite{Jackson2021}) are shown.
 (B) Subgraph around the recombination node associated with a group of ``nested'' Pango X lineages; and
 (C) Subgraph around the MRCA of the closely related non-recombinants XN and XAU.
 The nodes assigned to a Pango X lineage are colored by that lineage.
@@ -525,17 +546,19 @@ XAJ & 11 & \textbf{BA.2.12} & 18 & {} \\
 
 %%% TODO: Mention RIPPLES somewhere here? Or just in Discussion?
 We compared sc2ts against three state-of-the-art methods that detect inter-lineage recombinants:
-RecombinHunt\cite{Alfonsi2024}, CovRecomb\cite{Li2024CovRecomb}, and rebar (https://github.com/phac-nml/rebar).
+RecombinHunt \cite{Alfonsi2024}, CovRecomb \cite{Li2024CovRecomb}, and rebar (https://github.com/phac-nml/rebar).
 These methods use the same underlying approach:
-they scan candidate recombinant sequences for mutations associated with different Pango lineages
+they scan candidate recombinant sequences for mutations 
+associated with different Pango lineages
 without using a phylogeny.
 
 To evaluate the concordance of the methods in
 identifying the Pango lineages of recombinant parents and locating recombination breakpoints,
 we focus on the Pango X lineages associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
 using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
-For RecombinHunt and CovRecomb, we summarized the detection results for these Pango X lineages (if available)
-reported in the original studies\cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
+For RecombinHunt and CovRecomb,
+we summarized the detection results for these Pango X lineages (if available)
+reported in the original studies \cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
 For each method, we determined the Pango X lineages
 for which the inferred parental lineages and breakpoint intervals
 are concordant with those identified by the community (STAR Methods).
@@ -546,7 +569,8 @@ indicating that sc2ts can characterize recombinants as well as the state-of-the-
 Furthermore, we compared the sensitivity of sc2ts and rebar.
 We ran rebar on the ``robust'' recombination events detected by sc2ts (STAR Methods),
 and found that 167 (43\%) of them were also detected as recombinants by rebar.
-We hypothesize that this disagreement arose from differences in sensitivity between these methods.
+We hypothesize that this disagreement arose from
+differences in sensitivity between these methods.
 Consistent with this, we found that rebar needs a higher level of divergence between parents
 to correctly classify a sequence as recombinant, as shown by
 a shorter time to their MRCA (Figure \ref{fig:averted_mutations}B) and
@@ -557,12 +581,12 @@ a lower distance between their Pango identity (Figure \ref{fig:averted_mutations
 \caption{
 Concordance among methods in characterizing Pango X lineages.
 These comparisons focus on the Pango X lineages associated with
-the Type 1 recombination events (Table \ref{tab:pango_x_lineages})
+the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
 For each method, we calculated the number of Pango X lineages
 which have inferred parent Pango lineages and breakpoint intervals
 concordant with those proposed by the community.
 The denominators indicate the number of Pango X lineages
-for which detection results are available from the original studies\cite{Alfonsi2024,Li2024CovRecomb}.
+for which detection results are available from the original studies \cite{Alfonsi2024,Li2024CovRecomb}.
 For the Pango X lineages with non-overlapping breakpoint intervals,
 the distances between the inferred breakpoint intervals and 
 those proposed by the community are shown (median and range).
@@ -589,21 +613,22 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 %%% The second and third paragraphs should probably be removed entirely.
 Sc2ts provides a method to facilitate the discovery of recombination events,
 by comparing how well a sample fits the ARG under a model allowing recombination
-versus a model disallowing recombination, as measured by the number of resulting 
-mutations (Figure~\ref{fig:methodology}).
-The more mutations are ``averted'' by allowing recombination, the stronger the 
-evidence for recombination.
-We calculated the number of averted mutations for all the ``robust'' recombination 
-events (STAR Methods),
+versus a model disallowing recombination,
+as measured by the number of resulting mutations (Figure~\ref{fig:methodology}).
+The more mutations are ``averted'' by allowing recombination,
+the stronger the evidence for recombination.
+We calculated the number of averted mutations for
+all the ``robust'' recombination events (STAR Methods),
 which include all the Pango X-associated recombination events
-(Table~\ref{tab:pango_x_lineages}) and those studied by Jackson et
-al.\cite{Jackson2021} (Table \ref{tab:jackson}).
+(Table~\ref{tab:pango_x_lineages})
+and those studied by Jackson et al. \cite{Jackson2021}
+(Table \ref{tab:jackson}).
 
 Our analysis of the number of averted mutations reveals a spectrum of plausibility
 across all the ``robust'' recombination events
 (Figure~\ref{fig:averted_mutations}A).
-Examples of highly plausible recombinants are XA and XBB (for an extended analysis, 
-see Document~\ref{sec:supplement_pango_lineages}).
+Examples of highly plausible recombinants are XA and XBB
+(for an extended analysis, see Document~\ref{sec:supplement_pango_lineages}).
 The ``copying pattern'' of XA visually confirms
 that a high number of recombination-informative sites support the suggested parents 
 (Figure~\ref{fig:averted_mutations}D).
@@ -620,21 +645,25 @@ Consistent with this, the presence of mutations and conflicting loci matching no
 observed in the copying patterns of these VOCs (Figure 3D) suggests the existence of
 many genetically distinct, unsampled ancestors.
 Future work is needed to test whether these VOCs descended from recombination events,
-with improved sampling if still possible.
+with improved sampling, if possible.
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
-\caption{Evidence for recombination in the ARG. All plots show ``robust'' sc2ts recombination nodes, colored according
-to their classification by rebar (recombinant: purple, non-recombinant: gray).
-(A) Upper: jittered scatterplot comparing number of mutations when recombination allowed ($y$: right axis)
+\caption{
+Evidence for recombination in the ARG. All plots show ``robust'' sc2ts recombination nodes,
+colored according to their classification by rebar
+(recombinant: purple, non-recombinant: gray).
+(A) Upper: jittered scatterplot comparing number of mutations
+when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
 recombination nodes in Table \ref{tab:pango_x_lineages} are labeled starting with `X' and
-those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.g.
-Jackson Group B (JGB) and Jackson Singleton recombinant 1 (JS1). 
+those identified by Jackson et al. \cite{Jackson2021} are prefixed with a `J', e.g.
+Jackson Group B (JGB) and Jackson Singleton recombinant 1 (JS1).
 Point sizes reflect number of descendants.
-Lower: recombination nodes classified by number of mutations averted by allowing recombination (i.e. $x$-$y$).
+Lower: recombination nodes classified by number of mutations averted
+by allowing recombination (i.e. $x$-$y$).
 (B) Distribution of time to the MRCA of the parents of each robust recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns leading to XA, XBB, XBB.1, and the recombinant origin of XZ+XAC+XAD+XAE+XAP;
@@ -646,15 +675,14 @@ each recombination node is a mix of variants matching the left parent (green), t
 \subsection*{Recombination breakpoint intervals along the genome}
 
 We explored the spatial distribution of the breakpoint locations of
-the ``robust'' recombination events along the genome, and quantified how precisely breakpoints were localized.
+the ``robust'' recombination events along the genome,
+and quantified how precisely breakpoints were localized.
 For each event, we computed an interval estimate of its breakpoint location,
 using its size as a measure of precision (median, 2,207 bases; STAR Methods).
 
 We find an overall preponderance of breakpoint intervals towards the 3’ end of the genome,
-particularly at the left boundary of the Spike gene
-(Figure~\ref{fig:recombinant_intervals}A,B),
-consistent with patterns observed in previous 
-studies\cite{Turakhia2022,Li2024CovRecomb}.
+particularly at the left boundary of the Spike gene (Figure~\ref{fig:recombinant_intervals}A,B),
+consistent with patterns observed in previous studies \cite{Turakhia2022,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
@@ -663,18 +691,21 @@ Furthermore, we find a negative relationship between
 breakpoint interval size and the amount of divergence between recombinant parents,
 which is measured by time to their MRCA (Figure~\ref{fig:recombinant_intervals}).
 When the two parental lineages have diverged for longer periods of time (the rightmost points),
-more information becomes available on either side of a breakpoint to pinpoint its location, resulting in shorter intervals.
+more information becomes available on either side of a breakpoint to pinpoint its location,
+resulting in shorter intervals.
 For instance, the breakpoint intervals tend to be the smallest for events involving recombination
-between the deeply divergent Omicron BA.1 and BA.2 sublineages 
+between the deeply divergent Omicron BA.1 and BA.2 sublineages
 (the red points in Figure~\ref{fig:recombinant_intervals}).
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{recombinant_intervals}
-\caption{Recombination intervals. (A) Distribution of the breakpoint
-intervals of the 356 robust recombination events along the genome
-(annotated with gene labels on top). Each line represents an interval colored by its size.
+\caption{
+Recombination intervals.
+(A) Distribution of the breakpoint intervals of the 356 robust recombination events along the genome
+(annotated with gene labels on top).
+Each line represents an interval colored by its size.
 (B) Number of overlapping breakpoint intervals.
 (C) FIXME Heatmap showing the co-occurrence counts of the parents classified by Scorpio designations.
 (D) Relationship between breakpoint interval size and time between the recombination event
@@ -687,7 +718,8 @@ given a single parameter (the mutation rate) (STAR Methods).}
 
 \subsection*{Emergence of recombinants over time}
 
-We examined the frequency of emergence of the recombinants over the course of the COVID-19 pandemic (Figure \ref{fig:recombinants_over_time}).
+We examined the frequency of emergence of the recombinants
+over the course of the COVID-19 pandemic (Figure \ref{fig:recombinants_over_time}).
 We explored two hypotheses for the timing of recombination.
 First, we would expect recombination events to occur more often when case counts are high,
 which increases the chance of co-infection within an individual, allowing recombination.
