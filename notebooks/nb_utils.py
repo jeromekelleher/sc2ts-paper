@@ -66,7 +66,7 @@ def standard_recombinant_labels(ts, pango_x_events_file):
                 if len(rows) == 1:
                     labels[re_node] = rows.iloc[0].root_pango
                 else:
-                    labels[re_node] = "/".join(rows.root_pango.values)
+                    labels[re_node] = "/".join(sorted(rows.root_pango.values))
     
     # Tweak the "XBB.1" RE node label, which should have a bespoke label because it's not
     # reflective of the majority of XBB.1 samples
