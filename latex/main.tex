@@ -126,25 +126,39 @@
 \maketitle
 
 \section*{SUMMARY}
-
-%%% The summary (abstract) should consist of a single paragraph of 150 words or fewer.
-%%% This is the SMBE abstract. We can rewrite or work off of it, but it needs to be shorter.
-Widely used phylogenetic methods to study SARS-CoV-2 evolution assume that genetic recombination is negligible and
-viral relationships can be represented by a single tree.
-However, important SARS-CoV-2 recombinant lineages have emerged.
-A more suitable approach is to use ancestral recombination graphs (ARGs),
-which jointly model recombination, mutation, and genetic inheritance in a cohesive framework.
-Recent computational advances have made ARG inference possible for datasets of millions of genome sequences.
-Building on these new advances, we have developed sc2ts, a scalable method to simultaneously detect recombinants and
-reconstruct ARGs from heterochronous SARS-CoV-2 genome sequences.
-Using sc2ts, we inferred an ARG of 2.48 million genomes sampled from January, 2020 to February, 2023.
-We find that this pandemic-scale ARG unifies known features of SARS-CoV-2 evolution —
-the backbone phylogeny, mutational spectra, and major recognized recombinants.
-This ARG enables us to explore the evolutionary origins of known and novel recombinants.
-Furthermore, the ARG is compactly stored in the tree sequence format using the tskit library and
-can be analyzed efficiently and interactively using standard Python tools on a typical laptop.
-This combination of capabilities makes sc2ts a powerful tool
-for studying the recombination and mutation processes driving SARS-CoV-2 evolution.
+% The dataset is freakin amazing, and will be useful for all sorts of stuff
+% for years to come
+Millions of SARS-CoV-2 whole genome sequences were collected as part of the 
+response to the COVID-19 pandemic, generating a dataset of unprecedented
+depth, richness and potential for informing future studies.
+% Trees are a useful abstraction of the data
+Estimated genealogies, describing the likely inheritance structure among
+the sampled sequences and their putative ancestors, are fundamental to
+% JK: Not happy with this specific phrase, but it's good to emphasise the point
+% that data is not insight, and the sheer volume of data here requires
+% special effort.
+gleaning information from this ocean of data, 
+and form the primary input to many downstream analyses.
+A basic assumption of methods to infer such genealogies from viral 
+genetic sequence data, however, is that recombination is negligible and 
+the genealogy can be described as a tree.
+% Recombination *is* important.
+Recombinant lineages have risen to global prevalance in SARS-CoV-2,
+and therefore such single-tree summaries of the data are necessarily
+incomplete and potentially misleading.
+% What do we do?
+We present sc2ts, a method to infer reticulate genealogies for SARS-CoV-2
+that automaticaly detects and fully incorporates recombination, 
+and apply it to 2.48 million genomes.
+We show that this structure captures a broad range of evolutionary
+features documented in the literature and provides novel 
+insights into the relationships between previously identified
+recombinant lineages.
+% We need to emphasise the *resource*
+Together, the inference method, inferred genealogy and 
+a suite of efficient and flexible open-source analysis tools, 
+represent a powerful resource upon which future research 
+can build.
 
 
 \section*{KEYWORDS}
