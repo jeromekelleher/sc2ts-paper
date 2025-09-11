@@ -3,6 +3,17 @@
 # The base conda environment that snakemake is run from requires
 # snakemake, tszip, pandas and tqdm in order to run the "run"
 # rules (which cannot be used with "conda")
+#
+# It's not entirely automated in terms of parallelism. Running pangolin
+# needs a lot of cores, so in practise you need to do something like this
+# first to get the bit needing parallelism (and lots of memory) done
+#
+# snakemake sc2ts_viridian_v1.2.trees.tsz --cores=40
+# 
+# Then, the rest should just run like
+#
+# snakemake --cores=4
+#
 
 rule all:
     input:
@@ -647,6 +658,3 @@ rule generate_sites_for_remapping:
         """
         python scripts/generate_sites_for_remapping.py {input} {output}
         """
-
-
-

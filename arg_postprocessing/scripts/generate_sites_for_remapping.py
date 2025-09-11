@@ -62,7 +62,7 @@ def run(base_ts, del_data, lineage_data, output_csv, output_txt):
     df.to_csv(output_csv, index=False)
     # We save to CSV and text here because sc2ts wants a text
     # file as input and it's not worth changing that.
-    np.savetxt(df.position.values, output_txt)
+    np.savetxt(output_txt, df.position.values)
 
 
 if __name__ == "__main__":
