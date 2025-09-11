@@ -31,7 +31,7 @@ rule final_args:
     input:
         # Final ARG
         # Order of operations:
-        # 1) prune recombinants (_pp: rematching + long branch split)
+        # 1) prune recombinants (_pr: rematching + long branch split)
         # 2) postprocess (_pp: various minor tweaks)
         # 3) Parsimony mapping (_mp: adding in deletions and recurrent sites)
         # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 3)
@@ -48,10 +48,10 @@ rule final_args:
         # as the others except usher_viridian are derived from this. These 
         # are major.minor, with major versions meaning significant changes,
         # minor being relatively minor tweaks to the ARG
-        "sc2ts_viridian_v1.1.trees.tsz",
+        "sc2ts_viridian_v1.2.trees.tsz",
         "usher_viridian_v1.0.trees.tsz",
-        "sc2ts_viridian_inter_v1.1.trees.tsz",
-        "usher_viridian_inter_v1.1.trees.tsz",
+        "sc2ts_viridian_inter_v1.2.trees.tsz",
+        "usher_viridian_inter_v1.2.trees.tsz",
     log:
         notebook="logs/final_arg_report.ipynb"
     notebook:
