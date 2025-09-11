@@ -125,40 +125,33 @@
 
 \maketitle
 
+%%% The summary (abstract) should consist of a single paragraph of 150 words or
+%%% fewer.
+
 \section*{SUMMARY}
-% The dataset is freakin amazing, and will be useful for all sorts of stuff
-% for years to come
-Millions of SARS-CoV-2 whole genome sequences were collected as part of the 
-response to the COVID-19 pandemic, generating a dataset of unprecedented
-depth, richness and potential for informing future studies.
-% Trees are a useful abstraction of the data
-Estimated genealogies, describing the likely inheritance structure among
-the sampled sequences and their putative ancestors, are fundamental to
-% JK: Not happy with this specific phrase, but it's good to emphasise the point
-% that data is not insight, and the sheer volume of data here requires
-% special effort.
+
+Millions of SARS-CoV-2 genome sequences were collected in
+response to the COVID-19 pandemic, forming a dataset of unprecedented
+depth and richness.
+Estimated genealogies are fundamental to
 gleaning information from this ocean of data, 
 and form the primary input to many downstream analyses.
-A basic assumption of methods to infer such genealogies from viral 
-genetic sequence data, however, is that recombination is negligible and 
-the genealogy can be described as a tree.
-% Recombination *is* important.
+A basic assumption of methods to infer genealogies from viral 
+genetic sequence data is that recombination is negligible and 
+the genealogy is a tree.
 Recombinant lineages have risen to global prevalance in SARS-CoV-2,
-and therefore such single-tree summaries of the data are necessarily
+and therefore such single-tree representations are necessarily
 incomplete and potentially misleading.
-% What do we do?
 We present sc2ts, a method to infer reticulate genealogies for SARS-CoV-2
-that automaticaly detects and fully incorporates recombination, 
+that automaticaly detects and incorporates recombination, 
 and apply it to 2.48 million genomes.
-We show that this structure captures a broad range of evolutionary
-features documented in the literature and provides novel 
+We show that the inferred genealogy captures a broad range of 
+known evolutionary features and provides novel 
 insights into the relationships between previously identified
 recombinant lineages.
-% We need to emphasise the *resource*
 Together, the inference method, inferred genealogy and 
-a suite of efficient and flexible open-source analysis tools, 
-represent a powerful resource upon which future research 
-can build.
+suite of open-source analysis tools, 
+represent a powerful resource for future research.
 
 
 \section*{KEYWORDS}
@@ -169,7 +162,7 @@ can build.
 %%%  in the final article metadata. Please note that
 %%%  for some journals, keywords are chosen by the editors.
 
-ancestral recombination graphs, population genetics, recombination, tree sequence, SARS-CoV-2
+Ancestral recombination graphs, population genetics, recombination, tree sequence, SARS-CoV-2
 
 
 \section*{INTRODUCTION}
