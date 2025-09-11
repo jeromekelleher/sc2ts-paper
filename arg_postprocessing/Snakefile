@@ -156,7 +156,7 @@ rule map_parsimony:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
         "{MP_PREFIX}.trees",
-        "remapped_sites.txt",
+        "{MP_PREFIX}_sites_to_remap.txt",
     output:
         "{MP_PREFIX}_mp.trees",
         "{MP_PREFIX}_mp.csv",
@@ -609,3 +609,44 @@ rule add_rebar_to_csv:
         """
         python scripts/add_rebar_to_csv.py {input} {output}
         """
+
+
+#######
+# Sites for remapping
+#######
+
+rule lineage_mutations:
+    output:
+        "lineage_mutations.json"
+    shell:
+        """
+        curl -o {output} https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage_mutations.json
+        """
+
+
+rule deletion_site_data:
+    output:
+        "Li_et_al_TableS1.xlsx"
+    shell:
+        """
+        curl -o {output} https://figshare.com/ndownloader/files/40119535
+        """
+
+rule generate_sites_for_remapping:
+    conda: "sc2ts.yml"
+    input: 
+        "{GSR_PREFIX}.trees",
+        "Li_et_al_TableS1.xlsx",
+        "lineage_mutations.json",
+    output:
+        # We store a CSV and text file so that we can see the reason
+        # for analysis and also just pass the list to sc2ts.
+        "{GSR_PREFIX}_sites_to_remap.csv",
+        "{GSR_PREFIX}_sites_to_remap.txt",
+    shell:
+        """
+        python scripts/generate_sites_for_remapping.py {input} {output}
+        """
+
+
+
