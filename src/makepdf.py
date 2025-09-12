@@ -24,7 +24,7 @@ def convert_file(infile, outdir):
             page = context.new_page()
             page.goto("file://" + str(infile))
             page.emulate_media(media="print")
-            page.pdf(path=outfile.with_suffix('.pdf'))
+            page.pdf(path=str(outfile) + '.pdf')
             browser.close()
 
     elif infile.suffix == ".ipynb":
