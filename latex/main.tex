@@ -331,14 +331,16 @@ Tanglegrams reveal that the ARG captures known phylogenetic relationships
 both within sublineages and at the level of major lineages (including VOCs),
 with good agreement between the phylogenetic bipartitions
 in the ARG and the UShER phylogeny (Figure~\ref{fig:phylo_backbones}).
-Next, we compared the high-level properties of the sc2ts and UShER inferences from the Viridian dataset
-by pruning both to their intersection of 2,475,418 samples and 27,431 sites.
-% TODO this is out of date and needs to be rewritten along with supplementary 
-% analysis
-Remarkably, given the differences in inference methods and data processing pipelines,
-they are almost identically parsimonious,
-with sc2ts requiring 4,208 (0.23\%) fewer mutations than UShER (1,843,132 for UShER vs 1,838,924 for sc2ts).
-We also compared the mutational spectra of major VOCs in the ARG against the mutational spectra 
+Next, we compared the sc2ts and UShER inferences 
+from the Viridian dataset
+by pruning both to their intersection of 2,475,418 samples and 27,507 sites,
+% JK: this feels a bit wishy washy, but there really is no simple answer to
+% this and I don't want to claim we're more parsimonious.
+and found they were very similar in terms of parsimony
+when accounting for various differences in the data represented
+(Document~\ref{sec:supplement_sc2ts_usher_parsimony}).
+We also compared the mutational spectra of major VOCs in the ARG against 
+the mutational spectra 
 from the Viridian UShER phylogeny \cite{Hunt2024} and a previous study \cite{Bloom2023} (STAR Methods),
 finding a close match to them (Figure~\ref{fig:mutational_spectra}).
 
