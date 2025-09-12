@@ -15,6 +15,11 @@
 # snakemake --cores=4
 #
 
+# Notes on saved files in the data directory
+#
+# recombinants.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
+# pango_x_events.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
+# deletion_events.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
 rule all:
     input:
         # Base debug report
@@ -23,10 +28,8 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
         # Comparison between sc2ts and usher ARGs
         "logs/usher_sc2ts_comparison.ipynb",
-        # Report on deletion and parsimony mapping. We do this 
-        # towards the end of the pipeline so that the parsimony
-        # heuristics have a chance to work with the remapped deletions
-        "logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion-report.ipynb",
+        # Deletion events.
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv",
         # Recombinant data. Suffixes after _recombinants denote the operations
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
