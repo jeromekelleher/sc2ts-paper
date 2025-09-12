@@ -1915,10 +1915,7 @@ although filtering the recombination events to the 356 with better support revea
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
 % Referenced by the main Results.
-The ARG captures highly prevalent deletions in SARS-CoV-2 (Table~\ref{tab:major_dels}).
-
-<TODO> Highly recurrent deletions (Table~\ref{tab:rec_dels}).
-
+The ARG captures important deletion events (Table~\ref{tab:major_dels}) and highly recurrent deletion events (Table~\ref{tab:rec_dels}).
 
 Li et al.\cite{Li2023indels} performed a large-scale analysis of indels
 using a global GISAID dataset (sampled up to August, 2022).
@@ -1931,7 +1928,7 @@ except a 9-base deletion at 11283, a 9-based deletion at 21987, and a 9-base del
 
 \begin{table}
 \centering
-\caption{Major deletion events in the ARG.}
+\caption{Major deletion events in the ARG. These events are inherited by at least 10,000 samples in the ARG. Count is the number of samples inheriting a deletion. The Pango lineage assigned to the node above which an event occurs is shown. Abbreviations: NSP, non-structural protein; ORF, open reading frame; S, Spike; S1-NTD, N-terminal domain in Subunit 1.}
 \label{tab:major_dels}
 \begin{tabular}{rrcrcrr}
 \toprule
@@ -1962,7 +1959,7 @@ Start & Length & Region & Node & Pango lineage & Count & Frequency (\%)\\
 
 \begin{table}
 \centering
-\caption{Highly recurrent deletions.}
+\caption{Highly recurrent deletions. These are the top 20 deletions in terms of the number of occurrences in the ARG. Abbreviations: NSP, non-structural protein; ORF, open reading frame; S, Spike; S1-NTD, N-terminal domain in Subunit 1.}
 \label{tab:rec_dels}
 \begin{tabular}{rrcr}
 \toprule
