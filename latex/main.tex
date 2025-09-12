@@ -282,12 +282,17 @@ we reevaluate the evidence for each lineage with a high HMM cost as additional s
 If on subsequent days these lineages form a sufficiently large group of samples,
 sc2ts adds the group back to the ARG.
 This ``retrospective sample grouping'' successfully captured the emergence of
-most saltation lineages (Figure~\ref{fig:samples_per_day}).
+many saltation lineages such as Alpha (Figure~\ref{fig:subgraph_alpha}).
 The emergence of the Delta, BA.1, and BA.2 lineages required some manual intervention,
-in which specific "seed" samples were identified for unconditional inclusion
+in which specific ``seed'' samples were identified for unconditional inclusion
 (for details of how seed samples were chosen, see STAR Methods).
 First arising in geographic regions with low sampling density,
 the initial origins of these VOC are challenging to infer (REF).
+With the addition of these manual seeds, we successfully incorporated 
+these challenging events (Figures~\ref{fig:subgraph_delta},
+\ref{fig:subgraph_ba1_ba2}) and 
+all other major lineages (Figure~\ref{fig:samples_per_day}) 
+into the ARG.
 
 \begin{figure}[h]
 \centering
@@ -326,11 +331,13 @@ reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary his
 The ARG represents the full evolutionary history of SARS-CoV-2 and 
 is in close agreement with a state-of-the-art UShER phylogeny built using the Viridian dataset \cite{Hunt2024}.
 First, we validated the broad structure of the ARG against the UShER phylogeny \cite{Hunt2024}
-by pruning both down to representative samples for 1097 deeply-sampled lineages (STAR Methods).
-Tanglegrams reveal that the ARG captures known phylogenetic relationships
-both within sublineages and at the level of major lineages (including VOCs),
-with good agreement between the phylogenetic bipartitions
-in the ARG and the UShER phylogeny (Figure~\ref{fig:phylo_backbones}).
+by pruning both down to representative samples for 1097 deeply-sampled 
+lineages (STAR Methods).
+Tanglegrams show that the ARG closely matches the phylogenetic
+structure of the UShER tree (Figures~\ref{fig:tanglegram_base},
+\ref{fig:tanglegram_delta},
+\ref{fig:tanglegram_ba2},
+\ref{fig:tanglegram_ba5}).
 Next, we compared the sc2ts and UShER inferences 
 from the Viridian dataset
 by pruning both to their intersection of 2,475,418 samples and 27,507 sites,
@@ -1652,7 +1659,7 @@ in tszip format.
 
 We used Pango lineage designations to select representative samples
 for the majority of the 2026 Pango lineages in the ARG.
-We first identify an "origination node" for a focal Pango lineage,
+We first identify an ``origination node" for a focal Pango lineage,
 defined as the oldest internal node in the ARG
 whose descendants in any tree include more than 50\% of the Pango samples of the focal type,
 and where the internal node is itself designated as the focal Pango.
@@ -2304,17 +2311,76 @@ Recombination events associated with the origins of Pango Xs are labeled.
 
 \begin{figure}
 \centering
-% \includegraphics{sc2ts_methodology}
+\centering
+\includegraphics[width=\linewidth]{tanglegram_base_tree.pdf}
 \caption{
-Phylogenetic backbones: TODO
+Tanglegram comparing phylogenetic backbones of sc2ts and UShER.
 }
-\label{fig:phylo_backbones}
+\label{fig:tanglegram_base}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{tanglegram_Delta_subtree.pdf}
+\caption{
+Tanglegram comparing sc2ts and UShER on the Delta subtree.
+}
+\label{fig:tanglegram_delta}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{tanglegram_BA.2_subtree.pdf}
+\caption{
+Tanglegram comparing sc2ts and UShER on the BA.2 subtree.
+}
+\label{fig:tanglegram_ba2}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{tanglegram_BA.5_subtree.pdf}
+\caption{
+Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
+}
+\label{fig:tanglegram_ba5}
 \end{figure}
 
 
 \begin{figure}
 \centering
-%TODO fix this to make the figures smaller.
+\includegraphics[width=0.85\linewidth]{subgraph-Alpha.pdf}
+\caption{
+Subgraph of Alpha. [Some notes to help the reader know this 
+reflects known events]
+}
+\label{fig:subgraph_alpha}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\linewidth]{subgraph-Delta.pdf}
+\caption{
+Subgraph of Delta. [Some notes to help the reader know this 
+reflects known events]
+}
+\label{fig:subgraph_delta}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\linewidth]{subgraph-BA.1+BA.2.pdf}
+\caption{
+Subgraph of BA.1 and BA.2.
+[Some notes to help the reader know this 
+reflects known events]
+}
+\label{fig:subgraph_ba1_ba2}
+\end{figure}
+
+
+\begin{figure}
+\centering
 \includegraphics[width=\linewidth]{mutational_spectra}
 \caption{
 All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
