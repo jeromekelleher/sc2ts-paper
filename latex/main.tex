@@ -1989,6 +1989,45 @@ Start & Length & Region & Occurrences \\
 \end{tabular}
 \end{table}
 
+\subsection{Parsimony comparison of sc2ts and UShER}
+\label{sec:supplement_sc2ts_usher_parsimony}
+We performed an indepth analysis of the sc2ts and UShER ARGs 
+(we refer to the UShER tree as an ARG for simplicity here as a single 
+tree is also an ARG) in terms of parsimony.
+A direct comparison is difficult because of the different aligments 
+used as input, the different sets of sites used for inference and 
+the fact that we are including deletions for a subset of sites in
+the sc2ts ARG. 
+
+When we compare the intersection of the base sc2ts ARG (pre 
+site-remapping), sc2ts is very slightly more parsimonious 
+% TODO: https://github.com/jeromekelleher/sc2ts-paper/issues/684
+with XX mutations over the YYY sites shared between them.
+After site remapping, and including all mutations involving 
+deletion characters, sc2ts has 143,690 mutations more 
+(2,078,370 vs 1,934,680). If we exclude mutations involving 
+deletions in sc2ts, this is reduced to 46,371 more (2.3\%)
+than UShER.
+If we restrict to the 26,192 sites that were not remapped, 
+sc2ts has 4,785 (0.26\%) fewer mutations than UShER,
+and has around 2.5 times more mutations than UShER on the 
+163 sites that were post-hoc remapped.
+
+To provide a more objective measure of the overall parsimony 
+of the inferred ARGs with respect to the Viridian alignments,
+we remapped all 29903 sites in both ARGs 
+using Fitch-Hartigan parsimony. Here the nucleotides
+ACGT and ``-'' were treated as distinct characters, with all 
+other values regarded as missing data. In this case, the sc2ts 
+ARG has 629,864 (5.5\%) fewer mutations (10,840,687 
+vs 11,470,551). Some of this difference may be due to the 
+post-hoc incorporation of phylogenetic signal from deletions 
+by sc2ts, but more work is required to fully understand 
+the differences between the two approaches.
+
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_usher\_sc2ts.ipynb}{analysis\_usher\_sc2ts.ipynb}
+for details.
 
 \subsection{Analysis of Pango lineage ``origination'' events}
 \label{sec:supplement_pango_lineages}
