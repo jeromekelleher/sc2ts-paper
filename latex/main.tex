@@ -44,6 +44,7 @@
 \usepackage{authblk}
 \usepackage{hyperref}
 \usepackage{booktabs}
+\usepackage{tabularray}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{orcidlink}
@@ -2300,7 +2301,6 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \label{fig:inference_resources}
 \end{figure}
 
-
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{robust_vs_artificial_classification}
@@ -2316,6 +2316,65 @@ Recombination events associated with the origins of Pango Xs are labeled.
 }
 \label{fig:recombinant_qc}
 \end{figure}
+
+\newcommand{\cprheight}{5.0em}
+
+\begin{figure}
+\centering
+\begin{tblr}{Q[l,t]Q[m]}
+  % cells={valign=m,halign=c},
+  % rowsep=2pt,
+  % colspec={Q[r,b]Q[m]},   
+% }
+% \begin{tabular}{ll}
+A & \includegraphics[height=\cprheight]{static/causedby-ERR10306608.png}\\
+B & \includegraphics[height=\cprheight]{static/causedby-ERR6760245.png}\\
+C & \includegraphics[height=\cprheight]{static/causedby-SRR15864165.png}\\
+D & \includegraphics[height=\cprheight]{static/causedby-SRR21087725.png}\\
+\end{tblr}
+% \end{tabular}
+\caption{}
+\label{fig:copying_pattern_examples}
+\end{figure}
+
+
+\renewcommand{\cprheight}{1.5em}
+% Add some more space between rows. Note this it would be sligntly nicer if the 
+% label was aligned vertically in the center of the row, but this is good
+% enough for now.
+\renewcommand{\arraystretch}{2}
+
+\begin{figure}
+\centering
+\begin{tabular}{ll}
+XC & \includegraphics[height=\cprheight]{static/XC.png}\\
+XBR & \includegraphics[height=\cprheight]{static/XBR.png}\\
+XA & \includegraphics[height=\cprheight]{static/XA.png}\\
+XS & \includegraphics[height=\cprheight]{static/XS.png}\\
+XL & \includegraphics[height=\cprheight]{static/XL.png}\\
+XBG &\includegraphics[height=\cprheight]{static/XBG.png}\\
+XBD & \includegraphics[height=\cprheight]{static/XBD.png}\\
+XQ & \includegraphics[height=\cprheight]{static/XQ++.png}\\
+XBB & \includegraphics[height=\cprheight]{static/XBB.png}\\
+XM & \includegraphics[height=\cprheight]{static/XM+XAL.png}\\
+XBF & \includegraphics[height=\cprheight]{static/XBF.png}\\
+XF & \includegraphics[height=\cprheight]{static/XF.png}\\
+XY & \includegraphics[height=\cprheight]{static/XY.png}\\
+XG & \includegraphics[height=\cprheight]{static/XG.png}\\
+XW & \includegraphics[height=\cprheight]{static/XW.png}\\
+Xx & \includegraphics[height=\cprheight]{static/XZ++.png}\\
+XE/XH  & \includegraphics[height=\cprheight]{static/XE+XH.png}\\
+XBH & \includegraphics[height=\cprheight]{static/XBH.png}\\
+XBM & \includegraphics[height=\cprheight]{static/XBM.png}\\
+XJ & \includegraphics[height=\cprheight]{static/XJ.png}\\
+\end{tabular}
+\caption{Copying patterns for the 20 recombination events associated with Pango 
+X lineages listed in Table~\ref{tab:pango_x_lineages} (in the same order)}
+\label{fig:pango_x_copying_patterns}
+\end{figure}
+
+% Reset this in case we make any more tables beyond this
+\renewcommand{\arraystretch}{1}
 
 
 \begin{figure}
