@@ -17,10 +17,9 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import rgb2hex
 import tskit_arg_visualizer as argviz
 
-TSDIR = "../data"
+DATA_DIR = Path("../data")
 
-def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
-    ts = tszip.load(os.path.join(TSDIR, filename))
+def print_info(ts):
     time_zero_date = ts.metadata.get("time_zero_date", "Unknown date")
     print(
         f"Using a {ts.nbytes/1e6:0.1f} megabyte ARG up to "
@@ -32,6 +31,11 @@ def load(filename="sc2ts_viridian_v1.1.trees.tsz"):
         f"over {ts.sequence_length}bp with {n_RE} recomb. events)"
     )
     return ts
+
+def load_dataset(filename="viridian_mafft_2024-10-14_v1.vcz.zip"):
+    return sc2ts.Dataset(os.path.join(DATA_DIR, filename), date_field="Date_tree")
+
+
 
 def standard_recombinant_labels(ts, pango_x_events_file):
     """
@@ -66,7 +70,7 @@ def standard_recombinant_labels(ts, pango_x_events_file):
                 if len(rows) == 1:
                     labels[re_node] = rows.iloc[0].root_pango
                 else:
-                    labels[re_node] = "/".join(rows.root_pango.values)
+                    labels[re_node] = "/".join(sorted(rows.root_pango.values))
     
     # Tweak the "XBB.1" RE node label, which should have a bespoke label because it's not
     # reflective of the majority of XBB.1 samples
@@ -104,9 +108,6 @@ def standard_recombinant_labels(ts, pango_x_events_file):
         labels[int(u)] = label
     
     return labels
-
-def load_dataset(filename="viridian_mafft_2024-10-14_v1.vcz.zip"):
-    return sc2ts.Dataset(os.path.join(TSDIR, filename), date_field="Date_tree")
 
 
 def date(ts, node_id):
