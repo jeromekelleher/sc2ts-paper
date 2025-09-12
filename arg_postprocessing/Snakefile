@@ -3,7 +3,23 @@
 # The base conda environment that snakemake is run from requires
 # snakemake, tszip, pandas and tqdm in order to run the "run"
 # rules (which cannot be used with "conda")
+#
+# It's not entirely automated in terms of parallelism. Running pangolin
+# needs a lot of cores, so in practise you need to do something like this
+# first to get the bit needing parallelism (and lots of memory) done
+#
+# snakemake sc2ts_viridian_v1.2.trees.tsz --cores=40
+# 
+# Then, the rest should just run like
+#
+# snakemake --cores=4
+#
 
+# Notes on saved files in the data directory
+#
+# recombinants.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
+# pango_x_events.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
+# deletion_events.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
 rule all:
     input:
         # Base debug report
@@ -12,10 +28,8 @@ rule all:
         "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
         # Comparison between sc2ts and usher ARGs
         "logs/usher_sc2ts_comparison.ipynb",
-        # Report on deletion and parsimony mapping. We do this 
-        # towards the end of the pipeline so that the parsimony
-        # heuristics have a chance to work with the remapped deletions
-        "logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion-report.ipynb",
+        # Deletion events.
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv",
         # Recombinant data. Suffixes after _recombinants denote the operations
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
@@ -31,7 +45,7 @@ rule final_args:
     input:
         # Final ARG
         # Order of operations:
-        # 1) prune recombinants (_pp: rematching + long branch split)
+        # 1) prune recombinants (_pr: rematching + long branch split)
         # 2) postprocess (_pp: various minor tweaks)
         # 3) Parsimony mapping (_mp: adding in deletions and recurrent sites)
         # 4) Apply node parsimony heuristics (_aph: cleanup some mess after 3)
@@ -48,10 +62,10 @@ rule final_args:
         # as the others except usher_viridian are derived from this. These 
         # are major.minor, with major versions meaning significant changes,
         # minor being relatively minor tweaks to the ARG
-        "sc2ts_viridian_v1.1.trees.tsz",
+        "sc2ts_viridian_v1.2.trees.tsz",
         "usher_viridian_v1.0.trees.tsz",
-        "sc2ts_viridian_inter_v1.1.trees.tsz",
-        "usher_viridian_inter_v1.1.trees.tsz",
+        "sc2ts_viridian_inter_v1.2.trees.tsz",
+        "usher_viridian_inter_v1.2.trees.tsz",
     log:
         notebook="logs/final_arg_report.ipynb"
     notebook:
@@ -156,7 +170,7 @@ rule map_parsimony:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
         "{MP_PREFIX}.trees",
-        "remapped_sites.txt",
+        "{MP_PREFIX}_sites_to_remap.txt",
     output:
         "{MP_PREFIX}_mp.trees",
         "{MP_PREFIX}_mp.csv",
@@ -608,4 +622,42 @@ rule add_rebar_to_csv:
     shell:
         """
         python scripts/add_rebar_to_csv.py {input} {output}
+        """
+
+
+#######
+# Sites for remapping
+#######
+
+rule lineage_mutations:
+    output:
+        "lineage_mutations.json"
+    shell:
+        """
+        curl -o {output} https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage_mutations.json
+        """
+
+
+rule deletion_site_data:
+    output:
+        "Li_et_al_TableS1.xlsx"
+    shell:
+        """
+        curl -o {output} https://figshare.com/ndownloader/files/40119535
+        """
+
+rule generate_sites_for_remapping:
+    conda: "sc2ts.yml"
+    input: 
+        "{GSR_PREFIX}.trees",
+        "Li_et_al_TableS1.xlsx",
+        "lineage_mutations.json",
+    output:
+        # We store a CSV and text file so that we can see the reason
+        # for analysis and also just pass the list to sc2ts.
+        "{GSR_PREFIX}_sites_to_remap.csv",
+        "{GSR_PREFIX}_sites_to_remap.txt",
+    shell:
+        """
+        python scripts/generate_sites_for_remapping.py {input} {output}
         """
