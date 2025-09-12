@@ -337,8 +337,9 @@ by pruning both to their intersection of 2,475,418 samples and 27,507 sites,
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 and found they were very similar in terms of parsimony
-when accounting for various differences in the data represented
-(Document~\ref{sec:supplement_sc2ts_usher_parsimony}).
+(Document~\ref{sec:supplement_sc2ts_usher_parsimony})
+and imputation of missing and ambiguous bases
+(Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG against 
 the mutational spectra 
 from the Viridian UShER phylogeny \cite{Hunt2024} and a previous study \cite{Bloom2023} (STAR Methods),
@@ -2029,6 +2030,37 @@ the differences between the two approaches.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_usher\_sc2ts.ipynb}{analysis\_usher\_sc2ts.ipynb}
+for details.
+
+\subsection{Imputation comparison of sc2ts and UShER}
+\label{sec:supplement_sc2ts_usher_imputation}
+Both sc2ts and UShER support missing data in input alignments, and effectively
+``hard call'' these values when the samples are integrated into the tree/ARG. 
+In doing so, we impute the missing and ambiguous data for these samples.
+We evaluate the imputation performance of sc2ts and UShER by comparing their
+outputs on the Viridian alignments.
+
+The total aligned dataset for 2,475,418 samples and 27,507 sites 
+in the sc2ts and UShER intersection ARGs represents 63.41GiB of nucleotide calls. 
+Of the 162,838,461 missing data calls (Ns) in the alignments, sc2ts and UShER
+disagreed in their imputed values for only 203,579 (0.125\%). 
+Additionally, 956,859 calls made use of the IUPAC uncertainty codes. 
+Of these sc2ts imputed 435 (0.05\%) incorrectly (i.e., 
+with a base that is not compatible with the
+ambiguity code). 
+UShER imputed only 7 calls (0.007\%) from this set incorrectly, likely 
+due to special handling of ambiguous bases in the parsimony calculations.
+
+This computation is a good example of type of integrated large-scale data analysis 
+that can be easily performed using the combination of tskit and VCF Zarr.
+The entire analysis is performed in a short Jupyter notebook, with the 
+core calculation requiring about 30 lines of Python code. Retrieving 
+data from the base alignments and ARGs for 2.48 million samples 
+at the same time over all 27,507 sites took only 6 minutes, with a peak memory
+usage of about 5GiB of RAM on a standard desktop computer.
+
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/example\_data\_processing.ipynb}{example\_data\_processing.ipynb}
 for details.
 
 \subsection{Analysis of Pango lineage ``origination'' events}
