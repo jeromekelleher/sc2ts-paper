@@ -331,14 +331,17 @@ Tanglegrams reveal that the ARG captures known phylogenetic relationships
 both within sublineages and at the level of major lineages (including VOCs),
 with good agreement between the phylogenetic bipartitions
 in the ARG and the UShER phylogeny (Figure~\ref{fig:phylo_backbones}).
-Next, we compared the high-level properties of the sc2ts and UShER inferences from the Viridian dataset
-by pruning both to their intersection of 2,475,418 samples and 27,431 sites.
-% TODO this is out of date and needs to be rewritten along with supplementary 
-% analysis
-Remarkably, given the differences in inference methods and data processing pipelines,
-they are almost identically parsimonious,
-with sc2ts requiring 4,208 (0.23\%) fewer mutations than UShER (1,843,132 for UShER vs 1,838,924 for sc2ts).
-We also compared the mutational spectra of major VOCs in the ARG against the mutational spectra 
+Next, we compared the sc2ts and UShER inferences 
+from the Viridian dataset
+by pruning both to their intersection of 2,475,418 samples and 27,507 sites,
+% JK: this feels a bit wishy washy, but there really is no simple answer to
+% this and I don't want to claim we're more parsimonious.
+and found they were very similar in terms of parsimony
+(Document~\ref{sec:supplement_sc2ts_usher_parsimony})
+and imputation of missing and ambiguous bases
+(Document~\ref{sec:supplement_sc2ts_usher_imputation}).
+We also compared the mutational spectra of major VOCs in the ARG against 
+the mutational spectra 
 from the Viridian UShER phylogeny \cite{Hunt2024} and a previous study \cite{Bloom2023} (STAR Methods),
 finding a close match to them (Figure~\ref{fig:mutational_spectra}).
 
@@ -1612,6 +1615,39 @@ artifactual recombination events contain stretches of missing data
 characteristic of amplicon dropouts (REF).
 
 
+\subsubsection*{Comparison with UShER}
+To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
+UShER tree from MAT~\cite{McBroome2021} to tskit format, which has similar
+properties but is more general (see the section ``Ancestral Recombination
+Graphs``).
+We first downloaded the tree in JSON format (tree.all\_viridian.202409.jsonl)
+from Figshare
+and converted the ARG topology. We then downloaded the protobuf formatted
+tree (tree.all\_viridian.202409.pb.gz), and exported the mutations to 
+nucleotide format using \texttt{matUtils summary --translate}
+(usher version 0.6.3), and translated
+these mutations into tskit format. The resulting tszip file 
+(usher\_viridian\_v1.0.trees.tsz) contains 5,345,019 nodes, 3,364,841
+mutations and requires 29MB of storage space.
+We validated that the data was correctly encoded by comparing the 
+variant data for the UShER tskit tree sequence against our alignments.
+There was an exact match between the non-ambiguous nucleotide calls 
+at 27469 sites. At the remaining 39 sites there were a significant 
+number of gap characters (deletion calls), suggesting that the mismatches
+could be due to differences in the alignments used as input to UShER.
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/validate\_usher\_tree.ipynb}{validate\_usher\_tree.ipynb}
+for details.
+
+We then computed intersection ARGs for sc2ts and UShER by 
+``simplifying''\cite{Kelleher2018efficient,Wong2024} 
+both to the 2,475,418 samples and 27,507 sites that are shared.
+
+All conversions were performed as part of the reproducible 
+postprocessing pipeline described in [section?]. The full UShER
+tree and the intersection files are available for download on Zenodo
+in tszip format.
+
 \subsubsection*{Comparison of phylogenetic backbones}
 
 We used Pango lineage designations to select representative samples
@@ -1956,6 +1992,76 @@ Start & Length & Region & Occurrences \\
 \end{tabular}
 \end{table}
 
+\subsection{Parsimony comparison of sc2ts and UShER}
+\label{sec:supplement_sc2ts_usher_parsimony}
+We performed an indepth analysis of the sc2ts and UShER ARGs 
+(we refer to the UShER tree as an ARG for simplicity here as a single 
+tree is also an ARG) in terms of parsimony.
+A direct comparison is difficult because of the different aligments 
+used as input, the different sets of sites used for inference and 
+the fact that we are including deletions for a subset of sites in
+the sc2ts ARG. 
+
+When we compare the intersection of the base sc2ts ARG (pre 
+site-remapping), sc2ts is very slightly more parsimonious 
+% TODO: https://github.com/jeromekelleher/sc2ts-paper/issues/684
+with XX mutations over the YYY sites shared between them.
+After site remapping, and including all mutations involving 
+deletion characters, sc2ts has 143,690 mutations more 
+(2,078,370 vs 1,934,680). If we exclude mutations involving 
+deletions in sc2ts, this is reduced to 46,371 more (2.3\%)
+than UShER.
+If we restrict to the 26,192 sites that were not remapped, 
+sc2ts has 4,785 (0.26\%) fewer mutations than UShER,
+and has around 2.5 times more mutations than UShER on the 
+163 sites that were post-hoc remapped.
+
+To provide a more objective measure of the overall parsimony 
+of the inferred ARGs with respect to the Viridian alignments,
+we remapped all 29903 sites in both ARGs 
+using Fitch-Hartigan parsimony. Here the nucleotides
+ACGT and ``-'' were treated as distinct characters, with all 
+other values regarded as missing data. In this case, the sc2ts 
+ARG has 629,864 (5.5\%) fewer mutations (10,840,687 
+vs 11,470,551). Some of this difference may be due to the 
+post-hoc incorporation of phylogenetic signal from deletions 
+by sc2ts, but more work is required to fully understand 
+the differences between the two approaches.
+
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_usher\_sc2ts.ipynb}{analysis\_usher\_sc2ts.ipynb}
+for details.
+
+\subsection{Imputation comparison of sc2ts and UShER}
+\label{sec:supplement_sc2ts_usher_imputation}
+Both sc2ts and UShER support missing data in input alignments, and effectively
+``hard call'' these values when the samples are integrated into the tree/ARG. 
+In doing so, we impute the missing and ambiguous data for these samples.
+We evaluate the imputation performance of sc2ts and UShER by comparing their
+outputs on the Viridian alignments.
+
+The total aligned dataset for 2,475,418 samples and 27,507 sites 
+in the sc2ts and UShER intersection ARGs represents 63.41GiB of nucleotide calls. 
+Of the 162,838,461 missing data calls (Ns) in the alignments, sc2ts and UShER
+disagreed in their imputed values for only 203,579 (0.125\%). 
+Additionally, 956,859 calls made use of the IUPAC uncertainty codes. 
+Of these sc2ts imputed 435 (0.05\%) incorrectly (i.e., 
+with a base that is not compatible with the
+ambiguity code). 
+UShER imputed only 7 calls (0.007\%) from this set incorrectly, likely 
+due to special handling of ambiguous bases in the parsimony calculations.
+
+This computation is a good example of type of integrated large-scale data analysis 
+that can be easily performed using the combination of tskit and VCF Zarr.
+The entire analysis is performed in a short Jupyter notebook, with the 
+core calculation requiring about 30 lines of Python code. Retrieving 
+data from the base alignments and ARGs for 2.48 million samples 
+at the same time over all 27,507 sites took only 6 minutes, with a peak memory
+usage of about 5GiB of RAM on a standard desktop computer.
+
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/example\_data\_processing.ipynb}{example\_data\_processing.ipynb}
+for details.
 
 \subsection{Analysis of Pango lineage ``origination'' events}
 \label{sec:supplement_pango_lineages}
