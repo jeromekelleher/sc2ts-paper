@@ -282,12 +282,17 @@ we reevaluate the evidence for each lineage with a high HMM cost as additional s
 If on subsequent days these lineages form a sufficiently large group of samples,
 sc2ts adds the group back to the ARG.
 This ``retrospective sample grouping'' successfully captured the emergence of
-most saltation lineages (Figure~\ref{fig:samples_per_day}).
+many saltation lineages such as Alpha (Figure~\ref{fig:subgraph_alpha}).
 The emergence of the Delta, BA.1, and BA.2 lineages required some manual intervention,
-in which specific "seed" samples were identified for unconditional inclusion
+in which specific ``seed'' samples were identified for unconditional inclusion
 (for details of how seed samples were chosen, see STAR Methods).
 First arising in geographic regions with low sampling density,
 the initial origins of these VOC are challenging to infer (REF).
+With the addition of these manual seeds, we successfully incorporated 
+these challenging events (Figures~\ref{fig:subgraph_delta},
+\ref{fig:subgraph_ba1_ba2}) and 
+all other major lineages (Figure~\ref{fig:samples_per_day}) 
+into the ARG.
 
 \begin{figure}[h]
 \centering
@@ -2344,30 +2349,31 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 
 \begin{figure}
 \centering
-\centering
-\includegraphics[width=\linewidth]{subgraph-Alpha.pdf}
+\includegraphics[width=0.85\linewidth]{subgraph-Alpha.pdf}
 \caption{
-Subgraph of Alpha
+Subgraph of Alpha. [Some notes to help the reader know this 
+reflects known events]
 }
 \label{fig:subgraph_alpha}
 \end{figure}
 
 \begin{figure}
 \centering
-\centering
-\includegraphics[width=\linewidth]{subgraph-Delta.pdf}
+\includegraphics[width=0.85\linewidth]{subgraph-Delta.pdf}
 \caption{
-Subgraph of Delta
+Subgraph of Delta. [Some notes to help the reader know this 
+reflects known events]
 }
 \label{fig:subgraph_delta}
 \end{figure}
 
 \begin{figure}
 \centering
-\centering
-\includegraphics[width=\linewidth]{subgraph-BA.1+BA.2.pdf}
+\includegraphics[width=0.85\linewidth]{subgraph-BA.1+BA.2.pdf}
 \caption{
-Subgraph of BA.1 and BA.2
+Subgraph of BA.1 and BA.2.
+[Some notes to help the reader know this 
+reflects known events]
 }
 \label{fig:subgraph_ba1_ba2}
 \end{figure}
@@ -2375,7 +2381,6 @@ Subgraph of BA.1 and BA.2
 
 \begin{figure}
 \centering
-%TODO fix this to make the figures smaller.
 \includegraphics[width=\linewidth]{mutational_spectra}
 \caption{
 All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
