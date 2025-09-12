@@ -13,7 +13,6 @@ data/sequences.fasta
 
 # Pre-Alignment Notebook Output
 bin/
-logs/
 results/
 *.zarr
 
