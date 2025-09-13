@@ -10,12 +10,6 @@ import tszip
 import sc2ts
 
 
-def main_arg():
-    return tszip.load(
-        "data/sc2ts_v1_2023-02-21_pp_dated_remapped_bps_pango_mmps.trees.tsz"
-    )
-
-
 def samples_csv():
     return pd.read_csv("arg_postprocessing/sc2ts_v1_2023-02-21_samples.csv")
 
