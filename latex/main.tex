@@ -44,6 +44,7 @@
 \usepackage{authblk}
 \usepackage{hyperref}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{orcidlink}
@@ -404,8 +405,6 @@ typically followed by visual analysis of genome sequence alignments
 to identify parental lineages and breakpoint locations.
 This process has resulted in the designation of recombinant Pango lineages
 (whose aliases begin with an ''X'', e.g., XA and XBB).
-Below, we summarize our analysis of the Pango X lineages in the ARG
-(for extended analyses, see Document~\ref{sec:supplement_pango_lineages} and Document S2).
 
 We find strong evidence for the recombination events leading to 17 Pango X lineages
 in the ARG (Table~\ref{tab:pango_x_lineages}),
@@ -446,6 +445,12 @@ and one mutation in the ARG, respectively (Figure~\ref{fig:subgraphs}C).
 However, sc2ts did not detect several Pango X lineages (XB, XP, and XAJ) as recombinants
 because the HMM treated characteristic deletions as missing data.
 
+
+[NOTE: putting this here for now, until we find the right place to slot it
+in next draft.]
+See Document~\ref{sec:supplement_pango_lineages} for extended analyses,
+Figure~\ref{fig:pango_x_copying_patterns} for copying patterns,
+and Document S2 for ARG visualations of all Pango X lineages.
 
 \begin{figure}[h]
 \centering
@@ -1587,7 +1592,11 @@ to enrich the ARG with additional information:
 \subsubsection*{Identification of robust recombination events}
 
 [TODO This section needs a full pass. I've merged in a section that was in the
-supplement with an extremely terse section on counting supporting loci.]
+supplement with an extremely terse section on counting supporting loci.
+Reference Figure~\ref{fig:recombinant_qc} for the scatter plot and 
+labelled quadrants, and Figure~\ref{fig:copying_pattern_examples}
+for examples of the corresponding copying patterns. Also reference
+any additional examples that we include beyond A-D.]
 
 % This para was *{Counting supporting loci for recombinant parents}
 
@@ -2300,7 +2309,6 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \label{fig:inference_resources}
 \end{figure}
 
-
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{robust_vs_artificial_classification}
@@ -2316,6 +2324,66 @@ Recombination events associated with the origins of Pango Xs are labeled.
 }
 \label{fig:recombinant_qc}
 \end{figure}
+
+\newcommand{\cprheight}{4.0em}
+
+\begin{figure}
+\centering
+% NOTE the size of the second "m" column doesn't matter, but we have to fix the
+% size in order for vertical centering to work :sigh:
+% The layout here isn't ideal, but it's incredibly fiddly to get center
+% alignment veritically with cells to work, so this is good enough.
+\begin{tabularx}{0.85\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
+% FIXME: these samples are chosen randomly and so almost certainly do not
+% belong to the correct quadrants.
+A & \includegraphics[height=\cprheight]{static/causedby-ERR10306608.png}\\
+B & \includegraphics[height=\cprheight]{static/causedby-ERR6760245.png}\\
+C & \includegraphics[height=\cprheight]{static/causedby-SRR15864165.png}\\
+D & \includegraphics[height=\cprheight]{static/causedby-SRR21087725.png}\\
+\end{tabularx} 
+\caption{Examples of problematic copying patterns. A-D are examples drawn from
+the labelled quadrants in Figure~\ref{fig:recombinant_qc}.}
+\label{fig:copying_pattern_examples}
+\end{figure}
+
+
+\renewcommand{\cprheight}{1.5em}
+% Add some more space between rows. Note this it would be sligntly nicer if the 
+% label was aligned vertically in the center of the row, but this is good
+% enough for now.
+\renewcommand{\arraystretch}{2}
+
+\begin{figure}
+\centering
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
+XC & \includegraphics[height=\cprheight]{static/XC.png}\\
+XBR & \includegraphics[height=\cprheight]{static/XBR.png}\\
+XA & \includegraphics[height=\cprheight]{static/XA.png}\\
+XS & \includegraphics[height=\cprheight]{static/XS.png}\\
+XL & \includegraphics[height=\cprheight]{static/XL.png}\\
+XBG &\includegraphics[height=\cprheight]{static/XBG.png}\\
+XBD & \includegraphics[height=\cprheight]{static/XBD.png}\\
+XQ & \includegraphics[height=\cprheight]{static/XQ++.png}\\
+XBB & \includegraphics[height=\cprheight]{static/XBB.png}\\
+XM & \includegraphics[height=\cprheight]{static/XM+XAL.png}\\
+XBF & \includegraphics[height=\cprheight]{static/XBF.png}\\
+XF & \includegraphics[height=\cprheight]{static/XF.png}\\
+XY & \includegraphics[height=\cprheight]{static/XY.png}\\
+XG & \includegraphics[height=\cprheight]{static/XG.png}\\
+XW & \includegraphics[height=\cprheight]{static/XW.png}\\
+Xx & \includegraphics[height=\cprheight]{static/XZ++.png}\\
+XE/XH  & \includegraphics[height=\cprheight]{static/XE+XH.png}\\
+XBH & \includegraphics[height=\cprheight]{static/XBH.png}\\
+XBM & \includegraphics[height=\cprheight]{static/XBM.png}\\
+XJ & \includegraphics[height=\cprheight]{static/XJ.png}\\
+\end{tabularx}
+\caption{Copying patterns for the 20 recombination events associated with Pango 
+X lineages listed in Table~\ref{tab:pango_x_lineages} (in the same order)}
+\label{fig:pango_x_copying_patterns}
+\end{figure}
+
+% Reset this in case we make any more tables beyond this
+\renewcommand{\arraystretch}{1}
 
 
 \begin{figure}
