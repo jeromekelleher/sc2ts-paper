@@ -1602,46 +1602,48 @@ to enrich the ARG with additional information:
 7. Assigning Pango lineages to non-sample nodes.
 
 
-\subsubsection*{Identification of robust recombination events}
+\subsubsection*{Quality control of recombinants}
 
 [TODO This section needs a full pass. I've merged in a section that was in the
 supplement with an extremely terse section on counting supporting loci.
 Reference Figure~\ref{fig:recombinant_qc} for the scatter plot and 
-labelled quadrants, and Figure~\ref{fig:copying_pattern_examples}
+labeled quadrants, and Figure~\ref{fig:copying_pattern_examples}
 for examples of the corresponding copying patterns. Also reference
 any additional examples that we include beyond A-D.]
 
-% This para was *{Counting supporting loci for recombinant parents}
+Before characterizing recombination events in detail,
+we sought to remove probable artifacts.
+Systematic errors in SARS-CoV-2 sequences
+associated with sequencing protocols \cite{Turakhia2020}
+can complicate recombination detection \cite{DeMaio2024}.
+% Explain to readers what convincing genomic evidence looks like.
+By inspecting copying patterns at sites that differ between recombinant parents,
+we find a convincing signal when treating adjacent and near-adjacent sites as a single locus.
+Artifactual recombination events can be characterized
+as having fewer than four such loci supporting the left or right parent
+on either side of a suggested breakpoint.
+When counting such loci, we considered nearly adjacent sites
+(separated by at most three bases) as single loci,
+to avoid over-counting support from correlated loci,
+which could lead to artificial signals of recombination.
+Also, when counting supporting loci for a focal parent,
+we penalized loci where the character(s)
+in the recombinant matches that in the non-focal parent
+but not in the focal parent.
 
-When counting such loci, we considered nearly adjacent sites (separated by at
-most three bases) as single loci, to avoid over-counting support from
-correlated loci, which would lead to artificial signals of recombination. Also,
-when counting supporting loci for a focal parent, we penalized loci where the
-character(s) in the recombinant matches that in the non-focal parent but not in
-the focal parent.
-
-Before characterizing recombination events in detail, we sought to remove
-probable artifacts. Systematic errors in SARS-CoV-2 sequences associated with
-sequencing protocols have been documented (Turakhia et al., 2022), which can
-confound recombination detection (De Maio et al., 2024). By inspecting copying
-patterns at sites that differ between recombinant parents, we find a convincing
-signal when treating adjacent and near-adjacent sites as a single locus.
-Artifactual recombination events can be characterized as having fewer than four
-such loci supporting the left or right parent on either side of a suggested
-breakpoint (STAR Methods). Of the 929 recombination events in the ARG, this
-measure identifies 543 as artifactual, leaving 386 ``robust'' events (Figure
-S1A). The copying patterns depicted in Figure S1B illustrate the genomic
-evidence for three recombination events identified as artifactual, compared to
-a marginally robust one.
+Of the 929 recombination events in the ARG,
+this measure identifies 543 as artifactual,
+leaving 386 ``robust'' events (Figure~\ref{fig:recombinant_qc}).
+The copying patterns depicted Figure~\ref{fig:copying_pattern_examples}
+illustrate the genomic evidence for three recombination events identified as artifactual,
+compared to a marginally robust one.
 
 Evidence that our simple filter effectively flags artifacts can be seen in the
 clear association between the AmpliSeq V1 kit and recombination events that we
 identify as artifactual. This primer scheme was used to sequence XX of the
 samples associated with an artifactual recombination event, in contrast to 15
 of the ``robust'' events (Figure 2A), strongly implicating it as a common source
-of problematic data. Through further inspection, we observed that many
-artifactual recombination events contain stretches of missing data
-characteristic of amplicon dropouts (REF).
+of problematic data.
 
 
 \subsubsection*{Comparison with UShER}
