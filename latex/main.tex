@@ -310,15 +310,18 @@ into the ARG.
 \includegraphics[width=0.85\linewidth]{sc2ts_methodology}
 \caption{
 Schematic overview of sc2ts.
-(A) Procedure to build an ARG by incrementally updating it with samples sorted by collection dates.
+(A) Process to build an ARG by incrementally updating it with samples sorted by collection dates.
+(B) The ARG resulting from the inference process.
 Sample 0 is used to initialize the ARG as the root.
 Next, Sample 1 is attached, mapping mutations onto the new branch to explain it.
 When Sample 4 is detected as a recombinant,
 a node representing the recombination event is inserted with two edges connecting to its parents,
 with Sample 4 itself attached to this node as its child.
-The resulting ARG contains two local trees,
-one on each side of the inferred breakpoint.
-(B) Copying paths for Sample 4 inferred under the LS model
+(C) Two local trees contained in the resulting ARG,
+one on each side of the inferred breakpoint (A), which occurs at position 50.
+The genomic coordinates of the segments inherited from different recombinant parents
+are denoted by two half-open intervals (B).
+(D) Copying paths for Sample 4 inferred under the LS model
 while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 }
 \label{fig:methodology}
@@ -2346,13 +2349,13 @@ Recombination events associated with the origins of Pango Xs are labeled.
 \begin{tabularx}{0.85\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
 % FIXME: these samples are chosen randomly and so almost certainly do not
 % belong to the correct quadrants.
-A & \includegraphics[height=\cprheight]{static/causedby-ERR10306608.png}\\
-B & \includegraphics[height=\cprheight]{static/causedby-ERR6760245.png}\\
-C & \includegraphics[height=\cprheight]{static/causedby-SRR15864165.png}\\
-D & \includegraphics[height=\cprheight]{static/causedby-SRR21087725.png}\\
-\end{tabularx} 
+Q1 & \includegraphics[height=\cprheight]{static/causedby-ERR10306608.png}\\
+Q2 & \includegraphics[height=\cprheight]{static/causedby-SRR15864165.png}\\
+Q3 & \includegraphics[height=\cprheight]{static/causedby-ERR6760245.png}\\
+Q4 & \includegraphics[height=\cprheight]{static/causedby-SRR21087725.png}\\
+\end{tabularx}
 \caption{Examples of problematic copying patterns. A-D are examples drawn from
-the labelled quadrants in Figure~\ref{fig:recombinant_qc}.}
+the labeled quadrants in Figure~\ref{fig:recombinant_qc}.}
 \label{fig:copying_pattern_examples}
 \end{figure}
 
