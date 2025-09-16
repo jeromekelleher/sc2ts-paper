@@ -1027,6 +1027,14 @@ This study did not generate new materials
 %%%  are structured and consist of three bulleted
 %%%  components. Each component must be present.
 
+
+\begin{itemize}
+\item Snakemake workflow for aligning and converting the Viridian dataset to
+VCF Zarr:
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}
+\end{itemize}
+
+TODO add these to the list above with actual URLs
 \begin{itemize}
     \item The ARG and the sequence alignments have been deposited at Zenodo and are publicly available.
     \item All original code has been deposited in GitHub and is publicly available.
@@ -1238,9 +1246,9 @@ and edited the content as needed and take(s) full responsibility for the content
 %%%  manuscript file after the figure legends, main
 %%%  table(s) and table legend(s).
 
-\subsection*{Key resources table}
+% \subsection*{Key resources table}
 
-\textit{To create the KRT, please use the \href{https://star-methods.com}{KRT webform} or the \href{http://www.cell.com/pb-assets/journals/research/cell/methods/table-template1.docx}{Word template} and upload this file separately.}
+% \textit{To create the KRT, please use the \href{https://star-methods.com}{KRT webform} or the \href{http://www.cell.com/pb-assets/journals/research/cell/methods/table-template1.docx}{Word template} and upload this file separately.}
 
 \subsection*{Method details}
 
@@ -1287,8 +1295,10 @@ for all of the samples added to the ARG up to that day.
 
 Sc2ts is implemented in Python building on core PyData infrastructure
 such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
-and Pandas ,
+and Pandas~\cite{Mckinney2010data} ,
 using pyfaidx\cite{Shirley2015efficient} to access alignment data
+and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
+tasks.
 [TODO JK to fill this out]
 
 \subsubsection*{Ancestral Recombination Graphs}
@@ -1526,6 +1536,49 @@ as there would be far more reversions (as seen in preliminary ARGs built without
 The caveat of taking this approach is that one must be more careful
 when analysing the samples around the seed(s) in the ARG.
 
+\subsubsection*{Pandemic scale alignment storage}
+To provide the efficient access to alignment data required for inference with sc2ts, we
+developed a new format based on the VCF Zarr~\cite{Czech2025} specification.
+Briefly, Zarr is a data storage format designed for scientific data applications
+originally developed to store genetic variation data for the
+\textit{Anopheles gambiae}
+1000 Genomes Project~\cite{Anopheles2017genetic}, and
+is now seeing adoption across a wide range of 
+applications~\cite{Abernathey2021cloud,Moore2021ome,Gowan2022using,
+Dhapola2022scarf,Virshup2023scverse,Baker2023emobject,Marconato2024spatialdata,Ruan2024image}.
+Zarr is essentially a simple mechanism for storing n-dimensional array
+data as a regular grid of compressed chunks, which provides 
+high levels of data compression, efficient access across multiple
+dimensions, and is ideally suited to modern cloud-based
+deployments~\cite{Czech2025}. 
+
+We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
+consensus sequences (125GiB over 48 FASTA files) and 30 metadata fields (1.4
+GiB TSV file) to VCF Zarr using a 
+reproducible Snakemake\cite{Koster2012snakemake} pipeline.
+We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using 
+MAFFT v7.475 \cite{Katoh2013},
+with the option \texttt{--keeplength} to retain the reference coordinate system.
+We then used \texttt{sc2ts import-alignments} and 
+\texttt{sc2ts import-metadata} to convert all alignments and metadata to VCF
+Zarr format, resulting in a single 401 MiB file 
+(around 77X smaller than gzip compressed FASTA\cite{Czech2025}).
+
+A classical tradeoff in bioinformatics is whether to store data 
+in sample-major (FASTA) or variant-major (VCF) format, determining
+whether the data can be accessed efficiently either by row or column
+of the variant matrix. Because VCF Zarr is chunked in two dimensions,
+we can now access either sample aligments or the variation
+data for a given site across all samples efficiently.
+See Czech et al.\cite{Czech2025} for more details and benchmarks on 
+this dataset. 
+Another advantage of Zarr over formats such as VCF is that is
+is inherently ``appendable'', and large datasets can be updated
+in real time
+
+Both the pipeline and converted Viridian dataset are available for download;
+see Data and code availability for details.
+
 
 \subsubsection*{Data preprocessing}
 
@@ -1534,13 +1587,6 @@ using an amplicon-aware assembly method (named ``Viridian'').
 The Viridian sequences contain far fewer artifacts compared to their publicly deposited counterparts on GenBank.
 Consequently, phylogenetic tree inference using the Viridian data led to more parsimonious phylogenies,
 as seen by a large reduction in the number of likely artifactual reversions \cite{Hunt2024}.
-
-We downloaded 4,484,157 Viridian sequences obtained
-from samples collected from January, 2020 to March, 2023 (``batch 1'').
-We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using MAFFT v7.525 \cite{Katoh2013},
-with the option ‘--keeplength’ to retain the reference coordinate system, discarding insertions.
-We converted the MAFFT alignments and all sample metadata to VCF Zarr format \cite{Czech2025},
-which are available for download on Zenodo (URL).
 
 Prior to ARG inference, we preprocessed the remaining sequences as follows.
 We treated low-quality bases (represented by Ns), gaps and ambiguous characters in the sequences as missing data.
@@ -2093,7 +2139,8 @@ due to special handling of ambiguous bases in the parsimony calculations.
 
 This computation is a good example of type of integrated large-scale data analysis 
 that can be easily performed using the combination of tskit and VCF Zarr.
-The entire analysis is performed in a short Jupyter notebook, with the 
+The entire analysis is performed in a short Jupyter
+notebook~\cite{kluyver2016jupyter}, with the 
 core calculation requiring about 30 lines of Python code. Retrieving 
 data from the base alignments and ARGs for 2.48 million samples 
 at the same time over all 27,507 sites took only 6 minutes, with a peak memory
