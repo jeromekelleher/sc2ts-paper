@@ -625,7 +625,7 @@ those proposed by the community are shown (median and range).
 \cmidrule(lr){2-2} \cmidrule(lr){3-4}
 Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
 \midrule
-Sc2ts & 14 / 15 (93.3) & 13 / 15 (86.7) & 540.5 (315, 766)\\
+Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
 RecombinHunt-GISAID & 13 / 13 (100.0) & 10 / 13 (76.9) & 764.0 (4, 1202)\\
 RecombinHunt-Nextstrain & 12 / 14 (85.7) & 11 / 14 (78.6) & 1160.0 (559, 2785)\\
 CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
@@ -1336,7 +1336,7 @@ and so it is particularly well suited to representing large SARS-CoV-2 genealogi
 The SARS-CoV-2 ARGs inferred using sc2ts can be conveniently and efficiently analyzed
 using the mature and feature-rich tskit library \cite{Kelleher2018efficient,Ralph2020}.
 Tskit is widely used in population genetics, and has been incorporated into many downstream applications
-(e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2022,Mahmoudi2022,Petr2022,Rasmussen2022,Zhang2023}).
+(e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2023,Mahmoudi2022,Petr2023,Rasmussen2023,Zhang2023}).
 
 
 \subsubsection*{Li and Stephens haplotype-copying model}
@@ -1619,9 +1619,20 @@ can complicate recombination detection \cite{DeMaio2024}.
 % Explain to readers what convincing genomic evidence looks like.
 By inspecting copying patterns at sites that differ between recombinant parents,
 we find a convincing signal when treating adjacent and near-adjacent sites as a single locus.
+
+Three copying patterns in Figure~\ref{fig:copying_pattern_examples}
+illustrate the evidence for three recombination events identified as artifactual.
+Explain the three bad patterns:
+
+
+
+Compared to a marginally robust one.
+
+
 Artifactual recombination events can be characterized
 as having fewer than four such loci supporting the left or right parent
 on either side of a suggested breakpoint.
+
 When counting such loci, we considered nearly adjacent sites
 (separated by at most three bases) as single loci,
 to avoid over-counting support from correlated loci,
@@ -1634,16 +1645,13 @@ but not in the focal parent.
 Of the 929 recombination events in the ARG,
 this measure identifies 543 as artifactual,
 leaving 386 ``robust'' events (Figure~\ref{fig:recombinant_qc}).
-The copying patterns depicted Figure~\ref{fig:copying_pattern_examples}
-illustrate the genomic evidence for three recombination events identified as artifactual,
-compared to a marginally robust one.
-
-Evidence that our simple filter effectively flags artifacts can be seen in the
-clear association between the AmpliSeq V1 kit and recombination events that we
-identify as artifactual. This primer scheme was used to sequence XX of the
-samples associated with an artifactual recombination event, in contrast to 15
-of the ``robust'' events (Figure 2A), strongly implicating it as a common source
-of problematic data.
+Evidence that our simple filter effectively flagged artifacts can be seen in the
+clear association between the AmpliSeq V1 kit and recombination events
+that we identify as artifactual.
+This primer scheme was used to sequence XX of the samples
+associated with an artifactual recombination event,
+in contrast to 15 of the ``robust'' events (Figure~\ref{fig:recombinant_qc}),
+strongly implicating it as a common source of problematic data.
 
 
 \subsubsection*{Comparison with UShER}
