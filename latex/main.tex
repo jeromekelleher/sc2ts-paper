@@ -435,7 +435,7 @@ with sc2ts correctly identifying its parental Pango lineages and breakpoint loca
 
 Furthermore, some of the Pango X lineages above originate from
 shared recombination events in the ARG (Table~\ref{tab:pango_x_lineages}).
-An example of a set of ``nested'' closely related Pango Xs consists of XZ, XAC, XAD, XAE, and XAP,
+An example of a set of ``nested'' closely related lineages consists of XZ, XAC, XAD, XAE, and XAP,
 which descend from a single recombination event rather than five independent
 events in the ARG (Figure~\ref{fig:subgraphs}B).
 These Pango X lineages were designated around the same time.
@@ -1701,7 +1701,7 @@ We ``simplify''\cite{Kelleher2018efficient,Wong2024}
 the ARG to include only the representative samples,
 resulting in an intermediate ARG of 1867 samples,
 then additionally remove internal samples,
-known recombinants (i.e. the Pango Xs) and three ``singleton recombinant
+known recombinants (i.e.\ the Pango X lineages) and three ``singleton recombinant
 samples''
 in which a single Pango lineage appears immediately below a recombination node.
 This results in a simplified ARG of 1667 samples, each with a different Pango designation.
@@ -1794,7 +1794,7 @@ we took the results of the event which had the highest number of epidemic recomb
 For other Pango X lineages, we downloaded the full list of putative recombinants
 identified in the study
 (https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv)
-For each of these Pango Xs,
+For each of these Pango X lineages,
 we took the most commonly observed combination of
 the left parent, the right parent, and the breakpoint interval.
 The breakpoint intervals are defined as the left and right recombination-informative sites.
@@ -2136,7 +2136,7 @@ See notebook
 {analysis\_pango\_events\_in\_arg.ipynb}
 for details.
 
-\subsection{Additional analyses of the Pango Xs}
+\subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
 
 \subsection*{XS}
@@ -2154,9 +2154,9 @@ https://github.com/jeromekelleher/sc2ts-paper/issues/284
 Possibly related to deletions.
 
 \subsection*{Multiple breakpoints}
-Seven of the Pango Xs present in the Viridian v04 dataset have more than one breakpoint,
+Seven of the Pango X lineages present in the Viridian v04 dataset have more than one breakpoint,
 with the supporting evidence documented in the associated Pango designation issues.
-Five of these seven Pango Xs were detected as recombinants by sc2ts.
+Five of these seven X lineages were detected as recombinants by sc2ts.
 Three of them (XAY, XBC, XBT) had more than one breakpoint,
 but were not added to the ARG due to high HMM cost and
 a lack of sample support to be incorporated as retrospective sample groups.
@@ -2185,7 +2185,8 @@ XBT was not added to the ARG due to high HMM cost and low sample support
 https://github.com/jeromekelleher/sc2ts-paper/issues/357
 Evidence of the second breakpoint reported in its designation issue relies on
 the presence of a large deletion inherited from BA.2*, which is currently treated as missing data by sc2ts.
-The XAC samples share a recombination node with the samples of four other Pango Xs
+The XAC samples share a recombination node with the samples of four other 
+X lineages
 which do not have this deletion (Figure 2C).
 
 \subsubsection*{XAK}
@@ -2347,7 +2348,7 @@ regions highlight artifactual recombination events, which have fewer than four
 net supporting loci on one side or both sides of the suggested breakpoint.
 Colors indicate the primer scheme used for sequencing. The pie charts show
 breakdowns of the recombination events by primer scheme per quadrant.
-Recombination events associated with the origins of Pango Xs are labeled.
+Recombination events associated with the origins of Pango X lineages are labeled.
 }
 \label{fig:recombinant_qc}
 \end{figure}
