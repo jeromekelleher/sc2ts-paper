@@ -1611,33 +1611,23 @@ labeled quadrants, and Figure~\ref{fig:copying_pattern_examples}
 for examples of the corresponding copying patterns. Also reference
 any additional examples that we include beyond A-D.]
 
+
 Before characterizing recombination events in detail,
-we sought to remove probable artifacts.
-Systematic errors in SARS-CoV-2 sequences
-associated with sequencing protocols \cite{Turakhia2020}
-can complicate recombination detection \cite{DeMaio2024}.
-% Explain to readers what convincing genomic evidence looks like.
-By inspecting copying patterns at sites that differ between recombinant parents,
-we find a convincing signal when treating adjacent and near-adjacent sites as a single locus.
+we sought to remove probable artifactual recombinants,
+which can be caused by correlated bases
+that are treated independently by the HMM.
+Correlated changes can be caused by
+systematic errors in genome sequences
+associated with sequencing protocols \cite{Turakhia2020},
+multi-nucleotide substitutions \cite{DeMaio2024}, and
+alignment errors (e.g., deletions due to MAFFT misalignment \cite{Hunt2024}).
 
-Three copying patterns in Figure~\ref{fig:copying_pattern_examples}
-illustrate the evidence for three recombination events identified as artifactual.
-Explain the three bad patterns:
-
-
-
-Compared to a marginally robust one.
-
-
-Artifactual recombination events can be characterized
+We characterized artifactual recombination events
 as having fewer than four such loci supporting the left or right parent
 on either side of a suggested breakpoint.
-
-When counting such loci, we considered nearly adjacent sites
-(separated by at most three bases) as single loci,
-to avoid over-counting support from correlated loci,
-which could lead to artificial signals of recombination.
-Also, when counting supporting loci for a focal parent,
+We treated adjacent and near-adjacent sites
+(separated by at most three bases) as single loci.
+Also, when counting loci supporting a focal parent,
 we penalized loci where the character(s)
 in the recombinant matches that in the non-focal parent
 but not in the focal parent.
@@ -1645,13 +1635,18 @@ but not in the focal parent.
 Of the 929 recombination events in the ARG,
 this measure identifies 543 as artifactual,
 leaving 386 ``robust'' events (Figure~\ref{fig:recombinant_qc}).
-Evidence that our simple filter effectively flagged artifacts can be seen in the
+Evidence that this filter effectively flagged artifacts can be seen in the
 clear association between the AmpliSeq V1 kit and recombination events
 that we identify as artifactual.
 This primer scheme was used to sequence XX of the samples
 associated with an artifactual recombination event,
 in contrast to 15 of the ``robust'' events (Figure~\ref{fig:recombinant_qc}),
 strongly implicating it as a common source of problematic data.
+
+Three copying patterns in Figure~\ref{fig:copying_pattern_examples}
+AmpliSeq
+True MNS
+Alignment error
 
 
 \subsubsection*{Comparison with UShER}
