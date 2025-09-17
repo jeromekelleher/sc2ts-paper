@@ -327,6 +327,41 @@ while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 \label{fig:methodology}
 \end{figure}
 
+%% JK: This is copy of old Methods section "overview of sc2ts" which is basically
+%% the same as this section. TODO Merge the useful text in here.
+
+% Sc2ts (pronounced ``scoots'', optionally)
+% is a method for inferring Ancestral Recombination Graphs (ARGs)
+% from densely sampled genome sequence data in real time,
+% in which recombination occurs at a low but significant rate.
+% The basic idea is to incrementally update an ARG regularly
+% with the sequences collected since the previous batch (Figure
+% \ref{fig:methodology}).
+% We used daily batches for SARS-CoV-2,
+% and use days as the time interval for clarity in what follows.
+% The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{LiStephens2003}
+% for each sequence in the daily batch to the current ARG.
+% These copying paths will mostly consist of a new sample sequence copying
+% from a node in the ARG with a small number of mutations,
+% and often many samples from a daily batch will copy from the same ARG node.
+% The second step is then to ``resolve'' these implied polytomies
+% by using a standard neighbor-joining algorithm \cite{Saitou1987}.
+% This greedy update strategy inevitably leads to unparsimonious topologies,
+% and the third step is to then increase the overall parsimony of the inferred ARG
+% by making some simple topological updates.
+% Recombination is inferred as an integral and ongoing part of this process,
+% requiring only a few additional steps to facilitate later analysis.
+% The result of inference for a given day is then a genealogy recording genetic inheritance
+% as well as mutation and recombination events
+% for all of the samples added to the ARG up to that day.
+
+% Sc2ts is implemented in Python building on core PyData infrastructure
+% such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
+% and Pandas~\cite{Mckinney2010data} ,
+% using pyfaidx\cite{Shirley2015efficient} to access alignment data
+% and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
+% tasks.
+% [TODO JK to fill this out]
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
@@ -1265,41 +1300,6 @@ and edited the content as needed and take(s) full responsibility for the content
 %%%  size estimation, and the criteria for
 %%%  inclusion and exclusion of any data or
 %%%  subjects).
-
-\subsubsection*{Description of sc2ts}
-
-Sc2ts (pronounced ``scoots'', optionally)
-is a method for inferring Ancestral Recombination Graphs (ARGs)
-from densely sampled genome sequence data in real time,
-in which recombination occurs at a low but significant rate.
-The basic idea is to incrementally update an ARG regularly
-with the sequences collected since the previous batch (Figure
-\ref{fig:methodology}).
-We used daily batches for SARS-CoV-2,
-and use days as the time interval for clarity in what follows.
-The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{LiStephens2003}
-for each sequence in the daily batch to the current ARG.
-These copying paths will mostly consist of a new sample sequence copying
-from a node in the ARG with a small number of mutations,
-and often many samples from a daily batch will copy from the same ARG node.
-The second step is then to ``resolve'' these implied polytomies
-by using a standard neighbor-joining algorithm \cite{Saitou1987}.
-This greedy update strategy inevitably leads to unparsimonious topologies,
-and the third step is to then increase the overall parsimony of the inferred ARG
-by making some simple topological updates.
-Recombination is inferred as an integral and ongoing part of this process,
-requiring only a few additional steps to facilitate later analysis.
-The result of inference for a given day is then a genealogy recording genetic inheritance
-as well as mutation and recombination events
-for all of the samples added to the ARG up to that day.
-
-Sc2ts is implemented in Python building on core PyData infrastructure
-such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
-and Pandas~\cite{Mckinney2010data} ,
-using pyfaidx\cite{Shirley2015efficient} to access alignment data
-and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
-tasks.
-[TODO JK to fill this out]
 
 \subsubsection*{Ancestral Recombination Graphs}
 
