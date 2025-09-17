@@ -1027,6 +1027,14 @@ This study did not generate new materials
 %%%  are structured and consist of three bulleted
 %%%  components. Each component must be present.
 
+
+\begin{itemize}
+\item Snakemake workflow for aligning and converting the Viridian dataset to
+VCF Zarr:
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}
+\end{itemize}
+
+TODO add these to the list above with actual URLs
 \begin{itemize}
     \item The ARG and the sequence alignments have been deposited at Zenodo and are publicly available.
     \item All original code has been deposited in GitHub and is publicly available.
@@ -1238,9 +1246,9 @@ and edited the content as needed and take(s) full responsibility for the content
 %%%  manuscript file after the figure legends, main
 %%%  table(s) and table legend(s).
 
-\subsection*{Key resources table}
+% \subsection*{Key resources table}
 
-\textit{To create the KRT, please use the \href{https://star-methods.com}{KRT webform} or the \href{http://www.cell.com/pb-assets/journals/research/cell/methods/table-template1.docx}{Word template} and upload this file separately.}
+% \textit{To create the KRT, please use the \href{https://star-methods.com}{KRT webform} or the \href{http://www.cell.com/pb-assets/journals/research/cell/methods/table-template1.docx}{Word template} and upload this file separately.}
 
 \subsection*{Method details}
 
@@ -1287,8 +1295,10 @@ for all of the samples added to the ARG up to that day.
 
 Sc2ts is implemented in Python building on core PyData infrastructure
 such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
-and Pandas ,
+and Pandas~\cite{Mckinney2010data} ,
 using pyfaidx\cite{Shirley2015efficient} to access alignment data
+and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
+tasks.
 [TODO JK to fill this out]
 
 \subsubsection*{Ancestral Recombination Graphs}
@@ -1526,53 +1536,95 @@ as there would be far more reversions (as seen in preliminary ARGs built without
 The caveat of taking this approach is that one must be more careful
 when analysing the samples around the seed(s) in the ARG.
 
+\subsubsection*{Pandemic scale alignment storage}
+To provide the efficient access to alignment data required for inference with sc2ts, we
+developed a new format based on the VCF Zarr~\cite{Czech2025} specification.
+Briefly, Zarr is a storage format for scientific data,
+originally developed for the
+\textit{Anopheles gambiae}
+1000 Genomes Project~\cite{Anopheles2017genetic}, and
+is now seeing widespread adoption across the 
+sciences~\cite{Abernathey2021cloud,Moore2021ome,Gowan2022using,
+Dhapola2022scarf,Virshup2023scverse,Baker2023emobject,Marconato2024spatialdata,Ruan2024image}.
+Zarr is essentially a simple mechanism for storing n-dimensional array
+data as a regular grid of compressed chunks, which provides 
+high levels of data compression, efficient access across multiple
+dimensions, and is ideally suited to modern cloud-based
+deployments~\cite{Czech2025}. 
 
-\subsubsection*{Data preprocessing}
+We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
+consensus sequences (125GiB over 48 FASTA files) and 30 metadata fields (1.4
+GiB TSV file) to VCF Zarr using a 
+reproducible Snakemake\cite{Koster2012snakemake} pipeline.
+We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using 
+MAFFT v7.475 \cite{Katoh2013},
+with the option \texttt{--keeplength} to retain the reference coordinate system.
+We then used \texttt{sc2ts import-alignments} and 
+\texttt{sc2ts import-metadata} to convert all alignments and metadata to VCF
+Zarr format, resulting in a single 401 MiB file 
+(around 77X smaller than gzip compressed FASTA\cite{Czech2025}).
 
-In this study, we used the SARS-CoV-2 sequences reassembled in a recent study \cite{Hunt2024}
-using an amplicon-aware assembly method (named ``Viridian'').
-The Viridian sequences contain far fewer artifacts compared to their publicly deposited counterparts on GenBank.
-Consequently, phylogenetic tree inference using the Viridian data led to more parsimonious phylogenies,
-as seen by a large reduction in the number of likely artifactual reversions \cite{Hunt2024}.
+A classical tradeoff in bioinformatics is whether to store data 
+in sample-major (FASTA) or variant-major (VCF) format, determining
+whether the data can be accessed efficiently either by row or column
+of the variant matrix. Because VCF Zarr is chunked in two dimensions,
+we can now access either sample alignments or the variation
+data for a given site across all samples efficiently.
+While the VCF Zarr encoding of the MAFFT-aligned Viridian sequences
+and metadata can be accessed via native Zarr libraries in several
+popular programming languages (see Czech et al.\cite{Czech2025} 
+for an overview), the sc2ts Python library provides a convenient interface. 
+The \texttt{sc2ts.Dataset}
+class provides efficient access to alignments for samples and 
+variant data for sites along the genome, as well as methods to export
+subsets of the data to FASTA if required.
+Document~\ref{sec:supplement_sc2ts_usher_imputation} gives an example
+of using this interface, where we retrieve alignment data for millions 
+of samples in a few minutes on a standard desktop computer with minimal
+memory overhead. See Czech et al.\cite{Czech2025} for more details 
+and benchmarks.
 
-We downloaded 4,484,157 Viridian sequences obtained
-from samples collected from January, 2020 to March, 2023 (``batch 1'').
-We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using MAFFT v7.525 \cite{Katoh2013},
-with the option ‘--keeplength’ to retain the reference coordinate system, discarding insertions.
-We converted the MAFFT alignments and all sample metadata to VCF Zarr format \cite{Czech2025},
-which are available for download on Zenodo (URL).
+Both the pipeline and converted Viridian dataset are available for download;
+see Data and code availability for details. 
 
-Prior to ARG inference, we preprocessed the remaining sequences as follows.
-We treated low-quality bases (represented by Ns), gaps and ambiguous characters in the sequences as missing data.
-When encoded as missing data, the bases do not inform sample matching (see ``The Li and Stephens model'').
-
-During inference, we filtered out the samples with low-quality sequences and low-precision sampling dates.
-We kept the quality check-passing sequences used to infer the Viridian UShER phylogeny \cite{Hunt2024}.
-We skipped low-quality sequences that had more than 500 missing sites
-(except when building the ``base'' ARG, when the maximum number of allowed missing bases was set to 10,000 instead).
-We also skipped $\sim$40,000 samples which had a collection date of December 31, 2020.
-The sampling frequency of this date is alarmingly high compared to other dates (at most 15,000 samples per day).
-We suspect that this batch of samples might be unusually enriched for wrong collection dates,
-likely due to arbitrary assignment of the originally reported collection date of ``2020'' to be ``31-12-2020''.
-Furthermore, manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
+\subsubsection*{Sample filtering and preprocessing}
+The collection date for a sequence is an important piece of information
+for sc2ts. We used the Viridian
+consensus date (``Date\_tree``), based on information from COG-UK, GISAID, and
+ENA/SRA as our source. Samples that have missing or incomplete dates (e.g., 2020-01)
+were omitted, as were
+the $\sim$40,000 samples which had a collection date of December 31, 2020.
+As the sample count for this date is a major outlier for this period of
+the pandemic, it seems likely that this 
+batch is highly enriched for incorrect collection dates.
+Manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
 confirmed that some of the samples were not collected in 2020.
 
-Sites which are enriched for systematic sequencing errors or frequently experience homoplasy
-can cause artifactual signals of recombination (REF).
-The bioinformatics community has identified and curated a set of problematic sites
-that are recommended to be excluded before phylogenetic inference (REF).
-Here we assembled a bespoke set of such problematic sites
-using the information in the Viridian sequences.
+The bioinformatics community has curated a set of problematic sites
+for SARS-CoV-2 that are enriched for systematic sequencing errors or 
+high levels of homoplasy~\cite{DeMaio2020issues}. 
+Although these sites are recommended to be masked for UShER
+inference~\cite{Turakhia2020},
+the list has not been updated to take into account the systematic improvements 
+made by the Viridian dataset, and we therefore assembled a custom set of sites to mask. 
 To do so, we first built a preliminary ARG from the samples collected up to June 30, 2021,
 without any site masking.
-Then, we identified the top 100 sites which had the highest mutation counts in the ARG (URL).
-Only six of these sites overlapped with the ``Problematic Sites''
-downloaded from the UCSC Genome Browser website (URL),
-which did not have a high number of mutations in the preliminary ARG.
-To infer the final ARG, we masked the problematic sites
-in our custom set
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
+Then, we identified the top 100 sites in terms of mutation counts in the ARG.
+Only 11 of these sites 
+(635, 8835, 11074, 11083, 15521, 16887, 21304, 21305, 21575, 21987 and 28253)
+were present in the problematic sites file
+(\url{https://raw.githubusercontent.com/W-L/ProblematicSites\_SARS-CoV2/master/problematic\_sites\_sarsCov2.vcf}),
+and most sites in this list were typical in terms of the numbers of mutations.
+We therefore masked our 100 most-mutagenic sites to remove sequencing errors and improve
+matching performance in the LS HMM. 
 
+Alignments read from the VCZ Zarr file were first preprocessed to mask any 
+non nucleotide characters (A,C,G or T) as missing data. 
+Then, we filtered 
+any samples that had missing data at more than 500 sites, excluding
+the 100 sites identified as problematic (this was 
+set to 10,000 sites for the initial period up to 2020-03-01 where sampling
+density is low).
 
 \subsubsection*{Reconstructing a pandemic-scale ARG}
 
@@ -2093,7 +2145,8 @@ due to special handling of ambiguous bases in the parsimony calculations.
 
 This computation is a good example of type of integrated large-scale data analysis 
 that can be easily performed using the combination of tskit and VCF Zarr.
-The entire analysis is performed in a short Jupyter notebook, with the 
+The entire analysis is performed in a short Jupyter
+notebook~\cite{kluyver2016jupyter}, with the 
 core calculation requiring about 30 lines of Python code. Retrieving 
 data from the base alignments and ARGs for 2.48 million samples 
 at the same time over all 27,507 sites took only 6 minutes, with a peak memory
