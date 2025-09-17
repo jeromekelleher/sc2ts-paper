@@ -1587,40 +1587,44 @@ and benchmarks.
 Both the pipeline and converted Viridian dataset are available for download;
 see Data and code availability for details. 
 
-\subsubsection*{Sample preprocessing}
+\subsubsection*{Sample filtering and preprocessing}
 The collection date for a sequence is an important piece of information
 for sc2ts. We used the Viridian
 consensus date (``Date\_tree``), based on information from COG-UK, GISAID, and
 ENA/SRA as our source. Samples that have missing or incomplete dates (e.g., 2020-01)
 were omitted, as were
 the $\sim$40,000 samples which had a collection date of December 31, 2020.
-As the  sampling frequency of this date is much higher than other
-(at most 15,000 samples per day), it seems likely that this 
-batch is highly enriched for wrong collection dates.
-Furthermore, manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
+As the sample count for this date is a major outlier for this period of
+the pandemic, it seems likely that this 
+batch is highly enriched for incorrect collection dates.
+Manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
 confirmed that some of the samples were not collected in 2020.
 
-The bioinformatics community has identified and curated a set of problematic sites
+The bioinformatics community has curated a set of problematic sites
 for SARS-CoV-2 that are enriched for systematic sequencing errors or 
 high levels of homoplasy~\cite{DeMaio2020issues}. 
-As these sites had not been updated to
-take into account the systematic improvements made by the Viridian dataset,
-we assembled a custom set of sites to mask. 
+Although these sites are recommended to be masked for UShER
+inference~\cite{Turakhia2020},
+the list has not been updated to take into account the systematic improvements 
+made by the Viridian dataset, and we therefore assembled a custom set of sites to mask. 
 To do so, we first built a preliminary ARG from the samples collected up to June 30, 2021,
 without any site masking.
-Then, we identified the top 100 sites which had the highest mutation counts in
-the ARG.
+Then, we identified the top 100 sites in terms of mutation counts in the ARG.
 Only 11 of these sites 
 (635, 8835, 11074, 11083, 15521, 16887, 21304, 21305, 21575, 21987 and 28253)
 were present in the problematic sites file
-(\url{https://raw.githubusercontent.com/W-L/ProblematicSites\_SARS-CoV2/master/problematic\_sites\_sarsCov2.vcf}).
+(\url{https://raw.githubusercontent.com/W-L/ProblematicSites\_SARS-CoV2/master/problematic\_sites\_sarsCov2.vcf}),
+and most sites in this list were typical in terms of the numbers of mutations.
+We therefore masked our 100 most-mutagenic sites to remove sequencing errors and improve
+matching performance in the LS HMM. 
 
 Alignments read from the VCZ Zarr file were first preprocessed to mask any 
 non nucleotide characters (A,C,G or T) as missing data. 
 Then, we filtered 
 any samples that had missing data at more than 500 sites, excluding
 the 100 sites identified as problematic (this was 
-set to 10,000 sites for the period up to 2020-03-01).
+set to 10,000 sites for the initial period up to 2020-03-01 where sampling
+density is low).
 
 \subsubsection*{Reconstructing a pandemic-scale ARG}
 
