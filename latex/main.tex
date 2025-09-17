@@ -1539,12 +1539,12 @@ when analysing the samples around the seed(s) in the ARG.
 \subsubsection*{Pandemic scale alignment storage}
 To provide the efficient access to alignment data required for inference with sc2ts, we
 developed a new format based on the VCF Zarr~\cite{Czech2025} specification.
-Briefly, Zarr is a data storage format designed for scientific data applications
-originally developed to store genetic variation data for the
+Briefly, Zarr is a storage format for scientific data,
+originally developed for the
 \textit{Anopheles gambiae}
 1000 Genomes Project~\cite{Anopheles2017genetic}, and
-is now seeing adoption across a wide range of 
-applications~\cite{Abernathey2021cloud,Moore2021ome,Gowan2022using,
+is now seeing widespread adoption across the 
+sciences~\cite{Abernathey2021cloud,Moore2021ome,Gowan2022using,
 Dhapola2022scarf,Virshup2023scverse,Baker2023emobject,Marconato2024spatialdata,Ruan2024image}.
 Zarr is essentially a simple mechanism for storing n-dimensional array
 data as a regular grid of compressed chunks, which provides 
@@ -1568,13 +1568,21 @@ A classical tradeoff in bioinformatics is whether to store data
 in sample-major (FASTA) or variant-major (VCF) format, determining
 whether the data can be accessed efficiently either by row or column
 of the variant matrix. Because VCF Zarr is chunked in two dimensions,
-we can now access either sample aligments or the variation
+we can now access either sample alignments or the variation
 data for a given site across all samples efficiently.
-See Czech et al.\cite{Czech2025} for more details and benchmarks on 
-this dataset.  
-Another advantage of Zarr over formats such as VCF is that is
-is inherently ``appendable'', and large datasets can be updated
-in real time.
+While the VCF Zarr encoding of the MAFFT-aligned Viridian sequences
+and metadata can be accessed via native Zarr libraries in several
+popular programming languages (see Czech et al.\cite{Czech2025} 
+for an overview), the sc2ts Python library provides a convenient interface. 
+The \texttt{sc2ts.Dataset}
+class provides efficient access to alignments for samples and 
+variant data for sites along the genome, as well as methods to export
+subsets of the data to FASTA if required.
+Document~\ref{sec:supplement_sc2ts_usher_imputation} gives an example
+of using this interface, where we retrieve alignment data for millions 
+of samples in a few minutes on a standard desktop computer with minimal
+memory overhead. See Czech et al.\cite{Czech2025} for more details 
+and benchmarks.
 
 Both the pipeline and converted Viridian dataset are available for download;
 see Data and code availability for details. 
