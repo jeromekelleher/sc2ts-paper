@@ -1442,7 +1442,7 @@ density is low).
 
 \subsubsection*{Li and Stephens haplotype-copying model}
 
-LS model \cite{LiStephens2003} is an approximation of the coalescent with recombination
+The LS model \cite{LiStephens2003} is an approximation of the coalescent with recombination
 that captures many of the key features of the joint processes of mutation and recombination.
 It is widely used in a range of applications in population genetics, including ARG 
 % Does Threads use LS?
@@ -1488,9 +1488,6 @@ which was originally developed to build genome-wide human genealogies
 and is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
 Using this Viterbi algorithm, sc2ts deterministically infers the copying path of a sample
 collected on a certain date through the samples collected on earlier dates in a given ARG.
-
-
-\subsubsection*{Accelerating sample matching}
 
 The SARS-CoV-2 sequences were determined from samples collected densely in time.
 SARS-CoV-2 phylogenies have low phylogenetic signals due to high sampling frequency
