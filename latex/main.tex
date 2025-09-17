@@ -327,6 +327,41 @@ while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 \label{fig:methodology}
 \end{figure}
 
+%% JK: This is copy of old Methods section "overview of sc2ts" which is basically
+%% the same as this section. TODO Merge the useful text in here.
+
+% Sc2ts (pronounced ``scoots'', optionally)
+% is a method for inferring Ancestral Recombination Graphs (ARGs)
+% from densely sampled genome sequence data in real time,
+% in which recombination occurs at a low but significant rate.
+% The basic idea is to incrementally update an ARG regularly
+% with the sequences collected since the previous batch (Figure
+% \ref{fig:methodology}).
+% We used daily batches for SARS-CoV-2,
+% and use days as the time interval for clarity in what follows.
+% The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{LiStephens2003}
+% for each sequence in the daily batch to the current ARG.
+% These copying paths will mostly consist of a new sample sequence copying
+% from a node in the ARG with a small number of mutations,
+% and often many samples from a daily batch will copy from the same ARG node.
+% The second step is then to ``resolve'' these implied polytomies
+% by using a standard neighbor-joining algorithm \cite{Saitou1987}.
+% This greedy update strategy inevitably leads to unparsimonious topologies,
+% and the third step is to then increase the overall parsimony of the inferred ARG
+% by making some simple topological updates.
+% Recombination is inferred as an integral and ongoing part of this process,
+% requiring only a few additional steps to facilitate later analysis.
+% The result of inference for a given day is then a genealogy recording genetic inheritance
+% as well as mutation and recombination events
+% for all of the samples added to the ARG up to that day.
+
+% Sc2ts is implemented in Python building on core PyData infrastructure
+% such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
+% and Pandas~\cite{Mckinney2010data} ,
+% using pyfaidx\cite{Shirley2015efficient} to access alignment data
+% and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
+% tasks.
+% [TODO JK to fill this out]
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
@@ -1018,6 +1053,7 @@ Requests for further information and resources should be directed to and will be
 This study did not generate new materials
 
 \subsection*{Data and code availability}
+\label{sec:data_and_code_availability}
 
 %%%  All original research papers must include a
 %%%  comprehensive and accurate ``data and code
@@ -1027,11 +1063,16 @@ This study did not generate new materials
 %%%  are structured and consist of three bulleted
 %%%  components. Each component must be present.
 
+[TODO fix the typesetting once all resources are compiled]
 
 \begin{itemize}
 \item Snakemake workflow for aligning and converting the Viridian dataset to
 VCF Zarr:
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}
+\item Complete configuration for running sc2ts base ARG inference:
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}
+\item Snakemake workflow for ARG post-processing
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}
 \end{itemize}
 
 TODO add these to the list above with actual URLs
@@ -1266,41 +1307,6 @@ and edited the content as needed and take(s) full responsibility for the content
 %%%  inclusion and exclusion of any data or
 %%%  subjects).
 
-\subsubsection*{Description of sc2ts}
-
-Sc2ts (pronounced ``scoots'', optionally)
-is a method for inferring Ancestral Recombination Graphs (ARGs)
-from densely sampled genome sequence data in real time,
-in which recombination occurs at a low but significant rate.
-The basic idea is to incrementally update an ARG regularly
-with the sequences collected since the previous batch (Figure
-\ref{fig:methodology}).
-We used daily batches for SARS-CoV-2,
-and use days as the time interval for clarity in what follows.
-The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{LiStephens2003}
-for each sequence in the daily batch to the current ARG.
-These copying paths will mostly consist of a new sample sequence copying
-from a node in the ARG with a small number of mutations,
-and often many samples from a daily batch will copy from the same ARG node.
-The second step is then to ``resolve'' these implied polytomies
-by using a standard neighbor-joining algorithm \cite{Saitou1987}.
-This greedy update strategy inevitably leads to unparsimonious topologies,
-and the third step is to then increase the overall parsimony of the inferred ARG
-by making some simple topological updates.
-Recombination is inferred as an integral and ongoing part of this process,
-requiring only a few additional steps to facilitate later analysis.
-The result of inference for a given day is then a genealogy recording genetic inheritance
-as well as mutation and recombination events
-for all of the samples added to the ARG up to that day.
-
-Sc2ts is implemented in Python building on core PyData infrastructure
-such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
-and Pandas~\cite{Mckinney2010data} ,
-using pyfaidx\cite{Shirley2015efficient} to access alignment data
-and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
-tasks.
-[TODO JK to fill this out]
-
 \subsubsection*{Ancestral Recombination Graphs}
 
 %%% This paragraph needs to be rewritten.
@@ -1348,193 +1354,6 @@ using the mature and feature-rich tskit library \cite{Kelleher2018efficient,Ralp
 Tskit is widely used in population genetics, and has been incorporated into many downstream applications
 (e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2023,Mahmoudi2022,Petr2023,Rasmussen2023,Zhang2023}).
 
-
-\subsubsection*{Li and Stephens haplotype-copying model}
-
-LS model \cite{LiStephens2003} is an approximation of the coalescent with recombination
-that captures many of the key features of the joint processes of mutation and recombination.
-It is widely used in a range of applications in population genetics, including ARG 
-% Does Threads use LS?
-inference \cite{Kelleher2019,Gunnarsson2024}.
-The LS model is an HMM that models a focal genome as a sequence of nucleotides (i.e. the observed states),
-which are probabilistically emitted as an imperfect mosaic of a set of genomes in a reference panel (i.e., the hidden states).
-The process of switching between the genomes in the reference panel is governed by a transition matrix,
-and mismatches between a focal genome and a genome of the reference panel (from which it is ``copied'') are permitted as emissions.
-
-In the original formulation of the LS model (see Appendix S1 of \cite{LiStephens2003}),
-the probability of switching between the hidden states (i.e., genomes in a reference panel)
-when going from one site to the next is dependent on
-(1) the rate of recombination between the sites and
-(2) the number of genomes in the reference panel ($n$).
-Sc2ts uses the same formulation except that $n$ is set to 1.
-This special case of the LS model leads to an intuitive interpretation of the ratio
-between the probability of switching and the probability of mismatch:
-When considering only two copying paths, the path having $k$ mismatches
-and the other path having one switch but no mismatch are equally probable.
-We call this parameter $k$ the ``recombination penalty''.
-% TODO mention that this can be thought of as extended parsimony.
-This parameter thus allows us to adjust the relative importance of recombination and mutation
-when finding the best explanation for a given sample.
-For simplicity, we assume that any single base mutation causing a mismatch is equally probable,
-ignoring transition-transversion biases and variation of mutation rate along the genome.
-As data sampling was dense for SARS-CoV-2, this assumption was considered tolerable.
-
-We explored using several values of $k$,
-by running sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020.
-We would expect that a good value for $k$ should lead to parsimonious ARGs
-that capture plausible recombination events without incurring too many mutations, particularly reversions.
-A value of $k$ too low could result in many artifactual recombination events,
-whereas a value of $k$ too high could miss many genuine recombination events.
-We found that ARGs built with $k$ set to 3 contained many dubious recombination events,
-but ARGs built with $k$ set to 5 failed
-to include the well supported recombination events documented in a previous study\cite{Jackson2021}.
-Hence, we decided to use $k$ set to 4 to infer the final ARG described in this study.
-
-A Viterbi algorithm can be used to find the most likely ``copying path'' of a focal sample
-through a reference panel of samples under the LS model.
-Specifically, sc2ts uses a Viterbi algorithm modified to operate on STS,
-which was originally developed to build genome-wide human genealogies
-and is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
-Using this Viterbi algorithm, sc2ts deterministically infers the copying path of a sample
-collected on a certain date through the samples collected on earlier dates in a given ARG.
-
-
-\subsubsection*{Accelerating sample matching}
-
-The SARS-CoV-2 sequences were determined from samples collected densely in time.
-SARS-CoV-2 phylogenies have low phylogenetic signals due to high sampling frequency
-(such that sampling and transmission outpace nucleotide substitution).
-Therefore, most samples can be explained by a small number of mutations.
-Leveraging this property of the dataset, we developed a likelihood-thresholding strategy
-to avoid needing to compute the likelihood of all possible copying paths through an ARG for every single sample.
-%%% TODO: This needs to be explained.
-
-Furthermore, to avoid performing redundant HMM matching on identical samples, new samples
-which were exactly matched to a (sample or non-sample) node in the ARG were not added immediately.
-Instead, the copying paths of these samples were recorded,
-and the samples were eventually added back to the ARG in a post-processing step.
-
-
-\subsubsection*{Tree inference from daily sample clusters}
-
-With tens of thousands of samples being added to the ARG per day,
-there are often clusters of hundreds of sequences attaching to the same node
-(or more generally, the same recombinant path).
-While some of these samples will require no extra mutations
-(as they are identical to the attachment node),
-in general there will be complex patterns of shared mutations among the samples
-reflecting their evolutionary relationships.
-A natural way to infer these within-cluster evolutionary relationships
-is to use standard tree-building algorithms.
-We can infer a plausible phylogeny relating the samples in a cluster
-independently of the other samples in a daily batch
-and then attach the phylogeny (and mutations) to the ARG at the node
-identified by the LS model.
-
-Sc2ts builds a local phylogeny relating the samples in each cluster as follows.
-First, it infers a tree using a standard neighbor-joining
-algorithm\cite{Saitou1987}. We first compute the Hamming distance between
-all pairs of samples using scipy~\cite{Virtanen2020scipy},
-and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
-to compute the neighbor-joining tree.
-Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony 
-algorithm \cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
-Finally, the resulting tree is added to the ARG at an attachment node
-and the ARG is locally modified using heuristics to improve parsimony.
-[TODO we need to define these?]
-
-
-\subsubsection*{Handling outlier samples}
-
-Although we expected that most samples can be explained by a small number of mutations in the ARG,
-we observed two types of outlier samples which had unusually high numbers of mutations:
-(1) ``time travelers'' and (2) ``saltation'' lineages.
-Time traveling samples are caused by errors in their collection dates.
-For example, if a sample is actually collected 10 months after its reported collection date,
-then 20 mutations (instead of, say, 0 or 1) are needed to explain it
-using the ARG available on its collection date,
-assuming a substitution rate of 2 events per genome per month.
-Samples from ``saltation'' lineages (particularly the major VOCs) are characterized
-by high numbers of mutations by the time of their detection.
-Both types of outlier samples are poorly fit to the ARG when they appear on their collection dates.
-To handle these outlier samples, we introduce three mechanisms:
-(1) HMM cost-based rejection,
-(2) retrospective sample grouping, and
-(3) unconditional seeding.
-
-First, we introduce a rejection mechanism to prevent samples
-that are generally poorly explained by the ARG
-using the LS model parameterised by a specific value for the recombination penalty ($k$).
-For each sample, an HMM cost is calculated based on the number of switches and mismatches
-in its most likely copying path under the LS model:
-The sum of the penalty cost for the switches ($k$)
-and the penalty cost of the mismatches (implicitly, equal to one).
-To build the ARG described here, we used $k$ of 4 and a maximum HMM cost of 7.
-This combination of parameter values rejected samples which have no switch
-but 8 mismatches as well as samples which have one switch and 4 mismatches.
-It is important to note that this does not necessarily mean
-that samples with more than 8 mismatches
-or samples with two or more switches cannot be incorporated into the ARG.
-Such samples can be added back using a separate mechanism (see below).
-We find that although it effectively removes time travelers with poor sample support (e.g. singletons),
-the mechanism can filter samples too aggressively.
-For example, in preliminary ARGs, it led to exclusion of major saltation VOCs (e.g. Alpha).
-
-Second, to prevent exclusion of the important saltation VOCs
-(and less important but well supported poorly-fit lineages),
-we introduce ``retrospective sample grouping''.
-The idea is to gather evidence for a lineage within a time window rather than on a single day.
-After adding a batch of samples, the samples initially rejected on their collection dates
-due to high HMM costs are reconsidered for attachment to the ARG if
-(a) they are collected within a retrospective time window (the past 7 days);
-(b) they have identical copying paths; and
-(c) they have shared immediate reversions
-(attaching a new sample to the top or the bottom of a long branch).
-Sample groups satisfying these criteria are attached to the ARG if
-(a) they have at least 10 samples;
-(b) they are collected on at least 3 different dates
-(to avoid adding batches of time travelers having the same collection date); and
-(c) they have at least two shared ``non-immediate'' reversions
-(so as to prevent unrelated time travelers from being grouped together).
-Furthermore, phylogenetic tree quality metrics are used to preclude groups of samples
-that are unlikely to be closely related.
-Specifically, the tree of a sample group was excluded if
-(a) it has more than two recurrent mutations or
-(b) it has more than 5 mutations per sample on average.
-
-Retrospective sample grouping successfully captured most saltation lineages,
-but integrating Delta and Omicron into the ARG required further manual intervention.
-To ensure that Delta and Omicron are added, we introduce a third mechanism, ``unconditional seeding''.
-The idea is to choose suitable samples belonging to each VOC,
-and attach them to the ARG unconditionally (i.e. without filtering using HMM cost).
-We sought ``seed'' samples for Delta, Omicron BA.1, and BA.2.
-For Delta, we used two sets of seeds:
-(1) 8 samples assigned to B.1.617.2, and
-(2) 9 additional samples assigned to its sibling lineage B.1.617.1.
-Specifically, these samples are the earliest samples present in the Viridian v04 dataset
-that were used for the designation of the VOCs.
-For Omicron BA.1 and BA.2, we used SRR17041376 and SRR17461792, respectively.
-We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
-as the BA.1 seed (https://github.com/jeromekelleher/sc2ts-paper/issues/264),
-as it could be well explained as as a non-recombinant given the ARG available on its collection date.
-For BA.2, we chose SRR17461792 (dated 2021-11-27 from South Africa),
-which is the earliest BA.2 sample present in the Viridian v04 dataset.
-It is dated later than SRR17041376 (the BA.1 seed),
-allowing time for the BA.1 lineage to accumulate enough sampled descendants
-and to get established in the ARG.
-For the full list of seeds, see
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}
-
-In practice, it is difficult to find optimal seeds for saltation lineages,
-which ideally would require no reversion to be added to the ARG
-and to which sampled descendents would be added with no reversion.
-Considering poor early sampling and the presence of time travellers for Delta, Omicron BA.1, and BA.2,
-using suboptimal seeds is likely the best that we can do in practice.
-The consequence is that there would be some reversions leading to the samples attached to the seed(s).
-Nevertheless, it is a better alternative to not using seeds,
-as there would be far more reversions (as seen in preliminary ARGs built without seeding).
-The caveat of taking this approach is that one must be more careful
-when analysing the samples around the seed(s) in the ARG.
 
 \subsubsection*{Pandemic scale alignment storage}
 To provide the efficient access to alignment data required for inference with sc2ts, we
@@ -1626,33 +1445,288 @@ the 100 sites identified as problematic (this was
 set to 10,000 sites for the initial period up to 2020-03-01 where sampling
 density is low).
 
-\subsubsection*{Reconstructing a pandemic-scale ARG}
 
-%%% TODO: Much of this needs to be rewritten once the post-processing pipeline is finalised.
-Using sc2ts, we reconstructed the ARG presented here in three stages:
-(1) initialization, (2) extension, and (3) post-processing.
+\subsubsection*{Li and Stephens haplotype-copying model}
 
-First, we initialized a base ARG.
-We added the Wuhan-Hu-1 reference sample (MN908947.3) as the root node, dated December 8, 2019.
-Then, we ran sc2ts unconditionally (i.e., without excluding samples by HMM cost) up to March 01, 2020 (inclusive).
-This step is necessary to accumulate sufficient genetic diversity in the ARG
-for subsequent sample matching and attachment in the next stage.
+The LS model \cite{LiStephens2003} is an approximation of the coalescent with recombination
+that captures many of the key features of the joint processes of mutation and recombination.
+It is widely used in a range of applications in population genetics, including ARG 
+% Does Threads use LS?
+inference \cite{Kelleher2019,Gunnarsson2024}.
+The LS model is an HMM that models a focal genome as a sequence of nucleotides (i.e. the observed states),
+which are probabilistically emitted as an imperfect mosaic of a set of genomes in a reference panel (i.e., the hidden states).
+The process of switching between the genomes in the reference panel is governed by a transition matrix,
+and mismatches between a focal genome and a genome of the reference panel (from which it is ``copied'') are permitted as emissions.
 
-Second, we extended the base ARG by adding batches of samples collected on and after March 02, 2020.
-Sample filtering, HMM cost-based rejection, and retrospective sample grouping, as described above,
-are in full effect during this stage.
+In the original formulation of the LS model (see Appendix S1 of \cite{LiStephens2003}),
+the probability of switching between the hidden states (i.e., genomes in a reference panel)
+when going from one site to the next is dependent on
+(1) the rate of recombination between the sites and
+(2) the number of genomes in the reference panel ($n$).
+Sc2ts uses the same formulation except that $n$ is set to 1.
+This special case of the LS model leads to an intuitive interpretation of the ratio
+between the probability of switching and the probability of mismatch:
+When considering only two copying paths, the path having $k$ mismatches
+and the other path having one switch but no mismatch are equally probable.
+We call this parameter $k$ the ``recombination penalty''.
+% TODO mention that this can be thought of as extended parsimony.
+This parameter thus allows us to adjust the relative importance of recombination and mutation
+when finding the best explanation for a given sample.
+For simplicity, we assume that any single base mutation causing a mismatch is equally probable,
+ignoring transition-transversion biases and variation of mutation rate along the genome.
+As data sampling was dense for SARS-CoV-2, this assumption was considered tolerable.
 
-Finally, we performed the following post-processing steps
-to modify certain non-topological properties of the ARG or
-to enrich the ARG with additional information:
-1. Moving mutations around recombinants? TODO
-2. Adjusting recombination breakpoints. XX.
-3. Mapping multi-base deletions. Multi-base deletions are challenging to handle, as they violate the Markov property of the HMM. In our ARG, insertions are deleted regions that acquire nucleotides (not necessarily the same nucleotides) without altering the genome length, because we discarded length-changing insertions when preprocessing the aligned sequences. We treated multi-base indels as multiple separate mutations in the HMM. We mapped them back onto the inferred ARG as single events.
-4. Mapping mutations at masked sites. XX.
-5. Adding exactly matched samples. During sample matching, samples identical to node(s) in a given ARG were not added to the ARG. Instead, after inference, we simply added the nodes to the ARG using the saved matching results. This allowed for computational savings, as it kept the number of possible parents available for matching to a minimum.
-6. Estimating non-sample node ages. The ages of the inserted non-sample nodes (the nodes in the local trees and the recombination nodes) were initially assigned to arbitrarily determined values. We ran \textit{tsdate} (``variational gamma'', version XX; \cite{Wohns2022} Pope et al., 2025) on the ARG to adjust the ages of these nodes, while fixing the ages of the sample nodes to the reported collection times (defined as fractional years before the collection date of the last sample added to the ARG, which is February 20, 2025 in the ARG described in this study).
-7. Assigning Pango lineages to non-sample nodes.
+We explored using several values of $k$,
+by running sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020.
+We would expect that a good value for $k$ should lead to parsimonious ARGs
+that capture plausible recombination events without incurring too many mutations, particularly reversions.
+A value of $k$ too low could result in many artifactual recombination events,
+whereas a value of $k$ too high could miss many genuine recombination events.
+We found that ARGs built with $k$ set to 3 contained many dubious recombination events,
+but ARGs built with $k$ set to 5 failed
+to include the well supported recombination events documented in a previous study\cite{Jackson2021}.
+Hence, we decided to use $k$ set to 4 to infer the final ARG described in this study.
 
+A Viterbi algorithm can be used to find the most likely ``copying path'' of a focal sample
+through a reference panel of samples under the LS model.
+Specifically, sc2ts uses a Viterbi algorithm modified to operate on STS,
+which was originally developed to build genome-wide human genealogies
+and is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
+Using this Viterbi algorithm, sc2ts deterministically infers the copying path of a sample
+collected on a certain date through the samples collected on earlier dates in a given ARG.
+
+The SARS-CoV-2 sequences were determined from samples collected densely in time.
+SARS-CoV-2 phylogenies have low phylogenetic signals due to high sampling frequency
+(such that sampling and transmission outpace nucleotide substitution).
+Therefore, most samples can be explained by a small number of mutations.
+Leveraging this property of the dataset, we developed a likelihood-thresholding strategy
+to avoid needing to compute the likelihood of all possible copying paths through an ARG for every single sample.
+%%% TODO: This needs to be explained.
+
+[TODO explain Fig S1 and S2]
+
+Furthermore, to avoid performing redundant HMM matching on identical samples, new samples
+which were exactly matched to a (sample or non-sample) node in the ARG were not added immediately.
+Instead, the copying paths of these samples were recorded,
+and the samples were eventually added back to the ARG in a post-processing step.
+
+
+\subsubsection*{Tree inference from daily sample clusters}
+
+With tens of thousands of samples being added to the ARG per day,
+there are often clusters of hundreds of sequences attaching to the same node
+(or more generally, the same recombinant path).
+While some of these samples will require no extra mutations
+(as they are identical to the attachment node),
+in general there will be complex patterns of shared mutations among the samples
+reflecting their evolutionary relationships.
+A natural way to infer these within-cluster evolutionary relationships
+is to use standard tree-building algorithms.
+We can infer a plausible phylogeny relating the samples in a cluster
+independently of the other samples in a daily batch
+and then attach the phylogeny (and mutations) to the ARG at the node
+identified by the LS model.
+
+Sc2ts builds a local phylogeny relating the samples in each cluster as follows.
+First, it infers a tree using a standard neighbor-joining
+algorithm\cite{Saitou1987}. We first compute the Hamming distance between
+all pairs of samples using scipy~\cite{Virtanen2020scipy},
+and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
+to compute the neighbor-joining tree.
+Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony 
+algorithm \cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
+Finally, the resulting tree is added to the ARG at an attachment node
+and the ARG is locally modified using heuristics to improve parsimony.
+[TODO we need to define these?]
+
+
+\subsubsection*{Handling outlier samples}
+
+Although most samples can be explained by a small number of mutations in the ARG,
+there are two types of outlier samples which have unusually high numbers of mutations:
+``time travelers'' and ``saltation'' lineages.
+Time traveling samples are caused by errors in their collection dates.
+For example, if a sample is actually collected 10 months after its reported collection date,
+then 20 mutations (instead of, say, 0 or 1) are needed to explain it
+using the ARG available on its collection date,
+assuming a substitution rate of 2 events per genome per month.
+Samples from ``saltation'' lineages (particularly the major VOCs) are characterized
+by high numbers of mutations by the time of their detection.
+Both types of outlier samples are poorly fit to the ARG when they appear on their collection dates.
+To handle these outlier samples, we introduce three mechanisms:
+(1) HMM cost-based rejection,
+(2) retrospective sample grouping, and
+(3) unconditional seeding.
+
+First, we introduce a rejection mechanism to prevent samples
+that are generally poorly explained by the ARG
+using the LS model parameterised by a specific value for the recombination penalty ($k$).
+For each sample, an HMM cost is calculated based on the number of switches and mismatches
+in its most likely copying path under the LS model:
+The sum of the penalty cost for the switches ($k$)
+and the penalty cost of the mismatches (implicitly, equal to one).
+To build the ARG described here, we used $k$ of 4 and a maximum HMM cost of 7.
+This combination of parameter values rejected samples which have no switch
+but 8 mismatches as well as samples which have one switch and 4 mismatches.
+It is important to note that this does not necessarily mean
+that samples with more than 8 mismatches
+or samples with two or more switches cannot be incorporated into the ARG.
+Such samples can be added back using a separate mechanism (see below).
+We find that although it effectively removes time travelers with poor sample support (e.g. singletons),
+the mechanism can filter samples too aggressively.
+For example, in preliminary ARGs, it led to exclusion of major saltation VOCs (e.g. Alpha).
+
+Second, to prevent exclusion of the important saltation VOCs
+(and less important but well supported poorly-fit lineages),
+we introduce ``retrospective sample grouping''.
+The idea is to gather evidence for a lineage within a time window rather than on a single day.
+After adding a batch of samples, the samples initially rejected on their collection dates
+due to high HMM costs are reconsidered for attachment to the ARG if
+(a) they are collected within a retrospective time window (the past 7 days);
+(b) they have identical copying paths; and
+(c) they have shared immediate reversions
+(attaching a new sample to the top or the bottom of a long branch).
+Sample groups satisfying these criteria are attached to the ARG if
+(a) they have at least 10 samples;
+(b) they are collected on at least 3 different dates
+(to avoid adding batches of time travelers having the same collection date); and
+(c) they have at least two shared ``non-immediate'' reversions
+(so as to prevent unrelated time travelers from being grouped together).
+Furthermore, phylogenetic tree quality metrics are used to preclude groups of samples
+that are unlikely to be closely related.
+Specifically, the tree of a sample group was excluded if
+(a) it has more than two recurrent mutations or
+(b) it has more than 5 mutations per sample on average.
+
+Retrospective sample grouping successfully captured most saltation lineages,
+but integrating Delta and Omicron into the ARG required further manual intervention.
+To ensure that Delta and Omicron are added, we introduce a third mechanism, ``unconditional seeding''.
+The idea is to choose suitable samples belonging to each VOC,
+and attach them to the ARG unconditionally (i.e. without filtering using HMM cost).
+We sought ``seed'' samples for Delta, Omicron BA.1, and BA.2.
+For Delta, we used two sets of seeds:
+(1) 8 samples assigned to B.1.617.2, and
+(2) 9 additional samples assigned to its sibling lineage B.1.617.1.
+Specifically, these samples are the earliest samples present in the Viridian v04 dataset
+that were used for the designation of the VOCs.
+For Omicron BA.1 and BA.2, we used SRR17041376 and SRR17461792, respectively.
+We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
+as the BA.1 seed (https://github.com/jeromekelleher/sc2ts-paper/issues/264),
+as it could be well explained as as a non-recombinant given the ARG available on its collection date.
+For BA.2, we chose SRR17461792 (dated 2021-11-27 from South Africa),
+which is the earliest BA.2 sample present in the Viridian v04 dataset.
+It is dated later than SRR17041376 (the BA.1 seed),
+allowing time for the BA.1 lineage to accumulate enough sampled descendants
+and to get established in the ARG.
+For the full list of seeds, see
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}
+
+In practice, it is difficult to find optimal seeds for saltation lineages,
+which ideally would require no reversion to be added to the ARG
+and to which sampled descendents would be added with no reversion.
+Considering poor early sampling and the presence of time travellers for Delta, Omicron BA.1, and BA.2,
+using suboptimal seeds is likely the best that we can do in practice.
+The consequence is that there would be some reversions leading to the samples attached to the seed(s).
+Nevertheless, it is a better alternative to not using seeds,
+as there would be far more reversions (as seen in preliminary ARGs built without seeding).
+The caveat of taking this approach is that one must be more careful
+when analysing the samples around the seed(s) in the ARG.
+
+\subsubsection*{Primary ARG inference}
+The ``base ARG'' we infer with sc2ts is the starting point for later analyses, 
+and this step dominates overall processing time. To summarise, we first 
+initialise the ARG using the Wuhan-Hu-1 reference sample (MN908947.3) as the
+root node, and then ran the algorithm day-by-day using the parameters 
+described in the preceding sections and documented in the configuration file 
+(see \nameref{sec:data_and_code_availability}).
+As discussed above,
+computational resources are dominated by the LS model
+(Figures~\ref{fig:samples_per_day},\ref{fig:inference_resources}) with all 
+other aspects contributing negligibly.
+
+\subsubsection*{ARG postprocessing}
+The first step in ARG postprocessing is to examine putative recombinants to
+determine whether a more parsimonious explanation is possible. This is done 
+by rematching the inferred recombinant sequence against the ARG pruned back
+to include only samples before the date of the recombinant. Additionally,
+ each recombination node is examined to determine if any mutations 
+are shared [TODO Yan write this up].
+We refer to this process as ``long branch splitting''. 
+% Data from
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb
+From this, 58 recombinants were identified as being more parsimoniously 
+explained by matching to existing nodes in the ARG (inserted by 
+subsequent parsimony improving heuristics) and 16 by long branch 
+splitting. Of these 16 recombinants, two are noteworthy as 
+being the origins of the Delta and BA.2 lineages in the ARG.
+Both result in substantially fewer mutations (15 fewer for 
+Delta, 6 for BA.2) than the previous recombinant HMM solution.
+These major saltational lineages highlight the challenges 
+of using the LS HMM with highly diverged samples.
+We then updated the ARG to remove these 74 artefactual 
+recombinants by ``rewiring'' the recombination node to the 
+more parsimonious non-recombinant solution. This 
+resulted in 16 additional nodes, 182 fewer mutations and reduced
+the number of trees along the genome from 348 to 317.
+
+
+% and requires a lot of off-topic explanation.
+% It is also noteworthy that the origin of the BA.5
+% lineage is identified as non-recombinant when long-branch
+% splitting is applied to the daily ARG immediately after 
+% its inclusion---for this reason, we have identif
+
+The second postprocessing step performed is to add 1,252,208 samples
+detected as exact matches during primary inference back
+into the ARG. These are not included in the ARG during 
+primary inference to reduce memory usage and improve 
+LS HMM performance. 
+
+During primary inference, gap characters (``-'') are masked 
+out as missing data, but this excludes both important information
+about deletions from the ARG as well as potentially informative 
+phylogenetic signal. 
+We therefore performed post-hoc parsinony mapping at 163 sites to include 
+the effects of deletions and to ensure that all Pango-informative
+sites are included in the ARG.
+Using deletions with a 
+a minimum frequency of 1\% 
+(count of sequences divided by 9,149,680 sequences analyzed)
+from Table S1 of Li et al.\cite{Li2023indels},
+we chose 75 sites to remap.
+In addition, we remapped data at 88 sites that were excluded
+from primary inference and are defined as Pango lineage 
+defining sites by
+ Freyja\cite{Karthikeyan2022}
+(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
+Alignment data for these 163 sites was then mapped to the 
+ARG using the Fitch-Hartigan 
+algorithm\cite{Fitch1971toward,Hartigan1973minimum} 
+implemented in tskit, including the gap character as a state 
+along with the 4 nucleotides.
+Following this, we iteratively applied the node parsimony 
+heuristics in sc2ts until there were no further reductions in 
+the numbers of mutations.
+
+% Shifting breakpoints is a minor point, not worth mentioning?
+We computed Pango assignments for all 2,747,985 nodes in the ARG by first 
+exporting their aligned sequences to a 77GiB FASTA file and 
+then running pangolin (version 4.3.1; pangolin-data version 1.29).
+The resulting Pango and Scorpio designations were then stored as 
+metadata associated with each node in the ARG.
+
+When then estimated non-sample node dates using 
+the ``variational-gamma'' algorithm in tsdate\cite{Wohns2022}
+version 0.2.3. [TODO Say something above the node ages?]
+
+Finally, we reduced the metadata stored in the ARG to a minimal
+set (node sample IDs, along with computed Pango and Scorpio 
+designations), encoded to enable efficient columnar access,
+and compressed the file using tszip (version 0.2.5). The final 
+file requires 32MiB of storage.
+
+This full post-processing pipeline is encoded as a reproducible Snakemake
+workflow (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Quality control of recombinants}
 
