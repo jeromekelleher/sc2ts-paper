@@ -1665,13 +1665,14 @@ any additional examples that we include beyond A-D.]
 
 
 Before characterizing recombination events in detail,
-we sought to remove probable artifactual recombinants,
-which can be caused by correlated bases
-that are treated independently by the HMM.
-Correlated changes can be caused by
+we sought to remove probable artifactual recombinants
+due to correlated bases
+being treated as individual sites by the HMM.
+Correlated bases can be caused by
 systematic errors in genome sequences
 associated with sequencing protocols \cite{Turakhia2020},
-multi-nucleotide substitutions \cite{DeMaio2024}, and
+multi-nucleotide substitutions \cite{DeMaio2024},
+genuine deletions, and
 alignment errors (e.g., deletions due to MAFFT misalignment \cite{Hunt2024}).
 
 We characterized artifactual recombination events
@@ -1696,7 +1697,10 @@ in contrast to 15 of the ``robust'' events (Figure~\ref{fig:recombinant_qc}),
 strongly implicating it as a common source of problematic data.
 
 Three copying patterns in Figure~\ref{fig:copying_pattern_examples}
-AmpliSeq
+Q1, 686
+Q3, 22029, Delta lineage-defining deletion (REF)
+There are others associated with a known amplicon dropout caused by this particular deletion.
+Q4, 22194
 True MNS
 Alignment error
 
