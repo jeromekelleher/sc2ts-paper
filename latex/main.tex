@@ -1533,6 +1533,35 @@ Finally, the resulting tree and mutations are added to the ARG at the attachment
 specified by the shared LS copying path.
 
 \subsubsection*{Parsimony improving heuristics}
+Attaching trees built from the clusters of samples that copy from
+a particular node is an inherently greedy strategy
+and can produce inferences that are clearly unparsimonious.
+The final step in adding a daily batch of samples to the ARG
+is therefore to perform some local updates that target specific
+types of parsimony violations in the just-updated regions of the
+ARG. There are currently two parsimony-increasing operations
+applied, which we refer to as ``mutation collapsing'' and ``reversion
+pushing''.
+
+Given a newly attached node, mutation collapsing inspects its siblings from
+previous sample days to check if any of them share (a subset of) the mutations
+that
+it carries. If so, we increase the overall parsimony of the inference
+by creating a new node representing the ancestor that carried
+those shared mutations and make that new node the parent of the
+siblings carrying those shared mutations.
+The patterns of
+shared mutations between siblings can be complex, and the current
+implementation uses a simple greedy strategy for choosing
+the particular mutations to collapse.
+
+The reversion push operation inspects a newly added node to see
+if any of its mutations are ``immediate reversions''; that is,
+are reversions of a mutation that occurred on the new node's
+immediate parent. We increase the overall parsimony of the
+inference by ``pushing in'' a new node which descends from the
+original parent, and carries all its mutations except those
+causing the reversions on the newly added node.
 
 \subsubsection*{Handling outlier samples}
 
