@@ -1741,8 +1741,7 @@ any additional examples that we include beyond A-D.]
 Before characterizing recombination events in detail,
 we sought to remove probable artifactual recombinants
 due to correlated bases, which can be caused by
-systematic errors in genome sequences
-associated with sequencing protocols \cite{Turakhia2020},
+bioinformatics errors in genome assembly \cite{Turakhia2020},
 multi-nucleotide substitutions (MNS) \cite{DeMaio2024}, and
 alignment errors \cite{Hunt2024}).
 
@@ -1758,16 +1757,20 @@ but not in the focal parent.
 
 Of the 929 recombination events in the ARG,
 this measure identifies 543 as artifactual,
-leaving 386 ``robust'' events (Figure~\ref{fig:recombinant_qc}).
+leaving 354 QC-passing events (Figure~\ref{fig:recombinant_qc}).
 Evidence that this filter effectively removed artifacts can be seen
 in the clear association between the AmpliSeq V1 kit and
 recombination events that we identified as artifactual.
 
-Different types of recombinants successfully removed are depicted
-by the illustrative copying patterns in Figure~\ref{fig:copying_pattern_examples}:
-(1) Q1, 686;
-(2) Q3, MNS at 13423-13424 \cite{DeMaio2024};
-(3) Q4, 22194 (possibly MAFFT alignment error \cite{Hunt2024}).
+Furthermore,
+the illustrative copying patterns in Figure~\ref{fig:copying_pattern_examples}
+depict different types of artefacts that were successfully removed.
+Q1 shows an example of a recombinant caused by an MNS (A507T, T508C, G509A),
+which is a documented sequencing error due to incomplete read trimming \cite{DeMaio2024}.
+Q4 shows an example of a recombinant caused by a Delta lineage-defining deletion.
+The vast majority of the QC-failing recombinants has this deletion, and
+many cases are affected by a known amplicon dropout caused by this particular deletion.
+Q3 shows an example artefact caused by a combination of an MNS and a deletion.
 
 
 \subsubsection*{Comparison with UShER}
@@ -2454,18 +2457,22 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \label{fig:inference_resources}
 \end{figure}
 
+
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{recombinant_qc}
 \caption{
 Quality control of recombination events.
 Scatterplot of recombination events by the net number of supporting loci
-for the left parent (x-axis) and for the right parent (y-axis). The shaded
-regions highlight artifactual recombination events, which have fewer than four
-net supporting loci on one side or both sides of the suggested breakpoint.
-Colors indicate the primer scheme used for sequencing. The pie charts show
-breakdowns of the recombination events by primer scheme per quadrant.
-Recombination events associated with the origins of Pango X lineages are labeled.
+for the left parent (x-axis) and for the right parent (y-axis).
+The shaded regions highlight artifactual recombination events,
+which have fewer than four net supporting loci
+on one side or both sides of the suggested breakpoint.
+Colors indicate the primer scheme used for sequencing.
+The pie charts show breakdowns of the recombination events
+by primer scheme per quadrant.
+Recombination events associated with
+the origins of Pango X lineages are labeled.
 }
 \label{fig:recombinant_qc}
 \end{figure}
@@ -2479,17 +2486,17 @@ Recombination events associated with the origins of Pango X lineages are labeled
 % The layout here isn't ideal, but it's incredibly fiddly to get center
 % alignment veritically with cells to work, so this is good enough.
 \begin{tabularx}{0.85\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
-Q1 & \includegraphics[height=\cprheight]{static/causedby-ERR10306608.png}\\
-Q2 & \includegraphics[height=\cprheight]{static/causedby-SRR15864165.png}\\
-Q3 & \includegraphics[height=\cprheight]{static/causedby-ERR6760245.png}\\
-Q4 & \includegraphics[height=\cprheight]{static/causedby-SRR21087725.png}\\
+Q1 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
+Q2 & \includegraphics[height=\cprheight]{static/RE_node-QCpass-427863.png}\\
+Q3 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-411345.png}\\
+Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-748991.png}\\
 \end{tabularx}
 \caption{
 Examples of copying patterns.
 Q1 to Q4 are examples drawn from
 the labeled quadrants in Figure~\ref{fig:recombinant_qc}.
 Q2 illustrates a marginally good copying pattern.
-Q1, Q3, and Q4 illustrate copying patterns that fail the QC thresholds.
+Q1, Q3, and Q4 illustrate copying patterns that fail QC.
 }
 \label{fig:copying_pattern_examples}
 \end{figure}
