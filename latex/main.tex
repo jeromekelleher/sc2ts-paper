@@ -1751,6 +1751,7 @@ file requires 32MiB of storage.
 This full post-processing pipeline is encoded as a reproducible Snakemake
 workflow (see \nameref{sec:data_and_code_availability}).
 
+
 \subsubsection*{Quality control of recombinants}
 
 [TODO This section needs a full pass. I've merged in a section that was in the
@@ -1781,19 +1782,20 @@ but not in the focal parent.
 Of the 929 recombination events in the ARG,
 this measure identifies 543 as artifactual,
 leaving 354 QC-passing events (Figure~\ref{fig:recombinant_qc}).
-Evidence that this filter effectively removed artifacts can be seen
-in the clear association between the AmpliSeq V1 kit and
-recombination events that we identified as artifactual.
 
 Furthermore,
-the illustrative copying patterns in Figure~\ref{fig:copying_pattern_examples}
-depict different types of artefacts that were successfully removed.
+the example copying patterns in Figure~\ref{fig:copying_pattern_examples}
+illustrate different types of artefacts removed using this filter.
 Q1 shows an example of a recombinant caused by an MNS (A507T, T508C, G509A),
 which is a documented sequencing error due to incomplete read trimming \cite{DeMaio2024}.
 Q4 shows an example of a recombinant caused by a Delta lineage-defining deletion.
-The vast majority of the QC-failing recombinants has this deletion, and
+The vast majority (XX, or XX\%) of the QC-failing recombinants has this deletion, and
 many cases are affected by a known amplicon dropout caused by this particular deletion.
 Q3 shows an example artefact caused by a combination of an MNS and a deletion.
+
+Evidence that this filter effectively removed artifacts can be seen
+in the clear association between the AmpliSeq V1 kit and
+recombination events that we identified as artifactual.
 
 
 \subsubsection*{Comparison with UShER}
