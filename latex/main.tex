@@ -1512,33 +1512,56 @@ and the samples were eventually added back to the ARG in a post-processing step.
 
 
 \subsubsection*{Tree inference from daily sample clusters}
-
 With tens of thousands of samples being added to the ARG per day,
-there are often clusters of hundreds of sequences attaching to the same node
-(or more generally, the same recombinant path).
-While some of these samples will require no extra mutations
+there are often clusters of hundreds of sequences with the same
+LS Viterbi solution. That is, large clusters of samples attach
+to the same node (or more generally, the same recombinant path)
+in the ARG. While some of these samples will require no extra mutations
 (as they are identical to the attachment node),
 in general there will be complex patterns of shared mutations among the samples
 reflecting their evolutionary relationships.
-A natural way to infer these within-cluster evolutionary relationships
-is to use standard tree-building algorithms.
-We can infer a plausible phylogeny relating the samples in a cluster
-independently of the other samples in a daily batch
-and then attach the phylogeny (and mutations) to the ARG at the node
-identified by the LS model.
-
-Sc2ts builds a local phylogeny relating the samples in each cluster as follows.
-First, it infers a tree using a standard neighbor-joining
-algorithm\cite{Saitou1987}. We first compute the Hamming distance between
+We use a standard neighbor-joining algorithm\cite{Saitou1987}
+to infer these within-cluster evolutionary relationships.
+We first compute the Hamming distance between
 all pairs of samples using scipy~\cite{Virtanen2020scipy},
 and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
 to compute the neighbor-joining tree.
-Then, mutations are mapped back onto it using the Fitch-Hartigan parsimony 
-algorithm \cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
-Finally, the resulting tree is added to the ARG at an attachment node
-and the ARG is locally modified using heuristics to improve parsimony.
-[TODO we need to define these?]
+Then, mutations are mapped back onto this daily sample cluster tree using 
+the Fitch-Hartigan parsimony 
+algorithm\cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
+Finally, the resulting tree and mutations are added to the ARG at the attachment node(s)
+specified by the shared LS copying path.
 
+\subsubsection*{Parsimony improving heuristics}
+Attaching trees built from the clusters of samples that copy from
+a particular node is an inherently greedy strategy
+and can produce inferences that are clearly unparsimonious.
+The final step in adding a daily batch of samples to the ARG
+is therefore to perform some local updates that target specific
+types of parsimony violations in the just-updated regions of the
+ARG. There are currently two parsimony-increasing operations
+applied, which we refer to as ``mutation collapsing'' and ``reversion
+pushing''.
+
+Given a newly attached node, mutation collapsing inspects its siblings from
+previous sample days to check if any of them share (a subset of) the mutations
+that
+it carries. If so, we increase the overall parsimony of the inference
+by creating a new node representing the ancestor that carried
+those shared mutations and make that new node the parent of the
+siblings carrying those shared mutations.
+The patterns of
+shared mutations between siblings can be complex, and the current
+implementation uses a simple greedy strategy for choosing
+the particular mutations to collapse.
+
+The reversion push operation inspects a newly added node to see
+if any of its mutations are ``immediate reversions''; that is,
+are reversions of a mutation that occurred on the new node's
+immediate parent. We increase the overall parsimony of the
+inference by ``pushing in'' a new node which descends from the
+original parent, and carries all its mutations except those
+causing the reversions on the newly added node.
 
 \subsubsection*{Handling outlier samples}
 
