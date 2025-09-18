@@ -1744,7 +1744,7 @@ due to correlated bases, which can be caused by
 systematic errors in genome sequences
 associated with sequencing protocols \cite{Turakhia2020},
 multi-nucleotide substitutions (MNS) \cite{DeMaio2024}, and
-alignment errors (e.g., deletions due to MAFFT misalignment \cite{Hunt2024}).
+alignment errors \cite{Hunt2024}).
 
 We characterized artifactual recombination events
 as having fewer than four such loci supporting the left or right parent
@@ -1755,18 +1755,19 @@ Also, when counting loci supporting a focal parent,
 we penalized loci where the character(s)
 in the recombinant matches that in the non-focal parent
 but not in the focal parent.
-Illustrative copying patterns in Figure~\ref{fig:copying_pattern_examples}
-show the evidence for some QC-failing recombinants:
-(1) Q1, 686;
-(2) Q3, MNS at 13423-13424 \cite{DeMaio2024};
-(3) Q4, 22194 (possibly MAFFT alignment error \cite{Hunt2024}).
 
 Of the 929 recombination events in the ARG,
 this measure identifies 543 as artifactual,
 leaving 386 ``robust'' events (Figure~\ref{fig:recombinant_qc}).
-Evidence that this filter effectively flagged artifacts can be seen
+Evidence that this filter effectively removed artifacts can be seen
 in the clear association between the AmpliSeq V1 kit and
 recombination events that we identified as artifactual.
+
+Different types of recombinants successfully removed are depicted
+by the illustrative copying patterns in Figure~\ref{fig:copying_pattern_examples}:
+(1) Q1, 686;
+(2) Q3, MNS at 13423-13424 \cite{DeMaio2024};
+(3) Q4, 22194 (possibly MAFFT alignment error \cite{Hunt2024}).
 
 
 \subsubsection*{Comparison with UShER}
