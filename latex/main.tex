@@ -1516,7 +1516,9 @@ siblings carrying those shared mutations.
 The patterns of
 shared mutations between siblings can be complex, and the current
 implementation uses a simple greedy strategy for choosing
-the particular mutations to collapse.
+the particular mutations to collapse. 
+119,844 nodes were 
+added to the ARG during primary inference by mutation collapsing.
 
 The reversion push operation inspects a newly added node to see
 if any of its mutations are ``immediate reversions''; that is,
@@ -1525,6 +1527,8 @@ immediate parent. We increase the overall parsimony of the
 inference by ``pushing in'' a new node which descends from the
 original parent, and carries all its mutations except those
 causing the reversions on the newly added node.
+52,336 nodes were added to the ARG during primary inference by
+reversion pushing.
 
 \subsubsection*{Filtering time travellers}
 Time-travelling samples---those in which the recorded collection date differs
