@@ -1563,10 +1563,30 @@ inference by ``pushing in'' a new node which descends from the
 original parent, and carries all its mutations except those
 causing the reversions on the newly added node.
 
-\subsubsection*{Handling outlier samples}
+\subsubsection*{Filtering time travellers}
+Time-travelling samples---those in which the recorded collection date differs
+substantially from their true collection date---pose significant problems
+for sc2ts, and are present at a significant frequency. For example, of the 
+43 Scorpio designations present in the Viridian dataset studied, 32 have 
+samples present with sampling dates in 2020, including lineages that do not
+arise until late 2022. Inserting these time-travellers into the ARG 
+at the claimed sampling date causes major issues, and they must therefore be 
+filtered out. We use the simple approach of filtering out samples that 
+exceed a given ``HMM cost'', i.e., requiring too many mutations or
+recombination breakpoints to plausibly represent the steady accumulation
+of diversity expected with dense sampling. 
+The HMM cost for the Viterbi solution for a sample under the LS model
+is $k$ times the number of recombination events plus the number of 
+mismatches, where $k$ is the recombination penalty (here, $k=4$).
+After some experimentation, we set the recombination penalty to 7, 
+disallowing samples that require 8 or more mutations (or, e.g., 1 recombination
+and 4 mutations, or 2 recombinations) from immediate inclusion (see next
+section) in the ARG. This approach has the benefit of filtering
+samples enriched for errors as well as time-travellers.
 
+\subsubsection*{Handling outlier samples}
 Although most samples can be explained by a small number of mutations in the ARG,
-there are two types of outlier samples which have unusually high numbers of mutations:
+there are two types of outlier samples which result in unusually high numbers of mutations:
 ``time travelers'' and ``saltation'' lineages.
 Time traveling samples are caused by errors in their collection dates.
 For example, if a sample is actually collected 10 months after its reported collection date,
