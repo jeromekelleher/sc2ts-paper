@@ -265,45 +265,8 @@ Next, for clusters within the batch that are inferred to copy from the same ARG 
 sc2ts uses standard phylogenetic techniques to resolve relationships within the cluster.
 Finally, sc2ts attaches the phylogenies of the clusters to the current ARG, and
 applies parsimony-improving heuristics to address issues introduced by the inherent greediness of this strategy.
-
-Sc2ts uses collection dates to build a time-resolved ARG.
-When examining preliminary ARGs,
-we found samples that introduced large numbers of mutations (and reversions),
-likely due to errors in their collection dates
-(for example, a large batch of samples dated 31 December, 2020 contains samples from Omicron BA.1,
-which is estimated to have emerged in November, 2021; REF).
-To preclude adding such ``time traveling'' samples, we filtered samples by ``HMM cost''.
-We define the ``HMM cost'' of a sample to be
-the total penalty cost for switches and mismatches (mutations) in its copying path.
-We parameterize the LS model such that each mismatch has a penalty cost of one
-and a switch has a penalty cost of $k$ (here, set to 4),
-which determines how much mutation is favored over recombination
-when accounting for a sample (Figure~\ref{fig:methodology}).
-If the HMM cost of a sample exceeds a threshold (here, set to 7),
-sc2ts does not immediately add the sample to the ARG.
-
-This approach resulted in preliminary ARGs that had noticeably fewer time travelers,
-but we found that it also excluded the major ``saltation'' events that characterize many VOCs.
-These saltation lineages are characterized by a high number of accumulated mutations,
-and are hypothesized to emerge from chronic infections
-during which the virus is exposed to individual-specific immune selective pressures \cite{Markov2023}.
-Though uncommon, such lineages drove large epidemic waves during the pandemic (notably Alpha, Delta, and Omicron).
-To distinguish time travelers with erroneous dates from true saltation lineages,
-we reevaluate the evidence for each lineage with a high HMM cost as additional samples are added.
-If on subsequent days these lineages form a sufficiently large group of samples,
-sc2ts adds the group back to the ARG.
-This ``retrospective sample grouping'' successfully captured the emergence of
-many saltation lineages such as Alpha (Figure~\ref{fig:subgraph_alpha}).
-The emergence of the Delta, BA.1, and BA.2 lineages required some manual intervention,
-in which specific ``seed'' samples were identified for unconditional inclusion
-(for details of how seed samples were chosen, see STAR Methods).
-First arising in geographic regions with low sampling density,
-the initial origins of these VOC are challenging to infer (REF).
-With the addition of these manual seeds, we successfully incorporated 
-these challenging events (Figures~\ref{fig:subgraph_delta},
-\ref{fig:subgraph_ba1_ba2}) and 
-all other major lineages (Figure~\ref{fig:samples_per_day}) 
-into the ARG.
+[TODO add brief summary of sample filtering and how we handle VOCs, 
+refing Methods for details]
 
 \begin{figure}[h]
 \centering
@@ -1563,75 +1526,83 @@ inference by ``pushing in'' a new node which descends from the
 original parent, and carries all its mutations except those
 causing the reversions on the newly added node.
 
-\subsubsection*{Handling outlier samples}
+\subsubsection*{Filtering time travellers}
+Time-travelling samples---those in which the recorded collection date differs
+substantially from their true collection date---pose significant problems
+for sc2ts, and are present at a significant frequency. For example, of the 
+43 Scorpio designations present in the Viridian dataset studied, 32 have 
+samples present with sampling dates in 2020, including lineages that do not
+arise until late 2022. Inserting these time-travellers into the ARG 
+at the claimed sampling date causes major issues, and they must therefore be 
+filtered out. We use the simple approach of filtering out samples that 
+exceed a given ``HMM cost'', i.e., requiring too many mutations or
+recombination breakpoints to plausibly represent the steady accumulation
+of diversity expected with dense sampling. 
+The HMM cost for the Viterbi solution for a sample under the LS model
+is $k$ times the number of recombination events plus the number of 
+mismatches, where $k$ is the recombination penalty (here, $k=4$).
+After some experimentation, we set the recombination penalty to 7, 
+disallowing samples that require 8 or more mutations (or, e.g., 1 recombination
+and 4 mutations, or 2 recombinations) from immediate inclusion (see next
+section) in the ARG. This approach has the benefit of filtering
+samples enriched for errors as well as time-travellers.
 
-Although most samples can be explained by a small number of mutations in the ARG,
-there are two types of outlier samples which have unusually high numbers of mutations:
-``time travelers'' and ``saltation'' lineages.
-Time traveling samples are caused by errors in their collection dates.
-For example, if a sample is actually collected 10 months after its reported collection date,
-then 20 mutations (instead of, say, 0 or 1) are needed to explain it
-using the ARG available on its collection date,
-assuming a substitution rate of 2 events per genome per month.
-Samples from ``saltation'' lineages (particularly the major VOCs) are characterized
-by high numbers of mutations by the time of their detection.
-Both types of outlier samples are poorly fit to the ARG when they appear on their collection dates.
-To handle these outlier samples, we introduce three mechanisms:
-(1) HMM cost-based rejection,
-(2) retrospective sample grouping, and
-(3) unconditional seeding.
+\subsubsection*{Inserting saltation lineages}
+The HMM cost threshold approach outlined in the previous section is 
+effective at removing time-travelling samples, but it also filters out 
+important evolutionary events such as 
+the major ``saltations'' that characterize many VOCs.
+These lineages are characterized by a high number of accumulated mutations,
+and are hypothesized to emerge from chronic infections
+during which the virus is exposed to individual-specific immune selective
+% Other refs here for this Sally?
+pressures\cite{Otto2021origins,Markov2023}.
+To distinguish time travelers from true saltation lineages,
+we reevaluate the evidence for each lineage with a high HMM cost as additional samples are added.
+If these samples form a sufficiently plausible group over successive days (under criteria
+described in the next paragraph) sc2ts adds the group to the ARG as a 
+``retrospective sample group'' using same mechanisms as standard
+daily sample clusters.
 
-First, we introduce a rejection mechanism to prevent samples
-that are generally poorly explained by the ARG
-using the LS model parameterised by a specific value for the recombination penalty ($k$).
-For each sample, an HMM cost is calculated based on the number of switches and mismatches
-in its most likely copying path under the LS model:
-The sum of the penalty cost for the switches ($k$)
-and the penalty cost of the mismatches (implicitly, equal to one).
-To build the ARG described here, we used $k$ of 4 and a maximum HMM cost of 7.
-This combination of parameter values rejected samples which have no switch
-but 8 mismatches as well as samples which have one switch and 4 mismatches.
-It is important to note that this does not necessarily mean
-that samples with more than 8 mismatches
-or samples with two or more switches cannot be incorporated into the ARG.
-Such samples can be added back using a separate mechanism (see below).
-We find that although it effectively removes time travelers with poor sample support (e.g. singletons),
-the mechanism can filter samples too aggressively.
-For example, in preliminary ARGs, it led to exclusion of major saltation VOCs (e.g. Alpha).
+Distinguishing a truly emerging outbreak from different forms of
+correlated error is non-trivial, and sc2ts has 5 parameters to fine
+tune the behaviour. Firstly, we require at least 10 samples in the
+group to ensure there is sufficient support over a time window of 
+7 days. Then, we build a local tree of the samples and consider
+some tree metrics to evaluate whether the samples within the 
+group are closely related. If we have at least 2 mutations 
+shared by all samples, there's at most 2 recurrent mutations
+within the group and at most 5 mutations unique to each sample, 
+the retrospective group is accepted for inclusion.
+Although this process is highly hueristic, it successfully 
+captured the majority of saltational lineages
+such as Alpha (Figure~\ref{fig:subgraph_alpha}), and the 
+vast majority of samples were added following the standard
+daily sample grouping mechanisms. 
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_report.ipynb
+In total, 882,398 daily 
+sample groups were added to the ARG, while only 100 were
+added via this retrospective grouping mechanism.
 
-Second, to prevent exclusion of the important saltation VOCs
-(and less important but well supported poorly-fit lineages),
-we introduce ``retrospective sample grouping''.
-The idea is to gather evidence for a lineage within a time window rather than on a single day.
-After adding a batch of samples, the samples initially rejected on their collection dates
-due to high HMM costs are reconsidered for attachment to the ARG if
-(a) they are collected within a retrospective time window (the past 7 days);
-(b) they have identical copying paths; and
-(c) they have shared immediate reversions
-(attaching a new sample to the top or the bottom of a long branch).
-Sample groups satisfying these criteria are attached to the ARG if
-(a) they have at least 10 samples;
-(b) they are collected on at least 3 different dates
-(to avoid adding batches of time travelers having the same collection date); and
-(c) they have at least two shared ``non-immediate'' reversions
-(so as to prevent unrelated time travelers from being grouped together).
-Furthermore, phylogenetic tree quality metrics are used to preclude groups of samples
-that are unlikely to be closely related.
-Specifically, the tree of a sample group was excluded if
-(a) it has more than two recurrent mutations or
-(b) it has more than 5 mutations per sample on average.
+The Delta, BA.1, and BA.2 lineages were 
+particularly challenging, however, as the initial emergences of 
+the saltation lineages were not densely sampled. In this case,
+there is little information for the retrospective sampling grouping mechanism
+to work with and it is very difficult to distinguish short-term time-travellers
+from true outbreak samples. For these cases, we chose specific
+high-quality samples with confident dates as ``seeds`` which are 
+unconditionally included in the ARG on the specified date.
 
-Retrospective sample grouping successfully captured most saltation lineages,
-but integrating Delta and Omicron into the ARG required further manual intervention.
-To ensure that Delta and Omicron are added, we introduce a third mechanism, ``unconditional seeding''.
-The idea is to choose suitable samples belonging to each VOC,
-and attach them to the ARG unconditionally (i.e. without filtering using HMM cost).
-We sought ``seed'' samples for Delta, Omicron BA.1, and BA.2.
-For Delta, we used two sets of seeds:
-(1) 8 samples assigned to B.1.617.2, and
-(2) 9 additional samples assigned to its sibling lineage B.1.617.1.
-Specifically, these samples are the earliest samples present in the Viridian v04 dataset
-that were used for the designation of the VOCs.
+% We used more seeds, but in practise it doesn't matter and it's just
+% complicating the story.
+For Delta, we used two seeds: one for B.1.617.1 and 1 samples assigned to
+B.1.617.2, [with more details and some references to back up our assertions.
+There's some specific info in the Viridian paper on this, I'm sure. 
+We should mention long branch splitting here too.]
+The resulting subgraph can be see in Figure~\ref{fig:subgraph_delta}.
+
+[TODO revise this paragraph to give some background info, and reference
+the Viridian work]
 For Omicron BA.1 and BA.2, we used SRR17041376 and SRR17461792, respectively.
 We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
 as the BA.1 seed (https://github.com/jeromekelleher/sc2ts-paper/issues/264),
@@ -1641,19 +1612,13 @@ which is the earliest BA.2 sample present in the Viridian v04 dataset.
 It is dated later than SRR17041376 (the BA.1 seed),
 allowing time for the BA.1 lineage to accumulate enough sampled descendants
 and to get established in the ARG.
-For the full list of seeds, see
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}
+See Figure~\ref{fig:subgraph_ba1_ba2} for an overview of the resulting 
+subgraph.
 
-In practice, it is difficult to find optimal seeds for saltation lineages,
-which ideally would require no reversion to be added to the ARG
-and to which sampled descendents would be added with no reversion.
-Considering poor early sampling and the presence of time travellers for Delta, Omicron BA.1, and BA.2,
-using suboptimal seeds is likely the best that we can do in practice.
-The consequence is that there would be some reversions leading to the samples attached to the seed(s).
-Nevertheless, it is a better alternative to not using seeds,
-as there would be far more reversions (as seen in preliminary ARGs built without seeding).
-The caveat of taking this approach is that one must be more careful
-when analysing the samples around the seed(s) in the ARG.
+With the combination of these mechanisms---gradual accumulation 
+of diversity through daily sample groups, retrospective group
+inclusion and manual seeding---we successfully incorporated all major
+lineages in the dataset into the ARG (Figure~\ref{fig:samples_per_day}).
 
 \subsubsection*{Primary ARG inference}
 The ``base ARG'' we infer with sc2ts is the starting point for later analyses, 
