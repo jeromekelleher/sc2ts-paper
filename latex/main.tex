@@ -1765,7 +1765,7 @@ because they affect multiple adjacent or near-adjacent bases simultaneously.
 
 We devised a quality control (QC) measure based on this observation, and
 applied it to each putative recombination event in the ARG.
-We listed the genomic positions at which the suggested parents differed in allelic state.
+We examined the genomic positions at which the suggested parents differed in allelic state.
 Where such sites clustered closely (3 or fewer bases apart),
 we treated the entire cluster of sites as a single \emph{locus}.
 For each genomic region identified by the HMM as having a single parent,
@@ -1777,27 +1777,29 @@ used this to plot the 855 recombination events in Figure~\ref{fig:recombinant_qc
 
 This simple QC measure effectively differentiates
 artefactual recombination events from those that are well supported.
-All the sc2ts-detected recombination events associated with the Pango X lineages (section XX)
+All the sc2ts-detected recombination events associated with the Pango X lineages (Table~\ref{tab:pango_x_lineages})
 occur in the upper right of Figure~\ref{fig:recombinant_qc},
 with high numbers of net supporting loci on both the right and left parents.
 In contrast, the other regions of the plot, where one or both parents are less well supported,
 are dominated by recombination events associated with samples sequenced using a specific protocol (AmpliSeq).
-Coupled with closer inspection of copying patterns (below),
+Coupled with closer inspection of copying patterns (see below),
 we chose a QC cutoff of four or more net supporting loci on both the left and right side of the breakpoint.
 This leads to 354 QC-passing recombination events (Figure~\ref{fig:recombinant_qc}, upper right quadrant),
-compared to 501 recombination events for which there is less support and which may be artefactual (shaded quadrants).
+compared to 501 recombination events
+for which there is less support and which may be artefactual (shaded quadrants).
 
 Inspection of the copying patterns for all the recombination events
-clearly identified associations between recombination events
-that failed this QC check and known problematic loci in the SARS-CoV-2 genome.
-Figure~\ref{fig:copying_pattern_examples} illustrates examples of these copying patterns (Q1 to Q4),
+clearly identified associations between recombination events that failed QC and
+known problematic loci in the SARS-CoV-2 genome.
+Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
+(Q1 to Q4 correspond to the labeled quadrants in Figure~\ref{fig:recombinant_qc}),
 in which adjacent sites are underlined in red, and near-adjacent sites (within 3 bases) in orange.
 A continuous red+orange underline thus indicates a region treated as a single locus.
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
 having a net number of supporting loci of 4 on both sides of the breakpoint.
 Q2 shows an artefactual recombination event caused by a 9-base Delta lineage-defining deletion.
-There are XX (XX\%) of the recombination events involving this deletion that failed QC, and
-many cases are affected by a known amplicon dropout caused by this particular deletion.
+There are XX (XX\%) of the QC-failing recombination events involving this deletion, and
+many cases are affected by a known amplicon dropout caused by this particular deletion \cite{Sanderson2021}
 Q3 shows an artefactual recombination event caused by a combination of
 this Delta lineage-defining deletion and a known MNS (see below).
 Finally, Q4 shows an artifactual recombination event associated with the A507T-T508C-G509A MNS,
@@ -2496,13 +2498,13 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \caption{
 Quality control of recombination events.
 Scatterplot of recombination events by the net number of supporting loci
-for the left parent (x-axis) and for the right parent (y-axis).
+on the left parent (x-axis) and the right parent (y-axis).
 The shaded regions highlight artifactual recombination events,
-which have fewer than four net supporting loci
+which have fewer than 4 net supporting loci
 on one side or both sides of the suggested breakpoint.
 Colors indicate the primer scheme used for sequencing.
 The pie charts show breakdowns of the recombination events
-by primer scheme per quadrant.
+by primer scheme per quadrant (labeled Q1 to Q4).
 Recombination events associated with
 the origins of Pango X lineages are labeled.
 }
@@ -2511,6 +2513,7 @@ the origins of Pango X lineages are labeled.
 
 \newcommand{\cprheight}{4.0em}
 
+
 \begin{figure}
 \centering
 % NOTE the size of the second "m" column doesn't matter, but we have to fix the
@@ -2518,17 +2521,16 @@ the origins of Pango X lineages are labeled.
 % The layout here isn't ideal, but it's incredibly fiddly to get center
 % alignment veritically with cells to work, so this is good enough.
 \begin{tabularx}{0.85\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
-Q1 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
-Q2 & \includegraphics[height=\cprheight]{static/RE_node-QCpass-427863.png}\\
+Q1 & \includegraphics[height=\cprheight]{static/RE_node-QCpass-427863.png}\\
+Q2 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-748991.png}\\
 Q3 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-411345.png}\\
-Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-748991.png}\\
+Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
-Examples of copying patterns.
-Q1 to Q4 are examples drawn from
-the labeled quadrants in Figure~\ref{fig:recombinant_qc}.
-Q2 illustrates a marginally good copying pattern.
-Q1, Q3, and Q4 illustrate copying patterns that fail QC.
+Illustrative copying patterns.
+Q1 to Q4 are examples drawn from the labeled quadrants in Figure~\ref{fig:recombinant_qc}.
+Q1 depicts the copying pattern of a recombination event that marginally passed QC,
+whereas the others depict the copying patterns of recombination events that failed QC.
 }
 \label{fig:copying_pattern_examples}
 \end{figure}
