@@ -1271,7 +1271,7 @@ and edited the content as needed and take(s) full responsibility for the content
 %%%  subjects).
 
 \subsubsection*{Ancestral Recombination Graphs}
-
+\label{sec:args}
 %%% This paragraph needs to be rewritten.
 Originally introduced (Griffiths, 1991; Griffiths and Marjoram, 1997)
 to define an alternative formulation of the coalescent with recombination (Hudson, 1983),
@@ -1637,6 +1637,7 @@ computational resources are dominated by the LS model
 other aspects contributing negligibly.
 
 \subsubsection*{ARG postprocessing}
+\label{sec:arg_postprocessing}
 The first step in ARG postprocessing is to examine putative recombinants to
 determine whether a more parsimonious explanation is possible. This is done 
 by rematching the inferred recombinant sequence against the ARG pruned back
@@ -1808,44 +1809,61 @@ There are XX recombination events involving this particular MNS, of which XX\% f
 \subsubsection*{Comparison with UShER}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
 UShER tree from MAT~\cite{McBroome2021} to tskit format, which has similar
-properties but is more general (see the section ``Ancestral Recombination
-Graphs``).
+properties but is more general 
+(see the \nameref{sec:args} section).
 We first downloaded the tree in JSON format (tree.all\_viridian.202409.jsonl)
-from Figshare
-and converted the ARG topology. We then downloaded the protobuf formatted
-tree (tree.all\_viridian.202409.pb.gz), and exported the mutations to 
+and converted the tree topology to tskit node and edge table 
+descriptions. We then downloaded the protobuf formatted
+tree (tree.all\_viridian.202409.pb.gz), exported the mutations to 
 nucleotide format using \texttt{matUtils summary --translate}
 (usher version 0.6.3), and translated
-these mutations into tskit format. The resulting tszip file 
+these mutations into tskit site and mutation tables. 
+The resulting tszip file 
 (usher\_viridian\_v1.0.trees.tsz) contains 5,345,019 nodes, 3,364,841
 mutations and requires 29MB of storage space.
 We validated that the data was correctly encoded by comparing the 
 variant data for the UShER tskit tree sequence against our alignments.
 There was an exact match between the non-ambiguous nucleotide calls 
-at 27469 sites. At the remaining 39 sites there were a significant 
+at 27,469 sites. 
+% Usher tree has 27,508 vs sc2ts 29,893, or 2385 fewer sites 
+At the remaining 39 sites for which the UShER tree 
+had mutations there were a significant 
 number of gap characters (deletion calls), suggesting that the mismatches
 could be due to differences in the alignments used as input to UShER.
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/validate\_usher\_tree.ipynb}{validate\_usher\_tree.ipynb}
 for details.
 
-We then computed intersection ARGs for sc2ts and UShER by 
-``simplifying''\cite{Kelleher2018efficient,Wong2024} 
-both to the 2,475,418 samples and 27,507 sites that are shared.
+We then computed intersection ARGs for sc2ts
+(sc2ts\_viridian\_inter\_v1.2.trees.tsz) and UShER 
+(usher\_viridian\_inter\_v1.2.trees.tsz) 
+by 
+simplifying\cite{Kelleher2018efficient,Wong2024} 
+both to the 2,475,418 samples and 27,507 sites that are shared
+(the UShER tree has mutations at 27,508 sites and sc2ts ARG has 29,893).
+As there was no documented means of deriving node dates from 
+the UShER tree, and we wish to visually compare 
+the phylogenetic backbones, we
+also dated the intersection tree by fixing
+the sample dates using the ``Date\_tree'' metadata field, 
+and using tsdate (version 0.2.3) to date internal nodes.
+We did not date the main UShER tree in this way because
+of the time-travelling samples present.
 
 All conversions were performed as part of the reproducible 
-postprocessing pipeline described in [section?]. The full UShER
-tree and the intersection files are available for download on Zenodo
-in tszip format.
+pipeline described in the \nameref{sec:arg_postprocessing} section. 
+The full UShER
+tree and the intersection files are available for download 
+in tszip format (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
 
 We used Pango lineage designations to select representative samples
 for the majority of the 2026 Pango lineages in the ARG.
-We first identify an ``origination node" for a focal Pango lineage,
-defined as the oldest internal node in the ARG
-whose descendants in any tree include more than 50\% of the Pango samples of the focal type,
-and where the internal node is itself designated as the focal Pango.
+We first identify an ``origination node'' for each Pango lineage,
+defined as the oldest node in the ARG with that Pango designation
+whose descendants in any tree include more than 50\% of the Pango samples of
+the focal type.
 The representative sample is then chosen as the oldest sample descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
 We ``simplify''\cite{Kelleher2018efficient,Wong2024} 
@@ -1857,12 +1875,8 @@ samples''
 in which a single Pango lineage appears immediately below a recombination node.
 This results in a simplified ARG of 1667 samples, each with a different Pango designation.
 
-We compare topology in the simplified ARG against the UShER tree, built from the Viridian dataset.
-To remove time traveling samples from the UShER tree,
-we reduce it to 2475419 samples shared with the main sc2ts ARG
-and date the internal nodes by running tsdate,
-with no rescaling and the root node constrained to the established date of the UShER root (2020-01-16).
-To compare against the ARG, we simplify this UShER tree down to the 1667 representative ARG samples.
+We compare topology of the simplified ARG against the intersection UShER tree
+(which has been dated) simplified down to the same 1667 samples.
 
 The simplified ARG contains four single-breakpoint recombination nodes,
 corresponding to the origins of Delta, BA.2, BA.5, and a further BA.2 recombinant
