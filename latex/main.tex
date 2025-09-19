@@ -200,6 +200,16 @@ However, given extensive evidence for recombination in SARS-CoV-2
 \cite{Jackson2021,VanInsberghe2021,Focosi2022,Gutierrez2022,Ignatieva2022,Tamura2023},
 the tree-like representation of UShER is no longer tenable.
 
+Ancestral recombination graphs (ARGs) describe the reticulate 
+genealogies of sampled sequences in a recombining species\cite{Wong2024}.
+While ARGs have been of theoretical interest in population genetics 
+for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
+recent breakthroughs in simulation\cite{Kelleher2016,Kelleher2018efficient}
+and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
+Wohns2022,Zhang2023,Gunnarsson2024,Deng2024robust} have led to a surge 
+of interest in their application\cite{Brandt2024,Lewanski2024,Nielsen2025}.
+
+% TODO merge this in
 Ancestral Recombination Graphs (ARGs) are reticulate genealogies
 that incorporate both mutation and recombination events \cite{Wong2024},
 potentially allowing more comprehensive evolutionary representations of SARS-CoV-2
@@ -1272,6 +1282,16 @@ and edited the content as needed and take(s) full responsibility for the content
 
 \subsubsection*{Ancestral Recombination Graphs}
 \label{sec:args}
+
+describe how a set of sample sequences
+relate to each other at each position along the genome in a recombining
+species 
+lots of interest
+
+, and are currently the subject of intense research interest 
+(Brandt et al. 2024, Lewanski et al. 2024, Wong et al. 2024, Nielsen et al. 2025).
+
+
 %%% This paragraph needs to be rewritten.
 Originally introduced (Griffiths, 1991; Griffiths and Marjoram, 1997)
 to define an alternative formulation of the coalescent with recombination (Hudson, 1983),
@@ -1282,6 +1302,15 @@ While there is some subtlety in the details \cite{Wong2024},
 we can think of an ARG as being any graph
 that encodes the reticulate genetic genealogy of a sample of sequences
 under the influence of recombination.
+
+
+Until recently, ARGs lacked software support and
+sufficiently scalable inference methods to be of practical use.
+Recent advances enable ARG inference for tens to hundreds of thousands of human genomes \cite{Kelleher2019,Speidel2019,Zhang2023},
+with high levels of recombination.
+These advances now enable evolutionary genealogies to be built quickly and at scale, and
+there is a surge of excitement in the inference and applications of ARGs \cite{Brandt2024,Lewanski2024,Wong2024,Nielsen2025}.
+
 
 The ``succinct tree sequence'' (STS) is an ARG data structure
 that is both general (in terms of the types of ancestry that can be described)
