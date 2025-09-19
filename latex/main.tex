@@ -1640,13 +1640,30 @@ other aspects contributing negligibly.
 The first step in ARG postprocessing is to examine putative recombinants to
 determine whether a more parsimonious explanation is possible. This is done 
 by rematching the inferred recombinant sequence against the ARG pruned back
-to include only samples before the date of the recombinant. Additionally,
- each recombination node is examined to determine if any mutations 
-are shared [TODO Yan write this up].
-We refer to this process as ``long branch splitting''. 
+to include only samples before the date of the recombinant. 
+
+Where the recent ancestry of a recombinant includes a branch containing
+large numbers of mutations, it is possible
+that a non-recombinant solution could be found by postulating an intermediate
+node along that branch, that contains only a subset of those mutations.
+In particular, for a given mutation-rich branch, artefactual recombinants may
+be found in which one recombinant region matches to
+a node like the parent whereas another region matches to a node like the child
+of that branch. Such recombinants can be identified by the
+presence of recurrent or reversion mutations in the left or right parent branches.
+To help remove these recombination events from the ARG, we note the genomic positions
+of mutations associated with the recombinant, and identify branches
+in their ancestry which have mutations at the same positions. Of these branches,
+we chose the one that contains the largest total number of mutations as
+a candidate for intermediate node creation. This is done by sorting the
+mutations on the branch such that the ones that match the allelic state in the
+recombinant are placed above the intermediate node, and the others are left
+below the node. We refer to this process as ``long branch splitting'', and it
+creates additional nodes which are available for recombinant rematching.
+
 % Data from
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb
-From this, 58 recombinants were identified as being more parsimoniously 
+Using recombinant-rematching, 58 recombinants were identified as being more parsimoniously 
 explained by matching to existing nodes in the ARG (inserted by 
 subsequent parsimony improving heuristics) and 16 by long branch 
 splitting. Of these 16 recombinants, two are noteworthy as 
@@ -1659,7 +1676,12 @@ We then updated the ARG to remove these 74 artefactual
 recombinants by ``rewiring'' the recombination node to the 
 more parsimonious non-recombinant solution. This 
 resulted in 16 additional nodes, 182 fewer mutations and reduced
-the number of trees along the genome from 348 to 317.
+the number of trees along the genome from 348 to 317. The long branches
+involved in the origins of Delta and BA.2 originally joined
+B.1 to B.1.167 and B.1.1 to BA.1 respectively; they can be seen
+in Figure \ref{fig:subgraph_delta} and \ref{fig:subgraph_ba1_ba2}
+with inserted intermediate nodes leading to the Delta and BA.2
+origination nodes.
 
 
 % and requires a lot of off-topic explanation.
@@ -1721,7 +1743,7 @@ This full post-processing pipeline is encoded as a reproducible Snakemake
 workflow (see \nameref{sec:data_and_code_availability}).
 
 
-\subsubsection*{Quality control of recombinants}
+\subsubsection*{Quality control of recombination events}
 
 [TODO This section needs a full pass. I've merged in a section that was in the
 supplement with an extremely terse section on counting supporting loci.
@@ -1731,40 +1753,56 @@ for examples of the corresponding copying patterns. Also reference
 any additional examples that we include beyond A-D.]
 
 
-Before characterizing recombination events in detail,
-we sought to remove probable artifactual recombinants
-due to correlated bases, which can be caused by
-bioinformatics errors in genome assembly \cite{Turakhia2020},
-multi-nucleotide substitutions (MNS) \cite{DeMaio2024}, and
-alignment errors \cite{Hunt2024}).
+Sequencing errors in genome assemblies \cite{Turakhia2020},
+read misalignments \cite{Hunt2024}, and
+multi-nucleotide substitutions (MNS \cite{DeMaio2020issues})
+can cause short regions of a sample genome to match more closely
+to an alternative genome rather than the true parent.
+Such genomic regions can be mistaken for evidence of recombination,
+because the LS HMM counts each base separately.
+Fortunately, artefactual recombinants caused by this effect can be identified
+because they affect multiple adjacent or near-adjacent bases simultaneously.
 
-We characterized artifactual recombination events
-as having fewer than four such loci supporting the left or right parent
-on either side of a suggested breakpoint.
-We treated adjacent and near-adjacent sites
-(separated by at most three bases) as single loci.
-Also, when counting loci supporting a focal parent,
-we penalized loci where the character(s)
-in the recombinant matches that in the non-focal parent
-but not in the focal parent.
+We devised a quality control (QC) measure based on this observation, and
+applied it to each putative recombination event in the ARG.
+We listed the genomic positions at which the suggested parents differed in allelic state.
+Where such sites clustered closely (3 or fewer bases apart),
+we treated the entire cluster of sites as a single \emph{locus}.
+For each genomic region identified by the HMM as having a single parent,
+we calculated the "net number of supporting loci" by counting the number of loci in the region
+that supported the suggested parent minus the number that did not support it.
+Finally, with all the recombination events in the ARG having a single breakpoint,
+we calculated the net number of supporting loci on the left and right sides of each breakpoint, and
+used this to plot the 855 recombination events in Figure~\ref{fig:recombinant_qc}.
 
-Of the 929 recombination events in the ARG,
-this measure identifies 543 as artifactual,
-leaving 354 QC-passing events (Figure~\ref{fig:recombinant_qc}).
+This simple QC measure effectively differentiates
+artefactual recombination events from those that are well supported.
+All the sc2ts-detected recombination events associated with the Pango X lineages (section XX)
+occur in the upper right of Figure~\ref{fig:recombinant_qc},
+with high numbers of net supporting loci on both the right and left parents.
+In contrast, the other regions of the plot, where one or both parents are less well supported,
+are dominated by recombination events associated with samples sequenced using a specific protocol (AmpliSeq).
+Coupled with closer inspection of copying patterns (below),
+we chose a QC cutoff of four or more net supporting loci on both the left and right side of the breakpoint.
+This leads to 354 QC-passing recombination events (Figure~\ref{fig:recombinant_qc}, upper right quadrant),
+compared to 501 recombination events for which there is less support and which may be artefactual (shaded quadrants).
 
-Furthermore,
-the example copying patterns in Figure~\ref{fig:copying_pattern_examples}
-illustrate different types of artefacts removed using this filter.
-Q1 shows an example of a recombinant caused by an MNS (A507T, T508C, G509A),
-which is a documented sequencing error due to incomplete read trimming \cite{DeMaio2024}.
-Q4 shows an example of a recombinant caused by a Delta lineage-defining deletion.
-The vast majority (XX, or XX\%) of the QC-failing recombinants has this deletion, and
+Inspection of the copying patterns for all the recombination events
+clearly identified associations between recombination events
+that failed this QC check and known problematic loci in the SARS-CoV-2 genome.
+Figure~\ref{fig:copying_pattern_examples} illustrates examples of these copying patterns (Q1 to Q4),
+in which adjacent sites are underlined in red, and near-adjacent sites (within 3 bases) in orange.
+A continuous red+orange underline thus indicates a region treated as a single locus.
+Q1 shows a well supported recombination event that passed QC (albeit marginally),
+having a net number of supporting loci of 4 on both sides of the breakpoint.
+Q2 shows an artefactual recombination event caused by a 9-base Delta lineage-defining deletion.
+There are XX (XX\%) of the recombination events involving this deletion that failed QC, and
 many cases are affected by a known amplicon dropout caused by this particular deletion.
-Q3 shows an example artefact caused by a combination of an MNS and a deletion.
-
-Evidence that this filter effectively removed artifacts can be seen
-in the clear association between the AmpliSeq V1 kit and
-recombination events that we identified as artifactual.
+Q3 shows an artefactual recombination event caused by a combination of
+this Delta lineage-defining deletion and a known MNS (see below).
+Finally, Q4 shows an artifactual recombination event associated with the A507T-T508C-G509A MNS,
+which has been identified as a sequencing error due to incomplete read trimming \cite{DeMaio2024}.
+There are XX recombination events involving this particular MNS, of which XX\% failed QC.
 
 
 \subsubsection*{Comparison with UShER}
