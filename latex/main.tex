@@ -169,36 +169,70 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 
 
 \section*{INTRODUCTION}
+% Classical phylo methods fundamentally do not apply to SARS-CoV-2 data, both
+% in terms of the basic goal, assumptions about samples and how recombination
+% can be treated.
+Classical phylogenetics is largely concerned with inferring the evolutionary history 
+of species~\cite{Felsenstein2004}, with 
+% Not sure about this assertion! Yan?
+samples separated by millions of years of evolution.
+[This is rough outline text]
+Complex models are required to fill in the gaps in our knowledge,
+incorporating prior information about sequence evoltion etc etc.
+In this context, recombination can be treated as a nuisance factor 
+because we cannot hope to observe it over these timescales [or something
+similar].
+Phylogenetics has continued along this vein, 
+although with various challenges on how to accomodate 
+more closely related samples and to handle potential recombination met.
 
-%%% No subheadings, please. Use of abbreviations should be kept to a minimum,
-%%% and nonstandard abbreviations should be defined when first used in the text.
+The data collected during the COVID-19 pandemic as part of global
+surveillance fundamentally changed these assumptions. 
+At the peak in [month] 202X, there were over X thousand samples 
+per day deposited in GISAID\cite{Shu2017}, with a total of 
+over 17 million as of Sep 2025. This superabundance of data 
+overwhelmed classical phylogenetic methods, both in terms 
+of the number of sequences that could be processed, but also
+more fundamentally in terms of the underlying assumption of 
+retrospective data sparsity. [TODO rephrase]
+The UShER method \cite{Turakhia2021} conclusively demonstrated 
+the value of simpler models that build a tree iteratively
+in real-time, quickly becoming an indispensible element 
+of the pandemic response\cite{Hinrichs2024}.
 
-The genomic revolution has transformed how we study the evolution and spread of pathogens,
-allowing real-time tracking of pathogens over time and space.
-During the COVID-19 pandemic, thousands of SARS-CoV-2 genome sequences were generated daily,
-quickly overwhelming typical phylogenetic approaches.
-Although real-time phylogenetic methods now exist to cope with this flood of genomic data
-(e.g., UShER \cite{Turakhia2021} and MAPLE \cite{DeMaio2023}),
-we lack methods to build phylogenies that can integrate recombination
-in the face of ongoing sampling of infected cases.
-
-UShER is a maximum parsimony method developed during the pandemic to infer phylogenies
-from large numbers of densely sampled SARS-CoV-2 genome sequences \cite{Turakhia2021}.
-UShER has generated phylogenies updated daily \cite{McBroome2021} and
-has proven to be a powerful resource that successfully enabled the world
-to keep up with an evolving disease (e.g., through the Nextstrain web portal \cite{Hadfield2018}).
-These phylogenies are used to identify and monitor
-potentially epidemiologically important ``Pango'' lineages \cite{Rambaut2020,McBroome2024},
-which might have acquired features to become Variants of Concern (VOC),
-for example, increased transmissibility, disease severity, and immune escape.
-Beyond supporting real-time genomic epidemiology,
-UShER phylogenies have been used in a multitude of evolutionary and epidemiological studies of SARS-CoV-2
-(e.g., \cite{Karthikeyan2022,Obermeyer2022,Turakhia2022,Bloom2023}).
-UShER uses a tree to represent evolutionary change via mutation,
-assuming no recombination \cite{Turakhia2021}.
-However, given extensive evidence for recombination in SARS-CoV-2
+Recombination continues to be treated as a nuisance factor, however~\cite{Neches2020}. 
+Overwhelming evidence demonstrates the existance of recombination in SARS-CoV-2
 \cite{Jackson2021,VanInsberghe2021,Focosi2022,Gutierrez2022,Ignatieva2022,Tamura2023},
-the tree-like representation of UShER is no longer tenable.
+with multiple deep recombination events now known to be present in 
+genealogy of the global population [cites??].
+Despite this, phylogenies used as the basis for innumerable studies 
+continue to depict the genealogy of SARS-CoV-2 as a single
+tree~\cite{McBroome2021,Hadfield2018}.
+
+% The genomic revolution has transformed how we study the evolution and spread of pathogens,
+% allowing real-time tracking of pathogens over time and space.
+% During the COVID-19 pandemic, thousands of SARS-CoV-2 genome sequences were generated daily,
+% quickly overwhelming typical phylogenetic approaches.
+% Although real-time phylogenetic methods now exist to cope with this flood of genomic data
+
+% (e.g., UShER \cite{Turakhia2021} and MAPLE \cite{DeMaio2023}),
+% we lack methods to build phylogenies that can integrate recombination
+% in the face of ongoing sampling of infected cases.
+
+% UShER is a maximum parsimony method developed during the pandemic to infer phylogenies
+% from large numbers of densely sampled SARS-CoV-2 genome sequences \cite{Turakhia2021}.
+% UShER has generated phylogenies updated daily \cite{McBroome2021} and
+% has proven to be a powerful resource that successfully enabled the world
+% to keep up with an evolving disease (e.g., through the Nextstrain web portal \cite{Hadfield2018}).
+% These phylogenies are used to identify and monitor
+% potentially epidemiologically important ``Pango'' lineages \cite{Rambaut2020,McBroome2024},
+% which might have acquired features to become Variants of Concern (VOC),
+% for example, increased transmissibility, disease severity, and immune escape.
+% Beyond supporting real-time genomic epidemiology,
+% UShER phylogenies have been used in a multitude of evolutionary and epidemiological studies of SARS-CoV-2
+% (e.g., \cite{Karthikeyan2022,Obermeyer2022,Turakhia2022,Bloom2023}).
+% UShER uses a tree to represent evolutionary change via mutation,
+% assuming no recombination \cite{Turakhia2021}.
 
 Ancestral recombination graphs (ARGs) describe the reticulate 
 genealogies of sampled sequences in a recombining species\cite{Wong2024}.
@@ -209,18 +243,6 @@ simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019}
 and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
 Wohns2022,Zhang2023,Gunnarsson2024,Deng2024robust} have led to a surge 
 of interest in their application\cite{Brandt2024,Lewanski2024,Nielsen2025}.
-
-% TODO merge this in
-Ancestral Recombination Graphs (ARGs) are reticulate genealogies
-that incorporate both mutation and recombination events \cite{Wong2024},
-potentially allowing more comprehensive evolutionary representations of SARS-CoV-2
-and other viruses undergoing recombination.
-Until recently, ARGs lacked software support and
-sufficiently scalable inference methods to be of practical use.
-Recent advances enable ARG inference for tens to hundreds of thousands of human genomes \cite{Kelleher2019,Speidel2019,Zhang2023},
-with high levels of recombination.
-These advances now enable evolutionary genealogies to be built quickly and at scale, and
-there is a surge of excitement in the inference and applications of ARGs \cite{Brandt2024,Lewanski2024,Wong2024,Nielsen2025}.
 
 Previous ARG methods are retrospective \cite{Rasmussen2014,Kelleher2019,Speidel2019,Ignatieva2022,Zhang2023},
 reconstructing the past from a sample of genome sequences drawn at one moment in time,
