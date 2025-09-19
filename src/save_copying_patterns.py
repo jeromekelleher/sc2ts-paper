@@ -71,7 +71,15 @@ def save_copying_pattern_image(node_id, label, ts, save_dir, zoom=None,**kwargs)
 
 for u, label in tqdm(pangoX_RE_node_labels().items()):
     save_copying_pattern_image(
-       u, label, ts, png_dir, hide_extra_rows=True, hide_labels=True, show_bases=None, font_family='Verdana')
+       u,
+       label,
+       ts,
+       png_dir,
+        hide_extra_rows=True,
+        hide_labels=True,
+        show_bases=None,
+       font_family='Verdana',
+    )
 
 for u, lab in tqdm([
     (427863, "RE_node-QCpass-427863"),  # Q1
@@ -80,5 +88,14 @@ for u, lab in tqdm([
     (663484, "RE_node-QCfail-663484"),  # Q4
 ]):
     save_copying_pattern_image(
-        u, lab, ts, png_dir, hide_extra_rows=False, hide_labels=True, show_bases=True, zoom=4, font_family='Verdana'
+        u,
+        lab,
+        ts,
+        png_dir,
+        hide_extra_rows=False,
+        hide_labels=False,
+        show_bases=True,
+        child_label=f"{u}",
+        zoom=4,
+        font_family='Verdana',
     )
