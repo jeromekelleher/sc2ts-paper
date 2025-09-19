@@ -204,7 +204,8 @@ Ancestral recombination graphs (ARGs) describe the reticulate
 genealogies of sampled sequences in a recombining species\cite{Wong2024}.
 While ARGs have been of theoretical interest in population genetics 
 for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
-recent breakthroughs in simulation\cite{Kelleher2016,Kelleher2018efficient}
+recent breakthroughs in
+simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019}
 and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
 Wohns2022,Zhang2023,Gunnarsson2024,Deng2024robust} have led to a surge 
 of interest in their application\cite{Brandt2024,Lewanski2024,Nielsen2025}.
@@ -897,7 +898,7 @@ to data from other species and pathogens. Specifically, existing
 inference methods can be adapted to use the sc2ts ARG for the 
 genealogy-based study of selection \cite{hejase2022deep} or the
 geographic spread of the virus through time
-\cite{grundler2025geographic}. This is in addition to simpler
+\cite{Grundler2025geographic}. This is in addition to simpler
 analyses, such as calculating mutation spectra or querying the number
 or frequency of mutations at a given locus, which the ARG makes 
 significantly more efficient, and ultimately more easily reproducible.
@@ -1282,70 +1283,41 @@ and edited the content as needed and take(s) full responsibility for the content
 
 \subsubsection*{Ancestral Recombination Graphs}
 \label{sec:args}
+The topology of an Ancestral Recombination Graph (ARG) can be defined 
+% genome seems better than "haplotype" here, and will be clear what it means
+% in the viral context?
+as a set of \emph{nodes}, representing a genome that existed at some specific time,
+and \emph{edges} that describe the genetic inheritance relationships between those 
+genomes~\cite{Wong2024}. 
+Each edge defines the parent and child nodes and a genomic interval 
+over which inheritance occurs. The ``succinct tree sequence'' ARG encoding defines 
+these relationships in a simple and concise tabular format, 
+sufficient to represent arbitrarily complex patterns of
+recombination~\cite{Wong2024} and providing the basis for a range of highly
+efficient data processing
+algorithms~\cite{Kelleher2016,Ralph2020,Kelleher2020coalescent,Grundler2025geographic,Lehmann2025on}.
+The mature and feature-rich tskit library has interfaces in Python, C and Rust,
+extensive documentation,
+and is the basis of a growing software ecosystem of 
+simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
+visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit},
+inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022}
+% More here? I'm sure there's others
+and data analysis~\cite{Fan2022,Nowbandegani2023extremely}
+tools.
 
-describe how a set of sample sequences
-relate to each other at each position along the genome in a recombining
-species 
-lots of interest
-
-, and are currently the subject of intense research interest 
-(Brandt et al. 2024, Lewanski et al. 2024, Wong et al. 2024, Nielsen et al. 2025).
-
-
-%%% This paragraph needs to be rewritten.
-Originally introduced (Griffiths, 1991; Griffiths and Marjoram, 1997)
-to define an alternative formulation of the coalescent with recombination (Hudson, 1983),
-the term ``Ancestral Recombination Graph'' has come to be used
-more generally to describe not just realizations of the model,
-but any recombinant genetic ancestry (Minichiello and Durbin, 2006).
-While there is some subtlety in the details \cite{Wong2024},
-we can think of an ARG as being any graph
-that encodes the reticulate genetic genealogy of a sample of sequences
-under the influence of recombination.
-
-
-Until recently, ARGs lacked software support and
-sufficiently scalable inference methods to be of practical use.
-Recent advances enable ARG inference for tens to hundreds of thousands of human genomes \cite{Kelleher2019,Speidel2019,Zhang2023},
-with high levels of recombination.
-These advances now enable evolutionary genealogies to be built quickly and at scale, and
-there is a surge of excitement in the inference and applications of ARGs \cite{Brandt2024,Lewanski2024,Wong2024,Nielsen2025}.
-
-
-The ``succinct tree sequence'' (STS) is an ARG data structure
-that is both general (in terms of the types of ancestry that can be described)
-and computationally efficient \cite{Wong2024}.
-Initially developed to facilitate large-scale coalescent simulations \cite{Kelleher2016},
-STS has been extended and applied to
-forward-time simulations \cite{Kelleher2018efficient,Haller2019},
-calculation of population genetics statistics \cite{Ralph2020} and
-ARG inference \cite{Kelleher2019,Wohns2022}.
-The STS is based on a simple tabular representation,
-which defines a set of nodes, edges, sites and mutations.
-A node represents a particular genome, which may be an observed sample or an inferred genetic ancestor.
-The genetic inheritance between a pair of nodes along a segment of genome
-is defined by the edge ($l$, $r$, $p$, $c$),
-which states that child node $c$ inherited its genome from parent node $p$
-from left coordinate $l$ to right coordinate $r$.
-A site defines a position on the genome and the ancestral state (allele) at that site.
-A mutation records the site and node IDs where a mutation occurs and the derived state (allele).
-
-Given the node, edge, site and mutation tables,
-we can efficiently construct the local genealogical trees along the genome (arising from recombination)
-and perform a range of calculations efficiently
-by reasoning about the differences between these local trees \cite{Kelleher2016,Ralph2020}.
-These algorithms have led to performance increases of several orders of magnitude over
-the state-of-the-art in a range of applications
-\cite{Kelleher2016,Kelleher2018efficient,Kelleher2019,Ralph2020,Baumdicker2022}.
-The STS encoding is also very concise, allowing, for example,
-for millions of complete human genomes to be stored in a few GB of space \cite{Kelleher2019},
-and so it is particularly well suited to representing large SARS-CoV-2 genealogies.
-
-The SARS-CoV-2 ARGs inferred using sc2ts can be conveniently and efficiently analyzed
-using the mature and feature-rich tskit library \cite{Kelleher2018efficient,Ralph2020}.
-Tskit is widely used in population genetics, and has been incorporated into many downstream applications
-(e.g., \cite{Haller2019,Speidel2019,TerasakiHart2021,Fan2022,Korfmann2023,Mahmoudi2022,Petr2023,Rasmussen2023,Zhang2023}).
-
+Similarly to the Mutation Annotated Tree (MAT)~\cite{McBroome2021} format used 
+by UShER, tskit incorporates mutational information directly in the data 
+model. This is done using the site (defining the genome position and 
+ancestral state) and mutation (defining the site, node, and derived state)
+tables. In addition, tskit provides a flexible system for attaching metadata
+to all aspects of the data model, which can either be in JSON format 
+for flexibility (used heavily by sc2ts for debugging information) 
+or in a vectorisable packed binary format for efficiency (used to attach
+sample identifiers and pango assignments in the final ARGs). 
+Tskit also provides a ``provenance'' table, which provides a mechanism
+for recording software version and parameter information through each
+step of complex processing pipelines.
 
 \subsubsection*{Pandemic scale alignment storage}
 To provide the efficient access to alignment data required for inference with sc2ts, we
