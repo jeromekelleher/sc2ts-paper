@@ -1766,26 +1766,34 @@ because they affect multiple adjacent or near-adjacent bases simultaneously.
 
 We devised a quality control (QC) measure based on this observation, and
 applied it to each putative recombination event in the ARG.
-We examined the genomic positions at which the suggested parents differed in allelic state.
+We examined the genomic positions
+at which the suggested parents differed in allelic state.
 Where such sites clustered closely (3 or fewer bases apart),
 we treated the entire cluster of sites as a single \emph{locus}.
 For each genomic region identified by the HMM as having a single parent,
-we calculated the "net number of supporting loci" by counting the number of loci in the region
+we calculated the "net number of supporting loci"
+by counting the number of loci in the region
 that supported the suggested parent minus the number that did not support it.
 Finally, with all the recombination events in the ARG having a single breakpoint,
-we calculated the net number of supporting loci on the left and right sides of each breakpoint, and
-used this to plot the 855 recombination events in Figure~\ref{fig:recombinant_qc}.
+we calculated the net number of supporting loci
+on the left and right sides of each breakpoint, and
+used this to plot all the 855 recombination events in Figure~\ref{fig:recombinant_qc}.
 
 This simple QC measure effectively differentiates
 artefactual recombination events from those that are well supported.
-All the sc2ts-detected recombination events associated with the Pango X lineages (Table~\ref{tab:pango_x_lineages})
+All the sc2ts-detected recombination events
+associated with the Pango X lineages (Table~\ref{tab:pango_x_lineages})
 occur in the upper right of Figure~\ref{fig:recombinant_qc},
 with high numbers of net supporting loci on both the right and left parents.
-In contrast, the other regions of the plot, where one or both parents are less well supported,
-are dominated by recombination events associated with samples sequenced using a specific protocol (AmpliSeq).
+In contrast, the other regions of the plot,
+where one or both parents are less well supported,
+are dominated by recombination events associated with
+samples sequenced using the Ion AmpliSeq protocol.
 Coupled with closer inspection of copying patterns (see below),
-we chose a QC cutoff of four or more net supporting loci on both the left and right side of the breakpoint.
-This leads to 354 QC-passing recombination events (Figure~\ref{fig:recombinant_qc}, upper right quadrant),
+we chose a QC cutoff of 4 or more net supporting loci
+on both the left and right side of the breakpoint.
+This leads to 354 QC-passing recombination events
+(Figure~\ref{fig:recombinant_qc}, upper right quadrant),
 compared to 501 recombination events
 for which there is less support and which may be artefactual (shaded quadrants).
 
@@ -1794,18 +1802,23 @@ clearly identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
 Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
 (Q1 to Q4 correspond to the labeled quadrants in Figure~\ref{fig:recombinant_qc}),
-in which adjacent sites are underlined in red, and near-adjacent sites (within 3 bases) in orange.
+in which adjacent sites are underlined in red, and
+near-adjacent sites (within 3 bases) in orange.
 A continuous red+orange underline thus indicates a region treated as a single locus.
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
 having a net number of supporting loci of 4 on both sides of the breakpoint.
-Q2 shows an artefactual recombination event caused by a 9-base Delta lineage-defining deletion.
-There are XX (XX\%) of the QC-failing recombination events involving this deletion, and
-many cases are affected by a known amplicon dropout caused by this particular deletion \cite{Sanderson2021}
+Q2 shows an artefactual recombination event
+caused by a 6-base Delta lineage-defining deletion.
+There are 71 (14\%) QC-failing recombination events involving this deletion, and
+many cases are affected by a known amplicon dropout
+caused by this particular deletion \cite{Sanderson2021}
 Q3 shows an artefactual recombination event caused by
 a combination of this Delta deletion and a known MNS (see below).
-Finally, Q4 shows an artifactual recombination event associated with the A507T-T508C-G509A MNS,
-which has been identified as a sequencing error due to incomplete read trimming \cite{DeMaio2024}.
-There are XX recombination events involving this particular MNS, of which XX\% failed QC.
+Finally, Q4 shows an artifactual recombination event
+associated with the A507T-T508C-G509A MNS,
+which has been identified as a sequencing error
+due to incomplete read trimming \cite{DeMaio2024}.
+There are 9 recombination events involving this particular MNS, of which 6 failed QC.
 
 
 \subsubsection*{Comparison with UShER}
