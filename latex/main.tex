@@ -346,7 +346,7 @@ The ARG contains 2,689,054 nodes representing the genealogical relationships
 among 2,482,157 sampled genomes in the Viridian v04 dataset,
 which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
 Of the nodes, 855 represent recombination events,
-of which 356 have a minimum of four loci supporting the non-focal parent on both sides of the breakpoint
+of which 356 have at least four loci supporting the non-focal parent on both sides of the breakpoint
 (we refer to these as ``robust'' recombination events,
 Figure~\ref{fig:recombinant_qc}; see STAR Methods)
 reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary history.
@@ -1581,7 +1581,7 @@ group are closely related. If we have at least 2 mutations
 shared by all samples, there's at most 2 recurrent mutations
 within the group and at most 5 mutations unique to each sample, 
 the retrospective group is accepted for inclusion.
-Although this process is highly hueristic, it successfully 
+Although this process is highly heuristic, it successfully 
 captured the majority of saltational lineages
 such as Alpha (Figure~\ref{fig:subgraph_alpha}), and the 
 vast majority of samples were added following the standard
@@ -2558,9 +2558,11 @@ Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
 Illustrative copying patterns.
-Q1 to Q4 are examples drawn from the labeled quadrants in Figure~\ref{fig:recombinant_qc}.
+Q1 to Q4 are examples drawn from the labeled quadrants in
+Figure~\ref{fig:recombinant_qc}.
 Q1 depicts the copying pattern of a recombination event that marginally passed QC,
 whereas the others depict the copying patterns of recombination events that failed QC.
+The node ID of a recombination event is shown in the middle row.
 }
 \label{fig:copying_pattern_examples}
 \end{figure}
