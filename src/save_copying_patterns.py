@@ -74,10 +74,10 @@ for u, label in tqdm(pangoX_RE_node_labels().items()):
        u, label, ts, png_dir, hide_extra_rows=True, hide_labels=True, show_bases=None, font_family='Verdana')
 
 for u, lab in tqdm([
-    (1372032, "causedby-ERR10306608"),
-    (456023, "causedby-ERR6760245"),
-    (1137450, "causedby-SRR21087725"),
-    (427863, "causedby-SRR15864165"),
+    (427863, "RE_node-QCpass-427863"),  # Q1
+    (748991, "RE_node-QCfail-748991"),  # Q2
+    (411345, "RE_node-QCfail-411345"),  # Q3
+    (663484, "RE_node-QCfail-663484"),  # Q4
 ]):
     save_copying_pattern_image(
         u, lab, ts, png_dir, hide_extra_rows=False, hide_labels=True, show_bases=True, zoom=4, font_family='Verdana'
