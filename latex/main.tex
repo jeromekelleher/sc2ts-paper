@@ -1804,10 +1804,7 @@ Inspection of the copying patterns for all the recombination events
 clearly identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
 Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
-(Q1 to Q4 correspond to the labeled quadrants in Figure~\ref{fig:recombinant_qc}),
-in which adjacent sites are underlined in red, and
-near-adjacent sites (within 3 bases) in orange.
-A continuous red+orange underline thus indicates a region treated as a single locus.
+(Q1 to Q4 correspond to the labeled quadrants in Figure~\ref{fig:recombinant_qc}).
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
 having a net number of supporting loci of 4 on both sides of the breakpoint.
 Q2 shows an artefactual recombination event
@@ -2260,6 +2257,7 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_usher\_sc2ts.ipynb}{analysis\_usher\_sc2ts.ipynb}
 for details.
 
+
 \subsection{Imputation comparison of sc2ts and UShER}
 \label{sec:supplement_sc2ts_usher_imputation}
 Both sc2ts and UShER support missing data in input alignments, and effectively
@@ -2292,6 +2290,7 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/example\_data\_processing.ipynb}{example\_data\_processing.ipynb}
 for details.
 
+
 \subsection{Analysis of Pango lineage ``origination'' events}
 \label{sec:supplement_pango_lineages}
 To analyze how well the ARG reflects the phylogenetic structure implicit in the
@@ -2319,6 +2318,7 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_pango\_events\_in\_arg.ipynb}
 {analysis\_pango\_events\_in\_arg.ipynb}
 for details.
+
 
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
@@ -2558,11 +2558,27 @@ Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
 Illustrative copying patterns.
-Q1 to Q4 are examples drawn from the labeled quadrants in
-Figure~\ref{fig:recombinant_qc}.
-Q1 depicts the copying pattern of a recombination event that marginally passed QC,
-whereas the others depict the copying patterns of recombination events that failed QC.
-The node ID of a recombination event is shown in the middle row.
+These copying patterns are examples
+drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}.
+Each pattern indicates the genomic positions
+where the allelic state in a recombinant
+(middle row, with the label showing the node ID of the recombination event)
+matches that of the suggested left or right parent (P0 and P1, respectively)
+or where the allelic state differs from that of both the parents.
+For reference, the allelic states of the Wuhan-Hu-1 genome
+(which is the assumed root of the ARG)
+are shown on top of the left parent.
+The allelic states are colored as follows:
+green for those matching the left parent;
+blue for those matching the right parent;
+yellow for those differing from both the parents; and
+grey for those matching the reference.
+Adjacent sites are underlined in red, and
+near-adjacent sites (within 3 bases) in orange.
+A continuous red+orange underline thus indicates
+a region treated as a single locus.
+For further context, mutations above a recombination event
+are shown on the bottom.
 }
 \label{fig:copying_pattern_examples}
 \end{figure}
