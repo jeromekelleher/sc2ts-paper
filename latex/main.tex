@@ -659,7 +659,7 @@ all the ``robust'' recombination events (STAR Methods),
 which include all the Pango X-associated recombination events
 (Table~\ref{tab:pango_x_lineages})
 and those studied by Jackson et al. \cite{Jackson2021}
-(Table \ref{tab:jackson}).
+(Table \ref{tab:jackson}, Document~\ref{sec:jackson_recombs}).
 
 Our analysis of the number of averted mutations reveals a spectrum of plausibility
 across all the ``robust'' recombination events
@@ -1748,15 +1748,6 @@ workflow (see \nameref{sec:data_and_code_availability}).
 
 
 \subsubsection*{Quality control of recombination events}
-
-[TODO This section needs a full pass. I've merged in a section that was in the
-supplement with an extremely terse section on counting supporting loci.
-Reference Figure~\ref{fig:recombinant_qc} for the scatter plot and 
-labeled quadrants, and Figure~\ref{fig:copying_pattern_examples}
-for examples of the corresponding copying patterns. Also reference
-any additional examples that we include beyond A-D.]
-
-
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
 multi-nucleotide substitutions (MNS \cite{DeMaio2020issues})
@@ -1811,7 +1802,7 @@ Q2 shows an artefactual recombination event
 caused by a 6-base Delta lineage-defining deletion.
 There are 71 (14\%) QC-failing recombination events involving this deletion, and
 many cases are affected by a known amplicon dropout
-caused by this particular deletion \cite{Sanderson2021}
+caused by this particular deletion\cite{Sanderson2021}.
 Q3 shows an artefactual recombination event caused by
 a combination of this Delta deletion and a known MNS (see below).
 Finally, Q4 shows an artifactual recombination event
@@ -2431,6 +2422,7 @@ We find two net supporting loci for a recombination breakpoint to be around 2259
 
 
 \subsection{Analysis of the Jackson et al. recombinants}
+\label{sec:jackson_recombs}
 
 Jackson et al.\cite{Jackson2021} conducted detailed analyses of early recombinants
 involving B.1.1.7 (Alpha), including the first designated Pango X lineage, XA.
@@ -2441,8 +2433,6 @@ displaying signs of onward transmission.
 Here we compared the sc2ts detection results of these recombinants
 with the detection results reported by Jackson et al.
 
-% Data derived from the notebooks/jackson_recombinants.ipynb notebook
-% See https://github.com/jeromekelleher/sc2ts-paper/issues/293
 Jackson et al. described four groups of recombinants (named A to D) and
 four singleton recombinants.
 Of the 16 samples analyzed by Jackson et al, 12 were included in the ARG;
@@ -2467,6 +2457,11 @@ and a breakpoint interval of 7,729--10,870 in the ARG,
 supported by 11 averted mutations.
 The Jackson et al.\ results for this lineage has the same parents,
 with the breakpoint interval 6,953--10,872.
+
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
+{analysis\_jackson\_recombinants.ipynb}
+for details.
 
 
 \begin{table}
