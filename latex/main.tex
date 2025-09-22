@@ -446,7 +446,7 @@ Furthermore, some of the Pango X lineages above originate from
 shared recombination events in the ARG (Table~\ref{tab:pango_x_lineages}).
 An example of a set of ``nested'' closely related lineages consists of XZ, XAC, XAD, XAE, and XAP,
 which descend from a single recombination event rather than five independent
-events in the ARG (Figure~\ref{fig:subgraphs}B).
+events in the ARG (Figure~\ref{fig:subgraphs}B), and which we tentatively group using the unused label Xx.
 These Pango X lineages were designated around the same time.
 These results highlight that the ARG can help clarify the relationships between recombinants,
 allowing more precise interpretation of evidence for recombination.
@@ -478,9 +478,9 @@ and Document S2 for ARG visualations of all Pango X lineages.
 \includegraphics[width=\linewidth]{pango_x_subgraphs}
 \caption{
 Illustrative subgraphs in the ARG.
-(A) Subgraph around the recombination node associated with the XA.
+(A) Subgraph around the recombination node associated with XA.
 Two "Group A" recombinant samples reported by Jackson et al. \cite{Jackson2021}) are shown.
-(B) Subgraph around the recombination node associated with a group of ``nested'' Pango X lineages; and
+(B) Subgraph around the recombination node associated with a group of ``nested'' Pango X lineages: we use the label Xx as a shorthand for this related group of recombinants; and
 (C) Subgraph around the MRCA of the closely related non-recombinants XN and XAU.
 The nodes assigned to a Pango X lineage are colored by that lineage.
 The numbers inside the colored boxes indicate
@@ -502,7 +502,7 @@ For more detailed visualizations of these subgraphs, see Document S2.
 ARG events associated with Pango X lineages.
 Each row corresponds to the oldest node assigned the specified
 Pango lineage and the ancestor of all nodes assigned that label
-(except XBB, XBB.1 and XM; see STAR methods). [MORE DETAILS]
+(except XBB, XBB.x and XM; see STAR methods). [MORE DETAILS]
 }
 \label{tab:pango_x_lineages}
 \begin{footnotesize}
@@ -703,7 +703,7 @@ Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e. $x$-$y$).
 (B) Distribution of time to the MRCA of the parents of each robust recombination node.
 (C) Distribution of the Pango lineage distance between parents.
-(D) Copying patterns leading to XA, XBB, XBB.1, and the recombinant origin of XZ+XAC+XAD+XAE+XAP;
+(D) Copying patterns leading to XA, Xx (the origin of XZ+XAC+XAD+XAE+XAP), XBB, and an undesignated recombination event under XBB, which we here refer to as  XBB.x; See Document S1.XXX for a description of these SnpIt-like\cite{xxx} plots, in which
 each recombination node is a mix of variants matching the left parent (green), the right parent (blue), and de-novo mutations (gold).}
 \label{fig:averted_mutations}
 \end{figure}
@@ -2314,7 +2314,7 @@ for details.
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
 
-\subsection*{XS}
+\subsubsection*{XS}
 https://github.com/jeromekelleher/sc2ts-paper/issues/287
 In the ARG, the XS samples appear to have originated from
 two sequential recombination events.
@@ -2326,7 +2326,7 @@ which was also used to sequence eight other samples descending from the same eve
 We excluded this likely artifactual event from further analysis and
 consider XS to have emerged from a single recombinant origin.
 
-\subsection*{XM}
+\subsubsection*{XM}
 https://github.com/jeromekelleher/sc2ts-paper/issues/284
 Possibly related to deletions.
 
