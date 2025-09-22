@@ -173,9 +173,23 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of species~\cite{Felsenstein2004}, with 
-% Not sure about this assertion! Yan?
-samples separated by millions of years of evolution.
+of species~\cite{Felsenstein2004}, 
+where recombination
+is a problem. 
+In this context, recombination is something to be minimised,
+with species trees inferred over 
+non-recombining regions~\cite{Rannala2025recombination}.
+
+Modern pathogen datasets are not sparsely sampled from different species,
+but many isolates from the same species~\cite{Cryptic2022data}
+% Cryptic used neighbor-joining tree
+% A pairwise genetic distance matrix was constructed for 15,211 isolates by
+% comparing pairs of regenotyped VCF files (see “Genomic data processing and
+% variant calling” section above for more details). A neighbourhood-joining tree
+% was constructed from the distance matrix using quicktree [53]. 
+
+
+
 [This is rough outline text]
 Complex models are required to fill in the gaps in our knowledge,
 incorporating prior information about sequence evoltion etc etc.
