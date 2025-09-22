@@ -346,9 +346,8 @@ The ARG contains 2,689,054 nodes representing the genealogical relationships
 among 2,482,157 sampled genomes in the Viridian v04 dataset,
 which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
 Of the nodes, 855 represent recombination events,
-of which 356 have at least four loci supporting the non-focal parent on both sides of the breakpoint
-(we refer to these as ``robust'' recombination events,
-Figure~\ref{fig:recombinant_qc}; see STAR Methods)
+of which 354 pass quality control (QC) filters
+(see STAR Methods, Figure~\ref{fig:recombinant_qc}),
 reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary history.
 
 The ARG represents the full evolutionary history of SARS-CoV-2 and 
@@ -429,7 +428,7 @@ This process has resulted in the designation of recombinant Pango lineages
 
 We find strong evidence for the recombination events leading to 17 Pango X lineages
 in the ARG (Table~\ref{tab:pango_x_lineages}),
-all of which pass the robustness filtering criteria (Figure~\ref{fig:recombinant_qc}).
+all of which pass QC (STAR Methods).
 %% JK: Does saying this here help at all? I think we may be better off without 
 % These events are supported by high numbers of averted
 % mutations (Table 1) and high numbers of loci matching their suggested parents
@@ -603,9 +602,8 @@ We found that the methods performed well overall,
 with comparable concordance rates (Table~\ref{tab:method_concordance}),
 indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
 
-Furthermore, we compared the sensitivity of sc2ts and rebar.
-We ran rebar on the ``robust'' recombination events detected by sc2ts (STAR Methods),
-and found that 167 (43\%) of them were also detected as recombinants by rebar.
+% https://github.com/jeromekelleher/sc2ts-paper/issues/717
+167 (43\%) of QC-passing recombination events were also detected as recombinants by rebar.
 We hypothesize that this disagreement arose from
 differences in sensitivity between these methods.
 Consistent with this, we found that rebar needs a higher level of divergence between parents
@@ -745,8 +743,8 @@ between the deeply divergent Omicron BA.1 and BA.2 sublineages
 \includegraphics[width=\linewidth]{recombinant_intervals}
 \caption{
 Recombination intervals.
-(A) Distribution of the breakpoint intervals of the 356 robust recombination events along the genome
-(annotated with gene labels on top).
+(A) Distribution of the breakpoint intervals of 354 recombination events 
+along the genome (annotated with gene labels on top).
 Each line represents an interval colored by its size.
 (B) Number of overlapping breakpoint intervals.
 (C) FIXME Heatmap showing the co-occurrence counts of the parents classified by Scorpio designations.
@@ -777,7 +775,7 @@ Figure~\ref{fig:recombinants_over_time}).
 These lineages correspond loosely to a group of related lineages within a major VOC in the Viridian dataset.
 Alongside the case numbers,
 the black curve shows the number of recombinants inferred within each week along the ARG,
-focusing on the 356 ``robust'' events.
+focusing on the 354 events passing QC filters.
 Recombination events were inferred more often during the Delta and Omicron waves, when case counts were high.
 Overall, the number of recombinant events rose with the global number of cases
 (Figure~\ref{fig:recombinants_over_time}B; 
@@ -2066,7 +2064,8 @@ the p-values were confirmed by randomly permuting the predictor variable 10,000 
 ANOVAs were conducted to determine which single predictor ($n$, $H$, $n \; H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
 These statistical tests and graphics were conducted in \textit{Mathematica} 14.2 (Wolfram 2024) and available at GITHUB LINK.
 
-In addition to the analysis of the 356 ``robust'' recombination events with a minimum of four nucleotides supporting each parent,
+In addition to the analysis of the 354 recombination events 
+that pass QC,
 we analyzed the relationship between the full set of 855 recombinants and case numbers.
 These additional recombinants occurred disproportionately during the Delta and first Omicron wave (July, 2021 to February, 2022).
 Again, the number of recombinant events rose with the global number of cases
@@ -2079,7 +2078,7 @@ with an adjusted $R^2$ of 26.9\%,
 although this was now followed closely by expected heterozygosity on its own ($H$),
 with an adjusted $R^2$ of 26.5\%.
 Thus, similar conclusions are reached with either dataset,
-although filtering the recombination events to the 356 with better support revealed a stronger relationship with case numbers.
+although filtering the recombination events to the 354 with better support revealed a stronger relationship with case numbers.
 
 
 % \subsection*{Additional resources}
