@@ -701,12 +701,10 @@ Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e. $x$-$y$).
 (B) Distribution of time to the MRCA of the parents of each robust recombination node.
 (C) Distribution of the Pango lineage distance between parents.
-(D) Copying patterns leading to XA, Xx (the origin of XZ+XAC+XAD+XAE+XAP), XBB, and an
-undesignated recombination event under XBB, which we here refer to as  XBB.x;
-See Fig~\ref{fig:copying_pattern_examples} for a description of these
-SnpIt-like~\cite{OToole2024} plots, in which recombinants are shown
-as a mosaic of variants inherited from the left vs right parents
-(green vs blue, de-novo mutations in gold).}
+(D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
+leading to XA, Xx 
+(the origin of XZ+XAC+XAD+XAE+XAP), XBB, and an
+undesignated recombination event under XBB, which we here refer to as  XBB.x.}
 \label{fig:averted_mutations}
 \end{figure}
 
@@ -1761,6 +1759,7 @@ because the LS HMM counts each base separately.
 Fortunately, artefactual recombinants caused by this effect can be identified
 because they affect multiple adjacent or near-adjacent bases simultaneously.
 
+
 We devised a quality control (QC) measure based on this observation, and
 applied it to each putative recombination event in the ARG.
 We examined the genomic positions
@@ -1794,8 +1793,13 @@ This leads to 354 QC-passing recombination events
 compared to 501 recombination events
 for which there is less support and which may be artefactual (shaded quadrants).
 
-Inspection of the copying patterns for all the recombination events
-clearly identified associations between recombination events that failed QC and
+We developed a SnpIt-like~\cite{OToole2024} visualisation 
+that shows the informative genomic positions between 
+a recombinant and its parent sequences, and highlights 
+potentially problematic loci
+(See Fig~\ref{fig:copying_pattern_examples} caption for details).
+Inspection of these copying patterns for all the recombination events
+identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
 Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
 (Q1 to Q4 correspond to the labeled quadrants in Figure~\ref{fig:recombinant_qc}).
@@ -2578,17 +2582,22 @@ Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
 Illustrative copying patterns
-drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}. Q1-Q4 correspond to copying patterns for recombination nodes 427863, 728991, 411345, and 663484, none of which are associated with designated Pango recombinant lineages.
-The SnpIt-like~\cite{OToole2024} schematic highlights the specific genomic positions
+drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}. 
+Each copying pattern shows the 
+the positions
 where the allelic state in a recombinant
 (middle row, labelled by node ID)
-matches that of the suggested left (P0: upper row, coloured green) or right parent (P1: lower row, coloured blue),
-or where the recombination event requires a de-novo mutation (gold, with mutational change at bottom).
-Genome position (``pos'') is shown above each column, with the allelic state of the Wuhan-Hu-1 reference genome (``ref'') immediately below;  parental states that correspond to the reference but are not inherited by the recombinant are shown with a gray background.
-Underneath each copying pattern, adjacent genomic positions are underlined in red, and
+matches that of the left (P0: upper row, coloured green) 
+or right parent (P1: lower row, coloured blue),
+or where the recombination event requires a de-novo mutation
+(gold, with mutational change below).
+Parental states that correspond to the reference but are not 
+inherited by the recombinant are shown with a gray background.
+Genome position (``pos'') and reference allele (``ref'') are
+shown for each column.
+Underneath the copying pattern, adjacent genomic positions are 
+underlined in red, and
 near-adjacent sites (within 3 bases) in orange.
-A continuous red-and-orange underline thus indicates
-a region treated as a single ``locus'' for the purposes of quality control (see Supplementary S1.XXX).
 }
 \label{fig:copying_pattern_examples}
 \end{figure}
