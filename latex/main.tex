@@ -703,8 +703,8 @@ Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e. $x$-$y$).
 (B) Distribution of time to the MRCA of the parents of each robust recombination node.
 (C) Distribution of the Pango lineage distance between parents.
-(D) Copying patterns leading to XA, Xx (the origin of XZ+XAC+XAD+XAE+XAP), XBB, and an undesignated recombination event under XBB, which we here refer to as  XBB.x; See Document S1.XXX for a description of these SnpIt-like\cite{xxx} plots, in which
-each recombination node is a mix of variants matching the left parent (green), the right parent (blue), and de-novo mutations (gold).}
+(D) Copying patterns leading to XA, Xx (the origin of XZ+XAC+XAD+XAE+XAP), XBB, and an undesignated recombination event under XBB, which we here refer to as  XBB.x; See Fig~\ref{fig:copying_pattern_examples} for a description of these SnpIt-like~\cite{OToole2024} plots, in which
+recombinants are shown  as a mosaic of variants inherited from the left vs right parents (green vs blue, de-novo mutations in gold).}
 \label{fig:averted_mutations}
 \end{figure}
 
@@ -2380,8 +2380,8 @@ Interestingly, our results suggest that XAK might be a product of two sequential
 \subsubsection*{Non-recombinants}
 \subsubsection*{XN and XAU}
 
-https://github.com/jeromekelleher/sc2ts-paper/issues/358
 https://github.com/jeromekelleher/sc2ts-paper/issues/348
+https://github.com/jeromekelleher/sc2ts-paper/issues/358
 
 Both of these putative recombinants have been defined
 on the basis of an RHS from BA.2 and a LHS from BA.1.
@@ -2574,23 +2574,15 @@ Q3 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-411345.png}\\
 Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
-Illustrative copying patterns.
-These copying patterns are examples
-drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}.
-Each pattern indicates the genomic positions
+Illustrative copying patterns
+drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}. Q1-Q4 correspond to copying patterns for recombination nodes 427863, 728991, 411345, and 663484 (none of which are associated with designated Pango recombinant lineages).
+The SnpIt-like~\cite{OToole2024} schematic highlights the set of genomic positions
 where the allelic state in a recombinant
-(middle row, with the label showing the node ID of the recombination event)
-matches that of the suggested left or right parent (P0 and P1, respectively)
-or where the allelic state differs from that of both the parents.
-For reference, the allelic states of the Wuhan-Hu-1 genome
-(which is the assumed root of the ARG)
-are shown on top of the left parent.
-The allelic states are colored as follows:
-green for those matching the left parent;
-blue for those matching the right parent;
-yellow for those differing from both the parents; and
-grey for those matching the reference.
-Adjacent sites are underlined in red, and
+(middle row, labelled by node ID)
+matches that of the suggested left (P0, above, coloured green) or right parent (P1, below, coloured blue),
+or where the recombination event requires a de-novo mutation (gold).
+Genomic positions are shown above each column, with the allelic state of the Wuhan-Hu-1 reference genome (``ref'') immediately below;  parental states that are not inherited by the recombinant and correspond to the reference are shown with a grey background.
+At the Adjacent genomic positions are underlined in red, and
 near-adjacent sites (within 3 bases) in orange.
 A continuous red+orange underline thus indicates
 a region treated as a single locus.
