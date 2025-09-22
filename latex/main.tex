@@ -719,7 +719,8 @@ using its size as a measure of precision (median, 2,207 bases; STAR Methods).
 
 We find an overall preponderance of breakpoint intervals towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene (Figure~\ref{fig:recombinant_intervals}A,B),
-consistent with patterns observed in previous studies \cite{Turakhia2022,Li2024CovRecomb}.
+consistent with patterns observed in previous studies
+\cite{Bobay2020recombination,Turakhia2022,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
@@ -1294,16 +1295,16 @@ over which inheritance occurs. The ``succinct tree sequence'' ARG encoding defin
 these relationships in a simple and concise tabular format, 
 sufficient to represent arbitrarily complex patterns of
 recombination~\cite{Wong2024} and providing the basis for a range of highly
-efficient data processing
+efficient 
 algorithms~\cite{Kelleher2016,Ralph2020,Kelleher2020coalescent,Grundler2025geographic,Lehmann2025on}.
 The mature and feature-rich tskit library has interfaces in Python, C and Rust,
 extensive documentation,
 and is the basis of a growing software ecosystem of 
 simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
 visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit},
-inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022}
+inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting}
 % More here? I'm sure there's others
-and data analysis~\cite{Fan2022,Nowbandegani2023extremely}
+and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
 tools.
 
 Similarly to the Mutation Annotated Tree (MAT)~\cite{McBroome2021} format used 
