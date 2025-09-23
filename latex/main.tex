@@ -217,13 +217,18 @@ per day deposited in GISAID\cite{Shu2017}, with a total of
 over 17 million as of Sep 2025. % TODO check numbers
 Regularly reinferring trees de-novo from rapidly 
 growing datasets is untenable.
-The UShER method \cite{Turakhia2021} conclusively demonstrated 
-the value of simpler models that build a tree iteratively
-in real-time, quickly becoming an indispensible element 
+The UShER\cite{Turakhia2021} method is based on adding 
+samples to an existing tree using maximum parsimony, 
+with periodic rearrangements to counter the inherent 
+greediness of the approach\cite{DeMaio2023}.
+The benefits of this simple model and the value of 
+a comprehensive genealogy updated in real-time~\cite{McBroome2021}
+were conclusively demonstrated, as the resource
+quickly becoming an indispensible element 
 of the pandemic response\cite{Hinrichs2024}.
 The second challenge posed is that recombination is 
 an essential element of SARS-CoV-2 
-evolution\cite{Jackson2021,VanInsberghe2021,Muller2022bayesian,Focosi2022,
+evolution\cite{Jackson2021,VanInsberghe2021,Focosi2022,
 Gutierrez2022,Ignatieva2022,Tamura2023},
 with multiple deep recombination events now known to be present in 
 genealogy of the global population [cites??].
@@ -239,12 +244,6 @@ in innumerable studies~\cite{McBroome2021,Hadfield2018},
 and recombination continues to be treated as a 
 nuisance factor~\cite{Neches2020}. 
 
-
-% The genomic revolution has transformed how we study the evolution and spread of pathogens,
-% allowing real-time tracking of pathogens over time and space.
-% During the COVID-19 pandemic, thousands of SARS-CoV-2 genome sequences were generated daily,
-% quickly overwhelming typical phylogenetic approaches.
-% Although real-time phylogenetic methods now exist to cope with this flood of genomic data
 
 % (e.g., UShER \cite{Turakhia2021} and MAPLE \cite{DeMaio2023}),
 % we lack methods to build phylogenies that can integrate recombination
