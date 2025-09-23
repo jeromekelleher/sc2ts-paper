@@ -244,43 +244,41 @@ in innumerable studies~\cite{McBroome2021,Hadfield2018},
 and recombination continues to be treated as a 
 nuisance factor~\cite{Neches2020}. 
 
-
-% (e.g., UShER \cite{Turakhia2021} and MAPLE \cite{DeMaio2023}),
-% we lack methods to build phylogenies that can integrate recombination
-% in the face of ongoing sampling of infected cases.
-
-% UShER is a maximum parsimony method developed during the pandemic to infer phylogenies
-% from large numbers of densely sampled SARS-CoV-2 genome sequences \cite{Turakhia2021}.
-% UShER has generated phylogenies updated daily \cite{McBroome2021} and
-% has proven to be a powerful resource that successfully enabled the world
-% to keep up with an evolving disease (e.g., through the Nextstrain web portal \cite{Hadfield2018}).
-% These phylogenies are used to identify and monitor
-% potentially epidemiologically important ``Pango'' lineages \cite{Rambaut2020,McBroome2024},
-% which might have acquired features to become Variants of Concern (VOC),
-% for example, increased transmissibility, disease severity, and immune escape.
-% Beyond supporting real-time genomic epidemiology,
-% UShER phylogenies have been used in a multitude of evolutionary and epidemiological studies of SARS-CoV-2
-% (e.g., \cite{Karthikeyan2022,Obermeyer2022,Turakhia2022,Bloom2023}).
-% UShER uses a tree to represent evolutionary change via mutation,
-% assuming no recombination \cite{Turakhia2021}.
-
 Ancestral recombination graphs (ARGs) describe the reticulate 
-genealogies of sampled sequences in a recombining species\cite{Wong2024}.
+genealogies of sampled sequences in a recombining species\cite{Wong2024},
+and provide a natural and efficient means of incorporating recombination 
+into the study of SARS-CoV-2.
 While ARGs have been of theoretical interest in population genetics 
 for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
 recent breakthroughs in
 simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019}
 and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
 Wohns2022,Zhang2023,Gunnarsson2024,Deng2024robust} have led to a surge 
-of interest in their application\cite{Brandt2024,Lewanski2024,Nielsen2025}.
+of interest in their application in population and statical 
+genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
+% This is necessary because a bunch of the phylo literature refers
+% to ARGs, but it's all in the "coalescent with recombination" sense
+% Rannala2025 dismisses ARG-based methods at a stroke because they're
+% all based on the assumption of a single panmictic population 
+A subtle but important point distinguishing recent work on ARGs
+from the classical literature is that the ARG 
+``data structure''\cite{Minichiello2006mapping,Wong2024} is no longer
+tightly coupled to the generative
+process\cite{Hudson1983,Griffiths1997ancestral}, substantially 
+broadening the range of potential applications~\cite{Bisschop2025likelihoods}.
+Another important point is that strong software support for ARGs now
+exists, and the tskit library~\cite{Ralph2020} is the basis of a 
+rapidly growing 
+software ecosystem of 
+simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
+visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit},
+inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting}
+% More here? I'm sure there's others
+and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
+tools.
 
-Previous ARG methods are retrospective \cite{Rasmussen2014,Kelleher2019,Speidel2019,Ignatieva2022,Zhang2023},
-reconstructing the past from a sample of genome sequences drawn at one moment in time,
-but scientists are increasingly tracking evolutionary change as it happens,
-accumulating data forward in time.
-For example, sequences from daily samples of SARS-CoV-2 were made globally available on a daily basis,
-leading to over 17 million sequences in the GISAID database \cite{Shu2017}.
 
+[TODO rewrite this paragraph]
 Here, we present
 (1) sc2ts, a new method to infer ARGs in real time by building genealogies forward in time, and
 (2) an ARG for SARS-CoV-2 with ~2.48 million genome sequences.
