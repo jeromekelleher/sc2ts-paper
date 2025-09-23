@@ -190,12 +190,12 @@ Dyer2025enterobase% 1 million, various things like E-coli
 }.
 In contrast to the sophisticated model-based approaches 
 used to perform species-level tree 
-inference~\cite{Suchard2018bayesian,Bouckaert2019beast},
+inference~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
 comprehensive phylogenies of these datasets are typically
 built with simpler distance-matrix methods [citation?]
 or approximations~\cite{Price2009fasttree}, primarily
 due to computational scaling limitations, but also because of
-complexity of modelling such datasets.
+the complexity of modelling such datasets.
 While several methods have been proposed to incorporate
 recombination explicitly into model-based phylogenetic 
 inference~\cite{Didelot2010inference,%
@@ -204,21 +204,32 @@ Muller2020bayesian,%
 Muller2022bayesian}, 
 scalability 
 is a major issue and practical application has been limited.
-
+Software support in explicitly \emph{using} recombination-aware
+inference is also extremely limited [TODO add some concrete 
+details].
 
 The data collected during the COVID-19 pandemic as part of global
-surveillance fundamentally changed these assumptions. 
+surveillance presents fundamental challenges existing appraoches
+in two ways. Firstly, the sheer scale of data collected 
+overwhelmed even approximate distance-matrix based methods.
 At the peak in [month] 202X, there were over X thousand samples 
 per day deposited in GISAID\cite{Shu2017}, with a total of 
-over 17 million as of Sep 2025. This superabundance of data 
-overwhelmed classical phylogenetic methods, both in terms 
-of the number of sequences that could be processed, but also
-more fundamentally in terms of the underlying assumption of 
-retrospective data sparsity. [TODO rephrase]
+over 17 million as of Sep 2025. % TODO check numbers
+Regularly reinferring trees de-novo from rapidly 
+growing datasets is untenable.
 The UShER method \cite{Turakhia2021} conclusively demonstrated 
 the value of simpler models that build a tree iteratively
 in real-time, quickly becoming an indispensible element 
 of the pandemic response\cite{Hinrichs2024}.
+The second challenge posed is that recombination is 
+an essential element of SARS-CoV-2 
+evolution\cite{Jackson2021,VanInsberghe2021,Muller2022bayesian,Focosi2022,
+Gutierrez2022,Ignatieva2022,Tamura2023},
+with multiple deep recombination events now known to be present in 
+genealogy of the global population [cites??].
+Although several methods have been proposed to \emph{detect}
+recombinant samples~\cite{Zhou2023virusrecom}
+
 
 Recombination continues to be treated as a nuisance factor, however~\cite{Neches2020}. 
 Overwhelming evidence demonstrates the existance of recombination in SARS-CoV-2
