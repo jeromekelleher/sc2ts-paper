@@ -173,44 +173,38 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of species~\cite{Felsenstein2004}, 
-where recombination
-is a problem. 
-In this context, recombination is something to be minimised,
-with species trees inferred over 
-non-recombining regions~\cite{Rannala2025recombination}.
-
+of species~\cite{Felsenstein2004}, with small numbers of widely diverged
+samples. In this context, recombination is a nuisance which must be 
+carefully accounted for~\cite{Rannala2025recombination},
+affecting the inference of species trees~\cite{Posada2002effect}
+and biasing downstream
+analyses~\cite{Schierup2000consequences,Hedge2014bacterial}.
 Modern pathogen datasets are not sparsely sampled from different species,
-but many isolates from the same species~\cite{Cryptic2022data}
-% Cryptic used neighbor-joining tree
-% A pairwise genetic distance matrix was constructed for 15,211 isolates by
-% comparing pairs of regenotyped VCF files (see “Genomic data processing and
-% variant calling” section above for more details). A neighbourhood-joining tree
-% was constructed from the distance matrix using quicktree [53]. 
+but consist of tens to hundreds of thousands of samples from 
+a single species~\cite{
+Shu2017,% GISAID ~270k FLU + others
+Jolley2018open,% PubMLST, 34K genomes for e.g. Staph Auerus
+Apetrei2021hiv,% HIV 1,026,217 sequences
+Cryptic2022data,% TB 12k
+Dyer2025enterobase% 1 million, various things like E-coli
+}.
+In contrast to the sophisticated model-based approaches 
+used to perform species-level tree 
+inference~\cite{Suchard2018bayesian,Bouckaert2019beast},
+comprehensive phylogenies of these datasets are typically
+built with simpler distance-matrix methods [citation?]
+or approximations~\cite{Price2009fasttree}, primarily
+due to computational scaling limitations, but also because of
+complexity of modelling such datasets.
+While several methods have been proposed to incorporate
+recombination explicitly into model-based phylogenetic 
+inference~\cite{Didelot2010inference,%
+Vaughan2017inferring,%
+Muller2020bayesian,%
+Muller2022bayesian}, 
+scalability 
+is a major issue and practical application has been limited.
 
-
-
-[This is rough outline text]
-Complex models are required to fill in the gaps in our knowledge,
-incorporating prior information about sequence evoltion etc etc.
-In this context, recombination can be treated as a nuisance factor 
-because we cannot hope to observe it over these timescales [or something
-similar].
-Phylogenetics has continued along this vein, 
-although with various challenges on how to accomodate 
-more closely related samples and to handle potential recombination met.
-
-Recombination breaks things\cite{Posada2002effect}
-
-ARG/phylonetwork -like
-methods~\cite{Didelot2010inference,Vaughan2017inferring,
-Muller2020bayesian,Muller2022bayesian}
-
-Distinction between recombination detection --- identifying that a 
-given sequences is a likely recombinant --- and incorporation
-of recombination.
-
-Recombination has been incorporated in a number of models
 
 The data collected during the COVID-19 pandemic as part of global
 surveillance fundamentally changed these assumptions. 
