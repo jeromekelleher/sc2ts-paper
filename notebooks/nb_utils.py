@@ -75,7 +75,7 @@ def standard_recombinant_labels(ts, pango_x_events_file):
     # Tweak the "XBB.1" RE node label, which should have a bespoke label because it's not
     # reflective of the majority of XBB.1 samples
     XBB_1 = [k for k, v in labels.items() if v == "XBB.1"][0]
-    labels[XBB_1] = "XBB.x1"
+    labels[XBB_1] = "XBB.x"
     Xx = [k for k, v in labels.items() if "XZ" in v][0]
     labels[Xx] = "Xx"
     
