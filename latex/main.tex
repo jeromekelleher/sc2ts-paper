@@ -493,18 +493,22 @@ with sc2ts correctly identifying its parental Pango lineages and breakpoint loca
 
 Furthermore, some of the Pango X lineages above originate from
 shared recombination events in the ARG (Table~\ref{tab:pango_x_lineages}).
-An example of a set of ``nested'' closely related lineages consists of XZ, XAC, XAD, XAE, and XAP,
+An example of a set of ``nested'' closely related lineages
+consists of XZ, XAC, XAD, XAE, and XAP,
 which descend from a single recombination event rather than five independent
-events in the ARG (Figure~\ref{fig:subgraphs}B), and which we tentatively group using the unused label Xx.
+events in the ARG (Figure~\ref{fig:subgraphs}B), and
+which we tentatively group using the unused label Xx.
 These Pango X lineages were designated around the same time.
-These results highlight that the ARG can help clarify the relationships between recombinants,
+These results highlight that the ARG can help
+clarify the relationships between recombinants,
 allowing more precise interpretation of evidence for recombination.
 
 Sc2ts identified 12 Pango X lineages in the ARG as non-recombinants
 (Table~\ref{tab:pango_x_lineages}), on the basis of the HMM and available data.
 For all these Pango X lineages, the number of recombination-informative sites
 fell below our threshold of detection (i.e. $k = 4$ in the HMM).
-The fact that most of these Pango X lineages (except XAJ and XAN) differ from a single parent node in the ARG
+The fact that most of these Pango X lineages (except XAJ and XAN)
+differ from a single parent node in the ARG
 by at most three mutations (Table~\ref{tab:pango_x_lineages}) strongly supports 
 their origins as non-recombinants.
 For example, the closely related XN and XAU can be explained by two mutations
@@ -811,59 +815,79 @@ over the course of the COVID-19 pandemic (Figure \ref{fig:recombinants_over_time
 We explored two hypotheses for the timing of recombination.
 First, we would expect recombination events to occur more often when case counts are high,
 which increases the chance of co-infection within an individual, allowing recombination.
-Second, we would expect recombination events to be detected more often when lineage diversity is high,
-as this increases the chance that two sufficiently distinct viruses co-infected an individual,
+Second, we would expect recombination events to be detected
+more often when lineage diversity is high,
+as this increases the chance that
+two sufficiently distinct viruses co-infected an individual,
 increasing our power to detect recombination.
 
 We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
 to relate the timing of recombination events with global case numbers.
 Case numbers ($n$) were binned by week from January, 2020 to March, 2023 and
-sub-divided by the proportion in each Scorpio label inferred within the ARG (shading in 
-Figure~\ref{fig:recombinants_over_time}).
-These lineages correspond loosely to a group of related lineages within a major VOC in the Viridian dataset.
+sub-divided by the proportion in each Scorpio label inferred within the ARG
+(shading in Figure~\ref{fig:recombinants_over_time}).
+These lineages correspond loosely to a group
+of related lineages within a major VOC in the Viridian dataset.
 Alongside the case numbers,
-the black curve shows the number of recombinants inferred within each week along the ARG,
+the black curve shows the number of recombinants
+inferred within each week along the ARG,
 focusing on the 354 events passing QC filters.
-Recombination events were inferred more often during the Delta and Omicron waves, when case counts were high.
+Recombination events were inferred more often
+during the Delta and Omicron waves, when case counts were high.
 Overall, the number of recombinant events rose with the global number of cases
 (Figure~\ref{fig:recombinants_over_time}B; 
 % JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
 linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
 Recombination events also rose with the diversity of lineages in each week
-(Figure \ref{fig:recombinants_over_time}C; linear regression: 
+(Figure~\ref{fig:recombinants_over_time}C; linear regression: 
 $0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
 ($H$, referred to as the ``expected heterozygosity'').
 
-We then asked which single measure best explains the number of recombination events inferred each week,
+We then asked which single measure best explains
+the number of recombination events inferred each week,
 considering $n$, $H$, $n H$, $n^2$, $n^2 H$.
-We included the squared number of cases each week thinking that it might better predict co-infections.
-The best single predictor of recombination events involved the product of cases and 
-expected heterozygosity ($n H$),
+We included the squared number of cases each week
+thinking that it might better predict co-infections.
+The best single predictor of recombination events involved
+the product of cases and expected heterozygosity ($n H$),
 with an adjusted $R^2$ of 23.7\%.
-This measure of case diversity ($n H$) explained 49\% more of the variation in recombination events per week
+This measure of case diversity ($n H$)
+explained 49\% more of the variation in recombination events per week
 than the next best predictor ($H$, adjusted $R^2$ of 15.9\%).
-While consistent with the hypotheses that recombination events occur more often when infection rates are common
-and are detected more often when viral diversity is high, we note several sources of uncertainty.
-Global case numbers were underreported, particularly during the Delta and Omicron waves \cite{Wang2025}.
+While consistent with the hypotheses
+that recombination events occur more often when infection rates are common
+and are detected more often when viral diversity is high,
+we note several sources of uncertainty.
+Global case numbers were underreported,
+particularly during the Delta and Omicron waves \cite{Wang2025}.
 Furthermore, there may be substantial uncertainty in the timing of a recombination event,
-particularly if these occur in chronically infected individuals (as reported by \cite{Burel2022})
+particularly if these occur in chronically infected individuals
+(as reported by \cite{Burel2022})
 with substantial delays before onward cases are detected.
-Finally, the filters that we applied removed all but the most strongly supported recombination events,
-although similar conclusions were obtained when all 855 recombinants were considered (STAR Methods).
+Finally, the filters that we applied removed all
+but the most strongly supported recombination events,
+although similar conclusions were obtained
+when all 855 recombinants were considered (STAR Methods).
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\linewidth]{recombinants_over_time.pdf}
-\caption{Recombination events across the pandemic. (A) Timing of the
-recombination events (black curve, right y-axis) relative to the global case
-numbers (\cite{Dong2020}; left y-axis). Cases are color-coded by their Scorpio
-labels, with the key showing those groupings with $\geq 1,000$ samples in the
-Viridian dataset. Recombinants more commonly occur (B) in weeks with high case
-numbers and (C) in weeks with extensive lineage variation, as estimated by high
-expected heterozygosity; solid lines show fits by linear regression, allowing
-for non-zero intercepts to account for unknown cases and heterozygosity not
-captured by the Scorpio labels.}
+\includegraphics[width=0.85\linewidth]{recombinants_over_time}
+\caption{
+Recombination events across the pandemic.
+(A) Timing of the recombination events (black curve, right y-axis)
+relative to the global case numbers (\cite{Dong2020}; left y-axis).
+Cases are color-coded by their Scorpio labels,
+with the key showing those groupings
+with $\geq 1,000$ samples in the Viridian dataset.
+Recombinants more commonly occur
+(B) in weeks with high case numbers and
+(C) in weeks with extensive lineage variation,
+as estimated by high expected heterozygosity;
+solid lines show fits by linear regression,
+allowing for non-zero intercepts to account for
+unknown cases and heterozygosity not captured by the Scorpio labels.
+}
 \label{fig:recombinants_over_time}
 \end{figure}
 
@@ -872,42 +896,51 @@ captured by the Scorpio labels.}
 
 The COVID-19 pandemic resulted in the collection of viral genome sequence data on an unprecedented scale,
 which overwhelmed existing computational approaches,
-motivating the rapid development of new methods\cite{Turakhia2021,DeMaio2023,Hinrichs2024}.
+motivating the rapid development of new methods \cite{Turakhia2021,DeMaio2023,Hinrichs2024}.
 Although the computational tools used in phylogenetics and population genetics have historically been largely distinct,
 the functionality required largely overlaps.
 Sc2ts was built by modifying components of the tskit ARG software ecosystem \cite{Kelleher2019,Ralph2020,Baumdicker2022,Wong2024}
 and the VCF Zarr data storage format \cite{Czech2025}
-to describe relationships among virus samples, building an ARG over time as data becomes available.
+to describe relationships among virus samples,
+building an ARG over time as data becomes available.
 By reusing high-quality and high-performance components of these toolkits,
 we could develop the sc2ts inference method itself and
-perform all the pandemic-scale analyses in this article with Python code alone and
-no compiled languages.
+perform all the pandemic-scale analyses in this article
+with Python code alone and no compiled languages.
 
 To illustrate the power of these libraries, we provide some examples
 in which we compare the Usher and sc2ts intersections in tskit format described earlier.
 First, we computed levels of concordance when imputing missing and ambiguous bases in the alignments.
-The total aligned dataset for 1,226,587 samples and 27,431 sites shared by the sc2ts and Usher tree sequences
-represents 31.34 GB of nucleotide calls.
+The total aligned dataset for 1,226,587 samples and 27,431 sites
+shared by the sc2ts and Usher tree sequences represents 31.34 GB of nucleotide calls.
 Of the 80,574,518 missing data calls (Ns) in the alignments,
 sc2ts and Usher disagreed in their imputed values for only 56,782 sites (0.07\%).
 Additionally, 413,303 calls made use of the IUPAC uncertainty codes.
-Of these sc2ts imputed only 77 (0.02\%) incorrectly (i.e., with a base that is not compatible with the ambiguity code).
+Of these sc2ts imputed only 77 (0.02\%) incorrectly
+(i.e., with a base that is not compatible with the ambiguity code).
 UShER imputed only 4 calls from this set incorrectly,
 reflecting its explicit incorporation of IUPAC uncertainty codes in parsimony calculations.
-This computation, performed by co-iterating over the sites in the alignments and the sc2ts and Usher trees,
-required 30 lines of Python code and took 2m59s on an intel i7-9700 CPU, with a peak memory usage of about 4.5 GB
-(see \cite{Czech2025} for further benchmarks for processing the Viridian data in VCF Zarr format).
-Performing this analysis using matUtils would require exporting the full dataset to VCF,
-and converting the VCF to FASTA, and then comparing the alignments one-by-one to the source FASTA alignments.
+This computation,
+performed by co-iterating over the sites in the alignments and the sc2ts and Usher trees,
+required 30 lines of Python code and took 2m 59s on an intel i7-9700 CPU,
+with a peak memory usage of about 4.5 GB
+(see \cite{Czech2025} for further benchmarks for
+processing the Viridian data in VCF Zarr format).
+Performing this analysis using matUtils would require
+exporting the full dataset to VCF, and
+converting the VCF to FASTA, and
+then comparing the alignments one-by-one to the source FASTA alignments.
 In contrast with matUtils and most phylogenetic software,
 which provide a command line interface and suite of predefined operations that typically output text files,
-tskit is a Python API (with C and Rust interfaces also supported) which has many advantages \cite{Baumdicker2022}.
+tskit is a Python API (with C and Rust interfaces also supported)
+which has many advantages \cite{Baumdicker2022}.
 As an illustration of the open-ended and efficient nature of the analyses this enables,
 we computed the number of polytomies (nodes that have $> 2$ children)
 and the maximum number of children per node in the Usher and sc2ts outputs.
 In the Usher tree it took 116 ms and 4 lines of code to count polytomies (171,148)
 and compute the maximum number of children (5918).
-In the sc2ts ARG, it took 385 ms and 6 lines of code to find the maximum number of polytomies (137,001) and
+In the sc2ts ARG, it took 385 ms and 6 lines of code
+to find the maximum number of polytomies (137,001) and
 maximum number of children (7708) across all 348 local trees.
 
 
@@ -983,19 +1016,26 @@ Third, we propose the concept of HMM cost to identify poorly explained samples
 which are either too divergent or have a high number of mutations inconsistent with their collection dates.
 Here we use HMM cost to reject time traveling samples,
 which no existing phylogenetic method detects and handles during inference
-(e.g., in the Viridian UShER phylogeny, parent and child nodes do not necessarily follow time order \cite{Hunt2024}),
-resulting in a cleaner dataset without samples with wrong collection dates that may affect downstream analyses.
-Future work may be estimating dates for the suspected time traveling samples using the ARG provided here
-and the sc2ts sample matching engine.
+(e.g., in the Viridian UShER phylogeny, parent and child nodes
+do not necessarily follow time order \cite{Hunt2024}),
+resulting in a cleaner dataset without samples
+with wrong collection dates that may affect downstream analyses.
+Future work may be estimating dates
+for the suspected time traveling samples using the ARG provided here and
+the sc2ts sample matching engine.
 
 Recombination is an important evolutionary force in viruses \cite{Perez-Losada2015},
-but has been understudied in part due to the lack of suitable data models, methods, and tools \cite{Neches2020}.
-While the methods and tools developed here are tailored for SARS-CoV-2, they can be extended and adapted for other viruses.
-A major advantage of the sc2ts methods and tools is that they are built on top of the mature software libraries of tskit and VCF-Zarr,
+but has been understudied in part
+due to the lack of suitable data models, methods, and tools \cite{Neches2020}.
+While the methods and tools developed here are tailored for SARS-CoV-2,
+they can be extended and adapted for other viruses.
+A major advantage of the sc2ts methods and tools is that
+they are built on top of the mature software libraries of tskit and VCF-Zarr,
 which enable pandemic-scale analyses that can be performed on typical laptops.
 Both tskit and VCF-Zarr are developed in Python and leverage the popular PyData ecosystem,
 making them highly adaptable for a broad range of applications.
-Together with the pandemic-scale ARG, we hope that sc2ts will be highly accessible to many researchers,
+Together with the pandemic-scale ARG,
+we hope that sc2ts will be highly accessible to many researchers,
 enabling and accelerating studies of SARS-CoV-2 for years to come.
 
 
@@ -1114,7 +1154,8 @@ TODO add these to the list above with actual URLs
 %%%  from non-authors and list funding sources,
 %%%  including grant numbers.
 
-This work was funded by [FUNDER] via grant [GRANT NO.]. The authors thank all members of the lab for their support.
+This work was funded by [FUNDER] via grant [GRANT NO.].
+The authors thank all members of the lab for their support.
 
 \section*{AUTHOR CONTRIBUTIONS}
 
@@ -1718,7 +1759,8 @@ creates additional nodes which are available for recombinant rematching.
 
 % Data from
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb
-Using recombinant-rematching, 58 recombinants were identified as being more parsimoniously 
+Using recombinant-rematching,
+58 recombinants were identified as being more parsimoniously 
 explained by matching to existing nodes in the ARG (inserted by 
 subsequent parsimony improving heuristics) and 16 by long branch 
 splitting. Of these 16 recombinants, two are noteworthy as 
@@ -1758,21 +1800,18 @@ phylogenetic signal.
 We therefore performed post-hoc parsinony mapping at 163 sites to include 
 the effects of deletions and to ensure that all Pango-informative
 sites are included in the ARG.
-Using deletions with a 
-a minimum frequency of 1\% 
+Using deletions with a minimum frequency of 1\%
 (count of sequences divided by 9,149,680 sequences analyzed)
 from Table S1 of Li et al.\cite{Li2023indels},
 we chose 75 sites to remap.
 In addition, we remapped data at 88 sites that were excluded
 from primary inference and are defined as Pango lineage 
-defining sites by
- Freyja\cite{Karthikeyan2022}
+defining sites by Freyja\cite{Karthikeyan2022}
 (\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
 Alignment data for these 163 sites was then mapped to the 
-ARG using the Fitch-Hartigan 
-algorithm\cite{Fitch1971toward,Hartigan1973minimum} 
+ARG using the Fitch-Hartigan algorithm\cite{Fitch1971toward,Hartigan1973minimum}
 implemented in tskit, including the gap character as a state 
-along with the 4 nucleotides.
+along with the four nucleotides.
 Following this, we iteratively applied the node parsimony 
 heuristics in sc2ts until there were no further reductions in 
 the numbers of mutations.
@@ -1808,7 +1847,6 @@ Such genomic regions can be mistaken for evidence of recombination,
 because the LS HMM counts each base separately.
 Fortunately, artefactual recombinants caused by this effect can be identified
 because they affect multiple adjacent or near-adjacent bases simultaneously.
-
 
 We devised a quality control (QC) measure based on this observation, and
 applied it to each putative recombination event in the ARG.
@@ -1847,7 +1885,7 @@ We developed a SnpIt-like~\cite{OToole2024} visualisation
 that shows the informative genomic positions between 
 a recombinant and its parent sequences, and highlights 
 potentially problematic loci
-(See Fig~\ref{fig:copying_pattern_examples} caption for details).
+(See Figure~\ref{fig:copying_pattern_examples} caption for details).
 Inspection of these copying patterns for all the recombination events
 identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
@@ -1859,14 +1897,15 @@ Q2 shows an artefactual recombination event
 caused by a 6-base Delta lineage-defining deletion.
 There are 71 (14\%) QC-failing recombination events involving this deletion, and
 many cases are affected by a known amplicon dropout
-caused by this particular deletion\cite{Sanderson2021}.
+caused by this particular deletion \cite{Sanderson2021}.
 Q3 shows an artefactual recombination event caused by
 a combination of this Delta deletion and a known MNS (see below).
 Finally, Q4 shows an artifactual recombination event
 associated with the A507T-T508C-G509A MNS,
 which has been identified as a sequencing error
 due to incomplete read trimming \cite{DeMaio2024}.
-There are 9 recombination events involving this particular MNS, of which 6 failed QC.
+There are 9 recombination events involving this particular MNS,
+of which 6 failed QC.
 
 
 \subsubsection*{Comparison with UShER}
@@ -1897,26 +1936,24 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/validate\_usher\_tree.ipynb}{validate\_usher\_tree.ipynb}
 for details.
 
-We then computed intersection ARGs for sc2ts
-(sc2ts\_viridian\_inter\_v1.2.trees.tsz) and UShER 
-(usher\_viridian\_inter\_v1.2.trees.tsz) 
-by 
-simplifying\cite{Kelleher2018efficient,Wong2024} 
+We then computed intersection ARGs for
+sc2ts (sc2ts\_viridian\_inter\_v1.2.trees.tsz) and
+UShER (usher\_viridian\_inter\_v1.2.trees.tsz)
+by simplifying \cite{Kelleher2018efficient,Wong2024}
 both to the 2,475,418 samples and 27,507 sites that are shared
 (the UShER tree has mutations at 27,508 sites and sc2ts ARG has 29,893).
-As there was no documented means of deriving node dates from 
-the UShER tree, and we wish to visually compare 
-the phylogenetic backbones, we
-also dated the intersection tree by fixing
-the sample dates using the ``Date\_tree'' metadata field, 
+As there was no documented means of deriving node dates from
+the UShER tree, and we wish to visually compare
+the phylogenetic backbones,
+we also dated the intersection tree by fixing
+the sample dates using the ``Date\_tree'' metadata field,
 and using tsdate (version 0.2.3) to date internal nodes.
 We did not date the main UShER tree in this way because
 of the time-travelling samples present.
 
-All conversions were performed as part of the reproducible 
-pipeline described in the \nameref{sec:arg_postprocessing} section. 
-The full UShER
-tree and the intersection files are available for download 
+All conversions were performed as part of the reproducible
+pipeline described in the \nameref{sec:arg_postprocessing} section.
+The full UShER tree and the intersection files are available for download
 in tszip format (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
@@ -2116,7 +2153,8 @@ because there may be unreported cases even without any reported cases.
 The slopes were highly significant, and
 the p-values were confirmed by randomly permuting the predictor variable 10,000 times.
 ANOVAs were conducted to determine which single predictor ($n$, $H$, $n \; H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
-These statistical tests and graphics were conducted in \textit{Mathematica} 14.2 (Wolfram 2024) and available at GITHUB LINK.
+These statistical tests and graphics were conducted
+in \textit{Mathematica} 14.2 (Wolfram 2024) and available at GITHUB LINK.
 
 In addition to the analysis of the 354 recombination events 
 that pass QC,
@@ -2195,10 +2233,12 @@ for example, two known recurrent deletions in S1-NTD (REF).
 Li et al.\cite{Li2023indels} performed a large-scale analysis of indels
 using a global GISAID dataset (sampled up to August, 2022).
 We examined the major indels reported in Table S1 of Li et al.\cite{Li2023indels}
-which have a minimum frequency of 1\% (count of sequences divided by 9,149,680 sequences analyzed).
+which have a minimum frequency of 1\%
+(count of sequences divided by 9,149,680 sequences analyzed).
 All of these indels are deletions and have high frequencies in the ARG
 (sequence count divided by the total number of samples),
-except a 9-base deletion at 11283, a 9-based deletion at 21987, and a 9-base deletion at 686.
+except a 9-base deletion at 11283, a 9-based deletion at 21987, and
+a 9-base deletion at 686.
 
 
 \begin{table}
@@ -2372,124 +2412,290 @@ for details.
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
 
-\subsubsection*{XS}
-https://github.com/jeromekelleher/sc2ts-paper/issues/287
-In the ARG, the XS samples appear to have originated from
-two sequential recombination events.
-However, the second event is likely an artifact,
-as the XS sample associated with this event failed
-the minimum net number of supporting loci.
-In addition, this sample was sequenced using the AmpliSeq V1 kit,
-which was also used to sequence eight other samples descending from the same event.
-We excluded this likely artifactual event from further analysis and
-consider XS to have emerged from a single recombinant origin.
+\subsubsection{XA}
+(also illustrated in Figure 2a / 3d)
+XA traces to a well supported recombination node, with no reversions.
+Note that the “causal” sample ERR5308556
+(which triggers the initial recombination event)
+is identical to the recombination node, and
+therefore lacks C8090T,
+which is one of the XA consensus mutations
+(identified as those shared by over 90\% of XA samples).
+As mentioned elsewhere,
+the sc2ts detection results in terms of
+the Pango lineages of the parents and the breakpoint intervals
+agree with the results reported by Jackson et al. (\ref{tab:jackson}).
+Two of the Jackson et al. XA samples
+are present in the ARG (ERR5308556 and ERR5414941);
+these samples are specifically marked in Figure~\ref{fig:subgraphs},
+which is a summary of this subgraph.
 
-\subsubsection*{XM}
+
+\subsubsection{XB}
+https://github.com/jeromekelleher/sc2ts-paper/issues/332
+
+The displayed subgraph shows a small selection of the 192 XB samples.
+XB was originally defined as a recombinant between
+the closely related lineages B.1.634 (left parent) and B.1.631 (right parent)
+from North and Central America \cite{Gutierrez2022}.
+However, these parent lineages were not added to the ARG due to a high HMM cost.
+Together with other lineages such as B.1.627
+(sister to B.1.631 \cite{Gutierrez2022}),
+they are likely to attach somewhere along the long branch
+in the subgraph visualization (with >30 mutations),
+which also contains the key "R2" deletion
+associated with XB / B.1.634 \cite{Gutierrez2022}.
+
+We hypothesise that there are a set of samples
+from a number of Pango lineages (including B.1.627, B.1.631, B.1.634)
+which, should they be added to the ARG, would break up the long branch,
+with XB being a recombination between two of them.
+In the absence of these, sc2ts cannot detect XB as a recombinant.
+Also, note that the XB consensus mutations all occur on or above the long branch.
+We suspect that the child node of the long branch
+represents the (potentially recombinant) origin of XB, and
+the B.1 samples at the bottom left of the subgraph
+may be misclassified by pangolin.
+
+Further work is required to determine
+why these additional samples were not gradually added
+to the ARG by the daily sample matching process or
+retrospective sample grouping.
+
+
+\subsubsection{XC}
+The five XC samples descend from a well supported recombination node.
+The two parents that are both identical to actual samples
+(ERR4908740 on the left and DRR321274 on the right).
+There is one reversion (G21987A) on the left side of the breakpoint,
+but the site 21987 was masked during ARG inference
+because it was identified to be experiencing
+frequent mutation in a preliminary ARG.
+
+
+\subsubsection{XE/XH}
+https://github.com/jeromekelleher/sc2ts-paper/issues/337
+
+The XE samples descend from a well supported recombination node,
+with one mutation and one reversion (T22792C).
+This reversion was mapped onto the ARG as a part of postprocessing, and
+could be placed more parsimoniously by a single C22792T that groups together
+XH and the lineage leading to the further BA.2 recombination nodes
+displayed on the left.
+Nevertheless, the exact arrangement of the mutations at position 22792
+should not affect the proposed breakpoint,
+which is very distant, at position 11283.
+
+*** Should we describe the sequential recombination nodes to the left,
+here: note that the lower one is the RE node for XAF. ***
+
+Note that there might be some misalignment immediately
+to the right side of the breakpoint
+due to a repeated homopolymeric sequence involving 5-base deletions.
+Although this problem might obscure the breakpoint position,
+there nevertheless is ample evidence for the right parent.
+Furthermore, the only two XH samples in the ARG descend
+from the same recombination node,
+albeit with a number of mutations.
+
+
+\subsubsection{XF}
+XF is a well-supported recombinant between Delta and Omicron BA.1,
+with the breakpoint on the far left of the genome.
+All XF samples are the unique descendants of
+a well supported recombination node,
+with both parent nodes (ERR6193241: AY.4 and ERR8042040: BA.1) and
+the single child node (ERR8076129) being samples.
+
+
+\subsubsection{XG}
+The three XG samples descend from a reconstructed internal node,
+which in turn descends from a well supported recombination node.
+The left parent is a sample (SRR20179863), and
+the right parent is a reconstructed internal node
+assigned to Omicron BA.2,
+which is supported by a sample (ERR9124067) that is identical to it.
+
+
+\subsubsection{XJ}
+All the XJ samples descend from a well supported recombination node.
+There are 14 samples (including e.g. ERR8683190)
+which sc2ts identified as descendants of the same recombination node
+but are labeled BA.2 by pangolin (displayed on the left), and
+which do not possess the XJ consensus mutations C22792T and C27945T.
+These BA.2 samples could be worthy of further investigation.
+
+
+\subsubsection{XL}
+All the XL samples descend from a well supported recombination node,
+with three child samples which are identical to it.
+The left parent is a sample (ERR7989424), and
+the right parent is a reconstructed internal node
+assigned to BA.2.5 with a large number of descendant samples.
+
+
+\subsubsection{XM/XAL}
 https://github.com/jeromekelleher/sc2ts-paper/issues/284
-Possibly related to deletions.
 
-\subsection*{Multiple breakpoints}
-Seven of the Pango X lineages present in the Viridian v04 dataset have more than one breakpoint,
-with the supporting evidence documented in the associated Pango designation issues.
-Five of these seven X lineages were detected as recombinants by sc2ts.
-Three of them (XAY, XBC, XBT) had more than one breakpoint,
-but were not added to the ARG due to high HMM cost and
-a lack of sample support to be incorporated as retrospective sample groups.
-However, the other two (XAC and XAK) had only one breakpoint.
+XM is a recombinant of BA.1 (left parent) and BA.2 (right parent).
+Sc2ts identifies multiple recombinant origins of XM.
+One of these origins leads to a dominant clade
+(node 1003220 at position 21,595),
+which also contains the only three XAL samples.
 
-\subsubsection*{XAY}
-https://github.com/jeromekelleher/sc2ts-paper/issues/490
+Independent evidence for multiple XM origins
+comes from consideration of a 9-base deletion
+in the Spike gene at position 21633,
+which is characteristic of BA.2 but not BA.1
+(https://github.com/cov-lineages/pango-designation/issues/361).
+Most of the XM-labeled samples in ARG have this deletion,
+but three (SRR19024311, ERR9447529, and SRR18775874) do not,
+suggesting that XM samples trace to at least two recombination events,
+one to the right of the deletion
+(which leads to the majority of the XM samples), and one to the right.
+In the subgraph, it can be seen that one of the samples, SRR18775874,
+has been (presumably wrongly) placed
+within the main XM deletion-containing clade.
+As sc2ts does not use deletions for inference,
+deletion remapping (section XXXX) has reverted the deletion in this case,
+creating many insertions on the branch above the sample (magenta).
+A better use of deletions in sc2ts would likely result
+in placing this sample within one of the two XM clades
+which do not have the deletion.
 
-\subsubsection*{XBC}
-https://github.com/jeromekelleher/sc2ts-paper/issues/486
-Sc2ts detected XBC as a three-breakpoint recombinant,
-correctly identifying the parental Pango lineages.
-The inferred breakpoint intervals mostly overlap with
-those identified in its designation issue.
-XBC was not added to the ARG due to high HMM costs and
-inadequate sample support
-(within a seven-day retrospective time window).
 
-\subsubsection*{XBT}
-https://github.com/jeromekelleher/sc2ts-paper/issues/487
-Sc2ts detected XBT as a two-breakpoint recombinant,
-correctly identifying the parental Pango lineages.
-The inferred breakpoint intervals are identical to those documented in its designation issue.
-XBT was not added to the ARG due to high HMM cost and low sample support
-(only one QC-passing sample in the Viridian v04 dataset).
-
-\subsubsection*{XAC}
-https://github.com/jeromekelleher/sc2ts-paper/issues/357
-
-Evidence of the second breakpoint reported in its designation issue relies on
-the presence of a large deletion inherited from BA.2*,
-which is currently treated as missing data by sc2ts.
-The XAC samples share a recombination node with
-the samples of four other Pango X lineages,
-which do not have this deletion (Figure 2C).
-
-\subsubsection*{XAK}
-https://github.com/jeromekelleher/sc2ts-paper/issues/484
-Our results agree with its designation issue in terms of the parental Pango lineages and breakpoint intervals.
-XAK was not added to the ARG due to HMM costs (9 and 10) and insufficient sample support (only two samples).
-Interestingly, our results suggest that XAK might be a product of two sequential recombination events.
-
-\subsubsection*{Non-recombinants}
-\subsubsection*{XN and XAU}
-
+\subsubsection{XN/XAU}
+(also illustrated in Figure 2c)
 https://github.com/jeromekelleher/sc2ts-paper/issues/348
 https://github.com/jeromekelleher/sc2ts-paper/issues/358
 
-Both of these putative recombinants have been defined
-on the basis of an RHS from BA.2 and a LHS from BA.1.
-In the case of XN, the supposed BA.1 mutations are [C241T, A2832G, C3037T].
-In the case of XAU, this set also includes C2470T, so [C241T, C2470T, A2832G, C3037T].
-However, both BA.1 and BA.2 are now defined as also having C241T and C3037T.
-In addition, a very large number of BA.2 samples also have A2832G, and
-three BA.2-designated samples also have C2470T.
-This means that there is no longer any evidence for a BA.1 parent for XN, and
-only one uncertain mutation that suggests a BA.1 parent for XAU.
+In the sc2ts ARG, the initial XN sample (ERR8986821)
+is well explained as a non-recombinant,
+copying from an inferred internal node
+assigned to BA.2 with only one mutation.
+This internal node is directly supported by the sample ERR9502469.
+All the other XN samples descend from ERR8986821.
+A small clade containing XAU is the sister to XN, and
+there are a series of samples (ERR9453882, ERR9502469, and ERR9823912)
+which support the gradual emergence of both groups
+from a BA.2 ancestral lineage via accumulation of single mutations.
 
-\subsubsection*{XAS}
-https://github.com/jeromekelleher/sc2ts-paper/issues/340
-This was proposed as a recombination between BA.5 (LHS) and BA.2 (RHS).
-However, we find that this is only 2 mutations different from
-e.g. ERR9929846 which is a BA.4 sample.
-In fact, XAS only differs from the BA.4 root by a single mutation, C27945T,
-which was identified in the original designation issue
-as an important ORF truncation mutation also present in a few BA.2.65 samples.
-It is possible that C27945T was acquired by recombination,
-this is clearly below our threshold for considering something to be a recombinant.
+We believe that the explanation of XN and XAU
+in the sc2ts ARG is correct, and
+the evidence supporting the original designation of
+XN and XAU as recombinants
+comes from inaccurate or problematic data sources.
+In the case of XN, support for a recombinant BA.1+BA.2 origin
+is from three mutations that are claimed to be BA-1-specific:
+C241T, A2832G, and C3037T
+(https://github.com/cov-lineages/pango-designation/issues/480).
+However, the BA.1/BA.2 split
+(https://github.com/cov-lineages/pango-designation/issues/361)
+does not list C241T and C3037T as BA.1-specific,
+meaning that these two mutations are not supportive of recombination.
+Moreover, although the remaining mutation
+claimed to support a recombinant origin, A2832G,
+is typical of BA.1 and not BA.2,
+it is seen in several BA.2 samples (e.g. ERR9453882),
+supporting the idea that it has independently arisen within BA.2.
+Hence, none of the sites used to designate XN as a recombinant reliably do so.
 
-\subsubsection*{XB}
-https://github.com/jeromekelleher/sc2ts-paper/issues/332
-XB was proposed to have originated from recombination between B.1.634 (left parent) and B.1.631 (right parent).
-None of the samples in Viridian v04 belonging to these Pango lineages were integrated into the ARG due to high HMM costs.
+In the case of XAU, a recombinant origin was proposed
+on the basis of the same three sites, plus C2470T
+(https://github.com/cov-lineages/pango-designation/issues/894).
+However, C2470T is not BA.1-specific
+(https://github.com/cov-lineages/pango-designation/issues/361).
+Moreover, some BA.2-designated samples such as ERR9823912 also have C2470T,
+so we do not believe this to be a recombinant-supporting mutation either.
 
-\subsubsection*{XP}
+This case illustrates the value of automated ARG reconstruction
+for correcting the inevitable errors that arise
+when designating recombinants by hand and
+using different (and inconsistent) data sources of
+Pango lineage-associated mutational constellations.
+
+
+\subsubsection{XP}
 https://github.com/jeromekelleher/sc2ts-paper/issues/345
 
-\subsubsection*{XAJ}
-https://github.com/jeromekelleher/sc2ts-paper/issues/352
+This is a case where the Pango X lineage is designated
+on the basis of two loci on the far right of the genome:
+a single nucleotide mutation (A29510C) and
+a rare, large deletion at position 29734 in the S2M step loop
+(https://github.com/cov-lineages/pango-designation/issues/481),
+which is not common enough to map in sc2ts during postprocessing
+and hence not shown here.
+Sc2ts requires at least four loci on either side
+to infer a QC-passing recombinant (section XXXX).
+Therefore, unless this deletion were given more weight than a single locus,
+sc2ts would not identify XP as a recombinant,
+even if deletions were used during ARG inference.
+If this deletion were recurrent, the evidence from sc2ts suggests
+that XP might not be a recombinant,
+because it is only one mutation different from the sample ERR8628084.
 
-\subsubsection*{XAZ}
-https://github.com/jeromekelleher/sc2ts-paper/issues/356
-Proposed as a recombinant of BA.2.5 on the left and BA.5 on the right, with 3 supporting sites (C2232T, C3317T, T3358C).
-In sc2ts this is very close to being a recombinant of BA.2.5 (ERR9615610) on the left,
-as not only are the 3 mutations present in this sample,
-but there is another site (C1912T apparently missed in the designation) which supports recombination.
-XAZ has C44T which is lacking in all BA.2.5 samples,
-giving only three net supporting loci for a putative recombinant.
-However, position 44 is often clipped, so this is not strong evidence against a recombinant, and
-this is a very finely balanced case.
 
-\subsubsection*{XAN and XAV}
-https://github.com/jeromekelleher/sc2ts-paper/issues/353
-Below threshold.
+\subsubsection{XQ/XR/XU/XAA/XAG/XAM}
+https://github.com/jeromekelleher/sc2ts-paper/issues/338
 
-\subsubsection*{XBE}
-This was proposed as a recombinant between BA.5,5 and BE.4.
-We find two net supporting loci for a recombination breakpoint to be around 22599.
+In the ARG, XR, XU, XAA, XAG, and XAM
+are nested under the XQ recombinant lineage.
+However, upon closer inspection,
+the right hand branch above the recombination node appears problematic,
+as it displays three reversion mutations,
+which revert mutations at positions 22792, 24023, and 25624
+in the ancestral lineage just above.
+These sites were excluded during ARG inference, and
+remapped onto the ARG by parsimony during ARG postprocessing.
+We posit that if these three sites were used during ARG inference,
+the right parent of the recombination node
+would be chosen to be the ancestral BA.2 sample
+on the right-hand path with 18 child nodes.
+A more parsimonious reconstruction
+would then have the XQ clade as a sibling to
+a group of (monophyletic) XAA, XAM, XAG, and XR lineages.
+This would remove between 4 and 5 reversion mutations.
+
+
+\subsubsection{XS}
+https://github.com/jeromekelleher/sc2ts-paper/issues/287
+
+In the ARG, the XS samples appear to have originated from
+two sequential recombination events (separated by a single branch).
+However, the later event is likely an artifact,
+because the XS sample (SRR18343220) associated with
+this event failed detection-level QC
+(i.e., the minimum net number of supporting loci;
+see the lower copying pattern).
+In addition, this sample was sequenced using the Ion AmpliSeq V1 kit,
+which was also used to sequence eight other samples
+descending from the same event
+(clustered due to a shared sequencing error due to AmpliSeq).
+These eight samples would likely attach to the nodes
+descending from the first recombination event.
+We excluded this likely artifactual event from further analysis and
+consider XS to have emerged from a single recombinant origin.
+
+
+\subsubsection{XW}
+All the XW samples descend from a well supported recombination node.
+Its left parent is a BA.1.1.15-labelled sample (ERR8069658), and
+its right parent is a BA.2-labelled sample (ERR9086669).
+
+
+\subsubsection{XY}
+All the XY samples descend from a well supported recombination node,
+through a shared reconstructed internal node.
+Its left parent is a reconstructed internal node assigned to BA.1.1,
+which is supported by a sample (ERR8627048) identical to it.
+Its right parent is a BA.2-labeled sample (ERR9399983).
+There are a pair of (orange) reversion mutations
+within the XY clade at position 23948:
+these were not used for inference
+but remapped using parsimony during postprocessing, and
+indicate that the topology within the XY clade
+could potentially be improved
+by alternative phylogenetic reconstruction methods.
 
 
 \subsection{Sc2ts recombination detection results for additional Pango X lineages}
