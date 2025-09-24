@@ -75,7 +75,7 @@ def standard_recombinant_labels(ts, pango_x_events_file):
     # Tweak the "XBB.1" RE node label, which should have a bespoke label because it's not
     # reflective of the majority of XBB.1 samples
     XBB_1 = [k for k, v in labels.items() if v == "XBB.1"][0]
-    labels[XBB_1] = "XBB.x1"
+    labels[XBB_1] = "XBB.x"
     Xx = [k for k, v in labels.items() if "XZ" in v][0]
     labels[Xx] = "Xx"
     
@@ -287,6 +287,7 @@ def mutation_p_values(ts, min_time=1, progress=True):
 
 
 class D3ARG_viz:
+    highlight_colour = "plum"
     colours = ['#332288', '#88CCEE', '#44AA99', '#117733', '#999933', '#DDCC77']  # from https://personal.sron.nl/~pault/
     def __init__(self, ts, df, lineage_consensus_muts=None, pangolin_field="pango", progress=True):
         self.ts = ts
@@ -421,6 +422,7 @@ class D3ARG_viz:
             highlight_nodes=highlight_nodes,
             parent_levels=parent_levels,
             child_levels=child_levels,
+            save_filename="-".join(pangos),
             **kwargs,
         )
 
@@ -437,10 +439,11 @@ class D3ARG_viz:
         label_mutations=False,
         highlight_mutations=None,
         highlight_nodes=True,  # Can also be a mapping of colour to node IDs
-        highlight_colour="plum",
+        highlight_colour=None,
         positions_file=None,
         oldest_y_label=None,
         node_1_date=datetime(2019, 12, 26),  # date of Wuhan, node #1
+        save_filename=None,
         **kwargs,
     ):
         """
@@ -451,6 +454,8 @@ class D3ARG_viz:
         or a PosAlt named tuple with positions and derived states (e.g. from
         `MutationContainer.get_mutations(Pango)` )
         """
+        if highlight_colour is None:
+            highlight_colour = self.highlight_colour
         if positions_file is not None:
             try:
                 self.d3arg.set_node_x_positions(
@@ -573,16 +578,27 @@ class D3ARG_viz:
                     oldest_y_label, zero_date - timedelta(days=times.min())
                 )
             }
-
-        return self.d3arg.draw_nodes(
-            nodes,
-            depth=(parent_levels, child_levels),
-            show_mutations=True,
-            y_axis_scale=y_axis_scale,
-            y_axis_labels=y_axis_labels,
-            label_mutations=label_mutations,
-            **kwargs,
-        )
+        try:
+            return self.d3arg.draw_nodes(
+                nodes,
+                depth=(parent_levels, child_levels),
+                show_mutations=True,
+                y_axis_scale=y_axis_scale,
+                y_axis_labels=y_axis_labels,
+                label_mutations=label_mutations,
+                save_filename=save_filename,
+                **kwargs,
+            )
+        except TypeError:
+            return self.d3arg.draw_nodes(
+                nodes,
+                depth=(parent_levels, child_levels),
+                show_mutations=True,
+                y_axis_scale=y_axis_scale,
+                y_axis_labels=y_axis_labels,
+                label_mutations=label_mutations,
+                **kwargs,
+            )
 
 
 def make_joint_ts(ts1, ts2, metadata_name1, metadata_name2):

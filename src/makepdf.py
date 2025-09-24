@@ -67,6 +67,8 @@ def convert_file(infile, outdir):
                 "webpdf",
                 "--no-prompt",
                 "--TagRemovePreprocessor.remove_cell_tags='{\"remove_cell\"}'",
+                "--PDFExporter.margin_left=0.2cm",
+                "--PDFExporter.margin_right=0.2cm",
                 "--no-input",
                 output.name,
                 "--output",
