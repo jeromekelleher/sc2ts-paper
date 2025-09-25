@@ -402,20 +402,27 @@ See STAR Methods for details on all aspects of the method.
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
-Using sc2ts, we built an ARG of $\sim$2.48 million samples spanning the COVID-19 pandemic.
-Inference took 21 days on a server equipped with dual EPYC (details) and 500 GB of RAM 
-(~5 CPU years; Figure~\ref{fig:inference_resources}).
-The ARG contains 2,689,054 nodes representing the genealogical relationships
-among 2,482,157 sampled genomes in the Viridian v04 dataset,
-which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
-Of the nodes, 855 represent recombination events,
-of which 354 pass quality control (QC) filters
-(see STAR Methods, Figure~\ref{fig:recombinant_qc}),
-reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary history.
+Using sc2ts, we built an ARG from 2,482,157 samples from the Viridian v04
+dataset\cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
+Inference took 21 days on a XX core server with 500 GB of RAM 
+($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
+After postprocessing, the ARG 
+contains 2,689,054 nodes with estimated dates, 
+2,748,838 edges, and 2,285,344 mutations at 29,893 sites. 
+Including sample IDs and the Pango and Scorpio designations computed by
+Pangolin~\cite{OToole2021assignment} as metadata for each node,
+the ARG is stored in a 32MiB tszip format file.
+Of the nodes, 855 represent recombination events, 
+resulting in 316 distinct trees along the genome (some
+events occured at the same breakpoints).
+% It's confusing to talk about recombinant QC here as we're talking 
+% about the full ARG for the rest of the section.
 
-The ARG represents the full evolutionary history of SARS-CoV-2 and 
-is in close agreement with a state-of-the-art UShER phylogeny built using the Viridian dataset \cite{Hunt2024}.
-First, we validated the broad structure of the ARG against the UShER phylogeny \cite{Hunt2024}
+The ARG is a comprehesive record of the evolutionary history of SARS-CoV-2 and 
+is in close agreement with a state-of-the-art UShER phylogeny also built 
+from the Viridian dataset \cite{Hunt2024}.
+First, we validated the broad structure of the ARG against 
+the UShER phylogeny \cite{Hunt2024}
 by pruning both down to representative samples for 1097 deeply-sampled 
 lineages (STAR Methods).
 Tanglegrams show that the ARG closely matches the phylogenetic
@@ -434,9 +441,11 @@ and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG against 
 the mutational spectra 
-from the Viridian UShER phylogeny \cite{Hunt2024} and a previous study \cite{Bloom2023} (STAR Methods),
-finding a close match to them (Figure~\ref{fig:mutational_spectra}).
+from the Viridian UShER phylogeny and a previous study \cite{Bloom2023} (STAR Methods),
+finding close agreement (Figure~\ref{fig:mutational_spectra}).
 
+% FIXME this is too detailed, and too methodsy. Abstract out and summarise
+% results
 Input genome alignments are masked in sc2ts
 so that deletions and ambiguous bases are treated as missing data by the HMM,
 and once the samples are incorporated into the ARG,
