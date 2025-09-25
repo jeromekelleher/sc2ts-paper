@@ -65,7 +65,7 @@
 
 %%%  Insert title below; leave date empty.
 
-\title{A comprehensive Ancestral Recombination Graph for SARS-CoV-2 inferred in real time}
+\title{A pandemic-scale Ancestral Recombination Graph for SARS-CoV-2}
 \date{}
 
 %%%  Author first and last names should be spelled
@@ -146,7 +146,7 @@ Information and Discovery, University of Oxford, United Kingdom}
 
 \section*{SUMMARY}
 
-% NOTE: currently 160 words
+% NOTE: currently 163 words
 
 Millions of SARS-CoV-2 genome sequences were collected in
 response to the COVID-19 pandemic, forming a dataset of unprecedented
@@ -160,15 +160,15 @@ the genealogy is a tree.
 Recombinant lineages have risen to global prevalence in SARS-CoV-2,
 and therefore such single-tree representations are necessarily
 incomplete and potentially misleading.
-We present sc2ts, a method to infer reticulate genealogies for SARS-CoV-2
-that automatically detects and incorporates recombination 
-in real time.  
-We use sc2ts to infer a genealogy of 2.48 million genomes,
+We present sc2ts, a method to infer reticulate genealogies 
+as an Ancestral Recombination Graph (ARG) for SARS-CoV-2
+that automatically detects and incorporates recombination.  
+We use sc2ts to infer an ARG of 2.48 million genomes,
 and show that it captures a broad range of 
 known evolutionary features and provides novel 
 insights into the relationships between previously identified
 recombinant lineages.
-Together, the inference method, inferred genealogy and 
+Together, the inference method, infererred ARG and 
 suite of open-source analysis tools, 
 represent a powerful resource for future research.
 
@@ -225,13 +225,13 @@ inference is also extremely limited [TODO add some concrete
 details].
 
 The data collected during the COVID-19 pandemic as part of global
-surveillance presents fundamental challenges existing appraoches
+surveillance presents fundamental challenges to existing approaches
 in two ways. Firstly, the sheer scale of data collected 
 overwhelmed even approximate distance-matrix based methods.
 At the peak in [month] 202X, there were over X thousand samples 
 per day deposited in GISAID\cite{Shu2017}, with a total of 
 over 17 million as of Sep 2025. % TODO check numbers
-Regularly reinferring trees de-novo from rapidly 
+Regularly reinferring trees de-novo from such rapidly 
 growing datasets is untenable.
 The UShER\cite{Turakhia2021} method is based on adding 
 samples to an existing tree using maximum parsimony, 
@@ -258,11 +258,12 @@ Li2024CovRecomb%CovRecomb
 this information is not incorporated into the phylogenies used 
 in innumerable studies~\cite{McBroome2021,Hadfield2018},
 and recombination continues to be treated as a 
-nuisance factor~\cite{Neches2020}. 
+nuisance factor. 
 
 Ancestral recombination graphs (ARGs) describe the reticulate 
 genealogies of sampled sequences in a recombining species\cite{Wong2024},
-and provide a natural and efficient means of incorporating recombination 
+and provide a natural and efficient means of 
+systematically incorporating recombination 
 into the study of SARS-CoV-2.
 While ARGs have been of theoretical interest in population genetics 
 for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
@@ -270,7 +271,7 @@ recent breakthroughs in
 simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019}
 and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
 Wohns2022,Zhang2023,Gunnarsson2024,Deng2025robust} have led to a surge 
-of interest in their application in population and statical 
+of interest in their application in population and statistical 
 genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
 % This is necessary because a bunch of the phylo literature refers
 % to ARGs, but it's all in the "coalescent with recombination" sense
@@ -293,21 +294,32 @@ inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025d
 and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
 tools.
 
-
-[TODO rewrite this paragraph]
-Here, we present
-(1) sc2ts, a new method to infer ARGs in real time by building genealogies forward in time, and
-(2) an ARG for SARS-CoV-2 with ~2.48 million genome sequences.
-We used the ``Viridian'' dataset,
-which is purged of various systematic errors and artifacts \cite{Hunt2024} and
-show that this ARG is highly congruent to an UShER phylogeny built from the same dataset.
-Compared to previously identified recombinants,
-we show that this ARG contains the vast majority of epidemiologically relevant signals of recombination,
-while adding significant nuance and texture.
-This ARG – which captures the major signals of evolution
-through phylogenetic relationships, point mutations, deletions, and recombination –
-is a resource of unprecedented detail and precision, and
-should provide a strong basis for future studies of SARS-CoV-2.
+Here we present sc2ts, a new method to infer ARGs for SARS-CoV-2  
+that incrementally adds samples over time in a similar manner 
+to UShER, but also automatically detects and incorporates recombination
+in real-time. Based on the Viridian dataset, a freely available  
+resource purged of various systematic errors and artifacts \cite{Hunt2024},
+we infer an ARG with 2.48 million whole genome sequences.
+We show that this ARG is highly congruent with the UShER phylogeny built 
+from the same dataset as well as the Pango lineage naming system\cite{Rambaut2020},
+and also accurately captures evolutionary features such as mutational 
+spectra\cite{Bloom2023} and deletions\cite{Li2023indels}.
+In addition, we show that sc2ts automatically and accurately detects details about
+known recombinant lineages that were painstakingly collated in a community 
+process, and provides novel insights into the relationships between these
+recombinant lineages. By fully incorporating these and other novel
+recombination events, the resulting data structure---representing
+phylogenetic relationships, point mutations, deletions, and 
+recombination---provides a basis for the study of SARS-CoV-2
+that systematically accounts for all of these evolutionary forces.
+This ARG, coupled with the rich suite of supporting software
+in the tskit\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
+enables pandemic-scale analysis on a laptop. 
+% Dunno about this! Feels important to finish on a wider note, helping
+% the reader understand the significance of all of this?
+These resources
+will help us to learn from the vast troves of data collected during 
+pandemic, and to prepare for the next.
 
 
 \section*{RESULTS}
