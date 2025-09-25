@@ -496,32 +496,54 @@ for multiple sibling origination nodes
 
 \subsection*{Epidemiologically relevant recombinant lineages}
 
-As new data became available during the pandemic,
-volunteers continually detected recombinants which might have concerning features,
-particularly increased transmissibility, disease severity, and
-ability to escape natural or vaccine-induced immunity (e.g., \cite{Tamura2023}).
-The process of gathering evidence for and characterizing such recombinants is manual,
-involving visual inspection of phylogenies for unusual branches
-caused by forcibly placing recombinant sequences onto them,
-typically followed by visual analysis of genome sequence alignments
-to identify parental lineages and breakpoint locations.
-This process has resulted in the designation of recombinant Pango lineages
-(whose aliases begin with an ''X'', e.g., XA and XBB).
+[TODO narrative is muddled here: the point of the para is to say that 
+pango X lineage designation is manual and subjective.]
+% " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
+% system ... ". It should not be referred to as the ‘Rambaut et al.’ or
+% ‘Pangolin’ nomenclature system. "
+Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
+can be attributed to the clarity of the rules under which new lineages 
+are designated and their explicitly phylogenetic basis. 
+The first recombinant lineage XA was designated in 2021 based on the 
+analysis of Jackson et al\.~\cite{Jackson2021}, which established 
+that recombination with onward transmission had occured [weak FIXME].
+As of pango-designation version v1.33.1 (2025-03-31), a total of 146 distinct 
+X lineages have been designated.
+%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
+% 146
+Although the process of incorporating recombinant lineages in the Pango 
+nomenclature system is well defined,
+the identification of such events is much more subjective, requiring
+the synthesis of multiple lines of evidence and often the 
+manual inspection of phylogenies and sequence alignments
+by volunteers.
 
-We find strong evidence for the recombination events leading to 17 Pango X lineages
-in the ARG (Table~\ref{tab:pango_x_lineages}),
-all of which pass QC (STAR Methods).
-%% JK: Does saying this here help at all? I think we may be better off without 
-% These events are supported by high numbers of averted
-% mutations (Table 1) and high numbers of loci matching their suggested parents
-% (see their copying patterns in Figure SX). 
-Among these Pango X lineages are XA,
-which is the first designated Pango X lineage that
-showed signs of onward transmission \cite{Jackson2021}, and
-XBB, which escaped vaccine-induced immunity and gained global prevalence \cite{Tamura2023}.
-The recombinant origin of XA is well explained in the ARG by two parents and one mutation
-(Figure~\ref{fig:subgraphs}A; Table~\ref{tab:pango_x_lineages}), 
-with sc2ts correctly identifying its parental Pango lineages and breakpoint location.
+By automatically detecting and incorporating recombination events
+into the ARG, sc2ts allows us to model the origins of these 
+X lineages as nodes in the graph. 
+Table~\ref{tab:pango_x_lineages} summarises
+these results for the XX Pango X lineages present in
+the ARG. 
+For 16 Pango X lineages the oldest node that has been assigned
+the focal Pango lineage is a recombination node, and that node 
+is the ancestor of all samples assigned that (or a descendant) Pango 
+lineage. These are the Type I events, in which the ARG reflects the
+expected phylogenetic structure of Pango designation.
+Among these events, concordance with the community-consensus 
+parent lineages and breakpoint intervals is excellent (see next 
+section). 13 of the Type I events are monophyletic for the focal
+pango; Figure~\ref{fig:subgraphs}A shows XA as an example.
+The remaining 3 Type I events (XBB, XBQ and XM) have descendants not assigned to the 
+focal pango, many of which are the generic BA.2 label
+[FIXME presumably due to uncertainty? Look up the results CSV? Be precise].
+
+The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
+are recombination events closely associated with Pango X lineages, 
+but that do not meet the strict origination criteria for Type I.
+Type III events are then nodes in the ARG associated with the 
+orin
+
+Of these, XAF and XJ are relatively straightforwardo
 
 Furthermore, some of the Pango X lineages above originate from
 shared recombination events in the ARG (Table~\ref{tab:pango_x_lineages}).
