@@ -540,6 +540,9 @@ believe the original recombinant designation to be based on erroneous data
 %%% TODO: Say something about XAJ and XAN.
 %JK: we should weaken this statement a bit, as we're not certain that they 
 % really are recombinants, especially XP.
+% YW: we now have a better in-depth breakdown of these recombinants
+% to be pasted into doc S1 - e.g. XB is missing the parent lineages, XP is defined on the basis
+% of 2 loci, and XAJ on the basis of 3.
 However, sc2ts did not detect several Pango X lineages (XB, XP, and XAJ) as recombinants
 because the HMM treated characteristic deletions as missing data.
 
@@ -2709,7 +2712,59 @@ could potentially be improved
 by alternative phylogenetic reconstruction methods.
 
 \subsubsection{Xx: XZ/XAC/XAD/XAE/XAP}
-WIP
+https://github.com/jeromekelleher/sc2ts-paper/discussions/631
+
+This nested set of Pango X lineages descends
+from a single recombination node in the ARG, and
+we suggest that these Pango X lineages
+may be aliases of a single recombinant
+which we tentatively refer to as "Xx".
+Note that all were designated around the same time,
+with their samples collected
+roughly within a three-month period (Mar., 2022 to Jul., 2022).
+Several samples labeled as BA.2 by pangolin also lie
+within this recombinant clade,
+including two that are identical
+to the proposed originating recombinant (ERR8146303 and ERR8163061):
+we suggest that researchers examining the emergence of
+these Pango X lineages could direct efforts
+into examination of these and closely related samples.
+The detection of Xx illustrates
+the ability of sc2ts to clarify relationships between
+samples during the course of a pandemic,
+informing designation of emerging recombinants.
+
+Exact relationships within the Xx clade are somewhat tentative.
+For example, there are three highly mutable sites (22792, 28877, and 28878)
+which were not used during inference,
+but were remapped onto the ARG during postprocessing.
+The inferred topology places these sites
+as recurrent (colored orange, grey, and faded yellow),
+but a more parsimonious arrangement would,
+for example, group the two XAD samples as siblings
+(removing the need to postulate mutations
+A1250G, A28877T, and G28878C to be recurrent).
+It is possible that a more parsimonious arrangement would also
+reduce the recurrent mutations and reversions seen at
+sites 22,792 (four orange mutations) and
+26,060 (two parallel brown mutations),
+but we do not show such a reconstruction,
+which is complicated by the presence of
+additional (non-displayed) samples descending from
+internal nodes in the plotted subgraph.
+
+For XAC, in particular, the Pango designation issue
+(https://github.com/cov-lineages/pango-designation/issues/590) suggests
+it to be a recombinant with two breakpoints:
+BA.2 on the left, BA.1 in the middle, and
+a switch back to a very small region of BA.2 on the right.
+This contrasts with the one-breakpoint BA.2+BA.1 origin inferred in the ARG.
+However, only two loci support the right hand BA.2 assignment:
+A29510C and a large deletion
+(deletions are treated as missing data during ARG inference).
+Sc2ts does not count this as enough evidence
+to insert an additional breakpoint,
+which would require at least four supporting variants.
 
 \subsubsection{XAF}
 https://github.com/jeromekelleher/sc2ts-paper/discussions/638
@@ -2807,10 +2862,57 @@ In the ARG, all the XAZ samples form a clade.
 Here we display only the first 20 XAZ samples.
 
 \subsubsection{XBB}
-WIP
+https://github.com/jeromekelleher/sc2ts-paper/issues/336
+
+Most of the XBB samples descend from a well supported recombination node.
+In the Pango designation issue
+(https://github.com/cov-lineages/pango-designation/issues/1058),
+the Pango lineages of the suggested left and right parents are
+BJ.1 and BM.1.1.1, respectively.
+In the ARG, the Pango lineage of the right parent is identical,
+but that of the left parent is a related ancestral Pango lineage
+(BA.2.10 instead of BA.2.10.1.1 = BJ.1).
+This is likely due to the absence of BJ.1 in the ARG:
+only four BJ.1 samples exist in the Viridian v04 dataset,
+a single one passed sequence-level QC, and
+that was then rejected due to high HMM cost.
+Note that BJ.1 differs from BA.2.10 by over 20 mutations
+(https://github.com/cov-lineages/pango-designation/issues/915),
+explaining the large number of (gold) \emph{de novo} mutations
+in the XBB copying pattern.
+Had BJ.1 samples been present in the ARG,
+we strongly suspect that the left branch of
+the XBB-associated recombination node
+would have been attached to a BJ.1-labeled node, and
+the origin of XBB would not require postulating as many new mutations.
+The fact that sc2ts has deduced
+the XBB left parent to a close relative of BJ.1,
+even though BJ.1 is missing from the ARG,
+shows our approach to be relatively robust to missing un-sampled lineages:
+an important consideration given global variation in pathogen surveillance.
 
 \subsubsection{XBB.1}
-WIP
+XBB.1 is characterized by an additional mutation in Spike, G22317T (G252V) and
+is not designated as a recombinant of XBB in the Pango designation issue
+(https://github.com/cov-lineages/pango-designation/issues/1088).
+The ARG agrees with this and places the characteristic mutation
+above the root of a single non-recombinant XBB.1 clade.
+We include this non-recombinant lineage
+in order to highlight some well supported subsequent recombination nodes
+within XBB.1, such as the (pink) one leading to two XBB.1-labeled samples
+at the bottom left of the subgraph which we refer to as XBB.x.
+XBB.x is well supported: its left parent is a reconstructed internal node,
+which is directly supported by a BQ.1-labeled sample, and
+its right parent is a BB.1.5.18-labeled sample (ERR10792363).
+This highlights the automatic ability of sc2ts
+to infer sequential recombination events
+(i.e. recombinants-of-recombinants),
+even those involving few samples.
+A few other recombination events occur within XBB.1,
+but they either fail QC checks, or
+(as the other one shown here, to the bottom right)
+lead to a single sample so may be
+e.g. caused by accidental mixing of samples during sequencing.
 
 \subsubsection{XBD}
 All the XBD samples descend from a well supported recombination node.
@@ -2820,7 +2922,23 @@ both of which are directly supported by samples
 that are identical to them.
 
 \subsubsection{XBE}
-WIP
+https://github.com/jeromekelleher/sc2ts-paper/issues/351
+
+In the Pango designation issue
+(https://github.com/cov-lineages/pango-designation/issues/1246),
+XBE was suggested as a recombinant between
+BA.5.2 (left parent; most of the genome) and
+BE.4 (right parent; somewhere from 23609 onwards).
+However, sc2ts treats the 65 XBE samples
+as non-recombinant descendants of BA.5.2
+because the number of supporting sites fell
+below our threshold of detection.
+We have included the BE.4 lineage on the subgraph,
+revealing three mutations (G22599C, C27800T, and G28681T)
+which occur in parallel above the root of the XBE clade and
+along the path ascending from the BE.4 sample,
+suggesting that if we used k=3 as the recombinant threshold,
+sc2ts would indeed detect XBE as a recombinant.
 
 \subsubsection{XBF}
 All the XBF samples descend from a well supported recombination node,
@@ -2848,7 +2966,21 @@ leading to a more parsimonious local topology
 with two mutations on the left branch.
 
 \subsubsection{XBQ/XBK/XBK.1/CJ.1.3}
-WIP
+https://github.com/jeromekelleher/sc2ts-paper/issues/349
+https://github.com/jeromekelleher/sc2ts-paper/issues/350
+
+XBK and XBQ are siblings, and neither appear to be recombinants in the ARG,
+as they are closely related to the non-recombinant node that originates CJ.1.3. 
+At the time of designating XBK
+a hypothesis was made that a missing common ancestor could exist 
+(https://github.com/cov-lineages/pango-designation/issues/1440\#issuecomment-1355264973),
+making XBK non-recombinant.
+Exactly such a missing ancestor
+is found as the upper internal node labeled CJ.1 in the ARG,
+constructed by sc2ts as part of its tree building steps.
+We suggest that sc2ts can therefore play an epidemiological role
+both in generating hypotheses involving recombination, and
+quantifying mutational evidence to support them.
 
 \subsubsection{XBM}
 All the XBM samples descend from a well supported recombination node.
