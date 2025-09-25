@@ -345,17 +345,19 @@ pandemic, and to prepare for the next.
 \includegraphics[width=0.85\linewidth]{sc2ts_methodology}
 \caption{
 Schematic overview of sc2ts.
-(A) Process to build an ARG by incrementally updating it with samples sorted by collection dates.
+(A) Process to build an ARG by incrementally updating it with samples 
+sorted by collection dates.
 (B) The ARG resulting from the inference process.
 Sample 0 is used to initialize the ARG as the root.
 Next, Sample 1 is attached, mapping mutations onto the new branch to explain it.
 When Sample 4 is detected as a recombinant,
-a node representing the recombination event is inserted with two edges connecting to its parents,
+a node representing the recombination event is inserted with two edges 
+connecting to its parents,
 with Sample 4 itself attached to this node as its child.
 (C) Two local trees contained in the resulting ARG,
-one on each side of the inferred breakpoint (A), which occurs at position 50.
+one on each side of the inferred breakpoint which occurs at position 50.
 The genomic coordinates of the segments inherited from different recombinant parents
-are denoted by two half-open intervals (B).
+are denoted by two half-open intervals.
 (D) Copying paths for Sample 4 inferred under the LS model
 while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 }
@@ -378,8 +380,8 @@ recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
 In the interest of interpretability, we simplified this model to 
 use a single parameter $k$ which essentially 
 controls the number of recurrent mutations that is preferred to 
-switching to a different parent via recombination. We used the 
-highly efficient LS HMM implementation in tsinfer\cite{Kelleher2019},
+switching to a different parent via recombination (we use $k=4$ here).
+We used the highly efficient LS HMM implementation in tsinfer\cite{Kelleher2019},
 with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
 given the current ARG.
