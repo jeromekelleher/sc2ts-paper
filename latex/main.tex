@@ -338,99 +338,91 @@ pandemic, and to prepare for the next.
 %%% simply write, for example, ``(Figure 1)" or ``see discussion."
 %%% Our team will do the rest. Please note that we do not number sections or subsections.
 
-\subsection*{Brief description of sc2ts}
-
-Sc2ts reconstructs an ARG by incrementally adding batches of sequences as they become available
-(Figure~\ref{fig:methodology}; for details, see STAR Methods).
-First, sc2ts infers likely ``copying paths'' connecting each sample in the batch to node(s) in the current ARG
-(allowing recombination) using the Li and Stephens (LS) model \cite{LiStephens2003},
-which is a Hidden Markov Model (HMM) widely used in human genomics
-to approximate the effects of mutation and recombination on genetic inheritance.
-As recombination is relatively rare in viruses,
-we would expect most samples to copy from a single parent in the ARG.
-Recombinant samples, however, copy from two or more parents, with switching (recombination) in the copying path
-between the parents resulting in different genomic segments inherited from the different parents.
-Next, for clusters within the batch that are inferred to copy from the same ARG node,
-sc2ts uses standard phylogenetic techniques to resolve relationships within the cluster.
-Finally, sc2ts attaches the phylogenies of the clusters to the current ARG, and
-applies parsimony-improving heuristics to address issues introduced by the inherent greediness of this strategy.
-[TODO add brief summary of sample filtering and how we handle VOCs, 
-refing Methods for details]
+\subsection*{Overview of sc2ts}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\linewidth]{sc2ts_methodology}
 \caption{
 Schematic overview of sc2ts.
-(A) Process to build an ARG by incrementally updating it with samples sorted by collection dates.
+(A) Process to build an ARG by incrementally updating it with samples 
+sorted by collection dates.
 (B) The ARG resulting from the inference process.
 Sample 0 is used to initialize the ARG as the root.
 Next, Sample 1 is attached, mapping mutations onto the new branch to explain it.
 When Sample 4 is detected as a recombinant,
-a node representing the recombination event is inserted with two edges connecting to its parents,
+a node representing the recombination event is inserted with two edges 
+connecting to its parents,
 with Sample 4 itself attached to this node as its child.
 (C) Two local trees contained in the resulting ARG,
-one on each side of the inferred breakpoint (A), which occurs at position 50.
+one on each side of the inferred breakpoint which occurs at position 50.
 The genomic coordinates of the segments inherited from different recombinant parents
-are denoted by two half-open intervals (B).
+are denoted by two half-open intervals.
 (D) Copying paths for Sample 4 inferred under the LS model
 while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 }
 \label{fig:methodology}
 \end{figure}
 
-%% JK: This is copy of old Methods section "overview of sc2ts" which is basically
-%% the same as this section. TODO Merge the useful text in here.
-
-% Sc2ts (pronounced ``scoots'', optionally)
-% is a method for inferring Ancestral Recombination Graphs (ARGs)
-% from densely sampled genome sequence data in real time,
-% in which recombination occurs at a low but significant rate.
-% The basic idea is to incrementally update an ARG regularly
-% with the sequences collected since the previous batch (Figure
-% \ref{fig:methodology}).
-% We used daily batches for SARS-CoV-2,
-% and use days as the time interval for clarity in what follows.
-% The first step is to find likely ``copying paths'' under the Li and Stephens (LS) model \cite{LiStephens2003}
-% for each sequence in the daily batch to the current ARG.
-% These copying paths will mostly consist of a new sample sequence copying
-% from a node in the ARG with a small number of mutations,
-% and often many samples from a daily batch will copy from the same ARG node.
-% The second step is then to ``resolve'' these implied polytomies
-% by using a standard neighbor-joining algorithm \cite{Saitou1987}.
-% This greedy update strategy inevitably leads to unparsimonious topologies,
-% and the third step is to then increase the overall parsimony of the inferred ARG
-% by making some simple topological updates.
-% Recombination is inferred as an integral and ongoing part of this process,
-% requiring only a few additional steps to facilitate later analysis.
-% The result of inference for a given day is then a genealogy recording genetic inheritance
-% as well as mutation and recombination events
-% for all of the samples added to the ARG up to that day.
-
-% Sc2ts is implemented in Python building on core PyData infrastructure
-% such as Numpy\cite{Harris2020array}, SciPy\cite{Virtanen2020scipy}
-% and Pandas~\cite{Mckinney2010data} ,
-% using pyfaidx\cite{Shirley2015efficient} to access alignment data
-% and Numba~\cite{Lam2015numba} to accelerate certain alignment processing
-% tasks.
-% [TODO JK to fill this out]
+Sc2ts reconstructs an ARG by incrementally adding daily batches of 
+sequences (Figure~\ref{fig:methodology}).
+First, sc2ts infers likely ``copying paths'' connecting each sample in the 
+batch to node(s) in the current ARG
+(allowing recombination) using a simplified version of the Li and Stephens (LS) model
+\cite{LiStephens2003}. 
+% Important to go into a bit of detail about LS here as it's so fundamental
+% and novel in the area.
+The LS model is a Hidden Markov Model (HMM) widely used in human genomics
+to approximate the effects of mutation and recombination on genetic
+inheritance\citep{Delaneau2019-wl,Browning2018-nk},
+typically parameterised by population-scaled mutation and
+recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
+In the interest of interpretability, we simplified this model to 
+use a single parameter $k$ which essentially 
+controls the number of recurrent mutations that is preferred to 
+switching to a different parent via recombination (we use $k=4$ here).
+We used the highly efficient LS HMM implementation in tsinfer\cite{Kelleher2019},
+with some additional optimisations enabled by our simplified model,
+to find exact Viterbi solutions of these copying paths for each sample
+given the current ARG.
+Note that this is a form of parsimony, with the recombination
+penalty $k$ determining the relative parsimoniousness of recombinant
+vs non-recombinant solutions to the HMM.
+The per-sample copying paths produced by the HMM (most of which do not 
+involve recombination) form clusters of samples within a batch, which 
+are then resolved using standard phylogenetic techniques.
+Finally, sc2ts attaches the phylogenies of the clusters to the current ARG, and
+applies parsimony-improving heuristics to address issues introduced 
+by the inherent greediness of this strategy.
+Sc2ts is implemented in Python,
+building on core PyData infrastructure~\cite{Harris2020array,Virtanen2020scipy,
+Mckinney2010data,Lam2015numba} and bioinformatics 
+packages\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
+See STAR Methods for details on all aspects of the method.
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
-Using sc2ts, we built an ARG of $\sim$2.48 million samples spanning the COVID-19 pandemic.
-Inference took 21 days on a server equipped with dual EPYC (details) and 500 GB of RAM 
-(~5 CPU years; Figure~\ref{fig:inference_resources}).
-The ARG contains 2,689,054 nodes representing the genealogical relationships
-among 2,482,157 sampled genomes in the Viridian v04 dataset,
-which were collected from January 01, 2020 to February 20, 2023 \cite{Hunt2024}.
-Of the nodes, 855 represent recombination events,
-of which 354 pass quality control (QC) filters
-(see STAR Methods, Figure~\ref{fig:recombinant_qc}),
-reflecting the overwhelmingly tree-like structure of SARS-CoV-2 evolutionary history.
+Using sc2ts, we built an ARG from 2,482,157 samples from the Viridian v04
+dataset\cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
+Inference took 21 days on a XX core server with 500 GB of RAM 
+($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
+After postprocessing, the ARG 
+contains 2,689,054 nodes with estimated dates, 
+2,748,838 edges, and 2,285,344 mutations at 29,893 sites. 
+Including sample IDs and the Pango and Scorpio designations computed by
+Pangolin~\cite{OToole2021assignment} as metadata for each node,
+the ARG is stored in a 32MiB tszip format file.
+Of the nodes, 855 represent recombination events, 
+resulting in 316 distinct trees along the genome (some
+events occured at the same breakpoints).
+% It's confusing to talk about recombinant QC here as we're talking 
+% about the full ARG for the rest of the section.
 
-The ARG represents the full evolutionary history of SARS-CoV-2 and 
-is in close agreement with a state-of-the-art UShER phylogeny built using the Viridian dataset \cite{Hunt2024}.
-First, we validated the broad structure of the ARG against the UShER phylogeny \cite{Hunt2024}
+The ARG is a comprehesive record of the evolutionary history of SARS-CoV-2 and 
+is in close agreement with a state-of-the-art UShER phylogeny also built 
+from the Viridian dataset \cite{Hunt2024}.
+First, we validated the broad structure of the ARG against 
+the UShER phylogeny \cite{Hunt2024}
 by pruning both down to representative samples for 1097 deeply-sampled 
 lineages (STAR Methods).
 Tanglegrams show that the ARG closely matches the phylogenetic
@@ -449,9 +441,11 @@ and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG against 
 the mutational spectra 
-from the Viridian UShER phylogeny \cite{Hunt2024} and a previous study \cite{Bloom2023} (STAR Methods),
-finding a close match to them (Figure~\ref{fig:mutational_spectra}).
+from the Viridian UShER phylogeny and a previous study \cite{Bloom2023} (STAR Methods),
+finding close agreement (Figure~\ref{fig:mutational_spectra}).
 
+% FIXME this is too detailed, and too methodsy. Abstract out and summarise
+% results
 Input genome alignments are masked in sc2ts
 so that deletions and ambiguous bases are treated as missing data by the HMM,
 and once the samples are incorporated into the ARG,
