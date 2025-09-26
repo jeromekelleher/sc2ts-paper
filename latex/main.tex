@@ -2270,10 +2270,18 @@ All these deletions are known to occur major VOCs
 \cite{Akaishi2023,Li2023indels}).
 Eight of these deletions occur in S1-NTD,
 a known hotspot for recurrent deletions \cite{McCarthy2021}.
-""" The 5-base dels and 4-base del are split up as separate events.
-It should be a 9-base del (11,288–11,296)."""
-Furthermore, these deletion events reflect
-the VOC-associated deletion events
+There are three contiguous deletions in NSP6
+(4-base at 11288, 5-base at 11283, and 5-base at 11292),
+which should have been mapped as two 9-base deletions,
+one above the BA.1 origin node and
+the other above the BA.2 origin node in the ARG
+(Figure~\ref{fig:subgraph_ba1_ba2}),
+but they were broken up
+during deletion remapping because they had
+overlapping four sites at 11288-11292
+(which was mapped as the 4-base deletion event).
+Furthermore, the placement of these deletion events in the ARG
+reflects that of the VOC-associated deletion events
 inferred in a previous study \cite{Akaishi2023}.
 
 We also found highly recurrent deletions using the ARG.
