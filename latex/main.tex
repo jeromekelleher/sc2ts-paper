@@ -529,7 +529,8 @@ events, the averted shows the number of additional mutations required
 under a recombination-free HMM solution. Parent lineages shown in boldface
 are nodes exactly matched by sampled sequences. The descendants column
 shows the descendant samples broken down by Pango lineage (grouped 
-by root lineage, where appropriate).
+by root lineage, where appropriate).[FIXME Typesetting to be finished,
+describe cols for Type III and IV]
 }
 \label{tab:pango_x_lineages}
 % scriptsize is quite small here, and we could probably cram it all 
@@ -582,7 +583,7 @@ XAF & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 10199 & 10447 & {BA.2:35, XAF:1} \\
 \midrule
 \multicolumn{7}{l}{Type III events: Pango origin nodes derived from 
 Type I and II events}\\
-pango & name & path len & time & mutations & samples \\
+pango & name & path len & time & mutations & & descendants\\
 \midrule
 
 XAF & XAF & 5 & 140 & 8   && {XAF:1} \\
@@ -602,28 +603,26 @@ XZ  & Xx & 4 & 48 & 1     && {XZ:48} \\
 
 \midrule
 \multicolumn{7}{l}{Type IV events: non recombinants}\\
-pango & muts & parent & samples & nested \\
+pango & muts &&&& parent & descendants \\
 \midrule
 
-XP  & 1  &&&& \textbf{BA.1.1} & {XP:45} \\
-XN  & 1  &&&& \textbf{BA.2} & {XN:120, BA.2:1} \\
-XBQ & 1  &&&& CJ.1 & {XBQ:14} \\
-XBK & 1  &&&& CJ.1 & {XBK:7} \\
-XBE & 3  &&&& BA.5.2 & {XBE:65} \\
-XB  & 2  &&&& B.1 & {XB:192} \\
-XAZ & 3  &&&& \textbf{BA.5} & {XAZ:133} \\
-XAV & 3  &&&& BA.5.1.24 & {XAV:13} \\
-XAU & 1  &&&& BA.2 & {XAU:8} \\
 XAS & 1  &&&& BA.4 & {XAS:77} \\
+XAU & 1  &&&& BA.2 & {XAU:8} \\
+XBK & 1  &&&& CJ.1 & {XBK:7} \\
+XBQ & 1  &&&& CJ.1 & {XBQ:14} \\
+XN  & 1  &&&& \textbf{BA.2} & {XN:120, BA.2:1} \\
+XP  & 1  &&&& \textbf{BA.1.1} & {XP:45} \\
+XB  & 2  &&&& B.1 & {XB:192} \\
+XAV & 3  &&&& BA.5.1.24 & {XAV:13} \\
+XAZ & 3  &&&& \textbf{BA.5} & {XAZ:133} \\
+XBE & 3  &&&& BA.5.2 & {XBE:65} \\
 XAN & 5  &&&& \textbf{BA.5.1} & {XAN:7} \\
 XAJ & 11 &&&& \textbf{BA.2.12} & {XAJ:18} \\
-
 
 \bottomrule
 \end{tabular}
 \end{scriptsize}
 \end{table}
-
 
 
 [TODO narrative is muddled here: the point of the para is to say that 
@@ -649,11 +648,12 @@ manual inspection of phylogenies and sequence alignments
 by volunteers.
 
 By automatically detecting and incorporating recombination events
-into the ARG, sc2ts allows us to model the origins of these 
-X lineages as nodes in the graph. 
+into the ARG, sc2ts provides us with a systematic means of 
+discovering and assessing evidence around these events.
 Table~\ref{tab:pango_x_lineages} summarises
-these results for the XX Pango X lineages present in
-the ARG. 
+these results for the 44 Pango X lineages present in
+the ARG (XAC and XAD have been omitted, and XM 
+partially represented, corresponding to 23 samples in total; see STAR Methods).
 For 16 Pango X lineages the oldest node that has been assigned
 the focal Pango lineage is a recombination node, and that node 
 is the ancestor of all samples assigned that (or a descendant) Pango 
@@ -662,58 +662,54 @@ expected phylogenetic structure of Pango designation.
 Among these events, concordance with the community-consensus 
 parent lineages and breakpoint intervals is excellent (see next 
 section). 13 of the Type I events are monophyletic for the focal
-pango; Figure~\ref{fig:subgraphs}A shows XA as an example.
-The remaining 3 Type I events (XBB, XBQ and XM) have descendants not assigned to the 
-focal pango, many of which are the generic BA.2 label
-[FIXME presumably due to uncertainty? Look up the results CSV? Be precise].
+pango (i.e., the descendants are entirely from that lineage); 
+Figure~\ref{fig:subgraphs}A shows XA as an example (see also 
+Document~\ref{sec:jackson_recombs} for further analysis 
+of the Jackson et al.\ recombinants).
 
 The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
 are recombination events closely associated with Pango X lineages, 
 but that do not meet the strict origination criteria for Type I.
-Type III events are then nodes in the ARG associated with the 
-orin
+Type III events are Pango origin nodes in the ARG that are 
+derived from Type I or Type II recombination events. There is significant
+nesting among the Pango X lineage origin nodes within the ARG,
+with two major clusters of particular note. Although XQ is 
+directly associated with a recombination event in the ARG, 
+XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
+that they are more parsimoniously explained as sublineages of XQ
+than de-novo recombinant lineages.
+The second cluster is based around a putative undocumented
+recombinant that is the ancestor of lineages 
+XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
+(Figure~\ref{fig:subgraphs}B). 
 
-Of these, XAF and XJ are relatively straightforwardo
-
-Furthermore, some of the Pango X lineages above originate from
-shared recombination events in the ARG (Table~\ref{tab:pango_x_lineages}).
-An example of a set of ``nested'' closely related lineages
-consists of XZ, XAC, XAD, XAE, and XAP,
-which descend from a single recombination event in the ARG, rather than five independent
-ones (Figure~\ref{fig:subgraphs}B), and
-which we tentatively group using the unused label Xx.
-These Pango X lineages were designated around the same time.
-These results highlight that the ARG can help
-clarify the relationships between recombinants,
-allowing more precise interpretation of evidence for recombination.
-
-Sc2ts identified 12 Pango X lineages in the ARG as non-recombinants
-(Table~\ref{tab:pango_x_lineages}), on the basis of the HMM and available data.
-For all these Pango X lineages, the number of recombination-informative sites
-fell below our threshold of detection (i.e. $k = 4$ in the HMM).
-The fact that most of these Pango X lineages (except XAJ and XAN)
-differ from a single parent node in the ARG
-by at most three mutations (Table~\ref{tab:pango_x_lineages}) strongly supports 
-their origins as non-recombinants.
-For example, the closely related XN and XAU can be explained by two mutations
-and one mutation in the ARG, respectively (Figure~\ref{fig:subgraphs}C), and we
-believe the original recombinant designation to be based on erroneous data
-(Supplementary document S1.XXX).
-%%% TODO: Say something about XAJ and XAN.
-%JK: we should weaken this statement a bit, as we're not certain that they 
-% really are recombinants, especially XP.
-% YW: we now have a better in-depth breakdown of these recombinants
-% to be pasted into doc S1 - e.g. XB is missing the parent lineages, XP is defined on the basis
-% of 2 loci, and XAJ on the basis of 3.
-However, sc2ts did not detect several Pango X lineages (XB, XP, and XAJ) as recombinants
-because the HMM treated characteristic deletions as missing data.
+The final class of event (Type IV) in Table~\ref{tab:pango_x_lineages} 
+correspond to nodes that are not associated with a recombination
+event. These vary in their plausibility of being non-recombinant.
+For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
+distant from a BA.2 sample and has little additional evidence to 
+suggest recombination [ref sup section]. XB, on the other hand,
+has been thoroughly characterised\cite{Gutierrez2022} and 
+may have misclassified by sc2ts due to limitations in handling
+deletions or matching against long branches (see Discussion).
+See Document~\ref{sec:supplement_indepth_pango_x_lineages} for extended 
+analyses on all of the Pango X lineages above,
+Figure~\ref{fig:pango_x_copying_patterns} for copying patterns 
+associated with Table~\ref{tab:pango_x_lineages},
+and Document S2 for ARG visualisations.
 
 
-[NOTE: putting this here for now, until we find the right place to slot it
-in next draft.]
-See Document~\ref{sec:supplement_indepth_pango_x_lineages} for extended analyses,
-Figure~\ref{fig:pango_x_copying_patterns} for copying patterns,
-and Document S2 for ARG visualations of all Pango X lineages.
+The nested samples not assigned to the focal pango lineage are
+either from different pango X lineages (see next paragraph), 
+or given a generic BA.2 assignment. Of these 59 generic assignents
+6 had conflicts in their UShER placements and could have been
+assigned an X lineage (XJ: 3, XU: 2, XN: 1), and 
+25 were cases in which Scorpio~\cite{Colquhoun2023scorpio}
+failed to find a specific lineage (accounting for 7\%
+of the 357 ``Omicron (Unassigned)`` Scorpio calls across
+2,747,985 alignments).
+
+
 
 \subsection*{Comparison with other recombination detection methods}
 
@@ -2753,6 +2749,7 @@ that XP might not be a recombinant,
 because it is only one mutation different from the sample ERR8628084.
 
 \subsubsection{XQ/XR/XU/XAA/XAG/XAM}
+\label{sec:supplement_indepth_pango_x_lineages_xq}
 https://github.com/jeromekelleher/sc2ts-paper/issues/338
 
 In the ARG, XR, XU, XAA, XAG, and XAM
