@@ -2303,7 +2303,7 @@ although filtering the recombination events to the 354 with better support revea
 \renewcommand{\thesection}{S\arabic{section}}
 
 
-\subsection{Analysis of deletions}
+\subsection{Analysis of deletion events}
 \label{sec:supplement_dels}
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
@@ -2335,11 +2335,11 @@ inferred in a previous study \cite{Akaishi2023}.
 We also found highly recurrent deletions using the ARG.
 The top 20 deletions in the number of occurrences in the ARG
 are shown in Table~\ref{tab:rec_dels}.
-About half of these deletions are one-base,
-occur in non-coding regions, and
-are concentrated in the 3' end of the genome.
+About half of these deletions are one-base and
+occur in the non-coding regions in the 3' end of the genome
+between the accessory genes.
 Four one-base deletions occur
-in accessory genes (ORF7a, ORF8, and ORF10).
+in the accessory genes ORF7a, ORF8, and ORF10.
 The two deletions in S1-NTD are known recurrent deletions
 associated with antibody escape \cite{McCarthy2021}.
 
@@ -2348,14 +2348,15 @@ associated with antibody escape \cite{McCarthy2021}.
 \centering
 \caption{
 Major deletion events in the ARG.
-These events are inherited by at least 10,000 samples in the ARG.
+These events are inherited by
+at least 10,000 samples in the ARG.
 Count is the number of samples inheriting a deletion.
 The Pango lineage assigned to the node
 above which an event occurs is shown.
 Abbreviations: NSP, non-structural protein;
 ORF, open reading frame;
 S, Spike;
-S1-NTD, N-terminal domain in S1 subunit of Spike.
+S1-NTD, N-terminal domain in Spike S1 subunit.
 }
 \label{tab:major_dels}
 \begin{tabular}{rrcrcrr}
@@ -2365,8 +2366,8 @@ Start & Length & Region & Node & Pango lineage & Count & Frequency (\%)\\
 28271 & 1 & non-coding & 1436808 & B.1 & 1118363 & 45.0561 \\
 28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 1114669 & 44.9073 \\
 22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 1112504 & 44.8200 \\
-11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 & 871782 & 35.1220 \\
-28362 & 9 & N & 1436802 & B.1.1.529 & 871774 & 35.1216 \\
+11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 871782 & 35.1220 \\
+28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 871774 & 35.1216 \\
 21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 532072 & 21.4359 \\
 11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 531894 & 21.4287 \\
 6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 340757 & 13.7283 \\
@@ -2395,7 +2396,7 @@ Abbreviations:
 NSP, non-structural protein;
 ORF, open reading frame;
 S, Spike;
-S1-NTD, N-terminal domain in S1 subunit in Spike.
+S1-NTD, N-terminal domain in Spike S1 subunit.
 }
 \label{tab:rec_dels}
 \begin{tabular}{rrcr}
@@ -2529,6 +2530,12 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_pango\_events\_in\_arg.ipynb}
 {analysis\_pango\_events\_in\_arg.ipynb}
 for details.
+
+
+\subsection{Major saltation lineages}
+
+% https://github.com/jeromekelleher/sc2ts-paper/issues/772
+
 
 
 \subsection{Additional analyses of the Pango X lineages}
