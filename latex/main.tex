@@ -418,13 +418,13 @@ events occured at the same breakpoints).
 % It's confusing to talk about recombinant QC here as we're talking 
 % about the full ARG for the rest of the section.
 
-The ARG is a comprehesive record of the evolutionary history of SARS-CoV-2 and 
+The ARG is a comprehensive record of the evolutionary history of SARS-CoV-2 and 
 is in close agreement with a state-of-the-art UShER phylogeny also built 
 from the Viridian dataset \cite{Hunt2024}.
 First, we validated the broad structure of the ARG against 
 the UShER phylogeny \cite{Hunt2024}
-by pruning both down to representative samples for 1097 deeply-sampled 
-lineages (STAR Methods).
+by pruning both down to representative samples
+for 1097 deeply-sampled lineages (STAR Methods).
 Tanglegrams show that the ARG closely matches the phylogenetic
 structure of the UShER tree (Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
@@ -439,9 +439,10 @@ and found they were very similar in terms of parsimony
 (Document~\ref{sec:supplement_sc2ts_usher_parsimony})
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
-We also compared the mutational spectra of major VOCs in the ARG against 
-the mutational spectra 
-from the Viridian UShER phylogeny and a previous study \cite{Bloom2023} (STAR Methods),
+We also compared the mutational spectra of major VOCs in the ARG
+against the mutational spectra from
+the Viridian UShER phylogeny and
+a previous study \cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 
 % FIXME this is too detailed, and too methodsy. Abstract out and summarise
@@ -464,25 +465,34 @@ is correctly associated with key lineage-defining deletions:
 21765-21770 (Spike del69-70),
 21991-21993 (Spike del144), and
 28271 (non-coding).
-The Spike 69-70 deletion, which causes S-Gene Target Failure \cite{Walker2021},
+The Spike 69-70 deletion,
+which causes S-Gene Target Failure \cite{Walker2021},
 also emerges twice in the origin of Omicron -
 in the node leading to the BA.1 variant (342,099 descendants),
 and the node leading to the BA.4 variant (189,746 descendants).
-To speed up inference and to avoid issues caused by sites enriched for errors [citation?],
-sc2ts masks out a set of 100 sites identified as the most highly homoplasic
+To speed up inference and to avoid issues
+caused by sites enriched for errors [citation?],
+sc2ts masks out a set of 100 sites identified
+as the most highly homoplasic
 by running on a subset of the data (STAR Methods).
-Of these sites, 9 are in the set of [1XX] ``problematic sites'' 
+Of these sites, 9 are in the set of [1XX] ``problematic sites''
 masked by UShER \cite{Hunt2024}.
-In addition to remapping the data for sites identified as being involved in deletions,
+In addition to remapping the data for sites identified
+as being involved in deletions,
 we added mutations for XX of these highly recurrent sites
 that are used in Pango designation \cite{Rambaut2020} by post-hoc parsimony.
-Each node in the ARG was then assigned to one of 2058 Pango lineages using pangolin (STAR Methods).
-All but 21,680 sampled sequences (0.87\%) agreed with the source sequences in terms of Pango lineage assignment
-(comparable to the 0.27\% disagreement between pangolin-data 
+Each node in the ARG was then assigned
+to one of 2058 Pango lineages using pangolin (STAR Methods).
+All but 21,680 sampled sequences (0.87\%) agreed
+with the source sequences in terms of Pango lineage assignment
+(comparable to the 0.27\% disagreement between pangolin-data
 versions 1.21 and 1.29 in the source Viridian metadata).
-A majority of these lineages (1473 of 2058) have monophyletic origins within the ARG,
-increasing to 1779 (86\%) when we allow for multiple sibling origination 
-nodes (Document~\ref{sec:supplement_pango_lineages}).
+A majority of these lineages (1473 of 2058)
+have monophyletic origins within the ARG,
+increasing to 1779 (86\%) when we allow
+for multiple sibling origination nodes
+(Document~\ref{sec:supplement_pango_lineages}).
+
 
 \subsection*{Epidemiologically relevant recombinant lineages}
 
@@ -2245,33 +2255,54 @@ although filtering the recombination events to the 354 with better support revea
 \renewcommand{\thesection}{S\arabic{section}}
 
 
-\subsection{Analysis of deletions}\label{sec:supplement_dels}
+\subsection{Analysis of deletions}
+\label{sec:supplement_dels}
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
-By mapping deletions to the ARG, we identified
-important deletion events (Table~\ref{tab:major_dels}),
-many of which are associated with the origins of major VOCs,
-for example, the deletions in ORF1ab and
-S1-NTD (the N-terminal domain of Spike)
-associated with the Alpha lineage.
-We also identified highly recurrent deletions (Table~\ref{tab:rec_dels}),
-for example, two known recurrent deletions in S1-NTD (REF).
+We reconstructed a more comprehensive mutational landscape
+of SARS-CoV-2 by mapping deletions onto the ARG
+using post-hoc parsimony.
+We identified important deletion events
+(which are inherited by at least 10,000 samples;
+Table~\ref{tab:major_dels}).
+All of these deletions
+(except a one-base deletion at 28,271
+above a B.1-labeled node)
+are lineage-defining mutations of major VOCs
+(Alpha, Delta, Omicron BA.1, BA.2, and BA.4).
+Many of these deletions occur in S1-NTD,
+a known hotspot of in-frame deletions (REF).
+There is a recurrent 1-base deletion at 28,271,
+which is in a non-coding region.
+<TODO: The 5-base dels and 4-base del are split up.
+It should be a 9-base del (11,288–11,296).
+I don't see excluded sites among these deleted sites.>
 
-
-Li et al.\cite{Li2023indels} performed a large-scale analysis of indels
-using a global GISAID dataset (sampled up to August, 2022).
-We examined the major indels reported in Table S1 of Li et al.\cite{Li2023indels}
-which have a minimum frequency of 1\%
-(count of sequences divided by 9,149,680 sequences analyzed).
-All of these indels are deletions and have high frequencies in the ARG
-(sequence count divided by the total number of samples),
-except a 9-base deletion at 11283, a 9-based deletion at 21987, and
-a 9-base deletion at 686.
+We also found highly recurrent deletions using the ARG.
+The top 20 deletions in the number of occurrences
+are shown in Table~\ref{tab:rec_dels}.
+About half of these deletions affect a single base
+and occur in non-coding regions
+(concentrated in the 3' end of the genome);
+some occur in accessory genes ORF7a and ORF8.
+<TODO: Are any of these assembly errors or misalignments?>.
+Two of these are known recurrent deletions in S1-NTD,
+which are associated with the origins of major VOCs (REF).
 
 
 \begin{table}
 \centering
-\caption{Major deletion events in the ARG. These events are inherited by at least 10,000 samples in the ARG. Count is the number of samples inheriting a deletion. The Pango lineage assigned to the node above which an event occurs is shown. Abbreviations: NSP, non-structural protein; ORF, open reading frame; S, Spike; S1-NTD, N-terminal domain in S1 subunit.}
+\caption{
+Major deletion events in the ARG.
+These events are inherited by at least 10,000 samples in the ARG.
+Count is the number of samples inheriting a deletion.
+The Pango lineage assigned to the node
+above which an event occurs is shown.
+Abbreviations: NSP, non-structural protein;
+ORF, open reading frame;
+S, Spike;
+S1-NTD, N-terminal domain in S1 subunit of Spike.
+}
 \label{tab:major_dels}
 \begin{tabular}{rrcrcrr}
 \toprule
@@ -2302,7 +2333,16 @@ Start & Length & Region & Node & Pango lineage & Count & Frequency (\%)\\
 
 \begin{table}
 \centering
-\caption{Highly recurrent deletions. These are the top 20 deletions in terms of the number of occurrences in the ARG. Abbreviations: NSP, non-structural protein; ORF, open reading frame; S, Spike; S1-NTD, N-terminal domain in S1 subunit.}
+\caption{
+Highly recurrent deletions.
+These are the top 20 deletions
+in terms of the number of occurrences in the ARG.
+Abbreviations:
+NSP, non-structural protein;
+ORF, open reading frame;
+S, Spike;
+S1-NTD, N-terminal domain in S1 subunit in Spike.
+}
 \label{tab:rec_dels}
 \begin{tabular}{rrcr}
 \toprule
@@ -2499,29 +2539,28 @@ because it was identified to be experiencing
 frequent mutation in a preliminary ARG.
 
 \subsubsection{XE/XH}
-https://github.com/jeromekelleher/sc2ts-paper/issues/337
+https://github.com/jeromekelleher/sc2ts-paper/discussions/633
 
 The XE samples descend from a well supported recombination node,
 with one mutation and one reversion (T22792C).
-This reversion was mapped onto the ARG as a part of postprocessing, and
-could be placed more parsimoniously by a single C22792T that groups together
-XH and the lineage leading to the further BA.2 recombination nodes
-displayed on the left.
+This reversion was mapped onto the ARG
+as a part of postprocessing,
+and could be placed more parsimoniously by a single C22792T
+that groups together XH
+and the lineage leading to the BA.2 recombination nodes
+displayed on the lower left.
 Nevertheless, the exact arrangement of the mutations at position 22792
 should not affect the proposed breakpoint,
 which is very distant, at position 11283.
+This breakpoint coincides with a repeated homopolymeric sequence
+involving 5-base deletions,
+so that alignment errors could have a small effect
+on the breakpoint position.
+Note that the two lower recombination nodes are both well supported,
+the youngest being postulated as the origin of XAF (see below);
+we leave investigation of this suggested series of
+sequential recombination events to future work.
 
-*** Should we describe the sequential recombination nodes to the left,
-here: note that the lower one is the RE node for XAF. ***
-
-Note that there might be some misalignment immediately
-to the right side of the breakpoint
-due to a repeated homopolymeric sequence involving 5-base deletions.
-Although this problem might obscure the breakpoint position,
-there nevertheless is ample evidence for the right parent.
-Furthermore, the only two XH samples in the ARG descend
-from the same recombination node,
-albeit with a number of mutations.
 
 \subsubsection{XF}
 XF is a well-supported recombinant between Delta and Omicron BA.1,
@@ -2797,15 +2836,24 @@ In the Pango designation issue
 (https://github.com/cov-lineages/pango-designation/issues/826),
 XAJ is suggested to be a recombinant between
 BA.2.12.1 (left parent) and BA.4 (right parent).
-XAJ was detected as a non-recombinant by sc2ts.
-There are only three loci supporting
-the right BA.4 parent in the ARG (T22917G, T23018G, and G23040A),
-which means that XAJ fell below our threshold of detection.
-There is also a deletion (H69 in Spike) supporting
-the BA.4 parent (see the Pango designation issue),
-but it was treated as missing data during ARG inference.
-If this deletion were accounted for,
-XAJ should have been detected as a recombinant.
+However, XAJ is not inferred to be a recombinant lineage in the ARG.
+From the subgraph, which shows the 18 XAJ samples
+plus a small number of relevant BA.4 samples,
+it can be seen that 9 sites leading to XAJ indeed recur
+in the lineage to the closest BA.4 sample (SRR18848050),
+which strongly indicates that this is a recombinant
+that is missed by sc2ts.
+The reason that is is not a recombinant in the ARG is
+that 6 sites represent a 6bp deletion and so are not used for inference.
+The remaining three sites (T22917G, T23018G, and G23040A)
+are not enough to exceed our k=4 threshold  for recombinant designation.
+Including deletions in inference would certainly
+lead to XAJ being detected as a recombinant,
+and with a lower threshold of k=3
+the distribution of mutations on the ARG topology suggests
+that it is is even possible that XAJ is a 2-breakpoint recombinant
+with the region from 21765-23535
+coming from the BA.4 labeled sample SRR18848050.
 
 \subsubsection{XAN/XAV}
 https://github.com/jeromekelleher/sc2ts-paper/discussions/783
@@ -2928,16 +2976,17 @@ In the Pango designation issue
 (https://github.com/cov-lineages/pango-designation/issues/1246),
 XBE was suggested as a recombinant between
 BA.5.2 (left parent; most of the genome) and
-BE.4 (right parent; somewhere from 23609 onwards).
-However, sc2ts treats the 65 XBE samples
+BE.4 (right parent; somewhere from 23,609 onwards). 
+owever, sc2ts treats the 65 XBE samples
 as non-recombinant descendants of BA.5.2
-because the number of supporting sites fell
-below our threshold of detection.
+because the number of supporting sites
+fell below our threshold of detection.
 We have included the BE.4 lineage on the subgraph,
-revealing three mutations (G22599C, C27800T, and G28681T)
-which occur in parallel above the root of the XBE clade and
-along the path ascending from the BE.4 sample,
-suggesting that if we used k=3 as the recombinant threshold,
+revealing two mutations (C27800T, and G28681T)
+which occur in parallel above the root of the XBE clade
+and along the path ascending from the displayed BE.4 sample,
+suggesting that if we used k=2
+as the recombinant threshold,
 sc2ts would indeed detect XBE as a recombinant.
 
 \subsubsection{XBF}
