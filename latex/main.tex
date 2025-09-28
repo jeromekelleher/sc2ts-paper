@@ -168,7 +168,7 @@ and show that it captures a broad range of
 known evolutionary features and provides novel 
 insights into the relationships between previously identified
 recombinant lineages.
-Together, the inference method, inferred ARG and 
+Together, the ARG, inference method and 
 suite of open-source analysis tools, 
 represent a powerful resource for future research.
 
@@ -240,10 +240,10 @@ greediness of the approach\cite{DeMaio2023}.
 The benefits of this simple model and the value of 
 a comprehensive genealogy updated in real-time~\cite{McBroome2021}
 were conclusively demonstrated, as the resource
-quickly becoming an indispensible element 
+quickly became an indispensible element 
 of the pandemic response\cite{Hinrichs2024}.
 The second challenge posed is that recombination is 
-an essential element of SARS-CoV-2 
+an important force in SARS-CoV-2 
 evolution\cite{Jackson2021,VanInsberghe2021,Focosi2022,
 Gutierrez2022,Ignatieva2022,Tamura2023},
 with multiple deep recombination events now known to be present in 
@@ -386,7 +386,7 @@ with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
 given the current ARG.
 Note that this is a form of parsimony, with the recombination
-penalty $k$ determining the relative parsimoniousness of recombinant
+penalty $k$ defining the relative parsimoniousness of recombinant
 vs non-recombinant solutions to the HMM.
 The per-sample copying paths produced by the HMM (most of which do not 
 involve recombination) form clusters of samples within a batch, which 
@@ -407,32 +407,30 @@ dataset\cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a XX core server with 500 GB of RAM 
 ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG 
-contains 2,689,054 nodes with estimated dates, 
+contains 2,689,054 nodes,  % Note the estimated dates 
 2,748,838 edges, and 2,285,344 mutations at 29,893 sites. 
 Including sample IDs and the Pango and Scorpio designations computed by
 Pangolin~\cite{OToole2021assignment} as metadata for each node,
 the ARG is stored in a 32MiB tszip format file.
-Of the nodes, 855 represent recombination events, 
-resulting in 316 distinct trees along the genome (some
-events occured at the same breakpoints).
 % It's confusing to talk about recombinant QC here as we're talking 
 % about the full ARG for the rest of the section.
+[Do we need to talk about recombination?]
+Of the nodes, 855 represent recombination events, 
+resulting in 316 distinct trees along the genome (some
+events occured at the same breakpoints [vague, rephrase]).
+[TODO note about loading up the time it takes to get the node 
+data dataframes in a notebook?]
 
-The ARG is a comprehensive record of the evolutionary history of SARS-CoV-2 and 
-is in close agreement with a state-of-the-art UShER phylogeny also built 
-from the Viridian dataset \cite{Hunt2024}.
-First, we validated the broad structure of the ARG against 
-the UShER phylogeny \cite{Hunt2024}
-by pruning both down to representative samples
-for 1097 deeply-sampled lineages (STAR Methods).
-Tanglegrams show that the ARG closely matches the phylogenetic
-structure of the UShER tree (Figures~\ref{fig:tanglegram_base},
-\ref{fig:tanglegram_delta},
-\ref{fig:tanglegram_ba2},
-\ref{fig:tanglegram_ba5}).
-Next, we compared the sc2ts and UShER inferences 
-from the Viridian dataset
-by pruning both to their intersection of 2,475,418 samples and 27,507 sites,
+% PARA: we compared against the UShER tree in a bunch of ways
+% NOTE: Trying to clarify that this of the pandemic period and we're 
+% not trying to cover *all* history.
+The ARG is a comprehensive record of the pandemic phase 
+of SARS-CoV-2 evolutionary history, and accurately reflects
+a range of results from the literature.
+First, we compared the sc2ts ARG and with the state-of-the-art UShER 
+tree inferred from the same dataset
+by pruning both to their intersection of 2,475,418 samples and 27,507 sites
+(STAR Methods)
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 and found they were very similar in terms of parsimony
@@ -440,10 +438,17 @@ and found they were very similar in terms of parsimony
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG
-against the mutational spectra from
-the Viridian UShER phylogeny and
+against the UShER tree and 
 a previous study \cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
+We validated that the broad phylogenetic structure of the ARG and 
+UShER tree closely match by generating tanglegrams for a set of representative
+samples from 1097 deeply-sampled lineages (STAR Methods; 
+Figures~\ref{fig:tanglegram_base},
+\ref{fig:tanglegram_delta},
+\ref{fig:tanglegram_ba2},
+\ref{fig:tanglegram_ba5}).
+
 
 % FIXME this is too detailed, and too methodsy. Abstract out and summarise
 % results
@@ -451,6 +456,7 @@ Input genome alignments are masked in sc2ts
 so that deletions and ambiguous bases are treated as missing data by the HMM,
 and once the samples are incorporated into the ARG,
 these bases are imputed to carry the values inherited by the node in question.
+
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023}, however,
 and to incorporate them into the ARG we identified a set of [XXX] sites
 most frequently involved in deletions [cite source?]
@@ -482,6 +488,7 @@ as being involved in deletions,
 we added mutations for XX of these highly recurrent sites
 that are used in Pango designation \cite{Rambaut2020} by post-hoc parsimony.
 Each node in the ARG was then assigned
+
 to one of 2058 Pango lineages using pangolin (STAR Methods).
 All but 21,680 sampled sequences (0.87\%) agreed
 with the source sequences in terms of Pango lineage assignment
