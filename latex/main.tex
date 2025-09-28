@@ -168,7 +168,7 @@ and show that it captures a broad range of
 known evolutionary features and provides novel 
 insights into the relationships between previously identified
 recombinant lineages.
-Together, the inference method, inferred ARG and 
+Together, the ARG, inference method and 
 suite of open-source analysis tools, 
 represent a powerful resource for future research.
 
@@ -240,10 +240,10 @@ greediness of the approach\cite{DeMaio2023}.
 The benefits of this simple model and the value of 
 a comprehensive genealogy updated in real-time~\cite{McBroome2021}
 were conclusively demonstrated, as the resource
-quickly becoming an indispensible element 
+quickly became an indispensible element 
 of the pandemic response\cite{Hinrichs2024}.
 The second challenge posed is that recombination is 
-an essential element of SARS-CoV-2 
+an important force in SARS-CoV-2 
 evolution\cite{Jackson2021,VanInsberghe2021,Focosi2022,
 Gutierrez2022,Ignatieva2022,Tamura2023},
 with multiple deep recombination events now known to be present in 
@@ -386,7 +386,7 @@ with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
 given the current ARG.
 Note that this is a form of parsimony, with the recombination
-penalty $k$ determining the relative parsimoniousness of recombinant
+penalty $k$ defining the relative parsimoniousness of recombinant
 vs non-recombinant solutions to the HMM.
 The per-sample copying paths produced by the HMM (most of which do not 
 involve recombination) form clusters of samples within a batch, which 
@@ -407,32 +407,29 @@ dataset\cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a XX core server with 500 GB of RAM 
 ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG 
-contains 2,689,054 nodes with estimated dates, 
+contains 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and 2,285,344 mutations at 29,893 sites. 
 Including sample IDs and the Pango and Scorpio designations computed by
 Pangolin~\cite{OToole2021assignment} as metadata for each node,
 the ARG is stored in a 32MiB tszip format file.
-Of the nodes, 855 represent recombination events, 
-resulting in 316 distinct trees along the genome (some
-events occured at the same breakpoints).
 % It's confusing to talk about recombinant QC here as we're talking 
 % about the full ARG for the rest of the section.
+Of the nodes, 855 represent recombination events, 
+resulting in 316 distinct trees along the genome (some
+events occured at the same breakpoints [vague, rephrase]).
+[TODO note about loading up the time it takes to get the node 
+data dataframes in a notebook?]
 
-The ARG is a comprehensive record of the evolutionary history of SARS-CoV-2 and 
-is in close agreement with a state-of-the-art UShER phylogeny also built 
-from the Viridian dataset \cite{Hunt2024}.
-First, we validated the broad structure of the ARG against 
-the UShER phylogeny \cite{Hunt2024}
-by pruning both down to representative samples
-for 1097 deeply-sampled lineages (STAR Methods).
-Tanglegrams show that the ARG closely matches the phylogenetic
-structure of the UShER tree (Figures~\ref{fig:tanglegram_base},
-\ref{fig:tanglegram_delta},
-\ref{fig:tanglegram_ba2},
-\ref{fig:tanglegram_ba5}).
-Next, we compared the sc2ts and UShER inferences 
-from the Viridian dataset
-by pruning both to their intersection of 2,475,418 samples and 27,507 sites,
+% PARA: we compared against the UShER tree in a bunch of ways
+% NOTE: Trying to clarify that this of the pandemic period and we're 
+% not trying to cover *all* history.
+The ARG is a comprehensive record of the pandemic phase 
+of SARS-CoV-2 evolutionary history, and accurately reflects
+a range of results from the literature.
+First, we compared the sc2ts ARG and with the state-of-the-art UShER 
+tree inferred from the same dataset
+by pruning both to their intersection of 2,475,418 samples and 27,507 sites
+(STAR Methods)
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 and found they were very similar in terms of parsimony
@@ -440,51 +437,22 @@ and found they were very similar in terms of parsimony
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG
-against the mutational spectra from
-the Viridian UShER phylogeny and
+against the UShER tree and 
 a previous study \cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
-
-% FIXME this is too detailed, and too methodsy. Abstract out and summarise
-% results
-Input genome alignments are masked in sc2ts
-so that deletions and ambiguous bases are treated as missing data by the HMM,
-and once the samples are incorporated into the ARG,
-these bases are imputed to carry the values inherited by the node in question.
-Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023}, however,
-and to incorporate them into the ARG we identified a set of [XXX] sites
-most frequently involved in deletions [cite source?]
-and post-hoc mapped alignment data for these sites to the ARG using parsimony.
-Although sites are treated independently in this approach,
-the approximation successfully identified the most frequent deletions,
-such as the recurrent 21991-21993 (See Document~\ref{sec:supplement_dels}
-for additional analysis).
-The node representing the origin of Alpha, with 290,407 descendants,
-is correctly associated with key lineage-defining deletions:
-11288-11296 (ORF1A del3675-3677),
-21765-21770 (Spike del69-70),
-21991-21993 (Spike del144), and
-28271 (non-coding).
-The Spike 69-70 deletion,
-which causes S-Gene Target Failure \cite{Walker2021},
-also emerges twice in the origin of Omicron -
-in the node leading to the BA.1 variant (342,099 descendants),
-and the node leading to the BA.4 variant (189,746 descendants).
-To speed up inference and to avoid issues
-caused by sites enriched for errors [citation?],
-sc2ts masks out a set of 100 sites identified
-as the most highly homoplasic
-by running on a subset of the data (STAR Methods).
-Of these sites, 9 are in the set of [1XX] ``problematic sites''
-masked by UShER \cite{Hunt2024}.
-In addition to remapping the data for sites identified
-as being involved in deletions,
-we added mutations for XX of these highly recurrent sites
-that are used in Pango designation \cite{Rambaut2020} by post-hoc parsimony.
-Each node in the ARG was then assigned
-to one of 2058 Pango lineages using pangolin (STAR Methods).
-All but 21,680 sampled sequences (0.87\%) agreed
-with the source sequences in terms of Pango lineage assignment
+We validated that the broad phylogenetic structure of the ARG and 
+UShER tree closely match by generating tanglegrams for a set of representative
+samples from 1097 deeply-sampled lineages (STAR Methods; 
+Figures~\ref{fig:tanglegram_base},
+\ref{fig:tanglegram_delta},
+\ref{fig:tanglegram_ba2},
+\ref{fig:tanglegram_ba5}).
+We also evaluated how well the ARG reflects the structure 
+of the Pango nomenclature system~\cite{Rambaut2020} by computing 
+Pango assignments for all 2.7 million nodes in the ARG using 
+Pangolin~\cite{OToole2021assignment} (STAR Methods).
+All but 21,680 of the exported sample alignments (0.87\%) agreed
+with the source consensus sequences in terms of Pango lineage assignment
 (comparable to the 0.27\% disagreement between pangolin-data
 versions 1.21 and 1.29 in the source Viridian metadata).
 A majority of these lineages (1473 of 2058)
@@ -493,6 +461,36 @@ increasing to 1779 (86\%) when we allow
 for multiple sibling origination nodes
 (Document~\ref{sec:supplement_pango_lineages}).
 
+[TODO we should mention UShER here - what do they do with dels?]
+Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
+but because they are difficult to disintinguish from bioinformatics errors 
+and their multi-base nature presents challenges to the Markovian structure of 
+the LS HMM, we masked out all gap characters as missing data during primary
+inference. 
+To incorporate the most important deletions into the ARG, we 
+remapped data using posthoc parsimony at 75 sites involved in deletions 
+with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
+during postprocessing (STAR Methods).
+Although sites are treated independently in this approach,
+runs of mutations to the gap character at adjacent sites
+correctly identified many known 
+high frequency (Table~\ref{tab:major_dels}) and 
+recurrent (Table~\ref{tab:rec_dels}) deletions.
+For example, the 4 characteristic deletions associated with 
+% FIXME: this is just my notation - is this something recognised more 
+% widely? If not, fix to something that is?
+Alpha (11288+9, 21765+6, 21991+3, 28271+1) are correctly
+identified as having a single origin [CITATION?]
+(Figure~\ref{fig:subgraph_alpha}).
+The 21765+6 deletion (Spike 69-70)
+which causes S-Gene Target Failure \cite{Walker2021},
+emerges two more times at the origins of the 
+BA.1 and BA.4 variants.
+Although most highly recurrent deletions are likely errors,
+some known truly recurrent deletions are present,
+for example, two deletions in S1-NTD [WHICH TWO???]
+associated with antibody escape\cite{McCarthy2021}.
+See Document\ref{sec:supplement_dels} for further analysis.
 
 \subsection*{Epidemiologically relevant recombinant lineages}
 
@@ -2292,6 +2290,8 @@ although filtering the recombination events to the 354 with better support revea
 
 \subsection{Analysis of deletion events}
 \label{sec:supplement_dels}
+[TODO This is too terse and too vague. Be concrete and precise. WHICH 
+deletions are we talking about?]
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
 We reconstructed a more comprehensive mutational landscape
@@ -2305,6 +2305,9 @@ All these deletions are known to occur in major VOCs
 \cite{Akaishi2023,Li2023indels}).
 Eight of these deletions occur in S1-NTD,
 a known hotspot for recurrent deletions \cite{McCarthy2021}.
+
+[This is a separate paramgraph discussing where the model has 
+broken down a bit]
 There are three contiguous deletions in NSP6
 (4-base at 11288, 5-base at 11283, and 5-base at 11292),
 which should have been mapped as two 9-base deletions,
@@ -2315,7 +2318,9 @@ but they were broken up
 during deletion remapping because they had
 overlapping four sites at 11288-11292
 (which was mapped as the 4-base deletion event).
-Furthermore, the placement of these deletion events in the ARG
+
+Furthermore, the placement of these [Which events? All of them? just 
+the ones we didn't properly place?] deletion events in the ARG
 reflects that of the VOC-associated deletion events
 inferred in a previous study \cite{Akaishi2023}.
 
