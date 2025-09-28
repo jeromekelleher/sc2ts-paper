@@ -407,14 +407,13 @@ dataset\cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a XX core server with 500 GB of RAM 
 ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG 
-contains 2,689,054 nodes,  % Note the estimated dates 
+contains 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and 2,285,344 mutations at 29,893 sites. 
 Including sample IDs and the Pango and Scorpio designations computed by
 Pangolin~\cite{OToole2021assignment} as metadata for each node,
 the ARG is stored in a 32MiB tszip format file.
 % It's confusing to talk about recombinant QC here as we're talking 
 % about the full ARG for the rest of the section.
-[Do we need to talk about recombination?]
 Of the nodes, 855 represent recombination events, 
 resulting in 316 distinct trees along the genome (some
 events occured at the same breakpoints [vague, rephrase]).
@@ -448,12 +447,27 @@ Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
+We also evaluated how well the ARG reflects the structure 
+of the Pango nomenclature system~\cite{Rambaut2020} by computing 
+Pango assignments for all 2.7 million nodes in the ARG using 
+Pangolin~\cite{OToole2021assignment} (STAR Methods).
+All but 21,680 of the exported sample alignments (0.87\%) agreed
+with the source consensus sequences in terms of Pango lineage assignment
+(comparable to the 0.27\% disagreement between pangolin-data
+versions 1.21 and 1.29 in the source Viridian metadata).
+A majority of these lineages (1473 of 2058)
+have monophyletic origins within the ARG,
+increasing to 1779 (86\%) when we allow
+for multiple sibling origination nodes
+(Document~\ref{sec:supplement_pango_lineages}).
 
+[TODO we should mention UShER here - what do they do with dels?]
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
 but because they are difficult to disintinguish from bioinformatics errors 
 and their multi-base nature presents challenges to the Markovian structure of 
 the LS HMM, we masked out all gap characters as missing data during primary
-inference. To incorporate the most important deletions into the ARG, we 
+inference. 
+To incorporate the most important deletions into the ARG, we 
 remapped data using posthoc parsimony at 75 sites involved in deletions 
 with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
 during postprocessing (STAR Methods).
@@ -466,7 +480,8 @@ For example, the 4 characteristic deletions associated with
 % FIXME: this is just my notation - is this something recognised more 
 % widely? If not, fix to something that is?
 Alpha (11288+9, 21765+6, 21991+3, 28271+1) are correctly
-identified as having a single origin [CITATION?].
+identified as having a single origin [CITATION?]
+(Figure~\ref{fig:subgraph_alpha}).
 The 21765+6 deletion (Spike 69-70)
 which causes S-Gene Target Failure \cite{Walker2021},
 emerges two more times at the origins of the 
@@ -474,32 +489,8 @@ BA.1 and BA.4 variants.
 Although most highly recurrent deletions are likely errors,
 some known truly recurrent deletions are present,
 for example, two deletions in S1-NTD [WHICH TWO???]
-associated with antibody escape \cite{McCarthy2021}
+associated with antibody escape\cite{McCarthy2021}.
 See Document\ref{sec:supplement_dels} for further analysis.
-
-caused by sites enriched for errors [citation?],
-sc2ts masks out a set of 100 sites identified
-as the most highly homoplasic
-by running on a subset of the data (STAR Methods).
-Of these sites, 9 are in the set of [1XX] ``problematic sites''
-masked by UShER \cite{Hunt2024}.
-In addition to remapping the data for sites identified
-as being involved in deletions,
-we added mutations for XX of these highly recurrent sites
-that are used in Pango designation \cite{Rambaut2020} by post-hoc parsimony.
-Each node in the ARG was then assigned
-
-to one of 2058 Pango lineages using pangolin (STAR Methods).
-All but 21,680 sampled sequences (0.87\%) agreed
-with the source sequences in terms of Pango lineage assignment
-(comparable to the 0.27\% disagreement between pangolin-data
-versions 1.21 and 1.29 in the source Viridian metadata).
-A majority of these lineages (1473 of 2058)
-have monophyletic origins within the ARG,
-increasing to 1779 (86\%) when we allow
-for multiple sibling origination nodes
-(Document~\ref{sec:supplement_pango_lineages}).
-
 
 \subsection*{Epidemiologically relevant recombinant lineages}
 
