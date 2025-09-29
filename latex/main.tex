@@ -666,7 +666,7 @@ parent lineages and breakpoint intervals is excellent,
 with similar performance to
 the RecombinHunt \cite{Alfonsi2024}
 and CovRecomb \cite{Li2024CovRecomb} detection methods
-(Table~\ref{tab:method_concordance}).
+(STAR Methods; Table~\ref{tab:method_concordance}).
 Of the Type I events, 13 are monophyletic for the focal
 pango (i.e., the descendants are entirely from that lineage); 
 Figure~\ref{fig:subgraphs}A shows XA as an example (see also 
@@ -704,15 +704,65 @@ Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages},
 and Document S2 for ARG visualisations.
 
+\subsection*{Quality control of recombination events}
+Sequencing errors in genome assemblies \cite{Turakhia2020},
+read misalignments \cite{Hunt2024}, and
+multi-nucleotide substitutions \cite{DeMaio2020issues} (MNSs)
+can cause short regions of a sample genome to match more closely
+to an alternative genome rather than the true parent.
+Such genomic regions can be mistaken for evidence of recombination,
+because the LS HMM counts each base separately.
+We developed a quality control (QC) measure 
+which counts the number of ``loci'' (clusters of closely spaced sites)
+supporting the left and right parents of a recombinant (STAR Methods),
+and effectively identifies a range of issues. 
+Figure~\ref{fig:recombinant_qc} plots the net number of supporting
+loci for the left and right parents for all 855 recombination
+events. The 501 recombinants with fewer than 4 net loci supporting 
+each parent are highly enriched for the AmpliSeq V1 sequencing
+protocol [TODO concrete numbers?], 
+and 71 (14\%) are associated with 6-base deletion in the 
+Delta lineage, known to be affected 
+by amplicon dropout\cite{Sanderson2021}.
+The 354 remaining recombination events that pass this QC filter
+contain all of the recombinants associated with Pango X lineages
+(Table~\ref{tab:pango_x_lineages}) and 
+the Jackson et al recombinants (Document\ref{sec:jackson_recombs}).
+
+To assist in the identification of such issues
+we developed a SnpIt-like~\cite{OToole2024} visualisation 
+that shows the informative genomic positions between 
+a recombinant and its parent sequences, and highlights 
+potentially problematic loci.
+Each copying pattern shows the positions
+where the allelic state in a recombinant
+(middle row) matches that of the left (upper row, coloured green) 
+or right parent (lower row, coloured blue),
+or where the recombination event requires a de-novo mutation
+(gold, with mutational change below).
+See Figures~\ref{fig:averted_mutations}D and
+\ref{fig:pango_x_copying_patterns} for copying patterns of the 
+Pango X lineages, and 
+Figure~\ref{fig:copying_pattern_examples} for copying patterns
+highlighting specific types of QC problem (and more details on the 
+visualisation).
+ 
 \subsection*{Quantification of evidence for recombination}
 
-%%% SHZ: We may not need this section at all, but I'm keeping it for now.
-%%% We should probably have a condensed version of the first paragraph in the Pango X section.
-%%% The second and third paragraphs should probably be removed entirely.
+The LS HMM at the heart of sc2ts provides a simple and powerful means 
+of quantifying the plausibility of a given recombination event.
+To do this, we force the HMM to find a Viterbi solution for the 
+putative recombinant sequence with no recombination by specifying
+a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
+The difference between the numbers of mutations between 
+the two solutions---the number of 
+mutations ``averted'' by recombination---allows us to quantify
+the plausibility.
+
 Sc2ts provides a method to facilitate the discovery of recombination events,
 by comparing how well a sample fits the ARG under a model allowing recombination
 versus a model disallowing recombination,
-as measured by the number of resulting mutations (Figure~\ref{fig:methodology}).
+as measured by the number of resulting mutations 
 The more mutations are ``averted'' by allowing recombination,
 the stronger the evidence for recombination.
 We calculated the number of averted mutations for
@@ -1861,6 +1911,8 @@ workflow (see \nameref{sec:data_and_code_availability}).
 
 
 \subsubsection*{Quality control of recombination events}
+[TODO rewrite this to account for new Results section]
+
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
 multi-nucleotide substitutions (MNS \cite{DeMaio2020issues})
@@ -2078,6 +2130,8 @@ are concordant with those identified by the community (STAR Methods).
 We found that the methods performed well overall,
 with comparable concordance rates (Table~\ref{tab:method_concordance}),
 indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
+
+[TODO explain why we restrict to the Type I events]
 
 For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
 from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
