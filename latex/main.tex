@@ -662,8 +662,12 @@ is the ancestor of all samples assigned that (or a descendant) Pango
 lineage. These are the Type I events, in which the ARG reflects the
 expected phylogenetic structure of Pango designation.
 Among these events, concordance with the community-consensus 
-parent lineages and breakpoint intervals is excellent (see next 
-section). 13 of the Type I events are monophyletic for the focal
+parent lineages and breakpoint intervals is excellent,
+with similar performance to
+the RecombinHunt \cite{Alfonsi2024}
+and CovRecomb \cite{Li2024CovRecomb} detection methods
+(STAR Methods; Table~\ref{tab:method_concordance}).
+Of the Type I events, 13 are monophyletic for the focal
 pango (i.e., the descendants are entirely from that lineage); 
 Figure~\ref{fig:subgraphs}A shows XA as an example (see also 
 Document~\ref{sec:jackson_recombs} for further analysis 
@@ -700,79 +704,65 @@ Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages},
 and Document S2 for ARG visualisations.
 
+\subsection*{Quality control of recombination events}
+Sequencing errors in genome assemblies \cite{Turakhia2020},
+read misalignments \cite{Hunt2024}, and
+multi-nucleotide substitutions \cite{DeMaio2020issues} (MNSs)
+can cause short regions of a sample genome to match more closely
+to an alternative genome rather than the true parent.
+Such genomic regions can be mistaken for evidence of recombination,
+because the LS HMM counts each base separately.
+We developed a quality control (QC) measure 
+which counts the number of ``loci'' (clusters of closely spaced sites)
+supporting the left and right parents of a recombinant (STAR Methods),
+and effectively identifies a range of issues. 
+Figure~\ref{fig:recombinant_qc} plots the net number of supporting
+loci for the left and right parents for all 855 recombination
+events. The 501 recombinants with fewer than 4 net loci supporting 
+each parent are highly enriched for the AmpliSeq V1 sequencing
+protocol [TODO concrete numbers?], 
+and 71 (14\%) are associated with 6-base deletion in the 
+Delta lineage, known to be affected 
+by amplicon dropout\cite{Sanderson2021}.
+The 354 remaining recombination events that pass this QC filter
+contain all of the recombinants associated with Pango X lineages
+(Table~\ref{tab:pango_x_lineages}) and 
+the Jackson et al recombinants (Document\ref{sec:jackson_recombs}).
 
-\subsection*{Comparison with other recombination detection methods}
-
-%%% TODO: Mention RIPPLES somewhere here? Or just in Discussion?
-We compared sc2ts against three state-of-the-art methods that detect inter-lineage recombinants:
-RecombinHunt \cite{Alfonsi2024}, CovRecomb \cite{Li2024CovRecomb}, and rebar (https://github.com/phac-nml/rebar).
-These methods use the same underlying approach:
-they scan candidate recombinant sequences for mutations 
-associated with different Pango lineages
-without using a phylogeny.
-
-To evaluate the concordance of the methods in
-identifying the Pango lineages of recombinant parents and locating recombination breakpoints,
-we focus on the Pango X lineages associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
-using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
-For RecombinHunt and CovRecomb,
-we summarized the detection results for these Pango X lineages (if available)
-reported in the original studies \cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
-For each method, we determined the Pango X lineages
-for which the inferred parental lineages and breakpoint intervals
-are concordant with those identified by the community (STAR Methods).
-We found that the methods performed well overall,
-with comparable concordance rates (Table~\ref{tab:method_concordance}),
-indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
-
-% https://github.com/jeromekelleher/sc2ts-paper/issues/717
-167 (43\%) of QC-passing recombination events were also detected as recombinants by rebar.
-We hypothesize that this disagreement arose from
-differences in sensitivity between these methods.
-Consistent with this, we found that rebar needs a higher level of divergence between parents
-to correctly classify a sequence as recombinant, as shown by
-a shorter time to their MRCA (Figure \ref{fig:averted_mutations}B) and
-a lower distance between their Pango identity (Figure \ref{fig:averted_mutations}C).
-
-
-\begin{table}
-\caption{
-Concordance among methods in characterizing Pango X lineages.
-These comparisons focus on the Pango X lineages associated with
-the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
-For each method, we calculated the number of Pango X lineages
-which have inferred parent Pango lineages and breakpoint intervals
-concordant with those proposed by the community.
-The denominators indicate the number of Pango X lineages
-for which detection results are available from the original studies \cite{Alfonsi2024,Li2024CovRecomb}.
-For the Pango X lineages with non-overlapping breakpoint intervals,
-the distances between the inferred breakpoint intervals and 
-those proposed by the community are shown (median and range).
-}
-\label{tab:method_concordance}
-\begin{tabular}{lccc}
-\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
-\cmidrule(lr){2-2} \cmidrule(lr){3-4}
-Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
-\midrule
-Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
-RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
-RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
-CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
+To assist in the identification of such issues
+we developed a SnpIt-like~\cite{OToole2024} visualisation 
+that shows the informative genomic positions between 
+a recombinant and its parent sequences, and highlights 
+potentially problematic loci.
+Each copying pattern shows the positions
+where the allelic state in a recombinant
+(middle row) matches that of the left (upper row, coloured green) 
+or right parent (lower row, coloured blue),
+or where the recombination event requires a de-novo mutation
+(gold, with mutational change below).
+See Figures~\ref{fig:averted_mutations}D and
+\ref{fig:pango_x_copying_patterns} for copying patterns of the 
+Pango X lineages, and 
+Figure~\ref{fig:copying_pattern_examples} for copying patterns
+highlighting specific types of QC problem (and more details on the 
+visualisation).
+ 
 \subsection*{Quantification of evidence for recombination}
 
-%%% SHZ: We may not need this section at all, but I'm keeping it for now.
-%%% We should probably have a condensed version of the first paragraph in the Pango X section.
-%%% The second and third paragraphs should probably be removed entirely.
+The LS HMM at the heart of sc2ts provides a simple and powerful means 
+of quantifying the plausibility of a given recombination event.
+To do this, we force the HMM to find a Viterbi solution for the 
+putative recombinant sequence with no recombination by specifying
+a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
+The difference between the numbers of mutations between 
+the two solutions---the number of 
+mutations ``averted'' by recombination---allows us to quantify
+the plausibility.
+
 Sc2ts provides a method to facilitate the discovery of recombination events,
 by comparing how well a sample fits the ARG under a model allowing recombination
 versus a model disallowing recombination,
-as measured by the number of resulting mutations (Figure~\ref{fig:methodology}).
+as measured by the number of resulting mutations 
 The more mutations are ``averted'' by allowing recombination,
 the stronger the evidence for recombination.
 We calculated the number of averted mutations for
@@ -833,6 +823,16 @@ leading to XA, Xx
 undesignated recombination event under XBB, which we here refer to as  XBB.x.}
 \label{fig:averted_mutations}
 \end{figure}
+
+
+% https://github.com/jeromekelleher/sc2ts-paper/issues/717
+167 (43\%) of QC-passing recombination events were also detected as recombinants by rebar.
+We hypothesize that this disagreement arose from
+differences in sensitivity between these methods.
+Consistent with this, we found that rebar needs a higher level of divergence between parents
+to correctly classify a sequence as recombinant, as shown by
+a shorter time to their MRCA (Figure \ref{fig:averted_mutations}B) and
+a lower distance between their Pango identity (Figure \ref{fig:averted_mutations}C).
 
 
 \subsection*{Recombination breakpoint intervals along the genome}
@@ -1911,6 +1911,8 @@ workflow (see \nameref{sec:data_and_code_availability}).
 
 
 \subsubsection*{Quality control of recombination events}
+[TODO rewrite this to account for new Results section]
+
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
 multi-nucleotide substitutions (MNS \cite{DeMaio2020issues})
@@ -2113,6 +2115,23 @@ in the Viridian metadata provided by Hunt et al.\cite{Hunt2024}.
 
 
 \subsubsection*{Comparison with recombination detection methods}
+[TODO Merge in this text that was in the Results]
+
+To evaluate the concordance of the methods in
+identifying the Pango lineages of recombinant parents and locating recombination breakpoints,
+we focus on the Pango X lineages associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
+using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
+For RecombinHunt and CovRecomb,
+we summarized the detection results for these Pango X lineages (if available)
+reported in the original studies \cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
+For each method, we determined the Pango X lineages
+for which the inferred parental lineages and breakpoint intervals
+are concordant with those identified by the community (STAR Methods).
+We found that the methods performed well overall,
+with comparable concordance rates (Table~\ref{tab:method_concordance}),
+indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
+
+[TODO explain why we restrict to the Type I events]
 
 For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
 from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
@@ -2460,6 +2479,37 @@ Start & Length & Region & Occurrences \\
 27532 & 1 & ORF7a & 404 \\
 335 & 1 & ORF1ab / NSP1 & 370 \\
 337 & 1 & ORF1ab / NSP1 & 346 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{
+Concordance among methods in characterizing Pango X lineages.
+These comparisons focus on the Pango X lineages associated with
+the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
+For each method, we calculated the number of Pango X lineages
+which have inferred parent Pango lineages and breakpoint intervals
+concordant with those proposed by the community.
+The denominators indicate the number of Pango X lineages
+for which detection results are available from 
+the original studies \cite{Alfonsi2024,Li2024CovRecomb}.
+For the Pango X lineages with non-overlapping breakpoint intervals,
+the distances between the inferred breakpoint intervals and 
+those proposed by the community are shown (median and range).
+}
+\label{tab:method_concordance}
+\centering
+\begin{tabular}{lccl}
+\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-4}
+Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
+\midrule
+Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
+RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
+RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
+CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 \bottomrule
 \end{tabular}
 \end{table}
