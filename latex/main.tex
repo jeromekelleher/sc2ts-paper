@@ -2297,7 +2297,7 @@ deletions are we talking about?]
 We reconstructed a more comprehensive mutational landscape
 of SARS-CoV-2 by mapping deletions onto the ARG
 using post-hoc parsimony.
-We identified important deletion events
+We identified major deletion events
 (which are inherited by at least 10,000 samples;
 Table~\ref{tab:major_dels}).
 All these deletions are known to occur in major VOCs
@@ -2306,38 +2306,76 @@ All these deletions are known to occur in major VOCs
 Eight of these deletions occur in S1-NTD,
 a known hotspot for recurrent deletions \cite{McCarthy2021}.
 
-[This is a separate paramgraph discussing where the model has 
-broken down a bit]
-There are three contiguous deletions in NSP6
-(4-base at 11288, 5-base at 11283, and 5-base at 11292),
+The placement of the following major deletion events
+in the ARG matches the phylogenetic placement of
+VOC-associated deletion events
+suggested in a previous study \cite{Akaishi2023}:
+a 3-base deletion 21,991 above the Alpha origin node;
+two 6-base deletions at 22,029 and 28,248 above the Delta origin node;
+a 9-base deletion at 28,362 above Omicron (B.1.1.529) origin node;
+a 3-base deletion at 6,513,
+a 9-base deletion at 21,987, and
+a 3-base deletion at 22,194 above the BA.1 origin node;
+a 9-base deletion at 21,633 above the BA.2 origin node.
+
+However, the placement of several major deletion events
+in the ARG differs from the phylogenetic placement of
+the corresponding deletion events suggested
+in Akaishi and Fujiwara \cite{Akaishi2023}.
+That study \cite{Akaishi2023} suggests that
+a 6-base deletion at 21,765 occurred
+before the divergence of Alpha and Omicron,
+but in the ARG this deletion appears to be recurrent,
+occurring above the origin nodes of Alpha, BA.1, and BA.4.
+Similarly, that study \cite{Akaishi2023} suggests that
+a 1-base deletion at 28,271 occurred
+before the divergence of Alpha, Delta, and Omicron,
+but it is mapped as a recurrent deletion in the ARG
+(at the Alpha origin node and above node 1436808).
+These differences suggest that
+some key deletions carry important phylogenetic signals
+ignored by the HMM used by sc2ts.
+
+% This is a separate paragraph discussing where the model has 
+% broken down a bit.
+Furthermore, there are three contiguous deletions in NSP6
+(5-base at 11,283, 4-base at 11,288, and 5-base at 11,292),
 which should have been mapped as two 9-base deletions,
-one above the BA.1 origin node and
-the other above the BA.2 origin node in the ARG
-(Figure~\ref{fig:subgraph_ba1_ba2}),
-but they were broken up
-during deletion remapping because they had
-overlapping four sites at 11288-11292
+one above the BA.1 origin node (starting at 11,283) and
+the other above the BA.2 origin node (starting at 11,288)
+in the ARG (Figure~\ref{fig:subgraph_ba1_ba2}),
+but they were broken up during deletion remapping
+because they had four overlapping sites at 11,288-11,292
 (which was mapped as the 4-base deletion event).
+Furthermore, the analysis of
+Akaishi and Fujiwara \cite{Akaishi2023} suggests that
+a 9-base deletion at 11,288
+occurred before the divergence of Alpha and Omicron.
+In the ARG, however, this deletion is mapped
+above the Alpha origin node.
 
-Furthermore, the placement of these [Which events? All of them? just 
-the ones we didn't properly place?] deletion events in the ARG
-reflects that of the VOC-associated deletion events
-inferred in a previous study \cite{Akaishi2023}.
-
-We found highly recurrent deletions using the ARG,
+By mapping deletion events on the ARG,
+we also identified highly recurrent deletions,
 for example, the top 20 deletions in terms of
 the number of occurrences in the ARG
 shown in Table~\ref{tab:rec_dels}.
-About half of these deletions are one-base and
-occur in the 5' or 3' UTR of the SARS-CoV-2 genome,
+About half of these deletions are 1-base and
+occur in the 5' or 3' UTR of the SARS-CoV-2 genome
+(from the start to 250 and from 29,700 to the end),
 which are enriched for poor-quality sequencing data.
-Genuine recurrent deletions are also captured in the ARG,
+Genuine recurrent deletions are captured in the ARG,
 for example, two known recurrent deletions in S1-NTD
 associated with antibody escape \cite{McCarthy2021}.
-In-depth analysis of the deletions in the ARG
+There are also 1-base recurrent deletions
+at 29,541, 29,543, and 29,555
+in a non-coding region (between N and ORF10)
+which are plausibly homoplasic as they might arise due to
+polymerase skipping during genome replication and
+this regions is likely free from strong selective pressure.
+An in-depth analysis of all the recurrent deletions in the ARG
 is beyond the scope of this study,
-but we believe that the ARG will greatly
-facilitate future evolutionary studies of
+but we believe that the ARG will serve as a rich resource
+to facilitate future evolutionary studies of
 deletions in SARS-CoV-2.
 
 
@@ -3084,9 +3122,10 @@ If these two sites had been used during ARG inference,
 the branch attached to BA.2.1 would have been attached to
 the BA.2.5 shown on the top left instead,
 leading to a more parsimonious local topology
-with two mutations on the left branch.
+with two mutations on the left branch. This would also remove the two
+blue lines on the left and side of the copying pattern.
 
-\subsubsection{XBQ/XBK/XBK.1/CJ.1.3}
+\subsubsection{XBQ/XBK/XBK.1}
 https://github.com/jeromekelleher/sc2ts-paper/issues/349
 https://github.com/jeromekelleher/sc2ts-paper/issues/350
 
