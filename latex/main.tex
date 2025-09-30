@@ -442,7 +442,7 @@ a previous study \cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We validated that the broad phylogenetic structure of the ARG and 
 UShER tree closely match by generating tanglegrams for a set of representative
-samples from 1097 deeply-sampled lineages (STAR Methods; 
+samples from 814 deeply-sampled lineages (STAR Methods; 
 Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
@@ -1024,19 +1024,25 @@ maximum number of children (7708) across all 348 local trees.
 We present sc2ts, a real-time ARG inference method,
 and applied it to build a $\sim$2.48 million-sample pandemic-scale ARG of SARS-CoV-2.
 By identifying specific samples as parents,
-sc2ts enables more precise interpretation of recombinants than state-of-the-art recombination detection methods,
-which find recombinants by matching a given sample to pre-defined population-averaged mutational profiles of Pango lineages.
-Sc2ts treats recombination as an integral part of SARS-CoV-2 evolution, in contrast to RIPPLES \cite{Turakhia2022}
+sc2ts enables more precise interpretation of recombinants
+than state-of-the-art recombination detection methods,
+which find recombinants by matching a given sample
+to pre-defined population-averaged mutational profiles of Pango lineages.
+Sc2ts treats recombination as an integral part of SARS-CoV-2 evolution,
+in contrast to RIPPLES \cite{Turakhia2022}
 which detects recombinants post hoc by searching for unusual branches in a given phylogeny,
 inevitably resulting in an incomprehensive representation of SARS-CoV-2 evolution.
 Combined with new methods and tools to evaluate evidence for recombination,
-sc2ts is a significant technological advance over current methods for the discovery and
-analysis of recombinants and efficient inference of SARS-CoV-2 genealogy.
+sc2ts is a significant technological advance over current methods
+for the discovery and analysis of recombinants and
+efficient inference of SARS-CoV-2 genealogy.
 
 The ARG itself is a useful resource to support future studies of SARS-CoV-2.
 Our results show that the ARG captures and unifies important features of SARS-CoV-2 evolution,
-which are shown in different studies using different methods, tools, and approaches \cite{Turakhia2022,Bloom2023,Hunt2024}.
-The ARG displays remarkable phylogenetic congruence with a state-of-the-art phylogeny built using UShER.
+which are shown in different studies
+using different methods, tools, and approaches \cite{Turakhia2022,Bloom2023,Hunt2024}.
+The ARG displays remarkable phylogenetic congruence
+with a state-of-the-art phylogeny built using UShER.
 Also, the ARG compactly encodes genetic variation in millions of SARS-CoV-2 genomes,
 allowing for convenient and efficient reuse of this valuable dataset
 for a variety of evolutionary and genetic analyses beyond those presented here.
@@ -1045,19 +1051,21 @@ for a variety of evolutionary and genetic analyses beyond those presented here.
 % and will make an impact comparable to the impact that a recently published human ARG \cite{Wohns2022}
 % has made on our understanding of human genetic ancestry and demographic past (e.g., REF).
 So far, recent developments in ARG methods have focused almost 
-exclusively on applications to human sequencing data. In that space,
-the availability of ARGs reconstructed from large datasets has already
-had tremendous impact on improving our understanding of human genetic
-ancestry and past demography \cite{Wohns2022}. We expect
-similar leaps to be enabled through tailoring ARG reconstruction methods
-to data from other species and pathogens. Specifically, existing
-inference methods can be adapted to use the sc2ts ARG for the 
-genealogy-based study of selection \cite{hejase2022deep} or the
-geographic spread of the virus through time
-\cite{Grundler2025geographic}. This is in addition to simpler
-analyses, such as calculating mutation spectra or querying the number
-or frequency of mutations at a given position, which the ARG makes 
-significantly more efficient, and ultimately more easily reproducible.
+exclusively on applications to human sequencing data.
+In that space, the availability of ARGs reconstructed from large datasets
+has already had tremendous impact on improving our understanding of
+human genetic ancestry and past demography \cite{Wohns2022}.
+We expect similar leaps to be enabled
+through tailoring ARG reconstruction methods
+to data from other species and pathogens.
+Specifically, existing inference methods can be adapted
+to use the sc2ts ARG for the genealogy-based study of selection \cite{hejase2022deep}
+or the geographic spread of the virus through time \cite{Grundler2025geographic}.
+This is in addition to simpler analyses,
+such as calculating mutation spectra
+or querying the number or frequency of mutations at a given position,
+which the ARG makes significantly more efficient, and
+ultimately more easily reproducible.
 Since the ARG is a condensed representation of the genetic information
 contained in the sequencing data, it can also be used to understand,
 for instance, how the variability in sequencing efforts across time 
@@ -1065,9 +1073,8 @@ and location affects our ability to reconstruct the origin of
 important lineages and detect new recombinants.
 Since reconstructing the ARG is computationally expensive, 
 and checking and improving various aspects of its quality is laborious, 
-we hope that making this resource openly available will save
-significant time and 
-effort for other researchers and enable immediate focus on analysing 
+we hope that making this resource openly available will save significant time
+and effort for other researchers and enable immediate focus on analyzing
 the information contained within this data. In-depth analysis of the
 ARG is also incredibly useful for identifying important directions for
 further research, both regarding methods (where current models do not
@@ -1075,24 +1082,29 @@ correctly capture features of the data) and data processing
 (where gaps in sequencing or data artifacts result in clear
 reconstruction errors).
 
-We contribute several novel methods and concepts which may find applications beyond sc2ts.
+We contribute several novel methods and concepts
+which may find applications beyond sc2ts.
 First, we devise a simplified LS model that extends the classic concept of parsimony.
 In sc2ts, this model allows for accelerated HMM likelihood calculations,
 enabling reconstruction of the pandemic-scale ARG presented here.
-Existing HMMs used in statistical genetics may be modified in a similar way for significant speedup.
+Existing HMMs used in statistical genetics may be modified
+in a similar way for significant speedup.
 Second, we propose the concept of mutations averted by recombination,
 which leads to an interpretable quantity to weigh the support for 
-the hypothesis that a given sample is a recombinant against the hypothesis that it is a non-recombinant,
+the hypothesis that a given sample is a recombinant against
+the hypothesis that it is a non-recombinant,
 considering the sampled genetic diversity in an ARG and a specific HMM.
-Third, we propose the concept of HMM cost to identify poorly explained samples
-which are either too divergent or have a high number of mutations inconsistent with their collection dates.
-Here we use HMM cost to reject time traveling samples,
+Third, we propose the concept of HMM cost
+to identify poorly explained samples
+which are either too divergent or
+have a high number of mutations inconsistent with their collection dates.
+Here we use HMM cost to reject time-traveling samples,
 which no existing phylogenetic method detects and handles during inference
 (e.g., in the Viridian UShER phylogeny, parent and child nodes
 do not necessarily follow time order \cite{Hunt2024}),
 resulting in a cleaner dataset without samples
 with wrong collection dates that may affect downstream analyses.
-Future work may be estimating dates
+Future work may be to estimate dates
 for the suspected time traveling samples using the ARG provided here and
 the sc2ts sample matching engine.
 
@@ -2033,32 +2045,28 @@ in tszip format (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
 
-We used Pango lineage designations to select representative samples
-for the majority of the 2026 Pango lineages in the ARG.
-We first identify an ``origination node'' for each Pango lineage,
-defined as the oldest node in the ARG with that Pango designation
-whose descendants in any tree include more than 50\% of the Pango samples of
-the focal type.
-The representative sample is then chosen as the oldest sample descending from the origination node
+We compare the non-recombinant parts of the ARG with the UShER topology
+by simplifying the phylogenies to a smaller number of
+Pango representative samples.
+We focus on the 1473 Pango lineages that have perfect ``origination events'' 
+as described in \ref{sec:supplement_pango_lineages}, and
+omit Pango designations starting with "X",
+to avoid recombinants, leaving 1329 Pango lineages.
+To ensure that each sample is a tip (rather than an internal node)
+in the simplified topologies,
+a representative sample is then chosen as the oldest sample
+descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
-We ``simplify''\cite{Kelleher2018efficient,Wong2024} 
-the ARG to include only the representative samples,
-resulting in an intermediate ARG of 1867 samples,
-then additionally remove internal samples,
-known recombinants (i.e.\ the Pango X lineages) and three ``singleton recombinant
-samples''
-in which a single Pango lineage appears immediately below a recombination node.
-This results in a simplified ARG of 1667 samples, each with a different Pango designation.
+We then further remove 4 samples
+which are singleton descendants of a recombination event in the ARG
+(representing potentially missed Pango recombinant lineages),
+as well as 43 samples that are descendants of the recombinant XBB
+but which do not start with an "X".
+This results in a simplified ARG of 1282 samples,
+each sample having a different Pango designation.
 
-We compare topology of the simplified ARG against the intersection UShER tree
-(which has been dated) simplified down to the same 1667 samples.
-
-The simplified ARG contains four single-breakpoint recombination nodes,
-corresponding to the origins of Delta, BA.2, BA.5, and a further BA.2 recombinant
-which we deem artifactual by our standard criteria
-and treat as non-recombinant for the purposes of plotting
-(the breakpoint is on the far right at position 27382,
-and supported by only 4 distinguishing sites / 3 loci).
+The simplified ARG contains two single-breakpoint recombination nodes. The first
+corresponds to a BA.2 recombinant whose breakpoint is on the far right (position 27382) supported by only 4 sites / 3 loci, anch which therefore does not pass our recombinant quality control measure. The second is the origin of BA.5, which (the ).
 To reduce plot density, we consider only those Pango lineages with fewer than 10 samples,
 and extract non-recombinant structures from the ARG
 by creating a ``base tree'' of 535 Pangos (i.e. excluding all descendants of Delta, BA.2, and BA.5),
@@ -2169,18 +2177,21 @@ The breakpoint interval of a Pango X inferred using a method is deemed concordan
 if it overlaps with that proposed by the community by at least one base.
 These breakpoint intervals are defined as ranges of possible site positions
 where a breakpoint is inferred to occur.
-To make these breakpoint intervals right-exclusive,
-we adjusted them by subtracting one from the left coordinate and adding two to the right coordinate.
+To make these breakpoint intervals right-exclusive, we adjusted them
+by subtracting one from the left coordinate and adding two to the right coordinate.
 
 
 \subsubsection*{Calculation of Pango lineage distance using pangonet}
-We define a ``pseudo-phylogenetic'' distance to quantify the divergence between two Pango lineages.
-The idea is to count the number of edges separating two given Pango lineages in a ``pseudo-phylogeny''
+We define a ``pseudo-phylogenetic'' distance
+to quantify the divergence between two Pango lineages.
+The idea is to count the number of edges
+separating two given Pango lineages in a pseudo-phylogeny
 which relates all the designated Pango lineages.
 To construct this pseudo-phylogeny, we used \textit{pangonet},
-which mines the information on the Pango lineages in the ``alias\_key.json''
-and ``lineage\_notes.txt'' files
-from the Pango designation issues (https://github.com/cov-lineages/pango-designation).
+which mines the information on the Pango lineages
+in the ``alias\_key.json'' and ``lineage\_notes.txt'' files
+from the Pango designation issues
+(\url{https://github.com/cov-lineages/pango-designation}).
 If two Pango lineages are siblings in the pseudo-phylogeny,
 the distance is defined as the sum of the number of edges from each lineage to their MRCA;
 if they are non-siblings (i.e. one Pango is a descendant of the other),
@@ -2220,14 +2231,16 @@ If a breakpoint occurs a fraction $P$ along a genome of length $L$ and
 $k$ mutations have occurred to the left of the breakpoint,
 then we expect the nearest mutation to occur $P L / (k + 1)$ bases to the left.
 If we require $n$ mutations on both sides of the breakpoint,
-we can calculate the expected value of the interval to the left by summing across a Poisson-distributed number of mutations,
+we can calculate the expected value of the interval to the left
+by summing across a Poisson-distributed number of mutations,
 conditioned on having at least $n$ mutations:
 
 \[I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{\Gamma(n) - \Gamma(n, P T \mu)}\]
 
 A similar result holds for the right interval ($I_{right}$), but with $P$ replaced with $1–P$.
 Summing the two intervals ($I_{left}+I_{right}$) gives the expected interval length.
-As detectable recombination events are nearer the center of the chromosome, we use $P=½$ in Figure X.
+As detectable recombination events are nearer the center of the chromosome,
+we use $P=½$ in Figure X.
 
 
 \subsubsection*{Analyzing global case counts}
@@ -2316,86 +2329,83 @@ although filtering the recombination events to the 354 with better support revea
 %WHICH deletions are we talking about?]
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
-We reconstructed a more comprehensive mutational landscape
-of SARS-CoV-2 by mapping deletions onto the ARG
-using post-hoc parsimony.
+We reconstructed
+a more comprehensive mutational landscape of SARS-CoV-2
+by mapping deletions onto the ARG using post-hoc parsimony.
 We identified major deletion events
 (which are inherited by at least 10,000 samples;
 Table~\ref{tab:major_dels}).
-All these deletions are known to occur in major VOCs
-(https://virological.org/t/preliminary-genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-the-uk-defined-by-a-novel-set-of-spike-mutations/563;
-\cite{Akaishi2023,Li2023indels}).
-Eight of these deletions occur in S1-NTD,
-a known hotspot for recurrent deletions \cite{McCarthy2021}.
+All these deletions are known to occur in major VOCs 
+(\url{https://virological.org/t/preliminary-genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-the-uk-defined-by-a-novel-set-of-spike-mutations/563};
+\url{https://github.com/cov-lineages/pango-designation/issues/361};
+\cite{Stern2021,Akaishi2023,Li2023indels},
+except the 4-base deletion and two 5-base deletions in ORF1ab,
+which are likely artefacts of deletion remapping (see below).
+Notably, eight of these deletions occur
+in the N-terminal domain of the S1 unit in Spike,
+a known hotspot for recurrent deletions \cite{McCarthy2021}
+(also see Table~\ref{tab:rec_dels}).
 
 The placement of the following major deletion events
-in the ARG matches the phylogenetic placement of
+in the ARG aligns well with the phylogenetic placement of
 VOC-associated deletion events
 suggested in a previous study \cite{Akaishi2023}:
 a 3-base deletion 21,991 above the Alpha origin node;
 two 6-base deletions at 22,029 and 28,248 above the Delta origin node;
-a 9-base deletion at 28,362 above Omicron (B.1.1.529) origin node;
+a 9-base deletion at 28,362 above the B.1.1.529 origin node;
 a 3-base deletion at 6,513,
 a 9-base deletion at 21,987, and
 a 3-base deletion at 22,194 above the BA.1 origin node;
 a 9-base deletion at 21,633 above the BA.2 origin node.
 
-However, the placement of several major deletion events
-in the ARG differs from the phylogenetic placement of
-the corresponding deletion events suggested
-in Akaishi and Fujiwara \cite{Akaishi2023}.
-That study \cite{Akaishi2023} suggests that
-a 6-base deletion at 21,765 occurred
-before the divergence of Alpha and Omicron,
-but in the ARG this deletion appears to be recurrent,
-occurring above the origin nodes of Alpha, BA.1, and BA.4.
-Similarly, that study \cite{Akaishi2023} suggests that
-a 1-base deletion at 28,271 occurred
-before the divergence of Alpha, Delta, and Omicron,
-but it is mapped as a recurrent deletion in the ARG
-(at the Alpha origin node and above node 1436808).
+However, the ARG suggests that two major deletions
+(a 6-base deletion at 21,765 and a 1-base deletion at 28,271;
+Table~\ref{tab:major_dels}) are recurrent
+(i.e., acquired multiple times),
+but Akaishi and Fujiwara \cite{Akaishi2023} suggest that
+these deletions might have been acquired
+before the divergence of certain VOCs,
+based on an analysis of a small set of 20 samples.
+That study suggests that the 6-base deletion
+occurred before the divergence of Alpha and Omicron,
+but in the ARG this deletion occurs three times,
+above the origin nodes of Alpha, BA.1, and BA.4.
+Similarly, that study suggests that the 1-base deletion
+occurred before the divergence of Alpha, Delta, and Omicron,
+but in the ARG this deletion occurs
+above the Alpha origin node and above node 1436808.
 
-% This is a separate paragraph discussing where the model has 
-% broken down a bit.
-Furthermore, there are three contiguous deletions in NSP6
+There are three contiguous deletions in NSP6
 (5-base at 11,283, 4-base at 11,288, and 5-base at 11,292),
 which should have been mapped as two 9-base deletions,
 one above the BA.1 origin node (starting at 11,283) and
 the other above the BA.2 origin node (starting at 11,288)
 in the ARG (Figure~\ref{fig:subgraph_ba1_ba2}),
 but they were broken up during deletion remapping
-because they had four overlapping sites at 11,288-11,292
+as they had four overlapping sites at 11,288-11,292
 (which was mapped as the 4-base deletion event).
-Furthermore, the analysis of
-Akaishi and Fujiwara \cite{Akaishi2023} suggests that
-a 9-base deletion at 11,288
-occurred before the divergence of Alpha and Omicron.
-In the ARG, however, this deletion is mapped
+Furthermore, Akaishi and Fujiwara \cite{Akaishi2023}
+suggest that a 9-base deletion at 11,288 occurred
+before the divergence of Alpha and Omicron.
+In the ARG, however, this deletion occurs
 above the Alpha origin node.
 
-By mapping deletion events on the ARG,
-we also identified highly recurrent deletions,
+We identified highly recurrent deletions,
 for example, the top 20 deletions in terms of
-the number of occurrences in the ARG
-shown in Table~\ref{tab:rec_dels}.
-About half of these deletions are 1-base and
-occur in the 5' or 3' UTR of the SARS-CoV-2 genome
-(from the start to 250 and from 29,700 to the end),
-which are enriched for poor-quality sequencing data.
-Genuine recurrent deletions are captured in the ARG,
-for example, two known recurrent deletions in S1-NTD
-associated with antibody escape \cite{McCarthy2021}.
-There are also 1-base recurrent deletions
-at 29,541, 29,543, and 29,555
-in a non-coding region (between N and ORF10)
-which are plausibly homoplasic as they might arise due to
-polymerase skipping during genome replication and
-this regions is likely free from strong selective pressure.
-An in-depth analysis of all the recurrent deletions in the ARG
-is beyond the scope of this study,
-but we believe that the ARG will serve as a rich resource
-to facilitate future evolutionary studies of
-deletions in SARS-CoV-2.
+the number of occurrences in the ARG shown in Table~\ref{tab:rec_dels}.
+These include known recurrent deletions, for example,
+6-base deletion at 21,765,
+3-base deletion at 21,991, and
+3-base deletion 22,194 in S1-NTD
+associated with antibody escape \cite{McCarthy2021,Meng2021}.
+The out-of-frame deletions in S1-NTD
+(e.g., the 2-base deletion at 21,765),
+N, ORF1ab, and ORF8
+are implausible and are likely artefacts caused by
+sequencing errors or sequence misalignments.
+Future improvements in
+data pre-processing and deletion remapping
+should remove such deletions.
 
 
 \begin{table}
@@ -2457,26 +2467,26 @@ S1-NTD, N-terminal domain in Spike S1 subunit.
 \toprule
 Start & Length & Region & Occurrences \\
 \midrule
-29781 & 1 & non-coding & 12754 \\
-29762 & 1 & non-coding & 11383 \\
-29779 & 1 & non-coding & 10951 \\
-29769 & 1 & non-coding & 10809 \\
-29774 & 1 & non-coding & 10735 \\
-29700 & 1 & non-coding & 8562 \\
 686 & 9 & ORF1ab / NSP1 & 6436 \\
-29614 & 1 & ORF10 & 5039 \\
-29555 & 1 & non-coding & 4814 \\
-29543 & 1 & non-coding & 4804 \\
-29541 & 1 & non-coding & 4802 \\
-203 & 1 & non-coding & 3604 \\
-222 & 1 & non-coding & 3442 \\
 21991 & 3 & S / S1-NTD & 2088 \\
-28254 & 1 & ORF8 & 1969 \\
-28093 & 1 & ORF8 & 900 \\
 21765 & 6 & S / S1-NTD & 482 \\
-27532 & 1 & ORF7a & 404 \\
-335 & 1 & ORF1ab / NSP1 & 370 \\
-337 & 1 & ORF1ab / NSP1 & 346 \\
+22029 & 6 & S / S1-NTD & 275 \\
+22194 & 3 & S / S1-NTD & 200 \\
+6513 & 3 & ORF1ab / NSP3 & 181 \\
+21765 & 2 & S / S1-NTD & 140 \\
+21995 & 1 & S / S1-NTD & 90 \\
+21988 & 3 & S / S1-NTD & 78 \\
+21987 & 7 & S / S1-NTD & 78 \\
+21993 & 3 & S / S1-NTD & 77 \\
+21987 & 9 & S / S1-NTD & 70 \\
+21994 & 2 & S / S1-NTD & 65 \\
+28370 & 1 & N & 61 \\
+11292 & 3 & ORF1ab / NSP6 & 48 \\
+21990 & 1 & S / S1-NTD & 46 \\
+21987 & 4 & S / S1-NTD & 46 \\
+21990 & 6 & S / S1-NTD & 45 \\
+686 & 7 & ORF1ab / NSP1 & 43 \\
+28252 & 2 & ORF8 & 41 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2516,27 +2526,27 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 \subsection{Parsimony comparison of sc2ts and UShER}
 \label{sec:supplement_sc2ts_usher_parsimony}
 
-We performed an indepth analysis of the sc2ts and UShER ARGs 
-(we refer to the UShER tree as an ARG for simplicity here as a single 
-tree is also an ARG) in terms of parsimony.
-A direct comparison is difficult because of the different aligments 
-used as input, the different sets of sites used for inference and 
-the fact that we are including deletions for a subset of sites in
-the sc2ts ARG. 
+We performed an in-depth analysis of the sc2ts and UShER ARGs
+(we refer to the UShER tree as an ARG for simplicity here,
+as a single tree is also an ARG) in terms of parsimony.
+A direct comparison is difficult because of
+the different alignments used as input,
+the different sets of sites used for inference and
+the fact that we are including deletions
+for a subset of sites in the sc2ts ARG.
 
-When we compare the intersection of the base sc2ts ARG (pre 
-site-remapping), sc2ts is very slightly more parsimonious 
+When we compare the intersection of the base sc2ts ARG
+(pre site-remapping), sc2ts is very slightly more parsimonious
 % TODO: https://github.com/jeromekelleher/sc2ts-paper/issues/684
 with XX mutations over the YYY sites shared between them.
-After site remapping, and including all mutations involving 
-deletion characters, sc2ts has 143,690 mutations more 
-(2,078,370 vs 1,934,680). If we exclude mutations involving 
-deletions in sc2ts, this is reduced to 46,371 more (2.3\%)
-than UShER.
-If we restrict to the 26,192 sites that were not remapped, 
+After site remapping, and including all mutations involving
+deletion characters, sc2ts has 143,690 mutations more
+(2,078,370 vs 1,934,680). If we exclude mutations involving
+deletions in sc2ts, this is reduced to 46,371 more (2.3\%) than UShER.
+If we restrict to the 26,192 sites that were not remapped,
 sc2ts has 4,785 (0.26\%) fewer mutations than UShER,
-and has around 2.5 times more mutations than UShER on the 
-163 sites that were post-hoc remapped.
+and has around 2.5 times more mutations than UShER
+on the 163 sites that were post-hoc remapped.
 
 To provide a more objective measure of the overall parsimony 
 of the inferred ARGs with respect to the Viridian alignments,
@@ -2565,23 +2575,25 @@ outputs on the Viridian alignments.
 
 The total aligned dataset for 2,475,418 samples and 27,507 sites 
 in the sc2ts and UShER intersection ARGs represents 63.41GiB of nucleotide calls. 
-Of the 162,838,461 missing data calls (Ns) in the alignments, sc2ts and UShER
-disagreed in their imputed values for only 203,579 (0.125\%). 
+Of the 162,838,461 missing data calls (Ns) in the alignments,
+sc2ts and UShER disagreed in their imputed values for only 203,579 (0.125\%).
 Additionally, 956,859 calls made use of the IUPAC uncertainty codes. 
-Of these sc2ts imputed 435 (0.05\%) incorrectly (i.e., 
-with a base that is not compatible with the
-ambiguity code). 
-UShER imputed only 7 calls (0.007\%) from this set incorrectly, likely 
-due to special handling of ambiguous bases in the parsimony calculations.
+Of these sc2ts imputed 435 (0.05\%) incorrectly
+(i.e., with a base that is not compatible with the ambiguity code).
+UShER imputed only 7 calls (0.007\%) from this set incorrectly,
+likely due to special handling of
+ambiguous bases in the parsimony calculations.
 
-This computation is a good example of type of integrated large-scale data analysis 
+This computation is a good example of
+type of integrated large-scale data analysis
 that can be easily performed using the combination of tskit and VCF Zarr.
 The entire analysis is performed in a short Jupyter
-notebook~\cite{kluyver2016jupyter}, with the 
-core calculation requiring about 30 lines of Python code. Retrieving 
-data from the base alignments and ARGs for 2.48 million samples 
-at the same time over all 27,507 sites took only 6 minutes, with a peak memory
-usage of about 5GiB of RAM on a standard desktop computer.
+notebook~\cite{kluyver2016jupyter},
+with the core calculation requiring about 30 lines of Python code.
+Retrieving data from the base alignments and ARGs for 2.48 million samples 
+at the same time over all 27,507 sites took only 6 minutes,
+with a peak memory usage of about 5GiB of RAM
+on a standard desktop computer.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/example\_data\_processing.ipynb}{example\_data\_processing.ipynb}
