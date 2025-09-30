@@ -358,6 +358,7 @@ class D3ARG_viz:
         exclude=None,
         include=None,
         highlight_nodes=True,
+        highlight_mutations=None,
         parent_pangos=None,
         positions_file=None,
         **kwargs,
@@ -403,14 +404,10 @@ class D3ARG_viz:
             f'({len(pango_samples)} sample{"" if len(pango_samples) == 1 else "s"},'
             f" {len(used_pango_samples)} shown)"
         )
-        lineage_muts = None
-        if parent_pangos is not None and self.lineage_consensus_muts is not None:
-            # Could replace with https://github.com/andersen-lab/Freyja/blob/main/freyja/data/lineage_mutations.json
-            lm = self.lineage_consensus_muts.get_unique_mutations(p, parent_pangos)
-            if lineage_muts is None:
-                lineage_muts = lm
-            else:
-                lineage_muts = np.hstack((lm, lineage_muts))
+        if highlight_mutations is None:
+            if parent_pangos is not None and self.lineage_consensus_muts is not None:
+                # Could replace with https://github.com/andersen-lab/Freyja/blob/main/freyja/data/lineage_mutations.json
+                highlight_mutations = self.lineage_consensus_muts.get_unique_mutations(p, parent_pangos)
 
         return self.plot_sc2ts_subgraph(
             list(nodes),
@@ -418,7 +415,7 @@ class D3ARG_viz:
             width=width,
             height=height,
             title=title,
-            highlight_mutations=lineage_muts,
+            highlight_mutations=highlight_mutations,
             highlight_nodes=highlight_nodes,
             parent_levels=parent_levels,
             child_levels=child_levels,
@@ -450,9 +447,10 @@ class D3ARG_viz:
         Display a subset of the sc2ts arg, with mutations that are recurrent or reverted
         in the subgraph coloured by position (reversions have a black outline).
 
-        highlight_mutations can be a list of mutation IDs to highlight in pinkish outline,
-        or a PosAlt named tuple with positions and derived states (e.g. from
-        `MutationContainer.get_mutations(Pango)` )
+        highlight_mutations can be a positions,derived_states named numpy recarray with
+        positions and derived states (e.g. from `MutationContainer.get_mutations(Pango)` )
+        which will be highlighted in the default (pink) colour, or a mapping of colours to
+        a set of such recarrays.
         """
         if highlight_colour is None:
             highlight_colour = self.highlight_colour
@@ -533,19 +531,21 @@ class D3ARG_viz:
 
         if highlight_mutations is not None:
             if hasattr(highlight_mutations, "positions"):
+                highlight_mutations = {highlight_colour: highlight_mutations}
+            for colour, data in highlight_mutations.items():
+                if not hasattr(data, "positions"):
+                    raise NotImplementedError("Cannot list mutations by ID yet")
                 use = np.char.add(
-                    np.array(highlight_mutations.positions, dtype=str),
-                    highlight_mutations.derived_states,
+                    np.array(data.positions, dtype=str), data.derived_states,
                 )
                 match = np.char.add(
                     self.d3arg.mutations.position.astype(int).astype(str),
                     self.d3arg.mutations.derived,
                 )
                 self.d3arg.mutations.loc[np.isin(match, use), "stroke"] = (
-                    highlight_colour
+                    colour
                 )
-            else:
-                raise NotImplementedError("Cannot list mutations by ID yet")
+                
 
         if highlight_nodes:
             self.d3arg.nodes.loc[select_nodes, "fill"] = highlight_colour
@@ -585,6 +585,7 @@ class D3ARG_viz:
                 show_mutations=True,
                 y_axis_scale=y_axis_scale,
                 y_axis_labels=y_axis_labels,
+                y_axis_title="Estimated date of occurrence (YYYY-MM)",
                 label_mutations=label_mutations,
                 save_filename=save_filename,
                 **kwargs,
