@@ -646,7 +646,7 @@ nomenclature system is well defined,
 the identification of such events is much more subjective, requiring
 the synthesis of multiple lines of evidence and often the 
 manual inspection of phylogenies and sequence alignments
-by volunteers.
+by volunteers~\cite{Smith2023tracking}.
 
 By automatically detecting and incorporating recombination events
 into the ARG, sc2ts provides us with a systematic means of 
@@ -707,7 +707,7 @@ and Document S2 for ARG visualisations.
 \subsection*{Quality control of recombination events}
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
-multi-nucleotide substitutions \cite{DeMaio2020issues} (MNSs)
+multi-nucleotide substitutions \cite{DeMaio2020issues} 
 can cause short regions of a sample genome to match more closely
 to an alternative genome rather than the true parent.
 Such genomic regions can be mistaken for evidence of recombination,
@@ -729,23 +729,6 @@ contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and 
 the Jackson et al recombinants (Document\ref{sec:jackson_recombs}).
 
-To assist in the identification of such issues
-we developed a SnpIt-like~\cite{OToole2024} visualisation 
-that shows the informative genomic positions between 
-a recombinant and its parent sequences, and highlights 
-potentially problematic loci.
-Each copying pattern shows the positions
-where the allelic state in a recombinant
-(middle row) matches that of the left (upper row, coloured green) 
-or right parent (lower row, coloured blue),
-or where the recombination event requires a de-novo mutation
-(gold, with mutational change below).
-See Figures~\ref{fig:averted_mutations}D and
-\ref{fig:pango_x_copying_patterns} for copying patterns of the 
-Pango X lineages, and 
-Figure~\ref{fig:copying_pattern_examples} for copying patterns
-highlighting specific types of QC problem (and more details on the 
-visualisation).
  
 \subsection*{Quantification of evidence for recombination}
 
@@ -756,48 +739,15 @@ putative recombinant sequence with no recombination by specifying
 a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between 
 the two solutions---the number of 
-mutations ``averted'' by recombination---allows us to quantify
-the plausibility.
-
-Sc2ts provides a method to facilitate the discovery of recombination events,
-by comparing how well a sample fits the ARG under a model allowing recombination
-versus a model disallowing recombination,
-as measured by the number of resulting mutations 
-The more mutations are ``averted'' by allowing recombination,
-the stronger the evidence for recombination.
-We calculated the number of averted mutations for
-all the ``robust'' recombination events (STAR Methods),
-which include all the Pango X-associated recombination events
-(Table~\ref{tab:pango_x_lineages})
-and those studied by Jackson et al. \cite{Jackson2021}
-(Table \ref{tab:jackson}, Document~\ref{sec:jackson_recombs}).
-
-Our analysis of the number of averted mutations reveals a spectrum of plausibility
-across all the ``robust'' recombination events
-(Figure~\ref{fig:averted_mutations}A).
-Examples of highly plausible recombinants are XA and XBB
-(for an extended analysis, see Document~\ref{sec:supplement_indepth_pango_x_lineages}).
-The ``copying pattern'' of XA visually confirms
-that a high number of recombination-informative sites support the suggested parents 
-(Figure~\ref{fig:averted_mutations}D).
-XW is an example of a marginally well-supported recombinant.
-The initial evidence for proposing XW for designation is four nucleotides associated with the suggested BA.1 parent.
-% FIXME What's document S3?
-The copying patterns of all the recombination events are shown in Document S3.
-
-[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
-rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
-pass QC.]
-[Our results suggest that Delta and Omicron BA.2 might have recombinant origins [no longer true],
-but we interpret these results with caution,
-as these VOCs are undersampled around the time of their emergence (REF).]
-Note that the presence of many de-novo mutations
-observed in the copying patterns of XBB (Figure 3D) suggests the existence of
-many genetically distinct, unsampled ancestors [FIXME: in this case, probably BJ.1, see
-https://github.com/jeromekelleher/sc2ts-paper/issues/336].
-Future work is needed to test whether these VOCs descended from recombination events,
-with improved sampling, if possible.
-
+mutations ``averted'' by recombination---is a measure of the evidence
+in favour of recombination. 
+Table~\ref{tab:pango_x_lineages} shows
+the number of averted mutations for each of the 21 recombination events
+associated with Pango X lineages, with support ranging from very
+strong in the case of XC (the most parsimonious non-recombinant 
+placement would require 37 additional mutations) to marginal 
+for XG and XW, which have the minimal possible number of averted 
+mutations.
 
 \begin{figure}[h]
 \centering
@@ -824,15 +774,75 @@ undesignated recombination event under XBB, which we here refer to as  XBB.x.}
 \label{fig:averted_mutations}
 \end{figure}
 
+Figure~\ref{fig:averted_mutations}A plots the number of mutations required
+in the recombinant vs non-recombinant HMM solutions (upper scatter plot)
+and the resulting distribution of the number of 
+averted mutations (lower histogram)
+over all 354 recombination events that pass QC. 
+Of these, only 24 
+(21 associated with Pango X lineages in Table~\ref{tab:pango_x_lineages},
+and 3 additional from Jackon et al in Table~\ref{tab:jackson}) have 
+% Slightly risky, this, as we could get asked to incorporate 
+% novel recombs found by RIPPLEs? This could be done if we could get 
+% Viridian sample IDs for their list.
+been thoroughly characterised. 
+The figure also shows the classification status for each recombinant
+according to rebar, a method that classifies sequences
+as recombinant or not based on groups of mutations associated with
+Pango lineages (STAR Methods). 
+Of the 38 recombinants that are strongly supported (at least 10 averted
+mutations), 29 are novel. The known recombinants are XA, XC, XS, XBR, 
+and 5 from Jackson et al. All but 2 of the 38 are classified as
+recombinant by rebar. The majority (20) of these novel strongly supported
+recombinants are singletons, with 9 having further descendants in the ARG.
+Of the remaining 316 recombinants with less than 10 averted mutations,
+only 151 are classified as recombinant by rebar. 
+While some are likely to 
+be false positives, it is also interesting to note that rebar validation
+rate is much lower for recombinants with closely related 
+parents (Figure~\ref{fig:averted_mutations}B,C) suggesting that 
+sc2ts may have a higher sensitivity.
 
-% https://github.com/jeromekelleher/sc2ts-paper/issues/717
-167 (43\%) of QC-passing recombination events were also detected as recombinants by rebar.
-We hypothesize that this disagreement arose from
-differences in sensitivity between these methods.
-Consistent with this, we found that rebar needs a higher level of divergence between parents
-to correctly classify a sequence as recombinant, as shown by
-a shorter time to their MRCA (Figure \ref{fig:averted_mutations}B) and
-a lower distance between their Pango identity (Figure \ref{fig:averted_mutations}C).
+Recombination is rare in SARS-CoV-2, and ultimately judgements about
+plausibility require expert analysis. 
+To aid such interpretation and help identify quality control
+issues we developed a visualisation 
+based on SnpIt~\cite{OToole2024} and 
+the recombinant view from RIVET~\cite{Smith2023tracking},
+showing the informative genomic positions between 
+a recombinant and its parent sequences, and highlights 
+potentially problematic loci.
+Each copying pattern shows the positions
+where the allelic state in a recombinant
+(middle row) matches that of the left (upper row, coloured green) 
+or right parent (lower row, coloured blue),
+or where the recombination event requires a de-novo mutation
+(gold, with mutational change below).
+Figure~\ref{fig:averted_mutations}D shows some example copying patterns,
+illustrating this spectrum of plausibility.
+XA is an example of a highly plausible recombinant, shown by the 
+large number of supporting loci on the left and right. As we have 
+only one de-novo mutation, we can be sure that the parents are closely
+observed [Some details about XA here, how well the parents were sampled etc].
+XBB is also strongly supported by many loci on the left and right, 
+but the presence of many de-novo mutations
+observed in the copying patterns suggests the existence of
+many genetically distinct, unsampled ancestors 
+[FIXME: in this case, probably BJ.1, see issue 336],
+and some caution should be exercised in interpreting them. 
+See Figures~\ref{fig:averted_mutations}D and
+\ref{fig:pango_x_copying_patterns} for copying patterns of the 
+Pango X lineages, and 
+Figure~\ref{fig:copying_pattern_examples} for copying patterns
+highlighting specific types of QC problem (and more details on the 
+visualisation).
+
+
+Two further recombinants in the sc2ts ARG that are likely to be 
+spurious are important to discuss.
+[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
+rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
+pass QC.]
 
 
 \subsection*{Recombination breakpoint intervals along the genome}
@@ -846,7 +856,7 @@ using its size as a measure of precision (median, 2,207 bases; STAR Methods).
 We find an overall preponderance of breakpoint intervals towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene (Figure~\ref{fig:recombinant_intervals}A,B),
 consistent with patterns observed in previous studies
-\cite{Bobay2020recombination,Turakhia2022,Li2024CovRecomb}.
+\cite{Bobay2020recombination,Turakhia2022,Smith2023tracking,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
