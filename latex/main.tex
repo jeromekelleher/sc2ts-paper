@@ -2346,14 +2346,11 @@ in the N-terminal domain of the S1 unit in Spike,
 a known hotspot for recurrent deletions \cite{McCarthy2021}
 (also see Table~\ref{tab:rec_dels}).
 
-Akaishi and Fujiwara \cite{Akaishi2023} have hypothesized that XX.
-We agree on XX, but not others.
-Could be limitation of the fact that they didn't analyse many samples.
-
-The placement of the following major deletion events
-in the ARG aligns well with the phylogenetic placement of
-VOC-associated deletion events
-suggested in a previous study \cite{Akaishi2023}:
+Based on a phylogenetic analysis of 25 randomly chosen samples,
+Akaishi and Fujiwara \cite{Akaishi2023} hypothesized
+the emergence of commonly observed indels in SARS-CoV-2.
+We found support in the ARG for the the phylogenetic placement of
+these VOC-associated deletion events suggested in that study:
 a 3-base deletion 21,991 above the Alpha origin node;
 two 6-base deletions at 22,029 and 28,248 above the Delta origin node;
 a 9-base deletion at 28,362 above the B.1.1.529 origin node;
@@ -2361,7 +2358,6 @@ a 3-base deletion at 6,513,
 a 9-base deletion at 21,987, and
 a 3-base deletion at 22,194 above the BA.1 origin node;
 a 9-base deletion at 21,633 above the BA.2 origin node.
-
 However, the ARG suggests that two major deletions
 (a 6-base deletion at 21,765 and a 1-base deletion at 28,271;
 Table~\ref{tab:major_dels}) are recurrent
@@ -2379,6 +2375,17 @@ occurred before the divergence of Alpha, Delta, and Omicron,
 but in the ARG this deletion occurs
 above the Alpha origin node and above node 1436808.
 
+We identified highly recurrent deletions,
+for example, the top 20 deletions in terms of
+the number of occurrences in the ARG shown in Table~\ref{tab:rec_dels}.
+These include known recurrent deletions, for example,
+6-base deletion at 21,765,
+3-base deletion at 21,991, and
+3-base deletion 22,194 in S1-NTD
+associated with antibody escape \cite{McCarthy2021,Meng2021}.
+
+% SHZ: Talk about the agreement before getting into improvements.
+
 There are three contiguous deletions in NSP6
 (5-base at 11,283, 4-base at 11,288, and 5-base at 11,292),
 which should have been mapped as two 9-base deletions,
@@ -2393,15 +2400,6 @@ suggest that a 9-base deletion at 11,288 occurred
 before the divergence of Alpha and Omicron.
 In the ARG, however, this deletion occurs
 above the Alpha origin node.
-
-We identified highly recurrent deletions,
-for example, the top 20 deletions in terms of
-the number of occurrences in the ARG shown in Table~\ref{tab:rec_dels}.
-These include known recurrent deletions, for example,
-6-base deletion at 21,765,
-3-base deletion at 21,991, and
-3-base deletion 22,194 in S1-NTD
-associated with antibody escape \cite{McCarthy2021,Meng2021}.
 The out-of-frame deletions in S1-NTD
 (e.g., the 2-base deletion at 21,765),
 N, ORF1ab, and ORF8
@@ -2684,7 +2682,7 @@ However, these parent lineages were not added to the ARG due to a high HMM cost.
 Together with other lineages such as B.1.627
 (sister to B.1.631 \cite{Gutierrez2022}),
 they are likely to attach somewhere along the long branch
-in the subgraph visualization (with >30 mutations),
+in the subgraph visualization (with > 30 mutations),
 which also contains the key "R2" deletion
 associated with XB / B.1.634 \cite{Gutierrez2022}.
 
