@@ -378,6 +378,20 @@ def validate(usher_path, sc2ts_path):
     )
 
 
+@click.command()
+@click.argument("ts", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("out")
+def export_samples(ts, out):
+    """
+    Writes the samples in the specified sc2ts tree sequence in a format
+    readable by matutils for subsetting.
+    """
+    ts = tszip.load(ts)
+    dfn = sc2ts.node_data(ts, inheritance_stats=False)
+    ids = dfn[dfn.is_sample]["sample_id"].values.astype("U")
+    np.savetxt(out, ids, fmt="%s")
+
+
 @click.group()
 def cli():
     """
@@ -390,6 +404,7 @@ cli.add_command(convert_topology)
 cli.add_command(convert_mutations)
 cli.add_command(date_samples)
 cli.add_command(date_internal)
+cli.add_command(export_samples)
 cli.add_command(intersect)
 cli.add_command(validate)
 cli()

@@ -38,7 +38,10 @@ rule all:
         # in the top-level data directory
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
         "logs/final_arg_report.ipynb",
-
+        # Intersection file needed for ripples analyses
+        "usher_intersection_2023-02-21.pb",
+        "ripples_p3", 
+        "ripples_p4", 
 rule final_args:
     conda: 
         "sc2ts.yml"
@@ -459,6 +462,34 @@ rule export_mutations_local:
             --translate usher_mutations.tsv
         """
 
+rule subset_mat:
+    conda:
+        "pangolin.yml"
+    input:
+        "tree.all_viridian.202409.pb.gz",
+        "sc2ts_2023-02-21_intersection_sample_ids.txt",
+    output:
+        "usher_intersection_2023-02-21.pb",
+    shell:
+        """
+        matUtils extract -i {input[0]} -s {input[1]} -o {output}
+        """
+
+rule run_ripples:
+    conda:
+        "pangolin.yml"
+    input:
+        "usher_intersection_2023-02-21.pb",
+    output:
+        directory("ripples_p{PARSIMONY}")
+    shell:
+        # NOTE!! Really important to use ripples-fast here, not 
+        # ripples.
+        """
+        ripples-fast -d {output} -i {input} -p {wildcards.PARSIMONY} -n1
+        """
+
+
 rule convert_topology:
     conda:
         "sc2ts.yml"
@@ -524,6 +555,17 @@ rule sc2ts_usher_intersection:
         python scripts/mat2tsk.py intersect --intersect-sites {input} {output}
         """
 
+rule intersection_sample_ids:
+    conda:
+        "sc2ts.yml"
+    input:
+        "sc2ts_2023-02-21_intersection.trees",
+    output:
+        "sc2ts_2023-02-21_intersection_sample_ids.txt",
+    shell:
+        """
+        python scripts/mat2tsk.py export-samples {input} {output}
+        """
 
 rule generate_all_sites:
     output: "all_sites.txt"
@@ -661,3 +703,6 @@ rule generate_sites_for_remapping:
         """
         python scripts/generate_sites_for_remapping.py {input} {output}
         """
+
+
+
