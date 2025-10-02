@@ -489,13 +489,6 @@ rule run_ripples:
         ripples-fast -d {output} -i {input} -p {wildcards.PARSIMONY} -n1
         """
 
-# For ripples analysis
-#
-# Seems like the most comparable to sc2ts?
-# This results in WAY more branches to check, so stick with defaults
-# for now.
-# ripples-fast -d ripples-tmp -i intersection.pb -p4 -n1
-
 
 rule convert_topology:
     conda:
