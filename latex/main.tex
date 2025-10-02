@@ -2362,36 +2362,20 @@ All these deletions are known to occur in major VOCs
 \url{https://github.com/cov-lineages/pango-designation/issues/361};
 \cite{Stern2021,Tegally2022,Li2023indels}),
 except the 4-base deletion and two 5-base deletions in ORF1ab,
-which are likely artefacts of deletion remapping or
-sequence misalignment (see below).
+which are likely artefacts of
+deletion remapping or sequence misalignment (see below).
 Notably, eight of these deletions occur
 in the N-terminal domain of the S1 unit in Spike,
 a known hotspot for recurrent deletions \cite{McCarthy2021}
 (also see Table~\ref{tab:rec_dels}).
-
-% Placement of deletion events linked to VOCs
-In the ARG, we found that the following deletion events
+In the ARG, we found that most of the major deletion events
 are associated with the origins of major VOCs
-(Table~\ref{tab:major_dels}):
-a 9-base deletion at 11288,
-a 6-base deletion at 21,765, and
-a 3-base deletion at 21,991 above the Alpha origin node;
-a 6-base deletion at 22,029 above the Delta origin node;
-a 6-base deletion at 28,248 above a child of the Delta origin node;
-a 9-base deletion at 28,362 above the B.1.1.529 origin node;
-a 3-base deletion at 6,513,
-a 3-base deletion at 22,194,
-a 6-base deletion at 21,765, and
-a 9-base deletion at 21,987 above the BA.1 origin node;
-a 9-base deletion at 21,633 above the BA.2 origin node; and
-a 6-base deletion at 21,633 above the BA.4 origin node.
-All these deletion events have been proposed previously
-to be linked with the emergence of these VOCs
+(Table~\ref{tab:major_dels}).
+They have been linked previously with the emergence of these VOCs
 (\url{https://virological.org/t/preliminary-genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-the-uk-defined-by-a-novel-set-of-spike-mutations/563};
 \url{https://github.com/cov-lineages/pango-designation/issues/361};
 \cite{Stern2021,Tegally2022}).
 
-% Known recurrent deletions
 Using the ARG, we identified highly recurrent deletions,
 for example, the top 20 deletions in terms of
 the number of occurrences in the ARG
@@ -2404,7 +2388,6 @@ associated with antibody escape \cite{McCarthy2021,Meng2021},
 which are also caused by major deletion events in the ARG
 (Table~\ref{tab:major_dels}).
 
-% Problems and future improvement
 Detection of deletions and inference of deletion events
 are difficult, especially when the dataset is enormous.
 Here we used a naive procedure to map deletions onto the ARG,
@@ -2449,29 +2432,28 @@ ORF, open reading frame;
 S, Spike;
 S1-NTD, N-terminal domain in Spike S1 subunit.
 }
-\label{tab:major_dels}
-\begin{tabular}{rrcrcrr}
+\begin{tabular}{rrcrcrrc}
 \toprule
-Start & Length & Region & Node & Pango lineage & Count & Frequency (\%)\\
+Start & Length & Region & Node & Pango lineage & Count & Frequency (\%) & Ref\\
 \midrule
-28271 & 1 & non-coding & 1436808 & B.1 & 1118363 & 45.0561 \\
-28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 1114669 & 44.9073 \\
-22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 1112504 & 44.8200 \\
-11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 871782 & 35.1220 \\
-28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 871774 & 35.1216 \\
-21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 532072 & 21.4359 \\
-11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 531894 & 21.4287 \\
-6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 340757 & 13.7283 \\
-11283 & 5 & ORF1ab / NSP6 & 851246 & BA.1 (Omicron) & 339867 & 13.6924 \\
-21765 & 6 & S / S1-NTD & 851246 & BA.1 (Omicron) & 339681 & 13.6849 \\
-21987 & 9 & S / S1-NTD & 851246 & BA.1 (Omicron) & 339651 & 13.6837 \\
-22194 & 3 & S / S1-NTD & 851246 & BA.1 (Omicron) & 312706 & 12.5982 \\
-28271 & 1 & non-coding & 86456 & B.1.1.7 (Alpha) & 290446 & 11.7014 \\
-11288 & 9 & ORF1ab / NSP6 & 86456 & B.1.1.7 (Alpha) & 290408 & 11.6998 \\
-21991 & 3 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 288831 & 11.6363 \\
-21765 & 6 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 290438 & 11.7010 \\
-21765 & 6 & S / S1-NTD & 1265302 & BA.4 (Omicron) & 190425 & 7.6718 \\
-686 & 9 & ORF1ab / NSP1 & 2698748 & BA.4 (Omicron) & 23330 & 0.9399 \\
+28271 & 1 & non-coding & 1436808 & B.1 & 1118363 & 45.0561 &  \\
+28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 1114669 & 44.9073 & B \\
+22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 1112504 & 44.8200 & B \\
+11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 871782 & 35.1220 &  \\
+28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 871774 & 35.1216 & C \\
+21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 532072 & 21.4359 & D \\
+11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 531894 & 21.4287 &  \\
+6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 340757 & 13.7283 & D \\
+11283 & 5 & ORF1ab / NSP6 & 851246 & BA.1 (Omicron) & 339867 & 13.6924 &  \\
+21765 & 6 & S / S1-NTD & 851246 & BA.1 (Omicron) & 339681 & 13.6849 & D \\
+21987 & 9 & S / S1-NTD & 851246 & BA.1 (Omicron) & 339651 & 13.6837 & D \\
+22194 & 3 & S / S1-NTD & 851246 & BA.1 (Omicron) & 312706 & 12.5982 & D \\
+28271 & 1 & non-coding & 86456 & B.1.1.7 (Alpha) & 290446 & 11.7014 &  \\
+11288 & 9 & ORF1ab / NSP6 & 86456 & B.1.1.7 (Alpha) & 290408 & 11.6998 & A \\
+21991 & 3 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 288831 & 11.6363 & A \\
+21765 & 6 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 290438 & 11.7010 & A \\
+21765 & 6 & S / S1-NTD & 1265302 & BA.4 (Omicron) & 190425 & 7.6718 & E \\
+686 & 9 & ORF1ab / NSP1 & 2698748 & BA.4 (Omicron) & 23330 & 0.9399 &  \\
 \bottomrule
 \end{tabular}
 \end{table}
