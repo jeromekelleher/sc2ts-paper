@@ -350,6 +350,7 @@ class D3ARG_viz:
         pangos,
         extra_html=None,
         *,
+        show_title=True,
         width=750,
         height=950,
         parent_levels=20,
@@ -400,10 +401,10 @@ class D3ARG_viz:
         nodes = list((used_pango_samples | include) - exclude)
         used = self.d3arg.subset_graph(nodes, depth=(parent_levels, child_levels))
         title = (
-            f'Subgraph of {self.pangolin_field} {"/".join(pangos)}: '
+            f'Subgraph of {self.pangolin_field.capitalize()} {"/".join(pangos)}: '
             f'({len(pango_samples)} sample{"" if len(pango_samples) == 1 else "s"},'
             f" {len(used_pango_samples)} shown)"
-        )
+        ) if show_title else None
         if highlight_mutations is None:
             if parent_pangos is not None and self.lineage_consensus_muts is not None:
                 # Could replace with https://github.com/andersen-lab/Freyja/blob/main/freyja/data/lineage_mutations.json
