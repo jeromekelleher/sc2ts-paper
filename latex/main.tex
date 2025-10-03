@@ -2350,44 +2350,45 @@ although filtering the recombination events to the 354 with better support revea
 %WHICH deletions are we talking about?]
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
-We reconstructed
-a more comprehensive mutational landscape of SARS-CoV-2
-by mapping deletions onto the ARG using post-hoc parsimony.
-We identified major deletion events, for example,
-the deletions inherited by at least 10,000 samples
-shown in Table~\ref{tab:major_dels}.
+To reconstruct
+a more comprehensive mutational landscape of SARS-CoV-2,
+we mapped deletions onto the ARG using post-hoc parsimony.
+We identified major deletion events in the ARG,
+which are inherited by at least 10,000 samples
+(Table~\ref{tab:major_dels}).
 % This just says that the deletions are found in sequences of VOCs.
-All these deletions are known to occur in major VOCs
-\cite{RambautAlpha2020,Stern2021,RambautOmicron2021,
-Tegally2022,Li2023indels},
+These deletions are known to occur in major VOCs
+\cite{RambautAlpha2020,
+Stern2021,
+RambautOmicron2021,
+Tegally2022,
+Li2023indels},
 except the 4-base deletion and two 5-base deletions in ORF1ab,
-which are likely artefacts of
-deletion remapping or sequence misalignment (see below).
+which are likely artefacts of deletion remapping (see below).
 Notably, eight of these deletions occur
-in the N-terminal domain of the S1 unit in Spike,
+in the N-terminal domain of the S1 unit of Spike (S1-NTD),
 a known hotspot for recurrent deletions \cite{McCarthy2021}
 (also see Table~\ref{tab:rec_dels}).
-In the ARG, we found that most of the major deletion events
+In the ARG, we found that most of these major deletion events
 are associated with the origins of major VOCs
 (Table~\ref{tab:major_dels}), and
-they have been linked previously with the emergence of these VOCs
+they have been linked previously to the emergence of these VOCs
 \cite{RambautAlpha2020,Stern2021,RambautOmicron2021,Tegally2022}.
 
+The ARG enales large-scale detection of recurrent deletions.
 Using the ARG, we identified highly recurrent deletions,
-for example, the top 20 deletions in terms of
-the number of occurrences in the ARG
-shown in Table~\ref{tab:rec_dels}.
+for example, the top five deletions
+in the number of occurrences in the ARG
+(Table~\ref{tab:rec_dels}).
 These include known recurrent deletions, for example,
-a 6-base deletion at 21,765,
-a 3-base deletion at 21,991, and
-a 3-base deletion 22,194 in S1-NTD
-associated with antibody escape \cite{McCarthy2021,Meng2021},
+a 6-base deletion at 21,765 \cite{Meng2021} and
+a 3-base deletion at 21,991 \cite{McCarthy2021} in S1-NTD,
 which are also caused by major deletion events in the ARG
 (Table~\ref{tab:major_dels}).
 
 Detection of deletions and inference of deletion events
-are difficult, especially when the dataset is enormous.
-Here we used a naive procedure to map deletions onto the ARG,
+remain challenging, especially when the dataset is enormous.
+Here we took a naive approach to map deletions onto the ARG,
 treating each site involved in a deletion
 as independent of the other sites.
 Consequently, some deletion events might be split up and
@@ -2397,19 +2398,17 @@ The three contiguous out-of-frame deletions in NSP6
 (5-base at 11,283, 4-base at 11,288, and 5-base at 11,292)
 are examples of such artefacts (Table~\ref{tab:major_dels}).
 In the sequence alignments, there are two 9-base deletions,
-one at 11,283 which commonly occur in BA.1 samples and
-the other at 11,288 which commonly occur in BA.2 samples.
+one at 11,283 and the other at 11,288,
+which are commonly found in BA.1 and BA.2 samples, respectively.
 Assuming that the alignments are correct,
 there should be two deletion events,
 but they were mapped as three deletion events
-because they had four overlapping sites from 11,288 to 11,292,
+as they had four overlapping sites from 11,288 to 11,292,
 which were inferred by parsimony
 as the 4-base deletion event at 11,288.
 Furthermore, sequencing errors or sequence misalignments
-can also cause artefactual deletions,
-for example, the out-of-frame recurrent deletions
-in N, ORF1ab, ORF8, and particularly S1-NTD
-(e.g., the 2-base deletion at 21,765)
+can also cause artefactual deletions, for example,
+the out-of-frame 4-base recurrent deletion at 21,767 in S1-NTD
 (Table~\ref{tab:rec_dels}).
 Future improvements in deletion remapping and data pre-processing
 should remove such artefactual deletions.
@@ -2461,9 +2460,9 @@ Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
 \begin{table}
 \centering
 \caption{
-Highly recurrent deletions.
-These are the top 20 deletions
-in terms of the number of occurrences in the ARG.
+Recurrent deletions.
+These deletions occur at least 5 times in the ARG and
+are found in at least 1,000 samples.
 Abbreviations:
 NSP, non-structural protein;
 ORF, open reading frame;
@@ -2471,30 +2470,24 @@ S, Spike;
 S1-NTD, N-terminal domain in Spike S1 subunit.
 }
 \label{tab:rec_dels}
-\begin{tabular}{rrcr}
+\begin{tabular}{rrcrr}
 \toprule
-Start & Length & Region & Occurrences \\
+Start & Length & Region & Occurrences & Samples\\
 \midrule
-686 & 9 & ORF1ab / NSP1 & 6436 \\
-21991 & 3 & S / S1-NTD & 2088 \\
-21765 & 6 & S / S1-NTD & 482 \\
-22029 & 6 & S / S1-NTD & 275 \\
-22194 & 3 & S / S1-NTD & 200 \\
-6513 & 3 & ORF1ab / NSP3 & 181 \\
-21765 & 2 & S / S1-NTD & 140 \\
-21995 & 1 & S / S1-NTD & 90 \\
-21988 & 3 & S / S1-NTD & 78 \\
-21987 & 7 & S / S1-NTD & 78 \\
-21993 & 3 & S / S1-NTD & 77 \\
-21987 & 9 & S / S1-NTD & 70 \\
-21994 & 2 & S / S1-NTD & 65 \\
-28370 & 1 & N & 61 \\
-11292 & 3 & ORF1ab / NSP6 & 48 \\
-21990 & 1 & S / S1-NTD & 46 \\
-21987 & 4 & S / S1-NTD & 46 \\
-21990 & 6 & S / S1-NTD & 45 \\
-686 & 7 & ORF1ab / NSP1 & 43 \\
-28252 & 2 & ORF8 & 41 \\
+686 & 9 & ORF1ab / NSP1 & 6436 & 43354\\
+21991 & 3 & S / S1-NTD & 2088 & 309629\\
+21765 & 6 & S / S1-NTD & 482 & 820194\\
+22029 & 6 & S / S1-NTD & 275 & 1107941\\
+22194 & 3 & S / S1-NTD & 200 & 310349\\
+6513 & 3 & ORF1ab / NSP3 & 181 & 341380\\
+21987 & 9 & S / S1-NTD & 70 & 338633\\
+28248 & 6 & ORF8 & 28 & 1113392\\
+28271 & 1 & non-coding & 24 & 1331409\\
+11288 & 9 & ORF1ab / NSP6 & 19 & 843291\\
+11283 & 9 & ORF1ab / NSP6 & 13 & 339810\\
+21767 & 4 & S / S1-NTD & 10 & 2144\\
+28362 & 9 & N & 7 & 850483\\
+21633 & 9 & S / S1-NTD & 7 & 531973\\
 \bottomrule
 \end{tabular}
 \end{table}
