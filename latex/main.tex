@@ -2350,41 +2350,36 @@ although filtering the recombination events to the 354 with better support revea
 %WHICH deletions are we talking about?]
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
-To reconstruct
-a more comprehensive mutational landscape of SARS-CoV-2,
-we mapped deletions onto the ARG using post-hoc parsimony.
-We identified major deletion events in the ARG,
-which are inherited by at least 10,000 samples
-(Table~\ref{tab:major_dels}).
-% This just says that the deletions are found in sequences of VOCs.
-These deletions are known to occur in major VOCs
-\cite{RambautAlpha2020,
-Stern2021,
-RambautOmicron2021,
-Tegally2022,
-Li2023indels},
-except the 4-base deletion and two 5-base deletions in ORF1ab,
-which are likely artefacts of deletion remapping (see below).
-Notably, eight of these deletions occur
+Mapping deletions onto the ARG using post-hoc parsimony
+allowed us to identify important deletions and
+to clarify their nature in SARS-CoV-2 evolution.
+In Table~\ref{tab:major_dels},
+we list a subset of deletion events in the ARG
+which are inherited by at least 10,000 samples.
+We consider these deletions to be major events
+in the evolutionary history of SARS-CoV-2.
+Most of these deletion events
+(besides the 1-base deletion at 28,271
+inherited by 45\% of the samples)
+are associated with the origin nodes of major VOCs in the ARG
+(indicated by the Pango lineages assigned to them,
+e.g., node 86456 is the Alpha origin node;
+also see Figure~\ref{fig:subgraph_alpha}).
+Most of them are characteristic mutations
+that are linked to the emergence of these VOCs
+(see the references in Table~\ref{tab:major_dels}
+pointing to the analyses
+which originally identified them as characteristic mutations).
+They are also highly prevalent
+(all except two events in this table
+are inherited by at least 11\% of the samples).
+Notably, eight of these deletion events occur
 in the N-terminal domain of the S1 unit of Spike (S1-NTD),
-a known hotspot for recurrent deletions \cite{McCarthy2021}
-(also see Table~\ref{tab:rec_dels}).
-In the ARG, we found that most of these major deletion events
-are associated with the origins of major VOCs
-(Table~\ref{tab:major_dels}), and
-they have been linked previously to the emergence of these VOCs
-\cite{RambautAlpha2020,Stern2021,RambautOmicron2021,Tegally2022}.
-
-The ARG enales large-scale detection of recurrent deletions.
-Using the ARG, we identified highly recurrent deletions,
-for example, the top five deletions
-in the number of occurrences in the ARG
-(Table~\ref{tab:rec_dels}).
-These include known recurrent deletions, for example,
+a known hotspot of recurrent deletions \cite{McCarthy2021};
+These are all highly recurrent (Table~\ref{tab:rec_dels}), and
+include known recurrent deletions, for example,
 a 6-base deletion at 21,765 \cite{Meng2021} and
-a 3-base deletion at 21,991 \cite{McCarthy2021} in S1-NTD,
-which are also caused by major deletion events in the ARG
-(Table~\ref{tab:major_dels}).
+a 3-base deletion at 21,991 \cite{McCarthy2021}.
 
 Detection of deletions and inference of deletion events
 remain challenging, especially when the dataset is enormous.
@@ -2418,11 +2413,14 @@ should remove such artefactual deletions.
 \centering
 \caption{
 Major deletion events in the ARG.
-These events are inherited by
-at least 10,000 samples in the ARG.
-Count is the number of samples inheriting a deletion.
+The deletions caused by these events
+are inherited by at least 10,000 samples.
+The frequencies of these deletions in the ARG are shown.
 The Pango lineage assigned to the node
-above which an event occurs is shown.
+where an event occurs is shown.
+The references point to analyses
+which identified a deletion
+to be associated with a major VOC assigned to its node.
 Abbreviations: NSP, non-structural protein;
 ORF, open reading frame;
 S, Spike;
@@ -2650,7 +2648,7 @@ of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 The B.1.1.7 (Alpha) variant is the first major VOC, and
 it is a saltational lineage
 characterized by a long branch preceding its origin.
-The origin of Alpha is well reconstructed in the ARG.
+Figure \ref{fig:subgraph_alpha} shows that the origin of Alpha is well reconstructed in the ARG.
 Most of the characteristic Alpha mutations (\cite{RambautAlpha2020})
 (20 out of 23) in the ARG
 occur immediately above the Alpha root.
@@ -2680,8 +2678,7 @@ it has been suggested elsewhere as an Alpha-defining mutation
 
 
 \subsubsection{Delta}
-XX
-
+ \ref{fig:subgraph_delta}
 
 \subsubsection{Omicron BA.1 and BA.2}
 XX
@@ -3533,7 +3530,7 @@ Mutations are shown as rectangles along branches,
 ordered by position; deletions are black.
 Characteristic mutations
 associated with the emergence of Alpha
-are highlighted in pink borders.
+are highlighted with a pink outline.
 }
 \label{fig:subgraph_alpha}
 \end{figure}
@@ -3542,7 +3539,7 @@ are highlighted in pink borders.
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Delta.pdf}
 \caption{
-Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in \ref{fig:subgraph_alpha}, with characteristic Delta mutations as pink boxes. Sites associated with multiple mutations in the subgraph have their mutations assigned a unique fill colour (orange, blue, green, red, etc); reversions are further highlighted with a black outline. Sc2ts seed samples (see STAR methods) for B.1.617, B.1.617.1, and B.1.617.2 (Delta) are plotted as red squares.
+Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in \ref{fig:subgraph_alpha}, with characteristic Delta mutations outlined in pink. Sites associated with multiple mutations in the subgraph have their mutations assigned a unique fill colour (orange, blue, green, red, etc); reversions are further highlighted with a black outline. Sc2ts seed samples (see STAR methods) for B.1.617, B.1.617.1, and B.1.617.2 (Delta) are plotted as red squares.
 }
 \label{fig:subgraph_delta}
 \end{figure}
