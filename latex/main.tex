@@ -2654,10 +2654,41 @@ of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 
 % https://github.com/jeromekelleher/sc2ts-paper/issues/772
 \subsubsection{Alpha}
-XX
+The B.1.1.7 (Alpha) variant is the first major VOC, and
+it is a saltational lineage
+characterized by a long branch preceding its origin.
+The origin of Alpha is well reconstructed in the ARG.
+Most of the characteristic Alpha mutations (\cite{RambautAlpha2020})
+(20 out of 23) in the ARG
+occur immediately above the Alpha root.
+However, a characteristic three-base correlated mutation
+is instead associated with the parent node (labeled B.1.1) of the Alpha root,
+suggesting that this mutation was acquired prior to the emergence of Alpha.
+This parent node has an additional 5 children
+(leading to 12 samples),
+of which we display one (ERR4413600)
+with no associated mutations, meaning that it has an identical sequence to the inferred ancestor of Alpha.
+Below the root of Alpha, a single sample (ERR5178290)
+appears without the characteristic mutation C3267T
+(or any additional mutations).
+However, this is only a single sample and
+given that it also appears two months after the first Alpha samples
+we treat its placement with caution.
+Note that the list of mutations in \cite{RambautAlpha2020}
+includes a T26801C in the M gene
+which should no longer be considered characteristic of Alpha,
+as the Wuhan-Hu-1 reference at 26,801 has since been updated to C.
+In the ARG, a one-base non-coding deletion (position 28,271)
+is also associated with the Alpha root;
+although this is not in the original list of
+characteristic Alpha mutations,
+it has been suggested elsewhere as an Alpha-defining mutation 
+(\cite{Li2023indels}).
+
 
 \subsubsection{Delta}
 XX
+
 
 \subsubsection{Omicron BA.1 and BA.2}
 XX
@@ -3501,8 +3532,15 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Alpha.pdf}
 \caption{
-Subgraph of Alpha. [Some notes to help the reader know this 
-reflects known events]
+Subgraph illustrating the saltational origin of B.1.1.7 (Alpha).
+Squares represent sample nodes,
+circles represent reconstructed internal nodes;
+nodes classified as B.1.1.7 by Pangolin v4.3.1 are in pink.
+Mutations are shown as rectangles along branches,
+ordered by position; deletions are black.
+Characteristic mutations
+associated with the emergence of Alpha
+are highlighted in pink borders.
 }
 \label{fig:subgraph_alpha}
 \end{figure}
@@ -3511,8 +3549,7 @@ reflects known events]
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Delta.pdf}
 \caption{
-Subgraph of Delta. [Some notes to help the reader know this 
-reflects known events]
+Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in \ref{fig:subgraph_alpha}, with characteristic Delta mutations as pink boxes. Sites associated with multiple mutations in the subgraph have their mutations assigned a unique fill colour (orange, blue, green, red, etc); reversions are further highlighted with a black outline. Sc2ts seed samples (see STAR methods) for B.1.617, B.1.617.1, and B.1.617.2 (Delta) are plotted as red squares.
 }
 \label{fig:subgraph_delta}
 \end{figure}
