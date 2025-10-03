@@ -48,6 +48,9 @@ def run(ripples_dir, sc2ts_ts, output):
 
     print("Computing mappings")
     sample_id_to_node = df_sample["node_id"].to_dict()
+    # Note: possibly we should use the original source metadata
+    # for sample Pango mappings here, but it really shouldn't
+    # matter.
     sample_id_to_pango = df_sample["pango"].to_dict()
     tree = ts.first()
 
@@ -85,7 +88,7 @@ def run(ripples_dir, sc2ts_ts, output):
     for e in events:
         data.append(e.asdict())
     df = pd.DataFrame(data)
-    df.reset_index().to_csv(output, index=False)
+    df.to_csv(output, index=False)
 
 
 if __name__ == "__main__":
