@@ -40,8 +40,9 @@ rule all:
         "logs/final_arg_report.ipynb",
         # Intersection file needed for ripples analyses
         "usher_intersection_2023-02-21.pb",
-        "ripples_p3", 
-        "ripples_p4", 
+        # These will run ripples and do the data processing
+        "sc2ts_viridian_v1.2_ripples_p4.csv",
+        "sc2ts_viridian_v1.2_ripples_p3.csv",
 rule final_args:
     conda: 
         "sc2ts.yml"
@@ -489,6 +490,17 @@ rule run_ripples:
         ripples-fast -d {output} -i {input} -p {wildcards.PARSIMONY} -n1
         """
 
+rule process_ripples:
+    conda:
+        "sc2ts.yml"
+    input:
+        "ripples_p{PARSIMONY}",
+        "{SC2TS_ARG_VERSION}.trees.tsz",
+    output:
+        "{SC2TS_ARG_VERSION}_ripples_p{PARSIMONY}.csv"
+    shell:
+        "python scripts/process_ripples.py {input} {output}"
+
 
 rule convert_topology:
     conda:
@@ -588,6 +600,9 @@ rule all_sites_parsimony:
             --report={output[1]} --no-progress \
             --sites={input[2]}
         """
+
+
+
 
 
 rule usher_sc2ts_comparison:
@@ -703,6 +718,3 @@ rule generate_sites_for_remapping:
         """
         python scripts/generate_sites_for_remapping.py {input} {output}
         """
-
-
-
