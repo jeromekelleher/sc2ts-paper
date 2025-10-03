@@ -763,15 +763,14 @@ when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
 recombination nodes in Table \ref{tab:pango_x_lineages} are labeled starting with `X' and
 those identified by Jackson et al. \cite{Jackson2021} are prefixed with a `J', e.g.
-Jackson Group B (JGB) and Jackson Singleton recombinant 1 (JS1).
+Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e. $x$-$y$).
 (B) Distribution of time to the MRCA of the parents of each robust recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
-leading to XA, Xx 
-(the origin of XZ+XAC+XAD+XAE+XAP), XBB, and an
+leading to XA, XW, XBB, and an
 undesignated recombination event under XBB, which we here refer to as  XBB.x.}
 \label{fig:averted_mutations}
 \end{figure}
@@ -2008,14 +2007,24 @@ due to incomplete read trimming \cite{DeMaio2024}.
 There are 9 recombination events involving this particular MNS,
 of which 6 failed QC.
 
-\subsubsection*{Likely spurious influential recombinants}
+\subsubsection*{Likely spurious ancestrally-important recombinants}
+\label{sec:spurious-ancestrally-important-recombinants}
 In the sc2ts ARG, there are two recombination events which have a large number of
-descendants that are not classified as recombinants by Pango. The first of these
-corresponds to recombination event within BA.2 whose breakpoint is on the far right
-(position 27382) supported by only 4 sites / 3 loci, and which therefore does not
-pass our recombinant quality control measure. The second of these involves a single
-breakpoint at corresponds to
-the origin of the BA.5 lineage
+descendants but which are not classified as recombinants by Pango. The first of these
+corresponds to recombination event within BA.2 whose breakpoint is at position 27382
+on the far right of the genome (see supplementary document S3, node 1030562). Although
+supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
+meaning that this event does not pass our recombinant quality control measure.
+
+The second of these involves a single breakpoint at position 26858, and is the origin
+of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
+supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
+some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
+sample is added to the ARG, it is possible to construct a more parsimonious
+non-recombinant origin by long branch splitting (see the \nameref{sec:arg_postprocessing}
+section), although subsequent tree building does not make this a parsimonious
+way to rewire the final ARG. We therefore suggest that this too could be an artifactual
+recombination event.
 
 \subsubsection*{Comparison with UShER}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
@@ -2072,7 +2081,7 @@ by simplifying the phylogenies to a smaller number of
 Pango representative samples.
 We focus on the 1473 Pango lineages that have perfect ``origination events'' 
 as described in \ref{sec:supplement_pango_lineages}, and
-omit Pango designations starting with "X",
+omit Pango designations starting with "X"
 to avoid recombinants, leaving 1329 Pango lineages.
 To ensure that each sample is a tip (rather than an internal node)
 in the simplified topologies,
@@ -2087,28 +2096,30 @@ but which do not start with an "X".
 This results in a simplified ARG of 1282 samples,
 each sample having a different Pango designation.
 
-The simplified ARG contains two single-breakpoint recombination nodes. The first
- The second is the origin of BA.5 which we also suggest may be artefactual (see Supp FIXME).
-To reduce plot density, we consider only those Pango lineages with fewer than 10 samples,
-and extract non-recombinant structures from the ARG
-by creating a ``base tree'' of 535 Pangos (i.e. excluding all descendants of Delta, BA.2, and BA.5),
-a Delta subtree of 160 Pangos,
-a BA.2 subtree of 151 sample (excluding BA.5 descendants) and
-a BA.5 subtree of 251 samples.
-Figure SX shows each of these trees compared against the equivalent dated UShER topology,
-with the left and right parents of Delta and BA.2 highlighted in the base tree.
-The order of tips in the two trees was chosen to reduce tangling,
+The simplified ARG contains only two recombination nodes, which
+correspond to those on the far right of the genome identified as
+artefactual in the \ref{sec:spurious-ancestrally-important-recombinants} section.
+We therefore compare the Usher topology against the first tree in the ARG (covering
+positions 1-26858; the majority of the genome). To reduce plot density, we consider
+only those Pango lineages with greater than 10 samples, and to aid visualization,
+we divide resulting tree into 4 parts: a BA.5 subtree of 187 Pangos,
+a Delta subtree of 104 Pangos, a BA.2 subtree (excluding BA.5 descendants) of 118 Pangos,
+and a base tree (i.e. excluding all descendants of Delta and BA.2) of 405 Pangos,
+Figures \ref{fig:tanglegram_base}-\ref{fig:tanglegram_ba5} show these trees compared
+against the equivalent dated UShER topologies.
+The order of tips in each plot was chosen to reduce tangling,
 as calculated using the NeighborNet algorithm from Dendroscope \cite{Scornavacca2011,Huson2012},
 with tanglegrams plotted using the SVG outputting facility built into tskit.
-The entire pipeline is saved as a notebook at URL (?).
+See \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/supp\_pdf-cophylogeny-tanglegrams.ipynb}{supp\_pdf-cophylogeny-tanglegrams.ipynb}
+for details and the pipeline used.
 
-The majority of resolvable nodes, including most high-level Scorpio groupings,
-are shared between the ARG and the UShER tree (magenta nodes).
+Inspection of Figures~\ref{fig:tanglegram_base}-\ref{fig:tanglegram_ba5} reveals that the majority of resolvable nodes,
+including most high-level Scorpio groupings,
+are shared between the ARG and the UShER tree (magenta nodes), and there is extremely close (usually perfect) agreement on topological relations between the Pango lineages.
 In the few cases where the trees differ, this is often in terms of degree of resolution of polytomies.
 In these cases, sometimes the sc2ts ARG shows greater resolution,
 as in the base of the BA.2 subtree, and
-sometimes the UShER tree shows greater resolution, as in BA.2.9.
-
+sometimes the UShER tree shows greater resolution, as in the close relatives of Beta (B.1.351).
 
 \subsubsection*{Comparison of mutational spectra}
 
@@ -2351,36 +2362,79 @@ although filtering the recombination events to the 354 with better support revea
 %WHICH deletions are we talking about?]
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
-Mapping deletions onto the ARG using post-hoc parsimony
-allowed us to identify important deletions and
-to clarify their nature in SARS-CoV-2 evolution.
+Although uncommon relative to single nucleotide mutations,
+deletions are an important component of SARS-CoV-2 evolution,
+contributing to the emergence of VOCs by enhancing,
+e.g., efficiency for cell entry \cite{Cantoni2022} and
+potential for antibody escape \cite{McCarthy2021}.
+Using the ARG, we identified major deletion events
+(which are propagated to many descendants)
+as well as recurrent deletions
+(which occur on at least two branches) in the ARG.
 In Table~\ref{tab:major_dels},
-we list a subset of deletion events in the ARG
-which are inherited by at least 10,000 samples.
-We consider these deletions to be major events
-in the evolutionary history of SARS-CoV-2.
-Most of these deletion events
-(besides the 1-base deletion at 28,271
-inherited by 45\% of the samples)
-are associated with the origin nodes of major VOCs in the ARG
-(indicated by the Pango lineages assigned to them,
-e.g., node 86456 is the Alpha origin node;
-also see Figure~\ref{fig:subgraph_alpha}).
-Most of them are characteristic mutations
-that are linked to the emergence of these VOCs
-(see the references in Table~\ref{tab:major_dels}
-pointing to the analyses
-which originally identified them as characteristic mutations).
-They are also highly prevalent
-(all except two events in this table
-are inherited by at least 11\% of the samples).
-Notably, eight of these deletion events occur
-in the N-terminal domain of the S1 unit of Spike (S1-NTD),
-a known hotspot of recurrent deletions \cite{McCarthy2021};
-These are all highly recurrent (Table~\ref{tab:rec_dels}), and
-include known recurrent deletions, for example,
-a 6-base deletion at 21,765 \cite{Meng2021} and
-a 3-base deletion at 21,991 \cite{McCarthy2021}.
+we list the major deletion events in the ARG
+which are each inherited by at least 10,000 descendant samples; and
+in Table~\ref{tab:rec_dels},
+we list the recurrent deletions in the ARG
+which are each observed by at least 10,000 (0.4\%) samples.
+Most of the deletions in these tables
+occur in coding regions
+(except the 1-base deletions at 28,271) and
+do not cause frame shifts, involving 3, 6, or 9 sites
+(except the 4-base deletion and the two 5-base deletions,
+which are likely artefacts; see below).
+All the deletions in these tables
+(besides the artefactual cases)
+have been linked to the emergence of major VOCs
+(Alpha \cite{RambautAlpha2020},
+Delta \cite{Stern2021},
+Omicron B.1.1.529 \cite{RambautOmicron2021},
+BA.1 \cite{RambautOmicron2021},
+BA.2 \cite{RambautOmicron2021}, and
+BA.4 \cite{Tegally2022})
+and/or reported to be prevalent
+in previous studies of deletions \cite{Li2023indels}.
+All these major deletion events
+(again, besides the artefactual cases)
+are associated with the origins of major VOCs in the ARG
+(see the Alpha subgraph in Figure~\ref{fig:subgraph_alpha};
+the Delta subgraph in Figure~\ref{fig:subgraph_delta}; and
+the Omicron subgraph in Figure~\ref{fig:subgraph_omicron}),
+except the 1-base deletion at 28,271 on node 1436808
+and the 9-base deletion at 686 on the BA.4-labeled node 2698748
+(Table~\ref{tab:major_dels}).
+Most of these deletions have been identified
+as characteristic mutations of the major VOCs
+in the studies or analysis cited in Table~\ref{tab:major_dels}.
+Notably, eight of the major deletion events occur
+in the N-terminal domain of the S1 unit of Spike
+(a known hotspot of recurrent deletions \cite{McCarthy2021}
+that plays a substantial role in antigenicity \cite{Harvey2021}),
+which are all highly recurrent in the ARG
+(Table~\ref{tab:rec_dels}).
+These include known recurrent deletions:
+the 6-base deletion at 21,765 and
+the 3-base deletion at 21,991,
+which are associated with
+increased efficiency in cell entry \cite{Meng2021} and
+antibody escape \cite{McCarthy2021}, respectively.
+In addition, we found recurrent deletions in ORF8 and NSP3,
+which have been suggested to be indel hotspots
+\cite{Akaishi2022}.
+Together, these findings demonstrate that
+the ARG captures genuine deletion events
+in SARS-CoV-2 evolution.
+A comprehensive evolutionary analysis of
+the deletion events in the ARG
+is beyond the scope of the current study;
+however, we believe that the ARG, as a resource,
+will enable and facilitate future studies
+to better understand the role of deletions
+in SARS-CoV-2 evolution
+(alongside recombination and single nucleotide mutations),
+which to-date has been understudied
+in great part due to
+a lack of suitable data models, methods, and tools.
 
 Detection of deletions and inference of deletion events
 remain challenging, especially when the dataset is enormous.
@@ -2395,18 +2449,16 @@ The three contiguous out-of-frame deletions in NSP6
 are examples of such artefacts (Table~\ref{tab:major_dels}).
 In the sequence alignments, there are two 9-base deletions,
 one at 11,283 and the other at 11,288,
-which are commonly found in BA.1 and BA.2 samples, respectively.
+which are found in
+339,810 BA.1 samples and 843,291 BA.2 samples
+in the Viridian v04 dataset, respectively.
 Assuming that the alignments are correct,
 there should be two deletion events,
 but they were mapped as three deletion events
 as they had four overlapping sites from 11,288 to 11,292,
 which were inferred by parsimony
 as the 4-base deletion event at 11,288.
-Furthermore, sequencing errors or sequence misalignments
-can also cause artefactual deletions, for example,
-the out-of-frame 4-base recurrent deletion at 21,767 in S1-NTD
-(Table~\ref{tab:rec_dels}).
-Future improvements in deletion remapping and data pre-processing
+Future improvements in deletion remapping
 should remove such artefactual deletions.
 
 
@@ -2416,12 +2468,19 @@ should remove such artefactual deletions.
 Major deletion events in the ARG.
 The deletions caused by these events
 are inherited by at least 10,000 samples.
-The frequencies of these deletions in the ARG are shown.
-The Pango lineage assigned to the node
-where an event occurs is shown.
-The references point to analyses
-which identified a deletion
-to be associated with a major VOC assigned to its node.
+These deletions are characterized by
+a site position in the genome (start) and
+the number of subsequence sites involved (length), and
+they are annotated by the gene in which they occur
+(non-coding otherwise).
+The IDs of the nodes in the ARG
+above which the deletions occur and
+the Pango lineages assigned to these nodes are indicated.
+The percentage of samples inheriting each deletion
+is shown as frequencies.
+If a deletion has been identified
+as a characteristic mutation of a VOC by a study (or an analysis),
+a reference to the study (or the analysis) is provided.
 Abbreviations: NSP, non-structural protein;
 ORF, open reading frame;
 S, Spike;
@@ -2455,13 +2514,17 @@ Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
 \end{table}
 
 
-
 \begin{table}
 \centering
 \caption{
-Recurrent deletions.
-These deletions occur at least 5 times in the ARG and
-are found in at least 1,000 samples.
+Recurrent deletions in the ARG.
+These deletions occur on at least two branches in the ARG and
+are found in the alignments of at least 10,000 (0.4\%) samples
+in the Viridian v04 dataset.
+For each deletion, the number of occurrences in the ARG and
+the number of samples where it is observed are shown.
+For further explanation,
+see the caption of Table~\ref{tab:major_dels}.
 Abbreviations:
 NSP, non-structural protein;
 ORF, open reading frame;
@@ -2484,7 +2547,6 @@ Start & Length & Region & Occurrences & Samples\\
 28271 & 1 & non-coding & 24 & 1331409\\
 11288 & 9 & ORF1ab / NSP6 & 19 & 843291\\
 11283 & 9 & ORF1ab / NSP6 & 13 & 339810\\
-21767 & 4 & S / S1-NTD & 10 & 2144\\
 28362 & 9 & N & 7 & 850483\\
 21633 & 9 & S / S1-NTD & 7 & 531973\\
 \bottomrule
@@ -2646,10 +2708,8 @@ of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 
 % https://github.com/jeromekelleher/sc2ts-paper/issues/772
 \subsubsection{Alpha}
-The B.1.1.7 (Alpha) variant is the first major VOC, and
-it is a saltational lineage
-characterized by a long branch preceding its origin.
-Figure \ref{fig:subgraph_alpha} shows that the origin of Alpha is well reconstructed in the ARG.
+\label{supp:alpha}
+The B.1.1.7 (Alpha) variant emerged in the UK as the first major VOC. Is well reconstructed in the ARG with Figure \ref{fig:subgraph_alpha} showing it to be a saltational lineage characterised by a long branch preceding its origin. 
 Most of the characteristic Alpha mutations (\cite{RambautAlpha2020})
 (20 out of 23) in the ARG
 occur immediately above the Alpha root.
@@ -2679,10 +2739,15 @@ it has been suggested elsewhere as an Alpha-defining mutation
 
 
 \subsubsection{Delta}
+\label{supp:delta}
+
  \ref{fig:subgraph_delta}
 
+
 \subsubsection{Omicron BA.1 and BA.2}
-XX
+\label{supp:omicron}
+
+\ref{fig:subgraph_omicron}
 
 
 \subsection{Additional analyses of the Pango X lineages}
@@ -3392,14 +3457,14 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 Quality control of recombination events.
 Scatterplot of recombination events by the net number of supporting loci
 on the left parent (x-axis) and the right parent (y-axis).
-The shaded regions highlight artifactual recombination events,
+The shaded regions highlight potentially artifactual recombination events,
 which have fewer than 4 net supporting loci
 on one side or both sides of the suggested breakpoint.
 Colors indicate the primer scheme used for sequencing.
 The pie charts show breakdowns of the recombination events
 by primer scheme per quadrant (labeled Q1 to Q4).
 Recombination events associated with
-the origins of Pango X lineages are labeled.
+the origins of Pango X and Jackson\cite{Jackson2021} lineages are labeled.
 }
 \label{fig:recombinant_qc}
 \end{figure}
@@ -3544,7 +3609,7 @@ are highlighted with a pink outline.
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Delta.pdf}
 \caption{
-Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in \ref{fig:subgraph_alpha}, with characteristic Delta mutations outlined in pink. Sites associated with multiple mutations in the subgraph have their mutations assigned a unique fill colour (orange, blue, green, red, etc); reversions are further highlighted with a black outline. Sc2ts seed samples (see STAR methods) for B.1.617, B.1.617.1, and B.1.617.2 (Delta) are plotted as red squares.
+Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in \ref{fig:subgraph_alpha}, with characteristic Delta mutations outlined in pink. Sites associated with multiple mutations in the subgraph have their mutations assigned a unique fill colour (orange, blue, green, red, etc); reversions are further highlighted with a black outline. Sc2ts seed samples (see STAR methods) for B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
 }
 \label{fig:subgraph_delta}
 \end{figure}
@@ -3553,9 +3618,7 @@ Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Omicron.pdf}
 \caption{
-Subgraph of the BA.1 and BA.2 Omicron lineages. BA.1 samples are shown 
-[Some notes to help the reader know this 
-reflects known events]
+Subgraph illustrating the saltational origin of the major Omicron lineages BA.1 and BA.2. Symbol and multiple-colouring schemes as in \ref{fig:subgraph_delta}, except BA.1 samples are filled in light blue (also used to outline BA.1 specific mutations), BA.2 samples in light yellow (also used to outline BA.2 specific mutations), and B.1.1.529 mutations not seen in either BA.1 or BA.1 are outlined in green. These colours correspond to those used in the Pango designation issue\cite{RambautOmicron2021}.
 }
 \label{fig:subgraph_omicron}
 \end{figure}
