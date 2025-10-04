@@ -64,7 +64,7 @@ def run(ripples_dir, sc2ts_ts, output):
             continue
         seen_descendants.add(desc)
         event = UsherEvent(usher_node, desc, {"unclassified": -1})
-        if len(desc) < 10_000:
+        if len(desc) < 100_000:
             nodes = [sample_id_to_node[sid] for sid in desc]
             if len(nodes) == 1:
                 mrca = int(nodes[0])
@@ -81,6 +81,8 @@ def run(ripples_dir, sc2ts_ts, output):
             event.sc2ts_closest_recombinant = u
             if u != -1:
                 event.sc2ts_closest_recombinant_path_len = tree.path_length(mrca, u)
+        else:
+            print(f"Skipping classification for node with {len(desc)} descendants")
 
         events.append(event)
 
