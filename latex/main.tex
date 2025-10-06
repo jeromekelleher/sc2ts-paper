@@ -2121,6 +2121,30 @@ In these cases, sometimes the sc2ts ARG shows greater resolution,
 as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in the close relatives of Beta (B.1.351).
 
+\subsubsection*{Checking inferred node dates}
+
+To validate the accuracy of times for non-sample internal nodes inserted 
+into the ARG
+(inferred using tsdate), we compared the dates of first emergence of
+Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
+2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
+close agreement for most clades, with only three (20C, 20E and 21B)
+disagreeing by more than 28 days.
+
+Then, to gauge internal consistency of the time estimation procedure, we
+selected a subset of sample nodes, matching the distribution of node times 
+and average number of children of the non-sample internal nodes. These
+selected sample nodes were then re-dated, and the inferred dates compared 
+against their known, true sampling dates. The results in Figure 
+\ref{fig:node_time_testing} demonstrate that although the inferred and true
+times are generally very close, there is a clear bias with re-estimated times
+being consistently older (by an average of 37 days). This is in line with 
+the findings of other recent
+work \cite{sanderson2021chronumental}, and is likely to be a consequence
+of edges carrying more mutations than would be expected under a neutral
+molecular clock prior, as well as inaccuracies in the recording of 
+sample dates.
+
 \subsubsection*{Comparison of mutational spectra}
 
 To validate the mutational information contained in the sc2ts ARG,
@@ -3593,6 +3617,23 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 \label{fig:tanglegram_ba5}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.85\linewidth]{node_time_testing.pdf}
+\caption{
+Heat map showing differences (in days) between actual and re-estimated sample dates for a subset of internal sample nodes. 
+}
+\label{fig:node_time_testing}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\linewidth]{pango_vs_nextstrain_node_times.pdf}
+\caption{
+Inferred times of internal nodes corresponding to origins of Nextclade clades ($y$-axis) against those estimated in the Nextclade tree ($x$-axis). Confidence intervals shown as horizontal bars. Clades are labelled where dates differ by more than 28 days. 
+}
+\label{fig:pango_vs_nextstrain_node_times}
+\end{figure}
 
 \begin{figure}
 \centering
