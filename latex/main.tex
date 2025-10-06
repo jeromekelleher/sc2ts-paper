@@ -2376,8 +2376,11 @@ we list the major deletion events in the ARG
 which are each inherited by at least 10,000 descendant samples; and
 in Table~\ref{tab:rec_dels},
 we list the recurrent deletions in the ARG
-which are each observed by at least 10,000 (0.4\%) samples.
-[FIXME define how we measured this].
+which are each observed in at least 10,000 (0.4\%) samples
+% [FIXME define how we measured this].
+(i.e., for a deletion caused by multiple events in the ARG,
+the sum of all the samples inheriting the deletion
+across all the events).
 
 Most of the deletions in these tables
 occur in coding regions
@@ -2471,18 +2474,18 @@ should remove such artefactual deletions.
 Major deletion events in the ARG.
 The deletions caused by these events
 are inherited by at least 10,000 samples.
-These deletions are characterized by
+The deletions are characterized by
 a site position in the genome (start) and
-the number of subsequence sites involved (length), and
+the number of sites involved (length);
 they are annotated by the gene in which they occur
 (non-coding otherwise).
 The IDs of the nodes in the ARG
 above which the deletions occur and
-the Pango lineages assigned to these nodes are indicated.
-The percentage of samples inheriting each deletion
-is shown as frequencies.
+the Pango lineages assigned to these nodes are shown.
+Frequency is the percentage of samples inheriting a deletion.
 If a deletion has been identified
-as a characteristic mutation of a VOC by a study (or an analysis),
+as a characteristic mutation of a VOC
+by a study (or an analysis),
 a reference to the study (or the analysis) is provided.
 Abbreviations: NSP, non-structural protein;
 ORF, open reading frame;
