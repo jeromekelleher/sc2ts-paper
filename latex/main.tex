@@ -2882,17 +2882,32 @@ above the split between BA.1 and BA.2.
 
 % Multiple-breakpoint recombinants
 % https://github.com/jeromekelleher/sc2ts-paper/issues/379
+Ten Pango X lineages present in the Viridian v04 dataset
+were not integrated into the ARG
+due to high HMM costs and/or insufficient sample support,
+but their samples were matched against the ARG during inference.
+Table~\ref{tab:absent_pango_x} summarizes
+the HMM matching results of these Pango X lineages.
+All were identified as recombinants by sc2ts, except XBL
+for which the evidence for recombination
+supporting the suggested rightmost parent
+involves only three informative sites,
+which fall below our threshold of detection.
+These results demonstrate that sc2ts can detect
+recombinants with multiple breakpoints (XAY, XBC, and XBT).
+The recombination patterns of these Pango X lineages
+can be complex; exploring how to integrate such recombinants
+should an important direction for future work.
 
 
 \begin{table}
 \centering
 \caption{
 Sc2ts detection results for Pango X lineages not added to the ARG.
-Some Pango X lineages present in the Viridian v04 dataset
-were not integrated into the ARG due to high HMM costs
-The number of samples in Viridian v04 dataset
-assigned to a Pango X lineage and
-the number of samples which passed sequence-level quality control
+The number of samples assigned to these Pango X lineages
+in Viridian v04 dataset,
+the number of samples which passed sequence-level quality control, and
+the number of recombination breakpoints in the Viterbi solutions of the samples
 are shown here.
 }
 \label{tab:absent_pango_x}

@@ -34,6 +34,8 @@ rule all:
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
+        # CovRecomb output is left in its own file
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_CovRecomb_output.csv",
         # Events corresponding to Pango X lineages. This is the pango_x_events.csv file
         # in the top-level data directory
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
@@ -680,6 +682,42 @@ rule add_rebar_to_csv:
         """
         python scripts/add_rebar_to_csv.py {input} {output}
         """
+
+################
+# CovRecomb stuff
+#################
+
+rule CovRecomb_github:
+    output: 
+        directory("CovRecomb")
+    shell: 
+        "git clone https://github.com/wuaipinglab/CovRecomb.git"
+        
+rule append_reference_to_alignments:
+    input:
+        "{ARTA_PREFIX}_recombinants.fasta",
+    output:
+        "{ARTA_PREFIX}_recombinants_CovRecomb.fasta",
+    shell: 
+        "cat reference.fasta {input} > {output}"
+
+rule run_covrecomb:
+    conda: "CovRecomb.yml"
+    input: 
+        "CovRecomb",
+        "{RR_PREFIX}_recombinants_CovRecomb.fasta"
+    output:
+        "{RR_PREFIX}_CovRecomb_output.csv"
+    shell:
+      # TODO don't hardcode the number of cores with -c
+      """
+      cd CovRecomb/CovRecomb-Local-Version && \\
+        python setup.py install && \\
+        CovRecomb ../../{input[1]}  -c 20 \\
+            -r 'MN908947 (Wuhan-Hu-1/2019)' \\
+            -o ../../{output} 
+      """
+        
 
 
 #######
