@@ -715,31 +715,42 @@ and Document S2 for ARG visualisations.
 \caption{RIPPLES pango X lineage events.} 
 \label{tab:ripples_x_lineages}
 \centering
-% \begin{scriptsize}
-\begin{tabular}{llrr}
+\begin{scriptsize}
+
+\begin{tabular}{lrrlrl}
 \toprule
-\multicolumn{4}{c}{Detected at p3 and p4}\\
-ripples & sc2ts & usher descs& scts descs \\
+pango & in p4 & UShER desc & sc2ts class & clade diff & descendants \\
 \midrule
-XBR & XBR & 1 & 1 \\
-XAC & novel & 18 & 18 \\
-XC & XC & 5 & 5 \\
-XA & XA & 39 & 39 \\
-XS & XS & 17 & 17 \\
-XM & XM3 & 1 & 1 \\
+XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
+XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
+XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
+XBM & $\checkmark$ & 12 & I & 0 & {XBM:10, BF.3:2} \\
+XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
+XY &  & 23 & I & 0 & {XY:23} \\
+XW &  & 32 & I & 0 & {XW:32} \\
+XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
+XL &  & 64 & I & 0 & {XL:64} \\
+XBB &  & 6452 & I & 1 & {XBB:2361} \\
 \midrule
-\multicolumn{4}{c}{Detected at p3}\\
+XQ &  & 1 & II & 0 & {XAM:1} \\
+XM & $\checkmark$ & 8 & II & 0 & {BA.2:4, XM:4} \\
+Xx &  & 9 & II & 0 & {XAE:9} \\
+Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
+XQ &  & 21 & II & 0 & {XAM:21} \\
+XE/XH &  & 1113 & II & 3 & {XE:1113} \\
 \midrule
-XY & XY & 23 & 23 \\
-XE & novel & 1113 & 1116 \\
-XL & XL & 64 & 64 \\
-XAM & XQ & 1 & 1 \\
-XW & XW & 32 & 32 \\
-XBB & XBB & 6452 & 6453 \\
-XAM & XQ & 21 & 21 \\
-XAE & novel & 9 & 9 \\
+XB & $\checkmark$ & 411 & IV & 0 & {B.1:219, XB:192} \\
+\midrule
+NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
+NA &  & 20 & NA & 1061775 & {BA.1.15:1, XS:17, BA.1:1, BA.1.1:1} \\
+NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
+NA & $\checkmark$ & 36 & NA & 7146 & {XBD:30, XBR:1, BA.2.75:5} \\
+NA &  & 1321 & NA & 340501 & {XE:1113, XH:2, XJ:68, XY:23, BA.2:82, XM:29,
+XAL:3, XAF:1} \\
+\bottomrule
 \end{tabular}
-% \end{scriptsize}
+
+\end{scriptsize}
 \end{table}
 
 \subsection*{Quality control of recombination events}
