@@ -401,10 +401,11 @@ Mckinney2010data,Lam2015numba} and bioinformatics
 packages\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
 See STAR Methods for details on all aspects of the method.
 
+
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
 Using sc2ts, we built an ARG from 2,482,157 samples from the Viridian v04
-dataset\cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
+dataset \cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a XX core server with 500 GB of RAM 
 ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG 
@@ -417,7 +418,7 @@ the ARG is stored in a 32MiB tszip format file.
 % about the full ARG for the rest of the section.
 Of the nodes, 855 represent recombination events, 
 resulting in 316 distinct trees along the genome (some
-events occured at the same breakpoints [vague, rephrase]).
+events occurred at the same breakpoints [vague, rephrase]).
 [TODO note about loading up the time it takes to get the node 
 data dataframes in a notebook?]
 
@@ -448,9 +449,9 @@ Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
-We also evaluated how well the ARG reflects the structure 
-of the Pango nomenclature system~\cite{Rambaut2020} by computing 
-Pango assignments for all 2.7 million nodes in the ARG using 
+We also evaluated how well the ARG reflects the structure
+of the Pango nomenclature system~\cite{Rambaut2020} by computing
+Pango assignments for all 2.7 million nodes in the ARG using
 Pangolin~\cite{OToole2021assignment} (STAR Methods).
 All but 21,680 of the exported sample alignments (0.87\%) agreed
 with the source consensus sequences in terms of Pango lineage assignment
@@ -496,6 +497,7 @@ for example, three deletions in S1-NTD
 associated with antibody escape\cite{McCarthy2021}.
 See Document\ref{sec:supplement_dels} for further analysis.
 
+
 \subsection*{Epidemiologically relevant recombinant lineages}
 
 \begin{figure}[h]
@@ -508,7 +510,7 @@ smaller squares list extra samples descending from a node, hidden for brevity,
 with all hidden samples taking the same Pango designation as their parent.
 For the two recombination nodes, a genome bar above shows
 the location of the inferred breakpoint interval relative to the Spike gene.
-For simplicity, ancestral lineages above the recombination parents or the MRCA are omitted.
+For simplicity, ancestral lineages above the recombinant parents or the MRCA are omitted.
 (A) Subgraph around the recombination node associated with XA.
 Two ``Group A'' recombinant samples reported by Jackson 
 et al.\cite{Jackson2021} are shown.
@@ -533,8 +535,8 @@ events, the averted shows the number of additional mutations required
 under a recombination-free HMM solution. Parent lineages shown in boldface
 are nodes exactly matched by sampled sequences. The descendants column
 shows the descendant samples broken down by Pango lineage (grouped 
-by root lineage, where appropriate).[FIXME Typesetting to be finished,
-describe cols for Type III and IV]
+by root lineage, where appropriate).
+[FIXME Typesetting to be finished, describe cols for Type III and IV]
 }
 \label{tab:pango_x_lineages}
 % scriptsize is quite small here, and we could probably cram it all 
@@ -643,20 +645,20 @@ As of pango-designation version v1.33.1 (2025-03-31), a total of 146 distinct
 X lineages have been designated.
 %$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
 % 146
-Although the process of incorporating recombinant lineages in the Pango 
-nomenclature system is well defined,
-the identification of such events is much more subjective, requiring
-the synthesis of multiple lines of evidence and often the 
-manual inspection of phylogenies and sequence alignments
+Although the process of incorporating recombinant lineages
+in the Pango nomenclature system is well defined,
+the identification of such events is much more subjective,
+requiring the synthesis of multiple lines of evidence and
+often the manual inspection of phylogenies and sequence alignments
 by volunteers~\cite{Smith2023tracking}.
 
 By automatically detecting and incorporating recombination events
 into the ARG, sc2ts provides us with a systematic means of 
 discovering and assessing evidence around these events.
-Table~\ref{tab:pango_x_lineages} summarises
-these results for the 44 Pango X lineages present in
-the ARG (XAC and XAD have been omitted, and XM 
-partially represented, corresponding to 23 samples in total; 
+Table~\ref{tab:pango_x_lineages} summarizes
+these results for the 44 Pango X lineages present in the ARG
+(XAC and XAD have been omitted, and
+XM partially represented, corresponding to 23 samples in total; 
 see Document~\ref{sec:supplement_x_pango_lineages}).
 For 16 Pango X lineages the oldest node that has been assigned
 the focal Pango lineage is a recombination node, and that node 
@@ -706,6 +708,7 @@ Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages},
 and Document S2 for ARG visualisations.
 
+
 \subsection*{Quality control of recombination events}
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
@@ -742,7 +745,7 @@ a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between 
 the two solutions---the number of 
 mutations ``averted'' by recombination---is a measure of the evidence
-in favour of recombination. 
+in favor of recombination. 
 Table~\ref{tab:pango_x_lineages} shows
 the number of averted mutations for each of the 21 recombination events
 associated with Pango X lineages, with support ranging from very
@@ -2874,43 +2877,48 @@ where those five mutations would be placed
 above the split between BA.1 and BA.2.
 
 
-\subsection{Additional analyses of the Pango X lineages}
-\label{sec:supplement_indepth_pango_x_lineages}
+\subsection{Sc2ts detection results of rejected Pango X lineages}
+\label{sec:supplement_rejected_pango_x_lineages}
 
-% Sc2ts detection results in matches
-% https://github.com/jeromekelleher/sc2ts-paper/issues/366
-
-% Multiple-breakpoint recombinants
-% https://github.com/jeromekelleher/sc2ts-paper/issues/379
-Ten Pango X lineages present in the Viridian v04 dataset
+Ten Pango X lineages which are present in the Viridian v04 dataset
 were not integrated into the ARG
 due to high HMM costs and/or insufficient sample support,
 but their samples were matched against the ARG during inference.
-Table~\ref{tab:absent_pango_x} summarizes
+% https://github.com/jeromekelleher/sc2ts-paper/issues/366
+Table~\ref{tab:extra_hmm_results} summarizes
 the HMM matching results of these Pango X lineages.
 All were identified as recombinants by sc2ts, except XBL.
-The evidence for recombination
-supporting the suggested rightmost parent
-involves only three informative sites,
-which fall below our threshold of detection.
-These results demonstrate that sc2ts can detect
+(For XBL, the evidence for recombination
+proposed in the Pango designation issue \cite{PangoIssueXBL}
+involves only three informative sites
+supporting the suggested rightmost parent, and
+therefore this likely fell below our threshold of detection.)
+% https://github.com/jeromekelleher/sc2ts-paper/issues/379
+Importantly, these results demonstrate that sc2ts can detect
 recombinants with multiple breakpoints (XAY, XBC, and XBT).
-The recombination patterns of these Pango X lineages
-can be complex; exploring how to integrate such recombinants
-should an important direction for future work.
+% https://github.com/jeromekelleher/sc2ts-paper/discussions/776
+% https://github.com/jeromekelleher/sc2ts-paper/discussions/788
+XBC and XBT are clean examples of two-breakpoint recombinants,
+with the Pango lineages of the parents and the breakpoint intervals
+concordant with those suggested in the Pango designation issues.
+The recombination patterns of XAY, however, is complex.
+Exploring how to integrate these recombinants and
+other multiple-breakpoint recombinants
+should be an important direction for future work.
 
 
 \begin{table}
 \centering
 \caption{
 Sc2ts detection results for Pango X lineages not added to the ARG.
-The number of samples assigned to these Pango X lineages
-in Viridian v04 dataset,
+The number of samples in Viridian v04 dataset
+assigned to these Pango X lineages,
 the number of samples which passed sequence-level quality control, and
-the number of recombination breakpoints in the Viterbi solutions of the samples
-are shown here.
+the number of recombination breakpoints
+in the Viterbi solutions of the samples
+are shown.
 }
-\label{tab:absent_pango_x}
+\label{tab:extra_hmm_results}
 \begin{tabular}{crrr}
 \toprule
 Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
@@ -2929,6 +2937,9 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 \end{tabular}
 \end{table}
 
+
+\subsection{Additional analyses of the Pango X lineages}
+\label{sec:supplement_indepth_pango_x_lineages}
 
 \subsubsection{XA}
 (also illustrated in Figure 2a / 3d)
@@ -3499,8 +3510,9 @@ that is directly supported by a BQ.1.25-labeled sample identical to it.
 \subsection{Analysis of the Jackson et al. recombinants}
 \label{sec:jackson_recombs}
 
-Jackson et al.\cite{Jackson2021} conducted detailed analyses of early recombinants
-involving B.1.1.7 (Alpha), including the first designated Pango X lineage, XA.
+Jackson et al.\cite{Jackson2021} conducted a detailed analysis of
+early recombinants involving B.1.1.7 (Alpha),
+including the first designated Pango X lineage, XA.
 The authors first performed a targeted search for candidate recombinants by
 scanning sampled sequences for sequence motifs associated with Alpha,
 followed by an analysis to reduce the list of plausible recombinants
@@ -3510,27 +3522,28 @@ with the detection results reported by Jackson et al.
 
 Jackson et al. described
 four groups of recombinants (named A to D) and four singleton recombinants.
-Of the 16 samples analyzed by Jackson et al.\
-12 were included in the ARG;
+Of the 16 samples analyzed by Jackson et al., 12 were included in the ARG;
 the remaining 4 were excluded
 because the sequences did not pass the QC filtering criteria or
 because of a high HMM cost.
-Groups A-D are summarized in Table~\ref{tab:jackson} and show excellent concordance
+Groups A-D are summarized in Table~\ref{tab:jackson} and
+show excellent concordance
 in terms of the parental Pango lineages and breakpoint intervals.
-All four groups are directly associated with strongly supported recombination events
-in the ARG in terms of the number of averted mutations (A: 16, B: 6, C: 30, D: 18).
+All four groups are directly associated with
+strongly supported recombination events in the ARG
+in terms of the number of averted mutations (A: 16, B: 6, C: 30, D: 18).
 In the ARG, the singleton CAMC-CBA018 has
 the parents B.1.177+B.1.1.7 and
-the breakpoint interval 16,177--20,133,
-and is strongly supported by 14 averted mutations.
-In the Jackson et al.\ results, this singleton is
+the breakpoint interval 16,177--20,133, and
+is strongly supported by 14 averted mutations.
+In the Jackson et al. results, this singleton is
 almost identical with the same parent lineages and
 a breakpoint interval of 11,395–-21,993.
 In the ARG, the singleton MILK-103C712 has
 the parents B.1.177.16+B.1.1.7 and
 a breakpoint interval of 24915--27972,
 again strongly supported by 11 averted mutations.
-In the Jackson et al.\ results,
+In the Jackson et al. results,
 this lineage has the same parents,
 with the breakpoint interval 26,800–-27,974.
 In the ARG, the singleton QEUH-1067DEF has
