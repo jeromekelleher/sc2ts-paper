@@ -2734,12 +2734,18 @@ failed to find a specific lineage (accounting for 7\%
 of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 2,747,985 alignments).
 
-\subsection{Major saltation lineages}
+
+\subsection{Origins of major VOCs}
 
 % https://github.com/jeromekelleher/sc2ts-paper/issues/772
 \subsubsection{Alpha}
-\label{supp:alpha}
-The B.1.1.7 (Alpha) variant emerged in the UK as the first major VOC. Is well reconstructed in the ARG with Figure \ref{fig:subgraph_alpha} showing it to be a saltational lineage characterised by a long branch preceding its origin. 
+\label{sec:alpha}
+
+The B.1.1.7 (Alpha) variant emerged in the UK as the first major VOC.
+Its origin is well reconstructed in the ARG,
+with Figure \ref{fig:subgraph_alpha}
+showing it to be a saltational lineage
+characterized by a long branch preceding its origin.
 Most of the characteristic Alpha mutations (\cite{RambautAlpha2020})
 (20 out of 23) in the ARG
 occur immediately above the Alpha root.
@@ -2749,7 +2755,9 @@ suggesting that this mutation was acquired prior to the emergence of Alpha.
 This parent node has an additional 5 children
 (leading to 12 samples),
 of which we display one (ERR4413600)
-with no associated mutations, meaning that it has an identical sequence to the inferred ancestor of Alpha.
+with no associated mutations,
+meaning that it has an identical sequence
+to the inferred ancestor of Alpha.
 Below the root of Alpha, a single sample (ERR5178290)
 appears without the characteristic mutation C3267T
 (or any additional mutations).
@@ -2769,15 +2777,96 @@ it has been suggested elsewhere as an Alpha-defining mutation
 
 
 \subsubsection{Delta}
-\label{supp:delta}
+\label{sec:delta}
 
- \ref{fig:subgraph_delta}
+The B.1.617.2 lineage (Delta) was first detected in India \cite{ECDCreport}.
+The subgraph in Figure~\ref{fig:subgraph_delta} shows
+a mutation-rich branch leading to the Delta root,
+which contains 11 single nucleotide mutations and a 6-base deletion.
+The placement of this branch in the ARG
+is a result of long branch splitting of the lineage above B.1.617.
+
+Delta belongs to the “B.1.617” clade,
+which also includes Kappa (B.1.617.1) and B.1.617.3 \cite{ECDCreport}.
+Previous phylogenetic analyses suggest that
+Delta and B.1.617.3 are more closely related to each other
+than either is to Kappa (\cite{Cherian2021,Farinholt2021}).
+In the ARG, however, Delta and Kappa appear as sibling lineages
+(see the subgraph in Figure~\ref{fig:subgraph_delta}).
+This reflects the closest approximation to the relationships
+suggested in the previous studies that could be inferred,
+given that no B.1.617.3 samples passed our QC filters and
+no seed B.1.617.3 samples were specified for ARG inference.
+
+In the ARG, all six of the shared Delta-Kappa mutations (red)
+occur above the B.1-labeled common ancestor
+of Kappa (left branch) and Delta (right branch).
+All nine of the Kappa-specific mutations (blue)
+occur above the B.1.617-labeled node leading to Kappa samples.
+Seven out of nine Delta-specific mutations (purple)
+occur above the Delta root
+(the other two are above the MRCA of Kappa and Delta).
+We further examined the mutations associated with two major branches of Delta.
+Using a phylogenetic analysis, Stern et al. \cite{Stern2021} suggest that
+the Delta sublineages can be classified into distinct clades and
+identified the characteristic mutations of these clades.
+In the Nextstrain phylogeny shown in Stern et al. \cite{Stern2021},
+the first major split separates clades A to D from clade E;
+this topology is reflected in the ARG.
+All three of the clade A-D mutations
+(G15451A, C16466T, and a 6-base deletion at 28,248)
+occur on the uppermost branch of Delta (which corresponds to clades A to D).
+There are ten clade E mutations:
+five occur on the right branch of Delta (which corresponds to clade E) and
+three (C1191T, C5184T, and C28253T) occur above the Delta root.
+The placement of these mutations in the ARG generally reflects
+what is proposed in Stern et al. \cite{Stern2021}.
+
+There are four positions with multiple mutations
+(orange at position 1267, blue at 210, green at 20396, and red at 25276).
+Of these, the only clear topological change
+that could make the graph more parsimonious would be
+to attach the node above SRR12316669 one position higher up the tree,
+which would allow the placement of two recurrent red mutations
+(a C25276T above SRR12316669 and another above ERR4561562 / B.1.617)
+rather than one C25276T mutation followed by two reversions.
+The other recurrent mutations can only be made more parsimonious
+by topological rearrangements that would cause recurrence at other sites.
+We therefore believe that the inferred Delta origins
+in the sc2ts ARG are largely correct.
 
 
 \subsubsection{Omicron BA.1 and BA.2}
-\label{supp:omicron}
+\label{sec:omicron}
 
-\ref{fig:subgraph_omicron}
+The B.1.1.529 lineage (Omicron) is believed to have emerged in southern Africa, and
+it is a saltational lineage with two highly successful sublineages, BA.1 and BA.2 \cite{Dor2025}.
+BA.1 and BA.2 are genetically distinct from each other and
+from their parental B.1.1.529 lineage \cite{RambautOmicron2021}.
+In the subgraph shown in Figure~\ref{fig:subgraph_omicron},
+BA.1 and BA.2 differ from the non-Omicron B.1.1 ancestor
+(above the B.1.1.529-labeled MRCA of BA.1 and BA.2)
+by more than ten mutations, including six deleted regions.
+The ARG captures the split between BA.1 and BA.2,
+which has been shown in previous phylogenetic analysis \cite{Dor2025}.
+The 5-base deletion highlighted in green above the BA.2 root
+is an artefact of our naive deletion remapping procedure,
+which splits two 9-base deletions in BA.1 and BA.2 into three deletions
+(one in green at 11288, one in blue at 11283, and one in orange 11292;
+see Document~\ref{sec:supplement_dels}).
+Also, there is uncertainty in the sequence alignments
+leading to ambiguity in the start position of these deletions,
+as noted in the Pango designation issue \cite{RambautOmicron2021}.
+
+We selected a BA.1 seed sample that led to the fewest mutations.
+This strategy resulted in five mutations highlighted
+in blue/orange/green/red/purple
+which the chosen seed does not have
+but are present in its inferred descendants.
+In retrospect, SRR17051902 should have been a better choice for a seed,
+because it would have resulted in a topology
+where those five mutations would be placed by parsimony
+above the split between BA.1 and BA.2.
 
 
 \subsection{Additional analyses of the Pango X lineages}
@@ -3654,9 +3743,30 @@ are highlighted with a pink outline.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth]{subgraph-Delta.pdf}
+\includegraphics[width=0.85\linewidth]{subgraph-Delta_recolored.pdf}
 \caption{
-Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in \ref{fig:subgraph_alpha}, with characteristic Delta mutations outlined in pink. Sites associated with multiple mutations in the subgraph have their mutations assigned a unique fill colour (orange, blue, green, red, etc); reversions are further highlighted with a black outline. Sc2ts seed samples (see STAR methods) for B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
+Subgraph illustrating the origin of B.1.617.2 (Delta).
+Symbols are described in \ref{fig:subgraph_alpha}, except that 
+we highlight the characteristic mutations of Kappa and Delta:
+those in blue which are listed
+in the Pango designation issue \cite{PangoIssueKappa}
+or the Kappa constellation \cite{ScorpioKappa},
+but absent in the Delta constellation;
+those in purple which are listed
+in the Delta constellation \cite{ScorpioDelta}
+or are Delta-specific deletions reported in Stern et al. \cite{Stern2021},
+but absent in the Kappa constellation; and
+those in red which are listed
+in both the Kappa and Delta constellations.
+We also highlight
+in orange the mutations associated with the lineage containing clades A to D and
+in green those associated with lineage containing clade E.
+Sites associated with multiple mutations in the subgraph
+have their mutations assigned a unique fill color
+(orange, blue, green, red, etc);
+reversions are further highlighted with a black outline.
+Sc2ts seed samples (see STAR methods) for
+B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
 }
 \label{fig:subgraph_delta}
 \end{figure}
@@ -3665,7 +3775,17 @@ Subgraph illustrating the saltational origin of B.1.617.2 (Delta). Symbols as in
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Omicron.pdf}
 \caption{
-Subgraph illustrating the saltational origin of the major Omicron lineages BA.1 and BA.2. Symbol and multiple-colouring schemes as in \ref{fig:subgraph_delta}, except BA.1 samples are filled in light blue (also used to outline BA.1 specific mutations), BA.2 samples in light yellow (also used to outline BA.2 specific mutations), and B.1.1.529 mutations not seen in either BA.1 or BA.1 are outlined in green. These colours correspond to those used in the Pango designation issue\cite{RambautOmicron2021}.
+Subgraph illustrating the saltational origin of
+the major Omicron lineages BA.1 and BA.2.
+Symbols are described in Figure~\ref{fig:subgraph_delta},
+except that BA.1 samples are filled in light blue
+(also used to outline BA.1 characteristic mutations),
+BA.2 samples in light yellow
+(also used to outline BA.2 characteristic mutations), and
+B.1.1.529 mutations
+which are neither BA.1 or BA.2 characteristic mutations are outlined in green.
+These colours correspond to those used
+in the Pango designation issue \cite{RambautOmicron2021}.
 }
 \label{fig:subgraph_omicron}
 \end{figure}
