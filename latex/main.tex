@@ -2128,21 +2128,21 @@ into the ARG
 (inferred using tsdate), we compared the dates of first emergence of
 Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
 2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
-close agreement for most clades, with only three (20C, 20E and 21B)
-disagreeing by more than 28 days.
+close agreement for most clades, with only three 
+disagreeing by more than 28 days: 20C (an early lineage from 2020), 20E (Pango B.1.177 also known as EU1, emerging mid-2020), and 21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
 
 Then, to gauge internal consistency of the time estimation procedure, we
 selected a subset of sample nodes, matching the distribution of node times 
 and average number of children of the non-sample internal nodes. These
 selected sample nodes were then re-dated, and the inferred dates compared 
-against their known, true sampling dates. The results in Figure 
+against their recorded collection dates. The results in Figure 
 \ref{fig:node_time_testing} demonstrate that although the inferred and true
 times are generally very close, there is a clear bias with re-estimated times
 being consistently older (by an average of 37 days). This is in line with 
 the findings of other recent
 work \cite{sanderson2021chronumental}, and is likely to be a consequence
 of edges carrying more mutations than would be expected under a neutral
-molecular clock prior, as well as inaccuracies in the recording of 
+molecular clock prior (either due to errors in tree-building or genuinely varying mutation rates), as well as inaccuracies in the recording of 
 sample dates.
 
 \subsubsection*{Comparison of mutational spectra}
@@ -2839,15 +2839,18 @@ in the sc2ts ARG are largely correct.
 \subsubsection{Omicron BA.1 and BA.2}
 \label{sec:omicron}
 
-The B.1.1.529 lineage (Omicron) is believed to have emerged in southern Africa, and
-it is a saltational lineage with two highly successful sublineages, BA.1 and BA.2 \cite{Dor2025}.
+The B.1.1.529 lineage (Omicron)
+is believed to have emerged in southern Africa, and
+it is a saltational lineage with two highly successful sublineages,
+BA.1 and BA.2 \cite{Dor2025}.
 BA.1 and BA.2 are genetically distinct from each other and
 from their parental B.1.1.529 lineage \cite{RambautOmicron2021}.
 In the subgraph shown in Figure~\ref{fig:subgraph_omicron},
 BA.1 and BA.2 differ from the non-Omicron B.1.1 ancestor
 (above the B.1.1.529-labeled MRCA of BA.1 and BA.2)
-by more than ten mutations, including six deleted regions.
-The ARG captures the split between BA.1 and BA.2,
+by 27 mutations (including two deletions),
+reflecting its saltational origin.
+The ARG captures the split between BA.1 and BA.2
 which has been shown in previous phylogenetic analysis \cite{Dor2025}.
 The 5-base deletion highlighted in green above the BA.2 root
 is an artefact of our naive deletion remapping procedure,
@@ -2855,22 +2858,62 @@ which splits two 9-base deletions in BA.1 and BA.2 into three deletions
 (one in green at 11288, one in blue at 11283, and one in orange 11292;
 see Document~\ref{sec:supplement_dels}).
 Also, there is uncertainty in the sequence alignments
-leading to ambiguity in the start position of these deletions,
+leading to ambiguity in the start position of these deletions
+(if these deletions occur at 11283,
+there would be a single deletion event before the BA.1/BA.2 split),
 as noted in the Pango designation issue \cite{RambautOmicron2021}.
 
 We selected a BA.1 seed sample that led to the fewest mutations.
-This strategy resulted in five mutations highlighted
-in blue/orange/green/red/purple
-which the chosen seed does not have
-but are present in its inferred descendants.
+This strategy resulted in five mutations
+highlighted in blue/orange/green/red/purple
+which are absent in the chosen
+but present in its inferred descendants.
 In retrospect, SRR17051902 should have been a better choice for a seed,
 because it would have resulted in a topology
-where those five mutations would be placed by parsimony
+where those five mutations would be placed
 above the split between BA.1 and BA.2.
 
 
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
+
+% Sc2ts detection results in matches
+% https://github.com/jeromekelleher/sc2ts-paper/issues/366
+
+% Multiple-breakpoint recombinants
+% https://github.com/jeromekelleher/sc2ts-paper/issues/379
+
+
+\begin{table}
+\centering
+\caption{
+Sc2ts detection results for Pango X lineages not added to the ARG.
+Some Pango X lineages present in the Viridian v04 dataset
+were not integrated into the ARG absent in the ARG.
+The number of samples in Viridian v04 dataset
+assigned to a Pango X lineage and
+the number of samples which passed sequence-level quality control
+are shown here.
+}
+\label{tab:absent_pango_x}
+\begin{tabular}{crrr}
+\toprule
+Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
+\midrule
+XBJ & 2 & 1 & 1\\
+XBP & 8 & 2 & 1\\
+XBS & 19 & 15 & 1\\
+XBW & 1 & 1 & 1\\
+XCA & 11 & 4 & 1\\
+XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
+XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
+XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
+XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
+XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 \subsubsection{XA}
 (also illustrated in Figure 2a / 3d)
@@ -3438,33 +3481,6 @@ its right parent is a reconstructed internal node
 that is directly supported by a BQ.1.25-labeled sample identical to it.
 
 
-\subsection{Sc2ts recombination detection results for additional Pango X lineages}
-
-\begin{table}
-\centering
-\caption{
-Sc2ts recombination detection results for Pango X lineages which were not added to the ARG.
-}
-\label{tab:absent_pango_x}
-\begin{tabular}{crrr}
-\toprule
-Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
-\midrule
-XBJ & 2 & 1 & 1\\
-XBP & 8 & 2 & 1\\
-XBS & 19 & 15 & 1\\
-XBW & 1 & 1 & 1\\
-XCA & 11 & 4 & 1\\
-XAK & 2 & 2 & 1\\
-XAY & 15 & 11 & 6\\
-XBC & 36 & 21 & 3\\
-XBL & 2 & 2 & 0\\
-XBT & 1 & 1 & 2\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
 \subsection{Analysis of the Jackson et al. recombinants}
 \label{sec:jackson_recombs}
 
@@ -3708,20 +3724,20 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth]{node_time_testing.pdf}
-\caption{
-Heat map showing differences (in days) between actual and re-estimated sample dates for a subset of internal sample nodes. 
-}
-\label{fig:node_time_testing}
-\end{figure}
-
-\begin{figure}
-\centering
 \includegraphics[width=0.85\linewidth]{pango_vs_nextstrain_node_times.pdf}
 \caption{
 Inferred times of internal nodes corresponding to origins of Nextclade clades ($y$-axis) against those estimated in the Nextclade tree ($x$-axis). Confidence intervals shown as horizontal bars. Clades are labelled where dates differ by more than 28 days. 
 }
 \label{fig:pango_vs_nextstrain_node_times}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\linewidth]{node_time_testing.pdf}
+\caption{
+Heat map showing differences (in days) between actual and re-estimated sample dates for a subset of internal sample nodes. 
+}
+\label{fig:node_time_testing}
 \end{figure}
 
 \begin{figure}
@@ -3773,7 +3789,7 @@ B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth]{subgraph-Omicron.pdf}
+\includegraphics[width=0.85\linewidth]{subgraph-Omicron_recolored.pdf}
 \caption{
 Subgraph illustrating the saltational origin of
 the major Omicron lineages BA.1 and BA.2.
@@ -3783,8 +3799,9 @@ except that BA.1 samples are filled in light blue
 BA.2 samples in light yellow
 (also used to outline BA.2 characteristic mutations), and
 B.1.1.529 mutations
-which are neither BA.1 or BA.2 characteristic mutations are outlined in green.
-These colours correspond to those used
+which are neither BA.1 or BA.2 characteristic mutations are
+outlined in green.
+These colors correspond to those used
 in the Pango designation issue \cite{RambautOmicron2021}.
 }
 \label{fig:subgraph_omicron}
