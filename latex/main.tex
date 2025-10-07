@@ -286,10 +286,9 @@ process\cite{Hudson1983,Griffiths1997ancestral}, substantially
 broadening the range of potential applications~\cite{Bisschop2025likelihoods}.
 Another important point is that strong software support for ARGs now
 exists, and the tskit library~\cite{Ralph2020} is the basis of a 
-rapidly growing 
-software ecosystem of 
+rapidly growing software ecosystem of
 simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
-visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit},
+visualization~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit},
 inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting}
 % More here? I'm sure there's others
 and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
@@ -674,9 +673,11 @@ and CovRecomb \cite{Li2024CovRecomb} detection methods
 Of the Type I events, 13 are monophyletic for the focal Pango lineage
 (i.e., the descendants are entirely from that lineage);
 Figure~\ref{fig:subgraphs}A shows XA as an example
-(see also Document~\ref{sec:jackson_recombs}
-for further analysis of the recombinants
-identified by Jackson et al.\cite{Jackson2021}).
+(for further analysis of the other recombinants
+found by Jackson et al.\cite{Jackson2021},
+see Table~\ref{tab:jackson} in Document~\ref{sec:jackson_recombs},
+which shows that sc2ts identified the parents and breakpoints
+concordant with those reported by Jackson et al.\cite{Jackson2021}).
 
 The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
 are recombination events closely associated with Pango X lineages, 
@@ -824,7 +825,7 @@ which have the minimal possible number of averted mutations.
 \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
 \caption{
 Evidence for recombination in the ARG.
-All plots show ``robust'' sc2ts recombination nodes,
+All plots show QC-passing sc2ts recombination nodes,
 colored according to their classification by rebar
 (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations
@@ -836,7 +837,7 @@ Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e. $x$-$y$).
-(B) Distribution of time to the MRCA of the parents of each robust recombination node.
+(B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
 leading to XA, XW, XBB, and an
@@ -918,7 +919,7 @@ pass QC.]
 \subsection*{Recombination breakpoint intervals along the genome}
 
 We explored the spatial distribution of the breakpoint locations of
-the ``robust'' recombination events along the genome,
+the QC-passing recombination events along the genome,
 and quantified how precisely breakpoints were localized.
 For each event, we computed an interval estimate of its breakpoint location,
 using its size as a measure of precision (median, 2,207 bases; STAR Methods).
@@ -2292,7 +2293,7 @@ The breakpoint intervals are defined as the left and right recombination-informa
 We adjusted the breakpoint intervals by adding one to the right coordinate
 so that they are right-exclusive.
 
-We ran rebar on the sampled sequences associated with each robust recombination event. 
+We ran rebar on the sampled sequences associated with each QC-passing recombination event.
 Rebar identifies a sequence as a recombinant if it contains sets of mutations 
 which are pre-determined to be associated with different Pango lineages.
 
@@ -3662,14 +3663,18 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{samples-per-day}
-\caption{TODO caption}\label{fig:samples_per_day}
+\caption{
+TODO caption
+}\label{fig:samples_per_day}
 \end{figure}
 
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{inference-resources}
-\caption{TODO caption}
+\caption{
+TODO caption
+}
 \label{fig:inference_resources}
 \end{figure}
 
