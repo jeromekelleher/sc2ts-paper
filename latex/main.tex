@@ -711,8 +711,21 @@ and Document S2 for ARG visualisations.
 
 \subsection*{Comparison with RIPPLES}
 
+Table~\ref{tab:ripples_x_lineages}
+Figure \ref{fig:ripples_sc2ts_events}
+
 \begin{table}
-\caption{RIPPLES pango X lineage events.} 
+\caption{RIPPLES Pango X lineage events. Each row is a recombination event
+identified by RIPPLEs (at p=3) in which X lineages appear, along with the 
+corresponding sc2ts event from Table~\ref{tab:pango_x_lineages}, where
+applicable, grouped by class. 
+Events also present at p=4 are indicated. Clades are matched 
+by finding the most recent common ancestor
+of the samples associated with each UShER/RIPPLES event in 
+the sc2ts ARG. The clade differences indicates how close this match
+is. The final group of rows shows events that cannot be reasonably
+mapped between UShER and sc2ts, where placement of one or more samples
+differed significantly.}
 \label{tab:ripples_x_lineages}
 \centering
 \begin{scriptsize}
@@ -733,10 +746,10 @@ XL &  & 64 & I & 0 & {XL:64} \\
 XBB &  & 6452 & I & 1 & {XBB:2361} \\
 \midrule
 XQ &  & 1 & II & 0 & {XAM:1} \\
+XQ &  & 21 & II & 0 & {XAM:21} \\
 XM & $\checkmark$ & 8 & II & 0 & {BA.2:4, XM:4} \\
 Xx &  & 9 & II & 0 & {XAE:9} \\
 Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
-XQ &  & 21 & II & 0 & {XAM:21} \\
 XE/XH &  & 1113 & II & 3 & {XE:1113} \\
 \midrule
 XB & $\checkmark$ & 411 & IV & 0 & {B.1:219, XB:192} \\
@@ -3649,6 +3662,16 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \includegraphics[width=\linewidth]{inference-resources}
 \caption{TODO caption}
 \label{fig:inference_resources}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tabular}{cc}
+\includegraphics[]{ripples_p4_sc2ts_events.pdf}&
+\includegraphics[]{ripples_p3_sc2ts_events.pdf}\\
+\end{tabular}
+\caption{TODO caption}
+\label{fig:ripples_sc2ts_events}
 \end{figure}
 
 
