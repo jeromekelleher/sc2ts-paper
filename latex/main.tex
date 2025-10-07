@@ -404,21 +404,22 @@ See STAR Methods for details on all aspects of the method.
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
-Using sc2ts, we built an ARG from 2,482,157 samples from the Viridian v04
-dataset \cite{Hunt2024}, collected between 2020-01-01 and 2023-02-20.
-Inference took 21 days on a XX core server with 500 GB of RAM 
+Using sc2ts, we built an ARG from 2,482,157 samples
+from the Viridian v04 dataset \cite{Hunt2024},
+collected between 2020-01-01 and 2023-02-20.
+Inference took 21 days on a XX core server with 500 GB of RAM
 ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
-After postprocessing, the ARG 
+After postprocessing, the ARG
 contains 2,689,054 nodes,  % Note the estimated dates ?
-2,748,838 edges, and 2,285,344 mutations at 29,893 sites. 
+2,748,838 edges, and 2,285,344 mutations at 29,893 sites.
 Including sample IDs and the Pango and Scorpio designations computed by
 Pangolin~\cite{OToole2021assignment} as metadata for each node,
 the ARG is stored in a 32MiB tszip format file.
 % It's confusing to talk about recombinant QC here as we're talking 
 % about the full ARG for the rest of the section.
-Of the nodes, 855 represent recombination events, 
-resulting in 316 distinct trees along the genome (some
-events occurred at the same breakpoints [vague, rephrase]).
+Of the nodes, 855 represent recombination events,
+resulting in 316 distinct trees along the genome
+(some events occurred at the same breakpoints [vague, rephrase]).
 [TODO note about loading up the time it takes to get the node 
 data dataframes in a notebook?]
 
@@ -512,8 +513,7 @@ For the two recombination nodes, a genome bar above shows
 the location of the inferred breakpoint interval relative to the Spike gene.
 For simplicity, ancestral lineages above the recombinant parents or the MRCA are omitted.
 (A) Subgraph around the recombination node associated with XA.
-Two ``Group A'' recombinant samples reported by Jackson 
-et al.\cite{Jackson2021} are shown.
+Two ``Group A'' recombinant samples reported by Jackson et al.\cite{Jackson2021} are shown.
 (B) Subgraph around the recombination node associated with a 
 group of ``nested'' Pango X lineages: we use the 
 label Xx as a shorthand for this related group of recombinants; and
@@ -526,16 +526,16 @@ For more detailed visualizations of these subgraphs, see Document S2.
 \begin{table}
 \caption{
 ARG events associated with Pango X lineages.
-Each row for Type I, III and IV events corresponds to the oldest node 
-assigned the specified Pango lineage and is the ancestor of all 
+Each row for Type I, III and IV events corresponds to the oldest node
+assigned the specified Pango lineage and is the ancestor of all
 nodes assigned that label. Type II events are recombination events
 associated with Pango X lineages not meeting Type I criteria.
-For Type I and II recombination 
+For Type I and II recombination
 events, the averted shows the number of additional mutations required
 under a recombination-free HMM solution. Parent lineages shown in boldface
 are nodes exactly matched by sampled sequences. The descendants column
-shows the descendant samples broken down by Pango lineage (grouped 
-by root lineage, where appropriate).
+shows the descendant samples broken down by Pango lineage
+(grouped by root lineage, where appropriate).
 [FIXME Typesetting to be finished, describe cols for Type III and IV]
 }
 \label{tab:pango_x_lineages}
@@ -652,18 +652,19 @@ requiring the synthesis of multiple lines of evidence and
 often the manual inspection of phylogenies and sequence alignments
 by volunteers~\cite{Smith2023tracking}.
 
-By automatically detecting and incorporating recombination events
-into the ARG, sc2ts provides us with a systematic means of 
+By automatically detecting and incorporating recombination events into the ARG,
+sc2ts provides us with a systematic means of
 discovering and assessing evidence around these events.
 Table~\ref{tab:pango_x_lineages} summarizes
 these results for the 44 Pango X lineages present in the ARG
-(XAC and XAD have been omitted, and
-XM partially represented, corresponding to 23 samples in total; 
+(XAC and XAD have been omitted, and XM partially represented,
+corresponding to 23 samples in total;
 see Document~\ref{sec:supplement_x_pango_lineages}).
-For 16 Pango X lineages the oldest node that has been assigned
-the focal Pango lineage is a recombination node, and that node 
-is the ancestor of all samples assigned that (or a descendant) Pango 
-lineage. These are the Type I events, in which the ARG reflects the
+For 16 Pango X lineages, the oldest node
+that has been assigned to the focal Pango lineage is a recombination node, and
+that node is the ancestor of all samples assigned
+to that (or a descendant) Pango lineage.
+These are the Type I events, in which the ARG reflects the
 expected phylogenetic structure of Pango designation.
 Among these events, concordance with the community-consensus 
 parent lineages and breakpoint intervals is excellent,
@@ -671,11 +672,11 @@ with similar performance to
 the RecombinHunt \cite{Alfonsi2024}
 and CovRecomb \cite{Li2024CovRecomb} detection methods
 (STAR Methods; Table~\ref{tab:method_concordance}).
-Of the Type I events, 13 are monophyletic for the focal
-pango (i.e., the descendants are entirely from that lineage); 
-Figure~\ref{fig:subgraphs}A shows XA as an example (see also 
-Document~\ref{sec:jackson_recombs} for further analysis 
-of the Jackson et al.\ recombinants).
+Of the Type I events, 13 are monophyletic for the focal Pango lineage
+(i.e., the descendants are entirely from that lineage);
+Figure~\ref{fig:subgraphs}A shows XA as an example
+(see also Document~\ref{sec:jackson_recombs}
+for further analysis of the Jackson et al.\ recombinants).
 
 The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
 are recombination events closely associated with Pango X lineages, 
@@ -2406,8 +2407,7 @@ we list the recurrent deletions in the ARG
 which are each observed in at least 10,000 (0.4\%) samples
 % [FIXME define how we measured this].
 (i.e., for a deletion caused by multiple events in the ARG,
-the sum of all the samples inheriting the deletion
-across all the events).
+the sum of all the samples inheriting the deletion across all the events).
 
 Most of the deletions in these tables
 occur in coding regions
@@ -2455,18 +2455,14 @@ which have been suggested to be indel hotspots
 [FIXME broken reference]
 \cite{Akaishi2022}.
 Together, these findings demonstrate that
-the ARG captures genuine deletion events
-in SARS-CoV-2 evolution.
-A comprehensive evolutionary analysis of
-the deletion events in the ARG
+the ARG captures genuine deletion events in SARS-CoV-2 evolution.
+A comprehensive evolutionary analysis of the deletion events in the ARG
 is beyond the scope of the current study;
 however, we believe that the ARG, as a resource,
 will enable and facilitate future studies
-to better understand the role of deletions
-(alongside recombination and single nucleotide mutations)
-in SARS-CoV-2 evolution,
-which to-date has been understudied
-in great part due to
+to better understand the role of deletions in SARS-CoV-2 evolution
+(alongside recombination and single nucleotide mutations),
+which to-date has been understudied in great part due to
 a lack of suitable data models, methods, and tools.
 
 Detection of deletions and inference of deletion events
@@ -2898,12 +2894,12 @@ Importantly, these results demonstrate that sc2ts can detect
 recombinants with multiple breakpoints (XAY, XBC, and XBT).
 % https://github.com/jeromekelleher/sc2ts-paper/discussions/776
 % https://github.com/jeromekelleher/sc2ts-paper/discussions/788
-XBC and XBT are clean examples of two-breakpoint recombinants,
+XBC and XBT are relatively clean examples of multiple-breakpoint recombinants,
 with the Pango lineages of the parents and the breakpoint intervals
-concordant with those suggested in the Pango designation issues.
-The recombination patterns of XAY, however, is complex.
-Exploring how to integrate these recombinants and
-other multiple-breakpoint recombinants
+concordant with those suggested in the Pango designation issues,
+but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
+Exploring how to integrate these and other recombinants
+with complex recombination patterns \cite{Roemer2023}
 should be an important direction for future work.
 
 
