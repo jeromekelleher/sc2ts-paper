@@ -465,17 +465,16 @@ for multiple sibling origination nodes
 (Document~\ref{sec:supplement_pango_lineages}).
 
 [TODO we should mention UShER here: they state multiple times in the GitHub issues 
-that they don't handle them at all, so I think we can just say this in some nice
-way.]
+that they don't handle them at all, so I think we can just say this in some nice way.]
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
 but because they are difficult to distinguish from bioinformatics errors 
-and their multi-base nature presents challenges to the Markovian structure of 
-the LS HMM, we masked out all gap characters as missing data during primary
-inference. 
-To incorporate the most important deletions into the ARG, we 
-remapped data using posthoc parsimony at 75 sites involved in deletions 
+and their multi-base nature presents challenges
+to the Markovian structure of the LS HMM,
+we masked out all gap characters as missing data during primary inference. 
+To incorporate the most important deletions into the ARG,
+we remapped data using post hoc parsimony at 75 sites involved in deletions
 with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
-during postprocessing (STAR Methods).
+during post-processing (STAR Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known 
@@ -484,17 +483,16 @@ recurrent (Table~\ref{tab:rec_dels}) deletions.
 For example, the 4 characteristic deletions associated with 
 % FIXME: this is just my notation - is this something recognised more 
 % widely? If not, fix to something that is?
+% According to Isobel, there is no standard notation.
 Alpha (11288+9, 21765+6, 21991+3, 28271+1) are correctly
 identified as having a single origin [CITATION?]
 (Figure~\ref{fig:subgraph_alpha}).
 The 21765+6 deletion (Spike 69-70)
 which causes S-Gene Target Failure \cite{Walker2021},
-emerges two more times at the origins of the 
-BA.1 and BA.4 variants.
+emerges two more times at the origins of the BA.1 and BA.4 variants.
 Although most highly recurrent deletions are likely errors,
 some known truly recurrent deletions are present,
-for example, three deletions in S1-NTD
-(21,765+6, 21,991+3, and 22,194+3)
+for example, three deletions in S1-NTD (21765+6, 21991+3, and 22194+3)
 associated with antibody escape\cite{McCarthy2021}.
 See Document\ref{sec:supplement_dels} for further analysis.
 
@@ -525,16 +523,17 @@ For more detailed visualizations of these subgraphs, see Document S2.
 
 \begin{table}
 \caption{
-ARG events associated with Pango X lineages.
-Each row for Type I, III and IV events corresponds to the oldest node
-assigned the specified Pango lineage and is the ancestor of all
-nodes assigned that label. Type II events are recombination events
+Events in the ARG associated with Pango X lineages.
+Each row for Type I, III and IV events corresponds to
+the oldest node assigned to the specified Pango lineage and
+is the ancestor of all the nodes assigned to that label.
+Type II events are recombination events
 associated with Pango X lineages not meeting Type I criteria.
-For Type I and II recombination
-events, the averted shows the number of additional mutations required
-under a recombination-free HMM solution. Parent lineages shown in boldface
-are nodes exactly matched by sampled sequences. The descendants column
-shows the descendant samples broken down by Pango lineage
+For Type I and II recombination events,
+the averted shows the number of additional mutations required
+under a recombination-free Viterbi solution.
+Parent lineages shown in boldface are nodes exactly matched by sampled sequences.
+The descendants column shows the descendant samples broken down by Pango lineage
 (grouped by root lineage, where appropriate).
 [FIXME Typesetting to be finished, describe cols for Type III and IV]
 }
@@ -637,12 +636,12 @@ pango X lineage designation is manual and subjective.]
 % ‘Pangolin’ nomenclature system. "
 Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
 can be attributed to the clarity of the rules under which new lineages 
-are designated and their explicitly phylogenetic basis. 
-The first recombinant lineage XA was designated in 2021 based on the 
-analysis of Jackson et al.\cite{Jackson2021}, which established 
-that recombination with onward transmission had occured [weak FIXME].
-As of pango-designation version v1.33.1 (2025-03-31), a total of 146 distinct 
-X lineages have been designated.
+are designated and their explicitly phylogenetic basis.
+The first recombinant lineage XA was designated in 2021
+based on the analysis of Jackson et al.\cite{Jackson2021},
+which established that recombination with onward transmission had occurred [weak FIXME].
+As of pango-designation version v1.33.1 (2025-03-31),
+a total of 146 distinct Pango X lineages have been designated.
 %$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
 % 146
 Although the process of incorporating recombinant lineages
@@ -662,8 +661,8 @@ corresponding to 23 samples in total;
 see Document~\ref{sec:supplement_x_pango_lineages}).
 For 16 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node, and
-that node is the ancestor of all samples assigned
-to that (or a descendant) Pango lineage.
+that node is the ancestor of all samples
+assigned to that (or a descendant) Pango lineage.
 These are the Type I events, in which the ARG reflects the
 expected phylogenetic structure of Pango designation.
 Among these events, concordance with the community-consensus 
@@ -676,7 +675,8 @@ Of the Type I events, 13 are monophyletic for the focal Pango lineage
 (i.e., the descendants are entirely from that lineage);
 Figure~\ref{fig:subgraphs}A shows XA as an example
 (see also Document~\ref{sec:jackson_recombs}
-for further analysis of the Jackson et al.\ recombinants).
+for further analysis of the recombinants
+identified by Jackson et al.\cite{Jackson2021}).
 
 The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
 are recombination events closely associated with Pango X lineages, 
@@ -694,20 +694,22 @@ recombinant that is the ancestor of lineages
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
 (Figure~\ref{fig:subgraphs}B). 
 
-The final class of event (Type IV) in Table~\ref{tab:pango_x_lineages} 
-correspond to nodes that are not associated with a recombination
-event. These vary in their plausibility of being non-recombinant.
+The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
+corresponds to nodes that are not associated with a recombination event.
+These vary in their plausibility of being non-recombinant.
 For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
-distant from a BA.2 sample and has little additional evidence to 
-suggest recombination [ref sup section]. XB, on the other hand,
-has been thoroughly characterised\cite{Gutierrez2022} and 
-may have misclassified by sc2ts due to limitations in handling
-deletions or matching against long branches (see Discussion).
-See Document~\ref{sec:supplement_indepth_pango_x_lineages} for extended 
-analyses on all of the Pango X lineages above,
+distant from a BA.2 sample and has little additional evidence
+to suggest recombination [ref sup section].
+XB, on the other hand,
+has been thoroughly characterized \cite{Gutierrez2022} and
+may have misclassified by sc2ts due to limitations in
+handling deletions or matching against long branches (see Discussion).
+See Document~\ref{sec:supplement_indepth_pango_x_lineages}
+for extended analyses on all of the Pango X lineages above,
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns 
-associated with Table~\ref{tab:pango_x_lineages},
-and Document S2 for ARG visualisations.
+associated with Table~\ref{tab:pango_x_lineages}, and
+Document S2 for ARG visualizations.
+
 
 \subsection*{Comparison with RIPPLES}
 
@@ -715,17 +717,20 @@ Table~\ref{tab:ripples_x_lineages}
 Figure \ref{fig:ripples_sc2ts_events}
 
 \begin{table}
-\caption{RIPPLES Pango X lineage events. Each row is a recombination event
-identified by RIPPLEs (at p=3) in which X lineages appear, along with the 
-corresponding sc2ts event from Table~\ref{tab:pango_x_lineages}, where
-applicable, grouped by class. 
-Events also present at p=4 are indicated. Clades are matched 
-by finding the most recent common ancestor
-of the samples associated with each UShER/RIPPLES event in 
-the sc2ts ARG. The clade differences indicates how close this match
-is. The final group of rows shows events that cannot be reasonably
-mapped between UShER and sc2ts, where placement of one or more samples
-differed significantly.}
+\caption{
+RIPPLES events associated with Pango X lineages.
+Each row is a recombination event identified by RIPPLEs (at p = 3)
+in which Pango X lineages appear,
+along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
+where applicable, grouped by class.
+Events also present at p = 4 are indicated.
+Clades are matched by finding the most recent common ancestor of
+the samples associated with each UShER/RIPPLES event in the sc2ts ARG.
+The clade differences indicates how close this match is.
+The final group of rows shows events
+that cannot be reasonably mapped between UShER and sc2ts,
+where placement of one or more samples differed significantly.
+}
 \label{tab:ripples_x_lineages}
 \centering
 \begin{scriptsize}
@@ -766,32 +771,35 @@ XAL:3, XAF:1} \\
 \end{scriptsize}
 \end{table}
 
+
 \subsection*{Quality control of recombination events}
+
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
-multi-nucleotide substitutions \cite{DeMaio2020issues} 
+multi-nucleotide substitutions \cite{DeMaio2020issues}
 can cause short regions of a sample genome to match more closely
 to an alternative genome rather than the true parent.
 Such genomic regions can be mistaken for evidence of recombination,
 because the LS HMM counts each base separately.
-We developed a quality control (QC) measure 
+We developed a quality control (QC) measure
 which counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (STAR Methods),
-and effectively identifies a range of issues. 
-Figure~\ref{fig:recombinant_qc} plots the net number of supporting
-loci for the left and right parents for all 855 recombination
-events. The 501 recombinants with fewer than 4 net loci supporting 
-each parent are highly enriched for the AmpliSeq V1 sequencing
-protocol [TODO concrete numbers?], 
-and 71 (14\%) are associated with 6-base deletion in the 
-Delta lineage, known to be affected 
-by amplicon dropout\cite{Sanderson2021}.
+and effectively identifies a range of issues.
+Figure~\ref{fig:recombinant_qc} plots
+the net number of supporting loci for the left and right parents
+for all 855 recombination events.
+The 501 recombinants having fewer than 4 net loci supporting each parent
+are highly enriched for samples sequenced using the AmpliSeq V1 protocol
+% https://github.com/jeromekelleher/sc2ts-paper/issues/808
+(70\% of the recombinants despite making up 2\% of the Viridian dataset), and
+71 (14\%) are associated with 6-base deletion in the Delta lineage,
+known to be affected by amplicon dropout\cite{Sanderson2021}.
 The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
-(Table~\ref{tab:pango_x_lineages}) and 
-the Jackson et al recombinants (Document\ref{sec:jackson_recombs}).
+(Table~\ref{tab:pango_x_lineages}) and
+the Jackson et al. recombinants (Document\ref{sec:jackson_recombs}).
 
- 
+
 \subsection*{Quantification of evidence for recombination}
 
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
@@ -799,30 +807,31 @@ of quantifying the plausibility of a given recombination event.
 To do this, we force the HMM to find a Viterbi solution for the 
 putative recombinant sequence with no recombination by specifying
 a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
-The difference between the numbers of mutations between 
-the two solutions---the number of 
-mutations ``averted'' by recombination---is a measure of the evidence
-in favor of recombination. 
-Table~\ref{tab:pango_x_lineages} shows
-the number of averted mutations for each of the 21 recombination events
-associated with Pango X lineages, with support ranging from very
-strong in the case of XC (the most parsimonious non-recombinant 
-placement would require 37 additional mutations) to marginal 
-for XG and XW, which have the minimal possible number of averted 
-mutations.
+The difference between the numbers of mutations between
+the two solutions---the number of mutations
+``averted'' by recombination---is a measure of
+the evidence in favor of recombination.
+Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
+for each of the 21 recombination events associated with Pango X lineages,
+with support ranging from very strong in the case of XC
+(the most parsimonious non-recombinant placement would
+require 37 additional mutations) to marginal for XG and XW,
+which have the minimal possible number of averted mutations.
+
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
 \caption{
-Evidence for recombination in the ARG. All plots show ``robust'' sc2ts recombination nodes,
+Evidence for recombination in the ARG.
+All plots show ``robust'' sc2ts recombination nodes,
 colored according to their classification by rebar
 (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
-recombination nodes in Table \ref{tab:pango_x_lineages} are labeled starting with `X' and
-those identified by Jackson et al. \cite{Jackson2021} are prefixed with a `J', e.g.
+recombination nodes in Table~\ref{tab:pango_x_lineages} are labeled starting with `X' and
+those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.g.
 Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
@@ -2801,7 +2810,7 @@ Its origin is well reconstructed in the ARG,
 with Figure \ref{fig:subgraph_alpha}
 showing it to be a saltational lineage
 characterized by a long branch preceding its origin.
-Most of the characteristic Alpha mutations (\cite{RambautAlpha2020})
+Most of the characteristic Alpha mutations \cite{RambautAlpha2020}
 (20 out of 23) in the ARG
 occur immediately above the Alpha root.
 However, a characteristic three-base correlated mutation
