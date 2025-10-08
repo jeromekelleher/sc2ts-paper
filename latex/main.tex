@@ -894,10 +894,6 @@ of recombination in SARS-CoV-2.
 
 
 
-
-To assess the evidence for these putative novel recombinants
-
-
 \subsection*{Quantification of evidence for recombination}
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
 of quantifying the plausibility of a given recombination event.
@@ -942,6 +938,7 @@ undesignated recombination event under XBB, which we refer to as XBB.x.}
 \label{fig:recombinant_evidence}
 \end{figure}
 
+
 Figure~\ref{fig:recombinant_evidence}A plots the number of mutations required
 in the recombinant vs non-recombinant HMM solutions (upper scatter plot)
 and the resulting distribution of the number of 
@@ -951,32 +948,17 @@ Of these, only 24
 (21 associated with Pango X lineages in Table~\ref{tab:pango_x_lineages},
 and 3 additional from Jackon et al in Table~\ref{tab:jackson}) have 
 been thoroughly characterised.  
+To assess the evidence for these putative novel recombination events we 
+ran CovRecomb~\cite{Li2024CovRecomb} and rebar on the corresponding sequences 
+(STAR Methods). Of the 354 QC-passing sc2ts recombination events, 
+90 are classified as 
+recombinant by CovRecomb (all but 2 of the 510 QC-failing recombinants 
+were classified as non-recombinant).
+Rebar classified 203 of the QC-passing sc2ts recombination events, 
+as recombinant, with only 10 of those failing QC being classified 
+as recombinant.
 
-Although multiple studies have 
-published lists of putatitive novel recombinant 
-sequences~\cite{Varabyou2021rapid,Turakhia2022,Li2024CovRecomb} 
-these are for GISAID data and not trival to reconcile with 
-the Viridian data or the specific recombination events in the ARG.
-
-% CovRecomb:  135,567 putative recombinants across the entirety of 14.5 million
-% accessed SARS-CoV-2 genomes
-% RIPPLES: In a 1.6 million sample tree from May 2021, we identify 589
-% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
-% recombinant origins out of the first 87,695 genomes to be released
-% recombination events, 
-% RecombinHunt just looks at X lineages (I think?)
-
-
-
-
-To assess the evidence for these putative novel recombinants
-
-
-
-The figure also shows the classification status for each recombinant
-according to rebar, a method that classifies sequences
-as recombinant or not based on groups of mutations associated with
-Pango lineages (STAR Methods). 
+[WIP]
 Of the 38 recombinants that are strongly supported (at least 10 averted
 mutations), 29 are novel. The known recombinants are XA, XC, XS, XBR, 
 and 5 from Jackson et al. All but 2 of the 38 are classified as
@@ -993,7 +975,6 @@ sc2ts may have a higher sensitivity.
 See Figure~\ref{fig:recombinant_evidence_rebar} for rebar,
 Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p4
 and Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p3.
-
 
 Recombination is rare in SARS-CoV-2, and ultimately judgements about
 plausibility require expert analysis. 
