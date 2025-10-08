@@ -804,7 +804,6 @@ the Jackson et al. recombinants (Document\ref{sec:jackson_recombs}).
 
 
 \subsection*{Quantification of evidence for recombination}
-
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
 of quantifying the plausibility of a given recombination event.
 To do this, we force the HMM to find a Viterbi solution for the 
@@ -826,10 +825,10 @@ which have the minimal possible number of averted mutations.
 \centering
 \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
 \caption{
-Evidence for recombination in the ARG.
-All plots show QC-passing sc2ts recombination nodes,
-colored according to their classification by rebar
-(recombinant: purple, non-recombinant: gray).
+Properties of recombination events. A,B,C 
+show summaries of the 354 sc2ts recombination nodes
+passing quality control filters
+colored by CovRecomb classification (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
@@ -842,12 +841,12 @@ by allowing recombination (i.e. $x$-$y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
-leading to XA, XW, XBB, and an
-undesignated recombination event under XBB, which we here refer to as  XBB.x.}
-\label{fig:averted_mutations}
+for XA, XW, XBB, and an
+undesignated recombination event under XBB, which we refer to as XBB.x.}
+\label{fig:recombinant_evidence}
 \end{figure}
 
-Figure~\ref{fig:averted_mutations}A plots the number of mutations required
+Figure~\ref{fig:recombinant_evidence}A plots the number of mutations required
 in the recombinant vs non-recombinant HMM solutions (upper scatter plot)
 and the resulting distribution of the number of 
 averted mutations (lower histogram)
@@ -873,8 +872,13 @@ only 151 are classified as recombinant by rebar.
 While some are likely to 
 be false positives, it is also interesting to note that rebar validation
 rate is much lower for recombinants with closely related 
-parents (Figure~\ref{fig:averted_mutations}B,C) suggesting that 
+parents (Figure~\ref{fig:recombinant_evidence}B,C) suggesting that 
 sc2ts may have a higher sensitivity.
+
+See Figure~\ref{fig:recombinant_evidence_rebar} for rebar,
+Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p4
+and Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p3.
+
 
 Recombination is rare in SARS-CoV-2, and ultimately judgements about
 plausibility require expert analysis. 
@@ -891,7 +895,7 @@ where the allelic state in a recombinant
 or right parent (lower row, coloured blue),
 or where the recombination event requires a de-novo mutation
 (gold, with mutational change below).
-Figure~\ref{fig:averted_mutations}D shows some example copying patterns,
+Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
 illustrating this spectrum of plausibility.
 XA is an example of a highly plausible recombinant, shown by the 
 large number of supporting loci on the left and right. As we have 
@@ -903,7 +907,7 @@ observed in the copying patterns suggests the existence of
 many genetically distinct, unsampled ancestors 
 [FIXME: in this case, probably BJ.1, see issue 336],
 and some caution should be exercised in interpreting them. 
-See Figures~\ref{fig:averted_mutations}D and
+See Figures~\ref{fig:recombinant_evidence}D and
 \ref{fig:pango_x_copying_patterns} for copying patterns of the 
 Pango X lineages, and 
 Figure~\ref{fig:copying_pattern_examples} for copying patterns
@@ -3692,6 +3696,26 @@ different values of the RIPPLES parsimony parameter, p.}
 \label{fig:ripples_sc2ts_events}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_evidence_rebar}
+\caption{Things}
+\label{fig:recombinant_evidence_rebar}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_evidence_ripples_p4}
+\caption{Things}
+\label{fig:recombinant_evidence_ripples_p4}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_evidence_ripples_p3}
+\caption{Things}
+\label{fig:recombinant_evidence_ripples_p3}
+\end{figure}
 
 \begin{figure}
 \centering
