@@ -228,9 +228,11 @@ The data collected during the COVID-19 pandemic as part of global
 surveillance presents fundamental challenges to existing approaches
 in two ways. Firstly, the sheer scale of data collected 
 overwhelmed even approximate distance-matrix based methods.
-At the peak in [month] 202X, there were over X thousand samples 
-per day deposited in GISAID\cite{Shu2017}, with a total of 
-over 17 million as of Sep 2025. % TODO check numbers
+% Accessed GISAID/EpiCov on 08 Oct., 2025
+At the peak in February, 2022, about 80 thousand samples
+were submitted on average per day to GISAID\cite{Shu2017},
+accumulating to a total of over 17.5 million samples
+as of October, 2025.
 Regularly reinferring trees de-novo from such rapidly 
 growing datasets is untenable.
 The UShER\cite{Turakhia2021} method is based on adding 
@@ -240,7 +242,7 @@ greediness of the approach\cite{DeMaio2023}.
 The benefits of this simple model and the value of 
 a comprehensive genealogy updated in real-time~\cite{McBroome2021}
 were conclusively demonstrated, as the resource
-quickly became an indispensible element 
+quickly became an indispensable element 
 of the pandemic response\cite{Hinrichs2024}.
 The second challenge posed is that recombination is 
 an important force in SARS-CoV-2 
@@ -309,7 +311,7 @@ known recombinant lineages that were painstakingly collated in a community
 process, and provides novel insights into the relationships between these
 recombinant lineages. By fully incorporating these and other novel
 recombination events, the resulting data structure---representing
-phylogenetic relationships, point mutations, deletions, and 
+genealogical relationships, point mutations, deletions, and 
 recombination---provides a basis for the study of SARS-CoV-2
 that systematically accounts for all of these evolutionary forces.
 This ARG, coupled with the rich suite of supporting software
@@ -916,7 +918,7 @@ rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (does
 pass QC.]
 
 
-\subsection*{Recombination breakpoint intervals along the genome}
+\subsection*{Recombination intervals}
 
 We explored the spatial distribution of the breakpoint locations of
 the QC-passing recombination events along the genome,
