@@ -220,9 +220,14 @@ Muller2020bayesian,%
 Muller2022bayesian},
 scalability
 is a major issue and practical application has been limited.
-Software support in explicitly \emph{using} recombination-aware
-inference is also extremely limited
-[TODO add some concrete details].
+Software support in explicitly \emph{using}
+recombination-aware inference is limited to
+visualization of small-scale phylogenetic
+networks~\cite{Huson2012,Vaughan2017,Solís-Lemus2017} and
+using tanglegrams to visualize tree
+changes (e.g.~\cite{Rasmussen2023}),
+typically using the Extended Newick format for
+interchange~\cite{Cardona2008}.
 
 The data collected during the COVID-19 pandemic as part of global
 surveillance presents fundamental challenges to existing approaches
@@ -495,7 +500,7 @@ which causes S-Gene Target Failure \cite{Walker2021} and
 is associated with increased efficiency in cell entry \cite{Meng2021}, and
 the 21991+3 deletion
 which is associated with antibody escape \cite{McCarthy2021}.
-See Document\ref{sec:supplement_dels} for further analysis.
+See Document~\ref{sec:supplement_dels} for further analysis.
 
 
 \subsection*{Epidemiologically relevant recombinant lineages}
@@ -716,7 +721,7 @@ Document S2 for ARG visualizations.
 
 \subsection*{Comparison with RIPPLES}
 RIPPLES~\cite{Turakhia2022} is a method for detecting 
-recombination events in a tree inferred by UShER. Recombination is 
+recombination events using a tree inferred by UShER. Recombination is 
 detected by first identifying plausible branches carrying multiple
 mutations (at least 3, by default). For each candidate branch,
 RIPPLES then systematically splits the sequence into 2 or 3
@@ -807,12 +812,12 @@ in Table~\ref{tab:pango_x_lineages}, 8
 have corresponding recombination events (4, at $p=4$). Of the 5 Type II
 events (recombination nodes with more complex assocation with X lineages),
 two have close matches. XBM matches exactly (including 2 descending BF.3 samples),
-and XE/XH is similar (but without including the 2 XH sample in the clade).
+and XE/XH is similar (but without including the 2 XH samples in the clade).
 UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
-makes these both descendants of the Xx event, RIPPLEs creates two independent
-recombinations. Similarly, XAE and have exactly matching clades, but RIPPLEs
-infers to independent recombination events while sc2ts groups them both
-under the Xx event. XB is notable as a likely sc2ts false negative that 
+makes these both descendants of the Xx event, RIPPLES creates two independent
+recombinations. Similarly, XAE and ??? have exactly matching clades, but RIPPLES
+infers two independent recombination events while sc2ts groups them both
+under the Xx event. XB is notable as a likely sc2ts false negative that is 
 identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
 associated with X lineages output by RIPPLES cannot be easily mapped 
 to the sc2ts ARG as one or more descendants is distantly placed.
@@ -837,7 +842,7 @@ We developed a quality control (QC) measure
 which counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (STAR Methods),
 and effectively identifies a range of issues.
-Figure~\ref{fig:recombinant_qc} plots
+Figure~\ref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
 for all 855 recombination events.
 The 501 recombinants having fewer than 4 net loci supporting each parent
@@ -1732,16 +1737,20 @@ and benchmarks.
 Both the pipeline and converted Viridian dataset are available for download;
 see Data and code availability for details. 
 
-\subsubsection*{Sample filtering and preprocessing}
-The collection date for a sequence is an important piece of information
-for sc2ts. We used the Viridian
-consensus date (``Date\_tree``), based on information from COG-UK, GISAID, and
-ENA/SRA as our source. Samples that have missing or incomplete dates (e.g., 2020-01)
-were omitted, as were
-the $\sim$40,000 samples which had a collection date of December 31, 2020.
-As the sample count for this date is a major outlier for this period of
-the pandemic, it seems likely that this 
-batch is highly enriched for incorrect collection dates.
+
+\subsubsection*{Sample filtering and alignment preprocessing}
+
+The collection date of a sample
+is an important piece of information for sc2ts.
+We used the Viridian consensus date (``Date\_tree``),
+based on information from COG-UK, GISAID, and ENA/SRA as our source.
+Samples which have missing or incomplete dates (e.g., 2020-01) were omitted,
+as were the $\sim$40,000 samples
+which had a collection date of December 31, 2020.
+As the sample count for this date is a major outlier
+for this period of the pandemic,
+it seems likely that this batch is highly enriched
+for incorrect collection dates.
 Manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
 confirmed that some of the samples were not collected in 2020.
 
@@ -1750,83 +1759,115 @@ for SARS-CoV-2 that are enriched for systematic sequencing errors or
 high levels of homoplasy~\cite{DeMaio2020issues}. 
 Although these sites are recommended to be masked for UShER
 inference~\cite{Turakhia2020},
-the list has not been updated to take into account the systematic improvements 
-made by the Viridian dataset, and we therefore assembled a custom set of sites to mask. 
-To do so, we first built a preliminary ARG from the samples collected up to June 30, 2021,
+the list has not been updated to take into account
+the systematic improvements made by the Viridian dataset, and
+we therefore assembled a custom set of sites to mask. 
+To do so, we first built a preliminary ARG
+from the samples collected up to June 30, 2021,
 without any site masking.
-Then, we identified the top 100 sites in terms of mutation counts in the ARG.
-Only 11 of these sites 
-(635, 8835, 11074, 11083, 15521, 16887, 21304, 21305, 21575, 21987 and 28253)
+Then, we identified the top 100 sites
+in terms of mutation counts in the ARG.
+Only 11 of these sites
+(635, 8835, 11074, 11083, 15521, 16887,
+21304, 21305, 21575, 21987 and 28253)
 were present in the problematic sites file
-(\url{https://raw.githubusercontent.com/W-L/ProblematicSites\_SARS-CoV2/master/problematic\_sites\_sarsCov2.vcf}),
-and most sites in this list were typical in terms of the numbers of mutations.
-We therefore masked our 100 most-mutagenic sites to remove sequencing errors and improve
-matching performance in the LS HMM. 
+(\url{https://github.com/W-L/ProblematicSites_SARS-CoV2}),
+and most sites in this list were typical
+in terms of the numbers of mutations.
+We therefore masked our 100 mutation-rich sites
+to remove sequencing errors and
+improve matching performance in the LS HMM.
 
-Alignments read from the VCZ Zarr file were first preprocessed to mask any 
-non nucleotide characters (A,C,G or T) as missing data. 
-Then, we filtered 
-any samples that had missing data at more than 500 sites, excluding
-the 100 sites identified as problematic (this was 
-set to 10,000 sites for the initial period up to 2020-03-01 where sampling
-density is low).
+Alignments read from the VCZ Zarr file were first preprocessed
+to mask any non nucleotide characters (A,C,G or T) as missing data.
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
+Then, we filtered any samples that had missing data at more than 500 sites,
+excluding the 100 sites identified as problematic
+(this was set to 10,000 sites for the initial period up to 2020-03-01
+where sampling density is low).
 
 
 \subsubsection*{Li and Stephens haplotype-copying model}
 
-The LS model \cite{LiStephens2003} is an approximation of the coalescent with recombination
-that captures many of the key features of the joint processes of mutation and recombination.
-It is widely used in a range of applications in population genetics, including ARG 
+The LS model \cite{LiStephens2003} is an approximation of
+the coalescent with recombination
+that captures many of the key features of
+the joint processes of mutation and recombination.
+It is widely used in a range of applications in population genetics,
 % Does Threads use LS?
-inference \cite{Kelleher2019,Gunnarsson2024}.
-The LS model is an HMM that models a focal genome as a sequence of nucleotides (i.e. the observed states),
-which are probabilistically emitted as an imperfect mosaic of a set of genomes in a reference panel (i.e., the hidden states).
-The process of switching between the genomes in the reference panel is governed by a transition matrix,
-and mismatches between a focal genome and a genome of the reference panel (from which it is ``copied'') are permitted as emissions.
+including ARG inference \cite{Kelleher2019,Gunnarsson2024}.
+The LS model is an HMM that models a focal genome
+as a sequence of nucleotides (i.e. the observed states),
+which are probabilistically emitted
+as an imperfect mosaic of a set of genomes
+in a reference panel (i.e., the hidden states).
+The process of switching between the genomes in the reference panel
+is governed by a transition matrix,
+and mismatches between a focal genome and a genome of the reference panel
+(from which it is ``copied'') are permitted as emissions.
 
-In the original formulation of the LS model (see Appendix S1 of \cite{LiStephens2003}),
-the probability of switching between the hidden states (i.e., genomes in a reference panel)
+In the original formulation of the LS model
+(see Appendix S1 of \cite{LiStephens2003}),
+the probability of switching
+between the hidden states (i.e., genomes in a reference panel)
 when going from one site to the next is dependent on
 (1) the rate of recombination between the sites and
 (2) the number of genomes in the reference panel ($n$).
 Sc2ts uses the same formulation except that $n$ is set to 1.
-This special case of the LS model leads to an intuitive interpretation of the ratio
-between the probability of switching and the probability of mismatch:
+This special case of the LS model leads to an intuitive interpretation of
+the ratio between the probability of switching and the probability of mismatch:
 When considering only two copying paths, the path having $k$ mismatches
 and the other path having one switch but no mismatch are equally probable.
 We call this parameter $k$ the ``recombination penalty''.
 % TODO mention that this can be thought of as extended parsimony.
-This parameter thus allows us to adjust the relative importance of recombination and mutation
+This parameter thus allows us to adjust
+the relative importance of recombination and mutation
 when finding the best explanation for a given sample.
-For simplicity, we assume that any single base mutation causing a mismatch is equally probable,
-ignoring transition-transversion biases and variation of mutation rate along the genome.
-As data sampling was dense for SARS-CoV-2, this assumption was considered tolerable.
+For simplicity, we assume that any single base mutation
+causing a mismatch is equally probable,
+ignoring transition-transversion biases and
+variation of mutation rate along the genome.
+As data sampling was dense for SARS-CoV-2,
+this assumption was considered tolerable.
 
 We explored using several values of $k$,
-by running sc2ts with $k$ set to 3, 4, and 5 on the samples collected in 2020.
-We would expect that a good value for $k$ should lead to parsimonious ARGs
-that capture plausible recombination events without incurring too many mutations, particularly reversions.
+by running sc2ts with $k$ set to 3, 4, and 5
+on the samples collected in 2020.
+We would expect that a good value for $k$
+should lead to parsimonious ARGs
+that capture plausible recombination events
+without incurring too many mutations, particularly reversions.
 A value of $k$ too low could result in many artifactual recombination events,
 whereas a value of $k$ too high could miss many genuine recombination events.
-We found that ARGs built with $k$ set to 3 contained many dubious recombination events,
+We found that ARGs built with $k$ set to 3
+contained many dubious recombination events,
 but ARGs built with $k$ set to 5 failed
-to include the well supported recombination events documented in a previous study\cite{Jackson2021}.
-Hence, we decided to use $k$ set to 4 to infer the final ARG described in this study.
+to include the well supported recombination events documented
+in a previous study\cite{Jackson2021}.
+Hence, we decided to use $k$ set to 4
+to infer the final ARG described in this study.
 
-A Viterbi algorithm can be used to find the most likely ``copying path'' of a focal sample
+A Viterbi algorithm can be used
+to find the most likely ``copying path'' of a focal sample
 through a reference panel of samples under the LS model.
 Specifically, sc2ts uses a Viterbi algorithm modified to operate on STS,
-which was originally developed to build genome-wide human genealogies
-and is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
-Using this Viterbi algorithm, sc2ts deterministically infers the copying path of a sample
-collected on a certain date through the samples collected on earlier dates in a given ARG.
+which was originally developed to build genome-wide human genealogies and
+is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
+Using this Viterbi algorithm,
+sc2ts deterministically infers the copying path of a sample
+collected on a certain date through the samples
+collected on earlier dates in a given ARG.
 
-The SARS-CoV-2 sequences were determined from samples collected densely in time.
-SARS-CoV-2 phylogenies have low phylogenetic signals due to high sampling frequency
+The SARS-CoV-2 sequences were determined
+from samples collected densely in time.
+SARS-CoV-2 phylogenies have low phylogenetic signals
+due to high sampling frequency
 (such that sampling and transmission outpace nucleotide substitution).
 Therefore, most samples can be explained by a small number of mutations.
-Leveraging this property of the dataset, we developed a likelihood-thresholding strategy
-to avoid needing to compute the likelihood of all possible copying paths through an ARG for every single sample.
+Leveraging this property of the dataset,
+we developed a likelihood-thresholding strategy
+to avoid needing to compute the likelihood of
+all possible copying paths through an ARG for every single sample.
 %%% TODO: This needs to be explained.
 
 [TODO explain Fig S1 and S2]
