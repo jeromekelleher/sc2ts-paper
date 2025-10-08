@@ -481,18 +481,18 @@ runs of mutations to the gap character at adjacent sites
 correctly identified many known 
 high frequency (Table~\ref{tab:major_dels}) and 
 recurrent (Table~\ref{tab:rec_dels}) deletions.
-For example, the 4 characteristic deletions associated with 
+For example, the 4 characteristic deletions
+associated with Alpha \cite{RambautAlpha2020}
 % FIXME: this is just my notation - is this something recognised more 
 % widely? If not, fix to something that is?
-% According to Isobel, there is no standard notation.
-Alpha (11288+9, 21765+6, 21991+3, 28271+1) are correctly
-identified as having a single origin [CITATION?]
-(Figure~\ref{fig:subgraph_alpha}).
-The 21765+6 deletion (Spike 69-70)
+% SHZ: According to Isobel, there is no standard notation.
+% So, I'm just following what Rambaut did in this post.
+(11288-11296, 21765-21770, 21991-21993)
+occur at the origin of Alpha in the ARG (Figure~\ref{fig:subgraph_alpha}).
+The 6-base 21765-21770 deletion (Spike $\Delta$H69/V70),
 which causes S-Gene Target Failure \cite{Walker2021},
-emerges two more times at the origins of the BA.1 and BA.4 variants.
-Although most highly recurrent deletions are likely errors,
-some known truly recurrent deletions are present,
+emerges two more times at the origins of BA.1 and BA.4 (Table~\ref{tab:major_dels}).
+The ARG also capture genuine recurrent deletions,
 for example, three deletions in S1-NTD (21765+6, 21991+3, and 22194+3)
 associated with antibody escape\cite{McCarthy2021}.
 See Document\ref{sec:supplement_dels} for further analysis.
@@ -2459,7 +2459,8 @@ although filtering the recombination events to the 354 with better support revea
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
 Although uncommon relative to single nucleotide mutations,
-deletions are an important component of SARS-CoV-2 evolution,
+deletions are an important component of
+SARS-CoV-2 evolution \cite{Jeronimo2023},
 contributing to the emergence of VOCs by enhancing,
 e.g., efficiency for cell entry \cite{Cantoni2022} and
 potential for antibody escape \cite{McCarthy2021}.
@@ -2475,7 +2476,7 @@ we list the recurrent deletions in the ARG
 which are each observed in at least 10,000 (0.4\%) samples
 % [FIXME define how we measured this].
 (i.e., for a deletion caused by multiple events in the ARG,
-the sum of all the samples inheriting the deletion across all the events).
+the total of all the samples inheriting the deletion across those events).
 
 Most of the deletions in these tables
 occur in coding regions
