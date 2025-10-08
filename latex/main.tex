@@ -700,14 +700,14 @@ than de-novo recombinant lineages.
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
-(Figure~\ref{fig:subgraphs}B). 
+(Figure~\ref{fig:subgraphs}B, Document \ref{sec:dd_xx}). 
 
 The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
 corresponds to nodes that are not associated with a recombination event.
 These vary in their plausibility of being non-recombinant.
 For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
 distant from a BA.2 sample and has little additional evidence
-to suggest recombination [ref sup section].
+to suggest recombination (Document \ref{sec:dd_xn}).
 XB, on the other hand,
 has been thoroughly characterized \cite{Gutierrez2022} and
 may have misclassified by sc2ts due to limitations in
@@ -2580,7 +2580,7 @@ although filtering the recombination events to the 354 with better support revea
 
 
 \newpage
-\setcounter{secnumdepth}{2} % Print out appendix section numbers
+\setcounter{secnumdepth}{3} % Print out appendix section numbers
 
 \section*{Supplementary Material}
 \appendix
@@ -3147,6 +3147,8 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 \label{sec:supplement_indepth_pango_x_lineages}
 
 \subsubsection{XA}
+% mneumonic: deep dive XA
+\label{sec:dd_xa}
 (also illustrated in Figure 2a / 3d)
 XA traces to a well supported recombination node, with no reversions.
 Note that the “causal” sample ERR5308556
@@ -3165,6 +3167,7 @@ these samples are specifically marked in Figure~\ref{fig:subgraphs},
 which is a summary of this subgraph.
 
 \subsubsection{XB}
+\label{sec:dd_xb}
 https://github.com/jeromekelleher/sc2ts-paper/issues/332
 
 The displayed subgraph shows a small selection of the 192 XB samples.
@@ -3196,6 +3199,7 @@ to the ARG by the daily sample matching process or
 retrospective sample grouping.
 
 \subsubsection{XC}
+\label{sec:dd_xc}
 The five XC samples descend from a well supported recombination node.
 The two parents that are both identical to actual samples
 (ERR4908740 on the left and DRR321274 on the right).
@@ -3205,6 +3209,7 @@ because it was identified to be experiencing
 frequent mutation in a preliminary ARG.
 
 \subsubsection{XE/XH}
+\label{sec:dd_xexh}
 https://github.com/jeromekelleher/sc2ts-paper/discussions/633
 
 The XE samples descend from a well supported recombination node,
@@ -3229,6 +3234,7 @@ sequential recombination events to future work.
 
 
 \subsubsection{XF}
+\label{sec:dd_xf}
 XF is a well-supported recombinant between Delta and Omicron BA.1,
 with the breakpoint on the far left of the genome.
 All XF samples are the unique descendants of
@@ -3237,6 +3243,7 @@ with both parent nodes (ERR6193241: AY.4 and ERR8042040: BA.1) and
 the single child node (ERR8076129) being samples.
 
 \subsubsection{XG}
+\label{sec:dd_xg}
 The three XG samples descend from a reconstructed internal node,
 which in turn descends from a well supported recombination node.
 The left parent is a sample (SRR20179863), and
@@ -3245,6 +3252,7 @@ assigned to Omicron BA.2,
 which is supported by a sample (ERR9124067) that is identical to it.
 
 \subsubsection{XJ}
+\label{sec:dd_xj}
 All the XJ samples descend from a well supported recombination node.
 There are 14 samples (including e.g. ERR8683190)
 which sc2ts identified as descendants of the same recombination node
@@ -3253,6 +3261,7 @@ which do not possess the XJ consensus mutations C22792T and C27945T.
 These BA.2 samples could be worthy of further investigation.
 
 \subsubsection{XL}
+\label{sec:dd_xl}
 All the XL samples descend from a well supported recombination node,
 with three child samples which are identical to it.
 The left parent is a sample (ERR7989424), and
@@ -3260,6 +3269,7 @@ the right parent is a reconstructed internal node
 assigned to BA.2.5 with a large number of descendant samples.
 
 \subsubsection{XM/XAL}
+\label{sec:dd_xm}
 https://github.com/jeromekelleher/sc2ts-paper/issues/284
 
 XM is a recombinant of BA.1 (left parent) and BA.2 (right parent).
@@ -3289,6 +3299,8 @@ in placing this sample within one of the two XM clades
 which do not have the deletion.
 
 \subsubsection{XN/XAU}
+\label{sec:dd_xn}
+
 (also illustrated in Figure 2c)
 https://github.com/jeromekelleher/sc2ts-paper/issues/348
 https://github.com/jeromekelleher/sc2ts-paper/issues/358
@@ -3339,6 +3351,8 @@ using different (and inconsistent) data sources of
 Pango lineage-associated mutational constellations.
 
 \subsubsection{XP}
+\label{sec:dd_xp}
+
 https://github.com/jeromekelleher/sc2ts-paper/issues/345
 
 This is a case where the Pango X lineage is designated
@@ -3358,7 +3372,8 @@ that XP might not be a recombinant,
 because it is only one mutation different from the sample ERR8628084.
 
 \subsubsection{XQ/XR/XU/XAA/XAG/XAM}
-\label{sec:supplement_indepth_pango_x_lineages_xq}
+\label{sec:dd_xq}
+
 https://github.com/jeromekelleher/sc2ts-paper/issues/338
 
 In the ARG, XR, XU, XAA, XAG, and XAM
@@ -3380,6 +3395,8 @@ a group of (monophyletic) XAA, XAM, XAG, and XR lineages.
 This would remove between 4 and 5 reversion mutations.
 
 \subsubsection{XS}
+\label{sec:dd_xs}
+
 https://github.com/jeromekelleher/sc2ts-paper/issues/287
 
 In the ARG, the XS samples appear to have originated from
@@ -3399,11 +3416,15 @@ We excluded this likely artifactual event from further analysis and
 consider XS to have emerged from a single recombinant origin.
 
 \subsubsection{XW}
+\label{sec:dd_xw}
+
 All the XW samples descend from a well supported recombination node.
 Its left parent is a BA.1.1.15-labeled sample (ERR8069658), and
 its right parent is a BA.2-labeled sample (ERR9086669).
 
 \subsubsection{XY}
+\label{sec:dd_xy}
+
 All the XY samples descend from a well supported recombination node,
 through a shared reconstructed internal node.
 Its left parent is a reconstructed internal node assigned to BA.1.1,
@@ -3418,27 +3439,22 @@ could potentially be improved
 by alternative phylogenetic reconstruction methods.
 
 \subsubsection{Xx: XZ/XAC/XAD/XAE/XAP}
+\label{sec:dd_xx}
+
 https://github.com/jeromekelleher/sc2ts-paper/discussions/631
 
 This nested set of Pango X lineages descends
 from a single recombination node in the ARG, and
-we suggest that these Pango X lineages
+These Pango X lineages
 may be aliases of a single recombinant
-which we tentatively refer to as "Xx".
+which we tentatively refer to as ``Xx''.
 Note that all were designated around the same time,
 with their samples collected
 roughly within a three-month period (Mar., 2022 to Jul., 2022).
 Several samples labeled as BA.2 by pangolin also lie
 within this recombinant clade,
 including two that are identical
-to the proposed originating recombinant (ERR8146303 and ERR8163061):
-we suggest that researchers examining the emergence of
-these Pango X lineages could direct efforts
-into examination of these and closely related samples.
-The detection of Xx illustrates
-the ability of sc2ts to clarify relationships between
-samples during the course of a pandemic,
-informing designation of emerging recombinants.
+to the proposed originating recombinant (ERR8146303 and ERR8163061).
 
 Exact relationships within the Xx clade are somewhat tentative.
 For example, there are three highly mutable sites (22792, 28877, and 28878)
@@ -3473,6 +3489,8 @@ to insert an additional breakpoint,
 which would require at least four supporting variants.
 
 \subsubsection{XAF}
+\label{sec:dd_xaf}
+
 https://github.com/jeromekelleher/sc2ts-paper/discussions/638
 
 Of the 21 XAF samples in the Viridian v04 dataset,
@@ -3497,6 +3515,8 @@ a 5-base deletion (11283-11287) and insertion (11292-11296)
 is likely to be a simple deletion alignment error.
 
 \subsubsection{XAJ}
+\label{sec:dd_xaj}
+
 https://github.com/jeromekelleher/sc2ts-paper/discussions/634
 
 In the Pango designation issue
@@ -3523,6 +3543,8 @@ with the region from 21765-23535
 coming from the BA.4 labeled sample SRR18848050.
 
 \subsubsection{XAN/XAV}
+\label{sec:dd_xan}
+
 https://github.com/jeromekelleher/sc2ts-paper/discussions/783
 https://github.com/jeromekelleher/sc2ts-paper/discussions/785
 
@@ -3538,6 +3560,8 @@ In the ARG, we found only one mutation (C9866T)
 supporting the suggested BA.2 parent for both XAN and XAV.
 
 \subsubsection{XAS}
+\label{sec:dd_xas}
+
 https://github.com/jeromekelleher/sc2ts-paper/discussions/784
 
 XAS was proposed as a recombination between
@@ -3553,6 +3577,8 @@ It is possible that C27945T was acquired by recombination,
 but this is clearly below our threshold of detection.
 
 \subsubsection{XAZ}
+\label{sec:dd_xaz}
+
 https://github.com/jeromekelleher/sc2ts-paper/discussions/786
 
 In the Pango designation issue
@@ -3577,6 +3603,8 @@ In the ARG, all the XAZ samples form a clade.
 Here we display only the first 20 XAZ samples.
 
 \subsubsection{XBB}
+\label{sec:dd_xbb}
+
 https://github.com/jeromekelleher/sc2ts-paper/issues/336
 
 Most of the XBB samples descend from a well supported recombination node.
@@ -3607,6 +3635,8 @@ shows our approach to be relatively robust to missing un-sampled lineages:
 an important consideration given global variation in pathogen surveillance.
 
 \subsubsection{XBB.1}
+\label{sec:dd_xbb.1}
+
 XBB.1 is characterized by an additional mutation in Spike, G22317T (G252V) and
 is not designated as a recombinant of XBB in the Pango designation issue
 (https://github.com/cov-lineages/pango-designation/issues/1088).
@@ -3630,6 +3660,8 @@ lead to a single sample so may be
 e.g. caused by accidental mixing of samples during sequencing.
 
 \subsubsection{XBD}
+\label{sec:dd_xbd}
+
 All the XBD samples descend from a well supported recombination node.
 Its left and right parents are reconstructed internal nodes,
 both of which are directly supported by samples
@@ -3637,6 +3669,8 @@ both of which are directly supported by samples
 that are identical to them.
 
 \subsubsection{XBE}
+\label{sec:dd_xbe}
+
 https://github.com/jeromekelleher/sc2ts-paper/issues/351
 
 In the Pango designation issue
@@ -3657,6 +3691,8 @@ as the recombinant threshold,
 sc2ts would indeed detect XBE as a recombinant.
 
 \subsubsection{XBF}
+\label{sec:dd_xbf}
+
 All the XBF samples descend from a well supported recombination node,
 with three mutations on the left of the breakpoint.
 Its left parent is a sample assigned to BA.5.2.1 (SRR20305553).
@@ -3665,12 +3701,15 @@ that is supported by a CJ.1-labeled sample (SRR21948068),
 which differs by three mutations.
 
 \subsubsection{XBG}
+\label{sec:dd_xbg}
+
 All the XBG samples descend from a well supported recombination node,
 with two mutations, one on each side of the breakpoint.
 Both its left and right parents are samples
 (SRR19920084 and ERR9852351, respectively).
 
 \subsubsection{XBH}
+\label{sec:dd_xbh}
 All the XBH samples descend from a well supported recombination node,
 despite two reversions (T222C and T12789C, respectively),
 which occur at excluded sites and
@@ -3683,6 +3722,8 @@ with two mutations on the left branch. This would also remove the two
 blue lines on the left and side of the copying pattern.
 
 \subsubsection{XBQ/XBK/XBK.1}
+\label{sec:dd_xbq}
+
 https://github.com/jeromekelleher/sc2ts-paper/issues/349
 https://github.com/jeromekelleher/sc2ts-paper/issues/350
 
@@ -3695,17 +3736,17 @@ making XBK non-recombinant.
 Exactly such a missing ancestor
 is found as the upper internal node labeled CJ.1 in the ARG,
 constructed by sc2ts as part of its tree building steps.
-We suggest that sc2ts can therefore play an epidemiological role
-both in generating hypotheses involving recombination, and
-quantifying mutational evidence to support them.
 
 \subsubsection{XBM}
+\label{sec:dd_xbm}
+
 All the XBM samples descend from a well supported recombination node.
 Its left parent is a reconstructed internal node
 that is directly supported by a BA.2.76-labeled sample identical to it.
 Its right parent is a BF.3-labeled sample.
 
 \subsubsection{XBR}
+\label{sec:dd_xbr}
 This one XBR sample descends from a well supported recombination node.
 Its left parent is a BN.3.1-labeled sample, and
 its right parent is a reconstructed internal node
