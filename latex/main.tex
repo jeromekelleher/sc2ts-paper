@@ -233,23 +233,22 @@ At the peak in February, 2022, about 80 thousand samples
 were submitted on average per day to GISAID\cite{Shu2017},
 accumulating to a total of over 17.5 million samples
 as of October, 2025.
-Regularly reinferring trees de-novo from such rapidly 
+Regularly reinferring trees de-novo from such rapidly
 growing datasets is untenable.
-The UShER\cite{Turakhia2021} method is based on adding 
-samples to an existing tree using maximum parsimony, 
+The UShER\cite{Turakhia2021} method is based on adding
+samples to an existing tree using maximum parsimony,
 with periodic rearrangements to counter the inherent 
 greediness of the approach\cite{DeMaio2023}.
-The benefits of this simple model and the value of 
+The benefits of this simple model and the value of
 a comprehensive genealogy updated in real-time~\cite{McBroome2021}
 were conclusively demonstrated, as the resource
-quickly became an indispensable element 
+quickly became an indispensable element
 of the pandemic response\cite{Hinrichs2024}.
-The second challenge posed is that recombination is 
-an important force in SARS-CoV-2 
-evolution\cite{Jackson2021,VanInsberghe2021,Focosi2022,
+The second challenge posed is that recombination is an important force
+in SARS-CoV-2 evolution \cite{Jackson2021,VanInsberghe2021,Focosi2022,
 Gutierrez2022,Ignatieva2022,Tamura2023},
-with multiple deep recombination events now known to be present in 
-genealogy of the global population [cites??].
+with multiple deep recombination events now known to be present
+in the genealogy of the global population \cite{Roemer2023}.
 Although several methods have been proposed to \emph{detect}
 recombinant samples~\cite{
 Varabyou2021rapid,% Bolotie
@@ -468,34 +467,34 @@ for multiple sibling origination nodes
 [TODO we should mention UShER here: they state multiple times in the GitHub issues 
 that they don't handle them at all, so I think we can just say this in some nice way.]
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
-but because they are difficult to distinguish from bioinformatics errors 
+but because they can be difficult to distinguish from bioinformatics errors
 and their multi-base nature presents challenges
 to the Markovian structure of the LS HMM,
-we masked out all gap characters as missing data during primary inference. 
+we masked out all gap characters as missing data during primary inference.
 To incorporate the most important deletions into the ARG,
 we remapped data using post hoc parsimony at 75 sites involved in deletions
 with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
 during post-processing (STAR Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
-correctly identified many known 
-high frequency (Table~\ref{tab:major_dels}) and 
-recurrent (Table~\ref{tab:rec_dels}) deletions.
-For example, the 4 characteristic deletions
-associated with Alpha \cite{RambautAlpha2020}
-% FIXME: this is just my notation - is this something recognised more 
-% widely? If not, fix to something that is?
-% SHZ: According to Isobel, there is no standard notation.
-% So, I'm just following what Rambaut did in this post.
-(11288-11296, 21765-21770, 21991-21993)
-occur at the Alpha origin in the ARG (Figure~\ref{fig:subgraph_alpha}).
-The ARG also captures genuine recurrent deletions.
-For example, the known recurrent deletions in S1-NTD:
-the 6-base 21765-21770 deletion (Spike $\Delta$H69/V70),
-which causes S-Gene Target Failure \cite{Walker2021};
-(21765+6, 21991+3, and 22194+3)
-associated with antibody escape \cite{McCarthy2021}.
-(Table~\ref{tab:major_dels}).
+correctly identified many known
+high-frequency deletions (Table~\ref{tab:major_dels}) and
+recurrent deletions (Table~\ref{tab:rec_dels}).
+For example, the three characteristic deletions of Alpha \cite{RambautAlpha2020}
+(11288+9, 21765+6, 21991+3,
+where the first and second numbers are
+the start position and length, respectively)
+are correctly mapped above the Alpha origin in the ARG
+(Figure~\ref{fig:subgraph_alpha}).
+The ARG captures known recurrent deletions
+in the N-terminal domain of the S1 unit of Spike
+(which is a deletion hotspot \cite{McCarthy2021})
+for example,
+the 21765+6 deletion ($\Delta$H69/V70),
+which causes S-Gene Target Failure \cite{Walker2021} and
+is associated with increased efficiency in cell entry \cite{Meng2021}, and
+the 21991+3 deletion
+which is associated with antibody escape \cite{McCarthy2021}.
 See Document\ref{sec:supplement_dels} for further analysis.
 
 
