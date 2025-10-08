@@ -303,7 +303,7 @@ rule date:
         "{DATE_PREFIX}_dated.trees",
     shell:
         """
-        python scripts/run_nonsample_dating.py {input} {output}
+        python scripts/run_nonsample_dating.py {input} {output} --add-tsdate-metadata
         """
 
 
