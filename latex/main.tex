@@ -204,25 +204,25 @@ Apetrei2021hiv,% HIV 1,026,217 sequences
 Cryptic2022data,% TB 12k
 Dyer2025enterobase% 1 million, various things like E-coli
 }.
-In contrast to the sophisticated model-based approaches 
-used to perform species-level tree 
+In contrast to the sophisticated model-based approaches
+used to perform species-level tree
 inference~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
-comprehensive phylogenies of these datasets are typically
-built with simpler distance-matrix methods [citation?]
-or approximations~\cite{Price2009fasttree}, primarily
-due to computational scaling limitations, but also because of
-the complexity of modelling such datasets.
+comprehensive phylogenies of these datasets are typically built with
+simpler distance methods [citation?]
+or approximations~\cite{Price2009fasttree},
+primarily due to computational scaling limitations,
+but also because of the complexity of modeling such datasets.
 While several methods have been proposed to incorporate
-recombination explicitly into model-based phylogenetic 
+recombination explicitly into model-based phylogenetic
 inference~\cite{Didelot2010inference,%
 Vaughan2017inferring,%
 Muller2020bayesian,%
-Muller2022bayesian}, 
-scalability 
+Muller2022bayesian},
+scalability
 is a major issue and practical application has been limited.
 Software support in explicitly \emph{using} recombination-aware
-inference is also extremely limited [TODO add some concrete 
-details].
+inference is also extremely limited
+[TODO add some concrete details].
 
 The data collected during the COVID-19 pandemic as part of global
 surveillance presents fundamental challenges to existing approaches
@@ -2923,7 +2923,7 @@ BA.1 and BA.2 differ from the non-Omicron B.1.1 ancestor
 by 27 mutations (including two deletions),
 reflecting its saltational origin.
 The ARG captures the split between BA.1 and BA.2
-which has been shown in previous phylogenetic analysis \cite{Dor2025}.
+shown in previous phylogenetic analysis \cite{Dor2025}.
 The 5-base deletion highlighted in green above the BA.2 root
 is an artefact of our naive deletion remapping procedure,
 which splits two 9-base deletions in BA.1 and BA.2 into three deletions
@@ -2936,14 +2936,12 @@ there would be a single deletion event before the BA.1/BA.2 split),
 as noted in the Pango designation issue \cite{RambautOmicron2021}.
 
 We selected a BA.1 seed sample that led to the fewest mutations.
-This strategy resulted in five mutations
+This strategy resulted in five recurrent mutations
 highlighted in blue/orange/green/red/purple
-which are absent in the chosen
-but present in its inferred descendants.
-In retrospect, SRR17051902 should have been a better choice for a seed,
-because it would have resulted in a topology
-where those five mutations would be placed
-above the split between BA.1 and BA.2.
+which are absent in the chosen seed
+but present in many of its inferred descendants.
+Inspection of the subgraph reveals that an alternative choice for a seed would be the later sample SRR17051902. Seeding with this sample would be likely to generate a topology
+in which those five recurrent mutations are shared between BA.1 and BA.2 and subsequently reverted in a number of the deep branching BA.1 lineages such as those to ERR7671333 and ERR7858953.
 
 
 \subsection{Sc2ts detection results of rejected Pango X lineages}
@@ -3896,17 +3894,17 @@ are highlighted with a pink outline.
 Subgraph illustrating the origin of B.1.617.2 (Delta).
 Symbols are described in \ref{fig:subgraph_alpha}, except that 
 we highlight the characteristic mutations of Kappa and Delta:
-those in blue which are listed
+those with a blue outline are listed
 in the Pango designation issue \cite{PangoIssueKappa}
 or the Kappa constellation \cite{ScorpioKappa},
 but absent in the Delta constellation;
-those in purple which are listed
+those with a purple outline are listed
 in the Delta constellation \cite{ScorpioDelta}
 or are Delta-specific deletions reported in Stern et al. \cite{Stern2021},
 but absent in the Kappa constellation; and
-those in red which are listed
+those with a red outline are listed
 in both the Kappa and Delta constellations.
-We also highlight
+We also outline
 in orange the mutations associated with the lineage containing clades A to D and
 in green those associated with lineage containing clade E.
 Sites associated with multiple mutations in the subgraph
@@ -3934,7 +3932,7 @@ B.1.1.529 mutations
 which are neither BA.1 or BA.2 characteristic mutations are
 outlined in green.
 These colors correspond to those used
-in the Pango designation issue \cite{RambautOmicron2021}.
+in the BA.1/BA.2 Pango designation issue \cite{RambautOmicron2021}.
 }
 \label{fig:subgraph_omicron}
 \end{figure}
