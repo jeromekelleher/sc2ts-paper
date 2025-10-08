@@ -851,6 +851,52 @@ contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
 the Jackson et al. recombinants (Document\ref{sec:jackson_recombs}).
 
+[Rough first draft]
+This estimate for effective recombination in SARS-CoV-2 is much lower 
+than previous studies have suggested.
+% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
+% recombinant origins out of the first 87,695 genomes to be released
+In an early analysis, 225 potentially recombinant sequences out 
+of 87,695 samples [WHAT DATE?]\cite{Varabyou2021rapid}.
+Over the same time period, XX events are present in the sc2ts ARG,
+representing a total of XX samples.
+In the flagship analysis for the RIPPLES method~\cite{Turakhia2022}, 
+589 unique recombination events in a tree of 1.6 million samples
+up to May 2021 were identified after extensive quality control.
+These nodes had a combined total of 43,104 descendants, suggesting
+that approximately 2.7\% of genomes were of recombinant origin.
+Over the same time period, the sc2ts ARG contains 14 recombinants
+passing QC with a total of 172 descendants. The ARG contains a total
+501,235 samples over this time period, giving an overall total fraction of
+0.034\%. Thus, the sc2ts ARG estimates 42-fold fewer recombination
+events and 79-fold descendant samples over the same time period.
+The numbers are not directly comparable as the published RIPPLES 
+estimate is based on GISAID data which is enriched for
+artefacts~\cite{Hunt2024}, but given the observations in 
+the previous section on running RIPPLES on the Viridian data
+it seems likely that RIPPLES is overestimating the prevalence
+of recombination in SARS-CoV-2.
+
+% CovRecomb:  135,567 putative recombinants across the entirety of 14.5 million
+% accessed SARS-CoV-2 genomes
+
+% Although multiple studies have 
+% published lists of putatitive novel recombinant 
+% sequences~\cite{,Turakhia2022,Li2024CovRecomb} 
+% these are for GISAID data and not trival to reconcile with 
+% the Viridian data or the specific recombination events in the ARG.
+
+% RIPPLES: In a 1.6 million sample tree from May 2021, we identify 589
+% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
+% recombinant origins out of the first 87,695 genomes to be released
+% recombination events, 
+% RecombinHunt just looks at X lineages (I think?)
+
+
+
+
+To assess the evidence for these putative novel recombinants
+
 
 \subsection*{Quantification of evidence for recombination}
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
@@ -904,10 +950,29 @@ over all 354 recombination events that pass QC.
 Of these, only 24 
 (21 associated with Pango X lineages in Table~\ref{tab:pango_x_lineages},
 and 3 additional from Jackon et al in Table~\ref{tab:jackson}) have 
-% Slightly risky, this, as we could get asked to incorporate 
-% novel recombs found by RIPPLEs? This could be done if we could get 
-% Viridian sample IDs for their list.
-been thoroughly characterised. 
+been thoroughly characterised.  
+
+Although multiple studies have 
+published lists of putatitive novel recombinant 
+sequences~\cite{Varabyou2021rapid,Turakhia2022,Li2024CovRecomb} 
+these are for GISAID data and not trival to reconcile with 
+the Viridian data or the specific recombination events in the ARG.
+
+% CovRecomb:  135,567 putative recombinants across the entirety of 14.5 million
+% accessed SARS-CoV-2 genomes
+% RIPPLES: In a 1.6 million sample tree from May 2021, we identify 589
+% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
+% recombinant origins out of the first 87,695 genomes to be released
+% recombination events, 
+% RecombinHunt just looks at X lineages (I think?)
+
+
+
+
+To assess the evidence for these putative novel recombinants
+
+
+
 The figure also shows the classification status for each recombinant
 according to rebar, a method that classifies sequences
 as recombinant or not based on groups of mutations associated with
