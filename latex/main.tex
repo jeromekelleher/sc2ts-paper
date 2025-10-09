@@ -321,8 +321,6 @@ that systematically accounts for all of these evolutionary forces.
 This ARG, coupled with the rich suite of supporting software
 in the tskit\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
 enables pandemic-scale analysis on a laptop. 
-% Dunno about this! Feels important to finish on a wider note, helping
-% the reader understand the significance of all of this?
 These resources
 will help us to learn from the vast troves of data collected during the
 pandemic, and to prepare for the next.
@@ -374,8 +372,7 @@ Sc2ts reconstructs an ARG by incrementally adding daily batches of
 sequences (Figure~\ref{fig:methodology}).
 First, sc2ts infers likely ``copying paths'' connecting each sample in the 
 batch to node(s) in the current ARG
-(allowing recombination) using a simplified version of the Li and Stephens (LS) model
-\cite{LiStephens2003}. 
+using a simplified version of the Li and Stephens (LS) model\cite{LiStephens2003}. 
 % Important to go into a bit of detail about LS here as it's so fundamental
 % and novel in the area.
 The LS model is a Hidden Markov Model (HMM) widely used in human genomics
@@ -412,8 +409,8 @@ See STAR Methods for details on all aspects of the method.
 Using sc2ts, we built an ARG from 2,482,157 samples
 from the Viridian v04 dataset \cite{Hunt2024},
 collected between 2020-01-01 and 2023-02-20.
-Inference took 21 days on a XX core server with 500 GB of RAM
-($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
+Inference took 21 days on a server with 64 cores (2X AMD EPYC 7502)
+and 512 GB of RAM ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG
 contains 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and 2,285,344 mutations at 29,893 sites.
