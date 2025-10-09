@@ -3299,12 +3299,15 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
 
+\newcommand{\scghdiscussion}[1]{%
+See \href{https://github.com/jeromekelleher/sc2ts-paper/discussions/#1}%
+{github:sc2ts-paper/discussions/#1} for further details.}
+
 \subsubsection{XA}
 % mneumonic: deep dive XA
 \label{sec:dd_xa}
-(also illustrated in Figure 2a / 3d)
 XA traces to a well supported recombination node, with no reversions.
-Note that the “causal” sample ERR5308556
+Note that the ``causal'' sample ERR5308556
 (which triggers the initial recombination event)
 is identical to the recombination node, and
 therefore lacks C8090T,
@@ -3321,7 +3324,6 @@ which is a summary of this subgraph.
 
 \subsubsection{XB}
 \label{sec:dd_xb}
-https://github.com/jeromekelleher/sc2ts-paper/issues/332
 
 The displayed subgraph shows a small selection of the 192 XB samples.
 XB was originally defined as a recombinant between
@@ -3331,8 +3333,8 @@ However, these parent lineages were not added to the ARG due to a high HMM cost.
 Together with other lineages such as B.1.627
 (sister to B.1.631 \cite{Gutierrez2022}),
 they are likely to attach somewhere along the long branch
-in the subgraph visualization (with > 30 mutations),
-which also contains the key "R2" deletion
+in the subgraph visualization (with $> 30$ mutations),
+which also contains the key ``R2'' deletion
 associated with XB / B.1.634 \cite{Gutierrez2022}.
 
 We hypothesize that there are a set of samples
@@ -3351,6 +3353,8 @@ why these additional samples were not gradually added
 to the ARG by the daily sample matching process or
 retrospective sample grouping.
 
+\scghdiscussion{780}
+
 \subsubsection{XC}
 \label{sec:dd_xc}
 The five XC samples descend from a well supported recombination node.
@@ -3363,7 +3367,6 @@ frequent mutation in a preliminary ARG.
 
 \subsubsection{XE/XH}
 \label{sec:dd_xexh}
-https://github.com/jeromekelleher/sc2ts-paper/discussions/633
 
 The XE samples descend from a well supported recombination node,
 with one mutation and one reversion (T22792C).
@@ -3385,6 +3388,7 @@ the youngest being postulated as the origin of XAF (see below);
 we leave investigation of this suggested series of
 sequential recombination events to future work.
 
+\scghdiscussion{633}
 
 \subsubsection{XF}
 \label{sec:dd_xf}
@@ -3423,7 +3427,6 @@ assigned to BA.2.5 with a large number of descendant samples.
 
 \subsubsection{XM/XAL}
 \label{sec:dd_xm}
-https://github.com/jeromekelleher/sc2ts-paper/issues/284
 
 XM is a recombinant of BA.1 (left parent) and BA.2 (right parent).
 Sc2ts identifies multiple recombinant origins of XM.
@@ -3435,7 +3438,7 @@ Independent evidence for multiple XM origins
 comes from consideration of a 9-base deletion
 in the Spike gene at position 21633,
 which is characteristic of BA.2 but not BA.1
-(https://github.com/cov-lineages/pango-designation/issues/361).
+\url{https://github.com/cov-lineages/pango-designation/issues/361}.
 Most of the XM-labeled samples in ARG have this deletion,
 but three (SRR19024311, ERR9447529, and SRR18775874) do not,
 suggesting that XM samples trace to at least two recombination events,
@@ -3451,12 +3454,10 @@ A better use of deletions in sc2ts would likely result
 in placing this sample within one of the two XM clades
 which do not have the deletion.
 
+\scghdiscussion{656}
+
 \subsubsection{XN/XAU}
 \label{sec:dd_xn}
-
-(also illustrated in Figure 2c)
-https://github.com/jeromekelleher/sc2ts-paper/issues/348
-https://github.com/jeromekelleher/sc2ts-paper/issues/358
 
 In the sc2ts ARG, the initial XN sample (ERR8986821)
 is well explained as a non-recombinant,
@@ -3502,6 +3503,9 @@ for correcting the inevitable errors that arise
 when designating recombinants by hand and
 using different (and inconsistent) data sources of
 Pango lineage-associated mutational constellations.
+
+https://github.com/jeromekelleher/sc2ts-paper/issues/348
+https://github.com/jeromekelleher/sc2ts-paper/issues/358
 
 \subsubsection{XP}
 \label{sec:dd_xp}
