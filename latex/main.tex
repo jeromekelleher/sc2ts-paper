@@ -425,7 +425,10 @@ resulting in 316 distinct trees along the genome
 [TODO note about loading up the time it takes to get the node 
 data dataframes in a notebook?]
 
-% PARA: we compared against the UShER tree in a bunch of ways
+% PARA: we did a BUNCH of validation work. There's a lot in here, but the
+% point is to summarise a mountain of validation and provide links to the 
+% details. 
+
 % NOTE: Trying to clarify that this of the pandemic period and we're 
 % not trying to cover *all* history.
 The ARG is a comprehensive record of the pandemic phase 
@@ -465,6 +468,20 @@ have monophyletic origins within the ARG,
 increasing to 1779 (86\%) when we allow
 for multiple sibling origination nodes
 (Document~\ref{sec:supplement_pango_lineages}).
+The ARG is time-resolved, with internal node dates estimated by
+a non-parametric method~\cite{Pope2025} (STAR Methods). 
+We show that the dates agree reasonably with NextStrain 
+estimates (Figure \ref{fig:pango_vs_nextstrain_node_times})
+and overall accuracy to another large-scale
+method~\cite{sanderson2021chronumental} (Document TODO).
+Finally, we verified
+that the origins of the 
+Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
+Delta (Figure~\ref{fig:subgraph_delta}, Document~\ref{sec:dd_delta})
+and
+Omicron (Figure~\ref{fig:subgraph_omicron}, Document~\ref{sec:dd_omicron})
+VOCs reflect expectations from the literature\cite{RambautAlpha2020,ECDCreport,
+Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
 [TODO we should mention UShER here: they state multiple times in the GitHub issues 
 that they don't handle them at all, so I think we can just say this in some nice way.]
@@ -2953,7 +2970,7 @@ of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 
 % https://github.com/jeromekelleher/sc2ts-paper/issues/772
 \subsubsection{Alpha}
-\label{sec:alpha}
+\label{sec:dd_alpha}
 
 The B.1.1.7 (Alpha) variant emerged in the UK as the first major VOC.
 Its origin is well reconstructed in the ARG,
@@ -2991,7 +3008,7 @@ it has been suggested elsewhere as an Alpha-defining mutation
 
 
 \subsubsection{Delta}
-\label{sec:delta}
+\label{sec:dd_delta}
 
 The B.1.617.2 lineage (Delta) was first detected in India \cite{ECDCreport}.
 The subgraph in Figure~\ref{fig:subgraph_delta} shows
@@ -3000,7 +3017,7 @@ which contains 11 single nucleotide mutations and a 6-base deletion.
 The placement of this branch in the ARG
 is a result of long branch splitting of the lineage above B.1.617.
 
-Delta belongs to the “B.1.617” clade,
+Delta belongs to the ``B.1.617'' clade,
 which also includes Kappa (B.1.617.1) and B.1.617.3 \cite{ECDCreport}.
 Previous phylogenetic analyses suggest that
 Delta and B.1.617.3 are more closely related to each other
@@ -3051,7 +3068,7 @@ in the sc2ts ARG are largely correct.
 
 
 \subsubsection{Omicron BA.1 and BA.2}
-\label{sec:omicron}
+\label{sec:dd_omicron}
 
 The B.1.1.529 lineage (Omicron)
 is believed to have emerged in southern Africa, and
