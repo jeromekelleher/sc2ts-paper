@@ -103,7 +103,6 @@
 % \author[3,4,5,**]{F. Middle Last}
 
 \author[1,6]{Shing~H.~Zhan}
-% TODO add joint second here?
 \author[1,5]{Yan~Wong}
 \author[2,5]{Anastasia~Ignatieva}
 \author[3]{Katherine~Eaton}
@@ -305,7 +304,7 @@ in real-time. Based on the Viridian dataset, a freely available
 resource purged of various systematic errors and artifacts \cite{Hunt2024},
 we infer an ARG with 2.48 million whole genome sequences.
 We show that this ARG is highly congruent with the UShER phylogeny built 
-from the same dataset as well as the Pango lineage naming system\cite{Rambaut2020},
+from the same dataset as well as the Pango nomenclature system\cite{Rambaut2020},
 and also accurately captures evolutionary features such as mutational 
 spectra\cite{Bloom2023} and deletions\cite{Li2023indels}.
 We show that sc2ts automatically and accurately detects details about
@@ -406,6 +405,8 @@ See STAR Methods for details on all aspects of the method.
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
+% The ARG is big, took a decent chunk of time to infer (but not crazy)
+% and is very easy to analyse.
 Using sc2ts, we built an ARG from 2,482,157 samples
 from the Viridian v04 dataset \cite{Hunt2024},
 collected between 2020-01-01 and 2023-02-20.
@@ -413,17 +414,21 @@ Inference took 21 days on a server with 64 cores (2X AMD EPYC 7502)
 and 512 GB of RAM ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG
 contains 2,689,054 nodes,  % Note the estimated dates ?
-2,748,838 edges, and 2,285,344 mutations at 29,893 sites.
-Including sample IDs and the Pango and Scorpio designations computed by
-Pangolin~\cite{OToole2021assignment} as metadata for each node,
-the ARG is stored in a 32MiB tszip format file.
-% It's confusing to talk about recombinant QC here as we're talking 
-% about the full ARG for the rest of the section.
+2,748,838 edges, and 2,285,344 mutations at 29,893 sites,
+and is stored in a 32MiB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
 (some events occurred at the same breakpoints [vague, rephrase]).
-[TODO note about loading up the time it takes to get the node 
-data dataframes in a notebook?]
+% NOTE: if we keep this we should redo on Yan's laptop and quote those numbers
+Using the tskit Python API, the ARG can be loaded into 
+memory in less than a second [Concrete numbers?], and the 
+vectorised representation integrates tightly with 
+powerful data-science tools such as NumPy~\cite{Harris2020array}.
+For example, a tabular summary for the 2.75m nodes, including
+sample IDs and Pango assignments (stored as metadata in the ARG),
+can be derived as a Pandas dataframe~\cite{Mckinney2010data} in 0.6s.
+The ARG can therefore be easily accessed using familiar tools
+with minimal hardware requirements, enabling diverse bespoke analyses.
 
 % PARA: we did a BUNCH of validation work. There's a lot in here, but the
 % point is to summarise a mountain of validation and provide links to the 
@@ -431,8 +436,8 @@ data dataframes in a notebook?]
 
 % NOTE: Trying to clarify that this of the pandemic period and we're 
 % not trying to cover *all* history.
-The ARG is a comprehensive record of the pandemic phase 
-of SARS-CoV-2 evolutionary history, and accurately reflects
+The ARG is a comprehensive and deeply validated record of the pandemic phase 
+of SARS-CoV-2 evolutionary history, accurately reflecting
 a range of results from the literature.
 First, we compared the sc2ts ARG and with the state-of-the-art UShER 
 tree inferred from the same dataset
@@ -456,8 +461,8 @@ Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
 We also evaluated how well the ARG reflects the structure
-of the Pango nomenclature system~\cite{Rambaut2020} by computing
-Pango assignments for all 2.7 million nodes in the ARG using
+of the Pango nomenclature system by computing
+Pango assignments for all 2.75 million nodes in the ARG using
 Pangolin~\cite{OToole2021assignment} (STAR Methods).
 All but 21,680 of the exported sample alignments (0.87\%) agreed
 with the source consensus sequences in terms of Pango lineage assignment
@@ -473,7 +478,7 @@ a non-parametric method~\cite{Pope2025} (STAR Methods).
 We show that the dates agree reasonably with NextStrain 
 estimates (Figure \ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy to another large-scale
-method~\cite{sanderson2021chronumental} (Document TODO).
+method~\cite{sanderson2021chronumental} (Document \ref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the 
 Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
@@ -483,14 +488,14 @@ Omicron (Figure~\ref{fig:subgraph_omicron}, Document~\ref{sec:dd_omicron})
 VOCs reflect expectations from the literature\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
-[TODO we should mention UShER here: they state multiple times in the GitHub issues 
-that they don't handle them at all, so I think we can just say this in some nice way.]
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
-but because they can be difficult to distinguish from bioinformatics errors
+but are not incorporated into UShER trees and can be difficult
+to account for. Because deletions are difficult to distinguish 
+from bioinformatics errors
 and their multi-base nature presents challenges
 to the Markovian structure of the LS HMM,
 we masked out all gap characters as missing data during primary inference.
-To incorporate the most important deletions into the ARG,
+To approximate the effects of the most important deletions into the ARG,
 we remapped data using post hoc parsimony at 75 sites involved in deletions
 with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
 during post-processing (STAR Methods).
@@ -649,8 +654,6 @@ XAJ & 11 &&&& \textbf{BA.2.12} & {XAJ:18} \\
 \end{scriptsize}
 \end{table}
 
-[TODO narrative is muddled here: the point of the para is to say that 
-pango X lineage designation is manual and subjective.]
 % " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
 % system ... ". It should not be referred to as the ‘Rambaut et al.’ or
 % ‘Pangolin’ nomenclature system. "
@@ -660,16 +663,17 @@ are designated and their explicitly phylogenetic basis.
 The first recombinant lineage XA was designated in 2021
 based on the analysis of Jackson et al.\cite{Jackson2021},
 which established that recombination with onward transmission had occurred [weak FIXME].
-As of pango-designation version v1.33.1 (2025-03-31),
-a total of 146 distinct Pango X lineages have been designated.
-%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
-% 146
 Although the process of incorporating recombinant lineages
 in the Pango nomenclature system is well defined,
 the identification of such events is much more subjective,
 requiring the synthesis of multiple lines of evidence and
 often the manual inspection of phylogenies and sequence alignments
 by volunteers~\cite{Smith2023tracking}.
+% Debatable whether this adds or substracts from narrative
+As of pango-designation version v1.33.1 (2025-03-31),
+a total of 146 distinct Pango X lineages have been designated.
+%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
+% 146
 
 By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides us with a systematic means of
@@ -677,7 +681,7 @@ discovering and assessing evidence around these events.
 Table~\ref{tab:pango_x_lineages} summarizes
 these results for the 44 Pango X lineages present in the ARG
 (XAC and XAD have been omitted, and XM partially represented,
-corresponding to 23 samples in total;
+corresponding to 23 omitted samples in total;
 see Document~\ref{sec:supplement_x_pango_lineages}).
 For 16 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node, and
@@ -690,15 +694,12 @@ parent lineages and breakpoint intervals is excellent,
 with similar performance to
 the RecombinHunt \cite{Alfonsi2024}
 and CovRecomb \cite{Li2024CovRecomb} detection methods
-(STAR Methods; Table~\ref{tab:method_concordance}).
+(STAR Methods; Table~\ref{tab:method_concordance}; see also
+Document~\ref{sec:jackson_recombs} for analysis of the 
+Jackson et al.\ recombinants).
 Of the Type I events, 13 are monophyletic for the focal Pango lineage
 (i.e., the descendants are entirely from that lineage);
-Figure~\ref{fig:subgraphs}A shows XA as an example
-(for further analysis of the other recombinants
-found by Jackson et al.\cite{Jackson2021},
-see Table~\ref{tab:jackson} in Document~\ref{sec:jackson_recombs},
-which shows that sc2ts identified the parents and breakpoints
-concordant with those reported by Jackson et al.\cite{Jackson2021}).
+Figure~\ref{fig:subgraphs}A shows XA as an example.
 
 The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
 are recombination events closely associated with Pango X lineages, 
@@ -710,7 +711,7 @@ with two major clusters of particular note. Although XQ is
 directly associated with a recombination event in the ARG, 
 XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
 that they are more parsimoniously explained as sublineages of XQ
-than de-novo recombinant lineages.
+than de-novo recombinant lineages (Document \ref{sec:dd_xq}). 
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
@@ -725,20 +726,20 @@ to suggest recombination (Document \ref{sec:dd_xn}).
 XB, on the other hand,
 has been thoroughly characterized \cite{Gutierrez2022} and
 may have misclassified by sc2ts due to limitations in
-handling deletions or matching against long branches (see Discussion).
+handling deletions or matching against long branches (Document \ref{sec:dd_xb}). 
 See Document~\ref{sec:supplement_indepth_pango_x_lineages}
-for extended analyses on all of the Pango X lineages above,
+for extended analyses on all of the Pango X lineages,
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages}, and
-Document S2 for ARG visualizations.
+Document S2 for ARG visualizations of the Pango X lineages.
 
 
 \subsection*{Comparison with RIPPLES}
-
 RIPPLES~\cite{Turakhia2022} is a method for detecting 
-recombination events using a tree inferred by UShER.
+recombination events using a tree inferred by UShER,
+and is the only method directly comparable with sc2ts.
 Recombination is detected by first identifying plausible branches
-carrying multiple mutations (at least 3, by default).
+carrying multiple mutations .
 For each candidate branch,
 RIPPLES then systematically splits the sequence into 2 or 3 segments, and
 finds parsimonious placements for each segment independently.
@@ -749,76 +750,62 @@ sufficiently improves over the original single-parent origin in the tree
 RIVET~\cite{Smith2023tracking} is a tool for quality control
 and visualization of these recombination events.
 
-\begin{table}
-\caption{
-RIPPLES events associated with Pango X lineages.
-Each row is a recombination event identified by RIPPLEs (at p = 3)
-in which Pango X lineages appear,
-along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
-where applicable, grouped by class.
-Events also present at p = 4 are indicated.
-Clades are matched by finding the most recent common ancestor of
-the samples associated with each UShER/RIPPLES event in the sc2ts ARG.
-The clade differences indicates how close this match is.
-}
-\label{tab:ripples_x_lineages}
-\centering
-\begin{scriptsize}
-
-\begin{tabular}{lrrlrl}
-\toprule
-sc2ts event & in p4 & UShER desc & sc2ts class & clade diff & descendants \\
-\midrule
-\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLEs recombination events}\\
-XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
-% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
-XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
-XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
-XY &  & 23 & I & 0 & {XY:23} \\
-XW &  & 32 & I & 0 & {XW:32} \\
-XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
-XL &  & 64 & I & 0 & {XL:64} \\
-XBB &  & 6452 & I & 1 & {XBB:2361} \\
-XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
-XE/XH &  & 1113 & II & 3 & {XE:1113} \\
-XQ &  & 1 & III & 0 & {XAM:1} \\
-XQ &  & 21 & III & 0 & {XAM:21} \\
-Xx &  & 9 & III & 0 & {XAE:9} \\
-Xx & $\checkmark$ & 18 & III & 0 & {XAC:18} \\
-XM & $\checkmark$ & 8 & III & 0 & {BA.2:4, XM:4} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
-XB & $\checkmark$ & 411 & IV & 0 & {B.1:219, XB:192} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
-NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
-NA &  & 20 & NA & 1061775 & {BA.1.15:1, XS:17, BA.1:1, BA.1.1:1} \\
-NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
-NA & $\checkmark$ & 36 & NA & 7146 & {XBD:30, XBR:1, BA.2.75:5} \\
-NA &  & 1321 & NA & 340501 & {XE:1113, XH:2, XJ:68, XY:23, BA.2:82, XM:29,
-XAL:3, XAF:1} \\
-\bottomrule
-\end{tabular}
-
-\end{scriptsize}
-\end{table}
-
 We ran fast-RIPPLES\cite{Smith2023tracking} on the Viridian UShER tree
 subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-We first ran RIPPLES with parameter $p=4$, as being roughly comparable
-to the recombination penalty used in sc2ts ($k=4$; STAR Methods).
-This resulted in 1,174 recombination events reported, of which 460 could be mapped
-to one of the 855 recombination events in the sc2ts ARG (STAR Methods;
-Figure \ref{fig:ripples_sc2ts_events}A). Analysis of the descendant 
-samples showed that many Pango X lineages were not associated with
-recombination events (including XBB), and we therefore ran
-RIPPLES with the more lenient value of $p=3$ (the default).
-This resulted in a total of 4111 recombination events
-of which 595 have corresponding recombination events in the 
-sc2ts ARG (Figure \ref{fig:ripples_sc2ts_events}B).
+At $p=3$, this resulted in a total of 4111 recombination events.
+Most of these subtend $<10$ samples (2616 singletons), with 4 events subtending 
+more than 100,000 samples.
+Analysis of the descending samples for each event shows that 
+10 of the 44 Pango X lineages present in the dataset
+% NOTE: listing them like this for sorting and manipulation purposes
+(%
+XA, 
+XAC, 
+XAE, 
+XAJ,
+XB, 
+XBB, 
+XBM, 
+XC, 
+XL, 
+XW%
+)
+are associated unequivocally with a single recombination event.
+7 lineages 
+(%
+XAL,
+XAM,
+XBD, 
+XBR, 
+XE,
+XS,
+XY%
+)
+are associated with two events. Finally, 
+one event subtending 1321 samples suggests that 
+XAF,
+XAL, 
+XE, 
+XH, 
+XJ, 
+XM, 
+XY, 
+and 
+82 BA.2 samples share a recombination event [With what breakpoint and 
+parents?].
+We also ran RIPPLES with $p=4$, which reduced the overall number of 
+events to 1174 (roughly 4-fold) but also approximately halved the number of 
+events involving X lineages, including well-characterised events 
+such as XBB (Table~\ref{tab:ripples_x_lineages}).
 
+To compare these results with the sc2ts ARG, we first matched clades
+by finding the most recent common ancestor (MRCA) of the samples
+descending from each RIPPLES event. Overall, clade agreement was 
+high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG where 
+descendants match exactly. Of these nodes, 68\% had no recombinant
+ancestry. Of the remainder, 595 could be matched with one of the 
+855 recombination events in the sc2ts ARG
+(Figure \ref{fig:ripples_sc2ts_events}).
 Table~\ref{tab:ripples_x_lineages} shows a summary of all
 recombination events associated with Pango X lineages detected by RIPPLES,
 and their relationship with the sc2ts ARG.
@@ -827,24 +814,12 @@ a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
 8 have corresponding recombination events (4, at $p=4$).
 Of the 5 Type II events
 (recombination nodes with more complex assocation with X lineages),
-two have close matches.
-XBM matches exactly (including 2 descending BF.3 samples),
+two have close matches, with XBM matching exactly (including 2 descending BF.3 samples),
 and XE/XH is similar (but without including the 2 XH samples in the clade).
-UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
-makes these both descendants of the Xx event,
-RIPPLES creates two independent recombinations.
-Similarly, XAE and ??? have exactly matching clades, but RIPPLES
-infers two independent recombination events while sc2ts groups them both
-under the Xx event. XB is notable as a likely sc2ts false negative that is 
-identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
-associated with X lineages output by RIPPLES cannot be easily mapped 
-to the sc2ts ARG as one or more descendants is distantly placed.
-XAJ is an outlier for sc2ts, being the Pango X lineage identified as a 
-non-recombinant with the largest number of mutations 
-(Table~\ref{tab:pango_x_lineages}), and a likely false negative.
-The remaining 4 events are mixtures of multiple lineages that are 
-difficult to reconcile with either the other events in the table 
-or the sc2ts ARG.
+Two events in the RIPPLES set correspond to likely false negatives 
+in sc2ts: XB (Document~\ref{sec:dd_xb}) 
+and XAJ (Document~\ref{sec:dd_xaj}).
+See Document~\ref{sec:detailed_ripples} for more detailed analysis.
 
 
 \subsection*{Quality control of recombination events}
@@ -873,48 +848,6 @@ The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
 the Jackson et al. recombinants (Document\ref{sec:jackson_recombs}).
-
-[Rough first draft]
-This estimate for effective recombination in SARS-CoV-2 is much lower 
-than previous studies have suggested.
-% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
-% recombinant origins out of the first 87,695 genomes to be released
-In an early analysis, 225 potentially recombinant sequences out 
-of 87,695 samples [WHAT DATE?]\cite{Varabyou2021rapid}.
-Over the same time period, XX events are present in the sc2ts ARG,
-representing a total of XX samples.
-In the flagship analysis for the RIPPLES method~\cite{Turakhia2022}, 
-589 unique recombination events in a tree of 1.6 million samples
-up to May 2021 were identified after extensive quality control.
-These nodes had a combined total of 43,104 descendants, suggesting
-that approximately 2.7\% of genomes were of recombinant origin.
-Over the same time period, the sc2ts ARG contains 14 recombinants
-passing QC with a total of 172 descendants. The ARG contains a total
-501,235 samples over this time period, giving an overall total fraction of
-0.034\%. Thus, the sc2ts ARG estimates 42-fold fewer recombination
-events and 79-fold descendant samples over the same time period.
-The numbers are not directly comparable as the published RIPPLES 
-estimate is based on GISAID data which is enriched for
-artefacts~\cite{Hunt2024}, but given the observations in 
-the previous section on running RIPPLES on the Viridian data
-it seems likely that RIPPLES is overestimating the prevalence
-of recombination in SARS-CoV-2.
-
-% CovRecomb:  135,567 putative recombinants across the entirety of 14.5 million
-% accessed SARS-CoV-2 genomes
-
-% Although multiple studies have 
-% published lists of putatitive novel recombinant 
-% sequences~\cite{,Turakhia2022,Li2024CovRecomb} 
-% these are for GISAID data and not trival to reconcile with 
-% the Viridian data or the specific recombination events in the ARG.
-
-% RIPPLES: In a 1.6 million sample tree from May 2021, we identify 589
-% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
-% recombinant origins out of the first 87,695 genomes to be released
-% recombination events, 
-% RecombinHunt just looks at X lineages (I think?)
-
 
 
 \subsection*{Quantification of evidence for recombination}
@@ -1334,6 +1267,51 @@ making them highly adaptable for a broad range of applications.
 Together with the pandemic-scale ARG,
 we hope that sc2ts will be highly accessible to many researchers,
 enabling and accelerating studies of SARS-CoV-2 for years to come.
+
+\subsection*{Prevalance of recombination in SARS-CoV-2}
+[Rough first draft taken from earlier location. Sticking in a heading to
+make it clear it's distinct from other paragraphs.]
+
+This estimate for effective recombination in SARS-CoV-2 is much lower 
+than previous studies have suggested.
+% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
+% recombinant origins out of the first 87,695 genomes to be released
+In an early analysis, 225 potentially recombinant sequences out 
+of 87,695 samples [WHAT DATE?]\cite{Varabyou2021rapid}.
+Over the same time period, XX events are present in the sc2ts ARG,
+representing a total of XX samples.
+In the flagship analysis for the RIPPLES method~\cite{Turakhia2022}, 
+589 unique recombination events in a tree of 1.6 million samples
+up to May 2021 were identified after extensive quality control.
+These nodes had a combined total of 43,104 descendants, suggesting
+that approximately 2.7\% of genomes were of recombinant origin.
+Over the same time period, the sc2ts ARG contains 14 recombinants
+passing QC with a total of 172 descendants. The ARG contains a total
+501,235 samples over this time period, giving an overall total fraction of
+0.034\%. Thus, the sc2ts ARG estimates 42-fold fewer recombination
+events and 79-fold descendant samples over the same time period.
+The numbers are not directly comparable as the published RIPPLES 
+estimate is based on GISAID data which is enriched for
+artefacts~\cite{Hunt2024}, but given the observations in 
+the previous section on running RIPPLES on the Viridian data
+it seems likely that RIPPLES is overestimating the prevalence
+of recombination in SARS-CoV-2.
+
+% CovRecomb:  135,567 putative recombinants across the entirety of 14.5 million
+% accessed SARS-CoV-2 genomes
+
+% Although multiple studies have 
+% published lists of putatitive novel recombinant 
+% sequences~\cite{,Turakhia2022,Li2024CovRecomb} 
+% these are for GISAID data and not trival to reconcile with 
+% the Viridian data or the specific recombination events in the ARG.
+
+% RIPPLES: In a 1.6 million sample tree from May 2021, we identify 589
+% Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
+% recombinant origins out of the first 87,695 genomes to be released
+% recombination events, 
+% RecombinHunt just looks at X lineages (I think?)
+
 
 
 \subsection*{Limitations of the study}
@@ -2360,30 +2338,6 @@ In these cases, sometimes the sc2ts ARG shows greater resolution,
 as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in the close relatives of Beta (B.1.351).
 
-\subsubsection*{Checking inferred node dates}
-
-To validate the accuracy of times for non-sample internal nodes inserted 
-into the ARG
-(inferred using tsdate), we compared the dates of first emergence of
-Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
-2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
-close agreement for most clades, with only three 
-disagreeing by more than 28 days: 20C (an early lineage from 2020), 20E (Pango B.1.177 also known as EU1, emerging mid-2020), and 21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
-
-Then, to gauge internal consistency of the time estimation procedure, we
-selected a subset of sample nodes, matching the distribution of node times 
-and average number of children of the non-sample internal nodes. These
-selected sample nodes were then re-dated, and the inferred dates compared 
-against their recorded collection dates. The results in Figure 
-\ref{fig:node_time_testing} demonstrate that although the inferred and true
-times are generally very close, there is a clear bias with re-estimated times
-being consistently older (by an average of 37 days). This is in line with 
-the findings of other recent
-work \cite{sanderson2021chronumental}, and is likely to be a consequence
-of edges carrying more mutations than would be expected under a neutral
-molecular clock prior (either due to errors in tree-building or genuinely varying mutation rates), as well as inaccuracies in the recording of 
-sample dates.
-
 \subsubsection*{Comparison of mutational spectra}
 
 To validate the mutational information contained in the sc2ts ARG,
@@ -2955,6 +2909,32 @@ See notebook
 {analysis\_pango\_events\_in\_arg.ipynb}
 for details.
 
+\subsection*{Evaluating inferred node dates}
+\label{sec:evaluating_node_dates}
+
+To validate the accuracy of times for non-sample internal nodes inserted 
+into the ARG
+(inferred using tsdate), we compared the dates of first emergence of
+Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
+2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
+close agreement for most clades, with only three 
+disagreeing by more than 28 days: 20C (an early lineage from 2020), 20E (Pango B.1.177 also known as EU1, emerging mid-2020), and 21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
+
+Then, to gauge internal consistency of the time estimation procedure, we
+selected a subset of sample nodes, matching the distribution of node times 
+and average number of children of the non-sample internal nodes. These
+selected sample nodes were then re-dated, and the inferred dates compared 
+against their recorded collection dates. The results in Figure 
+\ref{fig:node_time_testing} demonstrate that although the inferred and true
+times are generally very close, there is a clear bias with re-estimated times
+being consistently older (by an average of 37 days). This is in line with 
+the findings of other recent
+work \cite{sanderson2021chronumental}, and is likely to be a consequence
+of edges carrying more mutations than would be expected under a neutral
+molecular clock prior (either due to errors in tree-building or genuinely varying mutation rates), as well as inaccuracies in the recording of 
+sample dates.
+
+
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
 [TODO DOCUMENT DETAILS of deriving events]
@@ -2969,6 +2949,108 @@ failed to find a specific lineage (accounting for 7\%
 of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 2,747,985 alignments).
 
+\subsection{Detailed RIPPLES analysis}
+\label{sec:detailed_ripples}
+
+\begin{table}
+\caption{
+RIPPLES events associated with Pango X lineages.
+Each row is a recombination event identified by RIPPLEs (at p = 3)
+in which Pango X lineages appear,
+along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
+where applicable, grouped by class.
+Events also present at p = 4 are indicated.
+Clades are matched by finding the most recent common ancestor of
+the samples associated with each UShER/RIPPLES event in the sc2ts ARG.
+The clade differences indicates how close this match is.
+}
+\label{tab:ripples_x_lineages}
+\centering
+\begin{scriptsize}
+
+\begin{tabular}{lrrlrl}
+\toprule
+sc2ts event & in p4 & UShER desc & sc2ts class & clade diff & descendants \\
+\midrule
+\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLEs recombination events}\\
+XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
+% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
+XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
+XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
+XY &  & 23 & I & 0 & {XY:23} \\
+XW &  & 32 & I & 0 & {XW:32} \\
+XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
+XL &  & 64 & I & 0 & {XL:64} \\
+XBB &  & 6452 & I & 1 & {XBB:2361} \\
+XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
+XE/XH &  & 1113 & II & 3 & {XE:1113} \\
+XQ &  & 1 & III & 0 & {XAM:1} \\
+XQ &  & 21 & III & 0 & {XAM:21} \\
+Xx &  & 9 & III & 0 & {XAE:9} \\
+Xx & $\checkmark$ & 18 & III & 0 & {XAC:18} \\
+XM & $\checkmark$ & 8 & III & 0 & {BA.2:4, XM:4} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
+XB & $\checkmark$ & 411 & IV & 0 & {B.1:219, XB:192} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
+NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
+NA &  & 20 & NA & 1061775 & {BA.1.15:1, XS:17, BA.1:1, BA.1.1:1} \\
+NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
+NA & $\checkmark$ & 36 & NA & 7146 & {XBD:30, XBR:1, BA.2.75:5} \\
+NA &  & 1321 & NA & 340501 & {XE:1113, XH:2, XJ:68, XY:23, BA.2:82, XM:29,
+XAL:3, XAF:1} \\
+\bottomrule
+\end{tabular}
+
+\end{scriptsize}
+\end{table}
+
+[NOTE: this is an earlier draft of main text which explains the table in
+detail]
+
+We ran fast-RIPPLES\cite{Smith2023tracking} on the Viridian UShER tree
+subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
+We first ran RIPPLES with parameter $p=4$, as being roughly comparable
+to the recombination penalty used in sc2ts ($k=4$; STAR Methods).
+This resulted in 1,174 recombination events reported, of which 460 could be mapped
+to one of the 855 recombination events in the sc2ts ARG (STAR Methods;
+Figure \ref{fig:ripples_sc2ts_events}A). Analysis of the descendant 
+samples showed that many Pango X lineages were not associated with
+recombination events (including XBB), and we therefore ran
+RIPPLES with the more lenient value of $p=3$ (the default).
+This resulted in a total of 4111 recombination events
+of which 595 have corresponding recombination events in the 
+sc2ts ARG (Figure \ref{fig:ripples_sc2ts_events}B).
+
+Table~\ref{tab:ripples_x_lineages} shows a summary of all
+recombination events associated with Pango X lineages detected by RIPPLES,
+and their relationship with the sc2ts ARG.
+Of the 16 Class I events (Pango X lineages unequivocally associated with
+a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
+8 have corresponding recombination events (4, at $p=4$).
+Of the 5 Type II events
+(recombination nodes with more complex assocation with X lineages),
+two have close matches.
+XBM matches exactly (including 2 descending BF.3 samples),
+and XE/XH is similar (but without including the 2 XH samples in the clade).
+UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
+makes these both descendants of the Xx event,
+RIPPLES creates two independent recombinations.
+Similarly, XAE and ??? have exactly matching clades, but RIPPLES
+infers two independent recombination events while sc2ts groups them both
+under the Xx event. XB is notable as a likely sc2ts false negative that is 
+identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
+associated with X lineages output by RIPPLES cannot be easily mapped 
+to the sc2ts ARG as one or more descendants is distantly placed.
+XAJ is an outlier for sc2ts, being the Pango X lineage identified as a 
+non-recombinant with the largest number of mutations 
+(Table~\ref{tab:pango_x_lineages}), and a likely false negative.
+The remaining 4 events are mixtures of multiple lineages that are 
+difficult to reconcile with either the other events in the table 
+or the sc2ts ARG.
 
 \subsection{Origins of major VOCs}
 
