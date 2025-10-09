@@ -436,8 +436,8 @@ with minimal hardware requirements, enabling diverse bespoke analyses.
 
 % NOTE: Trying to clarify that this of the pandemic period and we're 
 % not trying to cover *all* history.
-The ARG is a comprehensive record of the pandemic phase 
-of SARS-CoV-2 evolutionary history, and accurately reflects
+The ARG is a comprehensive and deeply validated record of the pandemic phase 
+of SARS-CoV-2 evolutionary history, accurately reflecting
 a range of results from the literature.
 First, we compared the sc2ts ARG and with the state-of-the-art UShER 
 tree inferred from the same dataset
@@ -654,8 +654,6 @@ XAJ & 11 &&&& \textbf{BA.2.12} & {XAJ:18} \\
 \end{scriptsize}
 \end{table}
 
-[TODO narrative is muddled here: the point of the para is to say that 
-pango X lineage designation is manual and subjective.]
 % " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
 % system ... ". It should not be referred to as the ‘Rambaut et al.’ or
 % ‘Pangolin’ nomenclature system. "
@@ -665,16 +663,17 @@ are designated and their explicitly phylogenetic basis.
 The first recombinant lineage XA was designated in 2021
 based on the analysis of Jackson et al.\cite{Jackson2021},
 which established that recombination with onward transmission had occurred [weak FIXME].
-As of pango-designation version v1.33.1 (2025-03-31),
-a total of 146 distinct Pango X lineages have been designated.
-%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
-% 146
 Although the process of incorporating recombinant lineages
 in the Pango nomenclature system is well defined,
 the identification of such events is much more subjective,
 requiring the synthesis of multiple lines of evidence and
 often the manual inspection of phylogenies and sequence alignments
 by volunteers~\cite{Smith2023tracking}.
+% Debatable whether this adds or substracts from narrative
+As of pango-designation version v1.33.1 (2025-03-31),
+a total of 146 distinct Pango X lineages have been designated.
+%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
+% 146
 
 By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides us with a systematic means of
@@ -682,7 +681,7 @@ discovering and assessing evidence around these events.
 Table~\ref{tab:pango_x_lineages} summarizes
 these results for the 44 Pango X lineages present in the ARG
 (XAC and XAD have been omitted, and XM partially represented,
-corresponding to 23 samples in total;
+corresponding to 23 omitted samples in total;
 see Document~\ref{sec:supplement_x_pango_lineages}).
 For 16 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node, and
@@ -695,15 +694,12 @@ parent lineages and breakpoint intervals is excellent,
 with similar performance to
 the RecombinHunt \cite{Alfonsi2024}
 and CovRecomb \cite{Li2024CovRecomb} detection methods
-(STAR Methods; Table~\ref{tab:method_concordance}).
+(STAR Methods; Table~\ref{tab:method_concordance}; see also
+Document~\ref{sec:jackson_recombs} for analysis of the 
+Jackson et al.\ recombinants).
 Of the Type I events, 13 are monophyletic for the focal Pango lineage
 (i.e., the descendants are entirely from that lineage);
-Figure~\ref{fig:subgraphs}A shows XA as an example
-(for further analysis of the other recombinants
-found by Jackson et al.\cite{Jackson2021},
-see Table~\ref{tab:jackson} in Document~\ref{sec:jackson_recombs},
-which shows that sc2ts identified the parents and breakpoints
-concordant with those reported by Jackson et al.\cite{Jackson2021}).
+Figure~\ref{fig:subgraphs}A shows XA as an example.
 
 The 5 Type II events in Table~\ref{tab:pango_x_lineages} 
 are recombination events closely associated with Pango X lineages, 
@@ -715,7 +711,7 @@ with two major clusters of particular note. Although XQ is
 directly associated with a recombination event in the ARG, 
 XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
 that they are more parsimoniously explained as sublineages of XQ
-than de-novo recombinant lineages.
+than de-novo recombinant lineages (Document \ref{sec:dd_xq}). 
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
@@ -730,12 +726,12 @@ to suggest recombination (Document \ref{sec:dd_xn}).
 XB, on the other hand,
 has been thoroughly characterized \cite{Gutierrez2022} and
 may have misclassified by sc2ts due to limitations in
-handling deletions or matching against long branches (see Discussion).
+handling deletions or matching against long branches (Document \ref{sec:dd_xb}). 
 See Document~\ref{sec:supplement_indepth_pango_x_lineages}
-for extended analyses on all of the Pango X lineages above,
+for extended analyses on all of the Pango X lineages,
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages}, and
-Document S2 for ARG visualizations.
+Document S2 for ARG visualizations of the Pango X lineages.
 
 
 \subsection*{Comparison with RIPPLES}
