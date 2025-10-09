@@ -304,7 +304,7 @@ in real-time. Based on the Viridian dataset, a freely available
 resource purged of various systematic errors and artifacts \cite{Hunt2024},
 we infer an ARG with 2.48 million whole genome sequences.
 We show that this ARG is highly congruent with the UShER phylogeny built 
-from the same dataset as well as the Pango lineage naming system\cite{Rambaut2020},
+from the same dataset as well as the Pango nomenclature system\cite{Rambaut2020},
 and also accurately captures evolutionary features such as mutational 
 spectra\cite{Bloom2023} and deletions\cite{Li2023indels}.
 We show that sc2ts automatically and accurately detects details about
@@ -405,6 +405,8 @@ See STAR Methods for details on all aspects of the method.
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
 
+% The ARG is big, took a decent chunk of time to infer (but not crazy)
+% and is very easy to analyse.
 Using sc2ts, we built an ARG from 2,482,157 samples
 from the Viridian v04 dataset \cite{Hunt2024},
 collected between 2020-01-01 and 2023-02-20.
@@ -422,11 +424,11 @@ Using the tskit Python API, the ARG can be loaded into
 memory in less than a second [Concrete numbers?], and the 
 vectorised representation integrates tightly with 
 powerful data-science tools such as NumPy~\cite{Harris2020array}.
-For example, a tabular summary for the 2.7m nodes, including
-sample IDs and Pango designations (stored as metadata in the ARG),
+For example, a tabular summary for the 2.75m nodes, including
+sample IDs and Pango assignments (stored as metadata in the ARG),
 can be derived as a Pandas dataframe~\cite{Mckinney2010data} in 0.6s.
-The ARG can therefore be easily and efficiently analysed using familiar tools
-with minimal hardware requirements.
+The ARG can therefore be easily accessed using familiar tools
+with minimal hardware requirements, enabling diverse bespoke analyses.
 
 % PARA: we did a BUNCH of validation work. There's a lot in here, but the
 % point is to summarise a mountain of validation and provide links to the 
@@ -459,8 +461,8 @@ Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
 We also evaluated how well the ARG reflects the structure
-of the Pango nomenclature system~\cite{Rambaut2020} by computing
-Pango assignments for all 2.7 million nodes in the ARG using
+of the Pango nomenclature system by computing
+Pango assignments for all 2.75 million nodes in the ARG using
 Pangolin~\cite{OToole2021assignment} (STAR Methods).
 All but 21,680 of the exported sample alignments (0.87\%) agreed
 with the source consensus sequences in terms of Pango lineage assignment
@@ -476,7 +478,7 @@ a non-parametric method~\cite{Pope2025} (STAR Methods).
 We show that the dates agree reasonably with NextStrain 
 estimates (Figure \ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy to another large-scale
-method~\cite{sanderson2021chronumental} (Document TODO).
+method~\cite{sanderson2021chronumental} (Document \ref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the 
 Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
@@ -486,14 +488,14 @@ Omicron (Figure~\ref{fig:subgraph_omicron}, Document~\ref{sec:dd_omicron})
 VOCs reflect expectations from the literature\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
-[TODO we should mention UShER here: they state multiple times in the GitHub issues 
-that they don't handle them at all, so I think we can just say this in some nice way.]
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
-but because they can be difficult to distinguish from bioinformatics errors
+but are not incorporated into UShER trees and can be difficult
+to account for. Because deletions are difficult to distinguish 
+from bioinformatics errors
 and their multi-base nature presents challenges
 to the Markovian structure of the LS HMM,
 we masked out all gap characters as missing data during primary inference.
-To incorporate the most important deletions into the ARG,
+To approximate the effects of the most important deletions into the ARG,
 we remapped data using post hoc parsimony at 75 sites involved in deletions
 with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
 during post-processing (STAR Methods).
@@ -2363,30 +2365,6 @@ In these cases, sometimes the sc2ts ARG shows greater resolution,
 as in the base of the BA.2 subtree, and
 sometimes the UShER tree shows greater resolution, as in the close relatives of Beta (B.1.351).
 
-\subsubsection*{Checking inferred node dates}
-
-To validate the accuracy of times for non-sample internal nodes inserted 
-into the ARG
-(inferred using tsdate), we compared the dates of first emergence of
-Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
-2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
-close agreement for most clades, with only three 
-disagreeing by more than 28 days: 20C (an early lineage from 2020), 20E (Pango B.1.177 also known as EU1, emerging mid-2020), and 21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
-
-Then, to gauge internal consistency of the time estimation procedure, we
-selected a subset of sample nodes, matching the distribution of node times 
-and average number of children of the non-sample internal nodes. These
-selected sample nodes were then re-dated, and the inferred dates compared 
-against their recorded collection dates. The results in Figure 
-\ref{fig:node_time_testing} demonstrate that although the inferred and true
-times are generally very close, there is a clear bias with re-estimated times
-being consistently older (by an average of 37 days). This is in line with 
-the findings of other recent
-work \cite{sanderson2021chronumental}, and is likely to be a consequence
-of edges carrying more mutations than would be expected under a neutral
-molecular clock prior (either due to errors in tree-building or genuinely varying mutation rates), as well as inaccuracies in the recording of 
-sample dates.
-
 \subsubsection*{Comparison of mutational spectra}
 
 To validate the mutational information contained in the sc2ts ARG,
@@ -2957,6 +2935,32 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_pango\_events\_in\_arg.ipynb}
 {analysis\_pango\_events\_in\_arg.ipynb}
 for details.
+
+\subsection*{Evaluating inferred node dates}
+\label{sec:evaluating_node_dates}
+
+To validate the accuracy of times for non-sample internal nodes inserted 
+into the ARG
+(inferred using tsdate), we compared the dates of first emergence of
+Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
+2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
+close agreement for most clades, with only three 
+disagreeing by more than 28 days: 20C (an early lineage from 2020), 20E (Pango B.1.177 also known as EU1, emerging mid-2020), and 21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
+
+Then, to gauge internal consistency of the time estimation procedure, we
+selected a subset of sample nodes, matching the distribution of node times 
+and average number of children of the non-sample internal nodes. These
+selected sample nodes were then re-dated, and the inferred dates compared 
+against their recorded collection dates. The results in Figure 
+\ref{fig:node_time_testing} demonstrate that although the inferred and true
+times are generally very close, there is a clear bias with re-estimated times
+being consistently older (by an average of 37 days). This is in line with 
+the findings of other recent
+work \cite{sanderson2021chronumental}, and is likely to be a consequence
+of edges carrying more mutations than would be expected under a neutral
+molecular clock prior (either due to errors in tree-building or genuinely varying mutation rates), as well as inaccuracies in the recording of 
+sample dates.
+
 
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
