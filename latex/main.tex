@@ -103,7 +103,6 @@
 % \author[3,4,5,**]{F. Middle Last}
 
 \author[1,6]{Shing~H.~Zhan}
-% TODO add joint second here?
 \author[1,5]{Yan~Wong}
 \author[2,5]{Anastasia~Ignatieva}
 \author[3]{Katherine~Eaton}
@@ -413,17 +412,21 @@ Inference took 21 days on a server with 64 cores (2X AMD EPYC 7502)
 and 512 GB of RAM ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG
 contains 2,689,054 nodes,  % Note the estimated dates ?
-2,748,838 edges, and 2,285,344 mutations at 29,893 sites.
-Including sample IDs and the Pango and Scorpio designations computed by
-Pangolin~\cite{OToole2021assignment} as metadata for each node,
-the ARG is stored in a 32MiB tszip format file.
-% It's confusing to talk about recombinant QC here as we're talking 
-% about the full ARG for the rest of the section.
+2,748,838 edges, and 2,285,344 mutations at 29,893 sites,
+and is stored in a 32MiB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
 (some events occurred at the same breakpoints [vague, rephrase]).
-[TODO note about loading up the time it takes to get the node 
-data dataframes in a notebook?]
+% NOTE: if we keep this we should redo on Yan's laptop and quote those numbers
+Using the tskit Python API, the ARG can be loaded into 
+memory in less than a second [Concrete numbers?], and the 
+vectorised representation integrates tightly with 
+powerful data-science tools such as NumPy~\cite{Harris2020array}.
+For example, a tabular summary for the 2.7m nodes, including
+sample IDs and Pango designations (stored as metadata in the ARG),
+can be derived as a Pandas dataframe~\cite{Mckinney2010data} in 0.6s.
+The ARG can therefore be easily and efficiently analysed using familiar tools
+with minimal hardware requirements.
 
 % PARA: we did a BUNCH of validation work. There's a lot in here, but the
 % point is to summarise a mountain of validation and provide links to the 
