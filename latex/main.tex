@@ -188,14 +188,14 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of species~\cite{Felsenstein2004}, with small numbers of widely diverged
-samples. In this context, recombination is a nuisance which must be 
+of species~\cite{Felsenstein2004}, using small numbers of widely diverged
+genomes. In this context, recombination is a nuisance which must be 
 carefully accounted for~\cite{Rannala2025recombination},
 affecting the inference of species trees~\cite{Posada2002effect}
 and biasing downstream
 analyses~\cite{Schierup2000consequences,Hedge2014bacterial}.
 Modern pathogen datasets are not sparsely sampled from different species,
-but consist of tens to hundreds of thousands of samples from 
+but consist of tens to hundreds of thousands of genomes sampled from 
 a single species~\cite{
 Shu2017,% GISAID ~270k FLU + others
 Jolley2018open,% PubMLST, 34K genomes for e.g. Staph Auerus
@@ -220,15 +220,15 @@ Guo2022recombination,
 Muller2022bayesian},
 scalability
 is a major issue and practical application has been limited.
-Software support in explicitly \emph{using}
+Software support that explicitly \emph{uses}
 recombination-aware inference is mostly limited to
 visualization, for example of small-scale phylogenetic
 networks~\cite{Huson2012,Vaughan2017,Solis-Lemus2017}
 or tree changes along the genome~\cite{Rasmussen2023}.
 
-The data collected during the COVID-19 pandemic as part of global
-surveillance presents fundamental challenges to existing approaches
-in two ways. Firstly, the sheer scale of data collected 
+The global
+surveillance data collected during the COVID-19 pandemic presents fundamental challenges to existing approaches
+in two ways. Firstly, the sheer amount of data 
 overwhelmed even approximate distance-matrix based methods.
 % Accessed GISAID/EpiCov on 08 Oct., 2025
 At the peak in February, 2022, about 80 thousand samples
@@ -411,7 +411,7 @@ Using sc2ts, we built an ARG from 2,482,157 samples
 from the Viridian v04 dataset \cite{Hunt2024},
 collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a server with 64 cores (2X AMD EPYC 7502)
-and 512 GB of RAM ($\sim 5$ CPU years; Figure~\ref{fig:inference_resources}).
+and 512 GB of RAM ($\sim$5 CPU years; Figure~\ref{fig:inference_resources}).
 After postprocessing, the ARG
 contains 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and 2,285,344 mutations at 29,893 sites,
@@ -710,7 +710,7 @@ nesting among the Pango X lineage origin nodes within the ARG,
 with two major clusters of particular note. Although XQ is 
 directly associated with a recombination event in the ARG, 
 XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
-that they are more parsimoniously explained as sublineages of XQ
+that they are more parsimoniously explained as sublineages or sisters of XQ
 than de-novo recombinant lineages (Document \ref{sec:dd_xq}). 
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
@@ -795,7 +795,7 @@ and
 parents?].
 We also ran RIPPLES with $p=4$, which reduced the overall number of 
 events to 1174 (roughly 4-fold) but also approximately halved the number of 
-events involving X lineages, including well-characterised events 
+events involving X lineages, missing well-characterised events 
 such as XBB (Table~\ref{tab:ripples_x_lineages}).
 
 To compare these results with the sc2ts ARG, we first matched clades
@@ -847,7 +847,7 @@ known to be affected by amplicon dropout\cite{Sanderson2021}.
 The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
-the Jackson et al. recombinants (Document\ref{sec:jackson_recombs}).
+the Jackson et al. recombinants (Document~\ref{sec:jackson_recombs}).
 
 
 \subsection*{Quantification of evidence for recombination}
@@ -939,7 +939,7 @@ issues we developed a visualisation
 based on SnpIt~\cite{OToole2024} and 
 the recombinant view from RIVET~\cite{Smith2023tracking},
 showing the informative genomic positions between 
-a recombinant and its parent sequences, and highlights 
+a recombinant and its parent sequences, and highlighting 
 potentially problematic loci.
 Each copying pattern shows the positions
 where the allelic state in a recombinant
@@ -971,37 +971,83 @@ Two further recombinants in the sc2ts ARG that are likely to be
 spurious are important to discuss.
 [FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
 rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
-pass QC.]
+pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
 
 
 \subsection*{Recombination breakpoint intervals}
 
-We explored the spatial distribution of the breakpoint locations of
-the QC-passing recombination events along the genome,
-and quantified how precisely breakpoints were localized.
-For each event, we computed an interval estimate of its breakpoint location,
-using its size as a measure of precision (median, 2,207 bases; STAR Methods).
+Although the exact location of a recombination breakpoint
+is impossible to pinpoint in practice,
+bounds can be placed by examining the parental and recombinant sequences.
+% Cite VirusRecomb
+In methods \cite{Alfonsi2024,Li2024CovRecomb}, and
+approaches (e.g., Pango designation)
+based on lineage-associated mutations,
+the breakpoints are limited in precision to these mutations.
+Similarly, methods based on probabilistic representations of
+% Cite Bolotie
+mutational profiles (e.g., Bolotie) suffer from this limitation.
+% Does RIPPLES qualify as a genealogical method?
+Genealogical methods, such as sc2ts and RIPPLES,
+based on pinpointing exact parental \emph{sequences},
+are in principle maximally precise,
+assuming that the parental sequences
+are well represented in the ARG.
 
-We find an overall preponderance of breakpoint intervals
+We explored the genomic distribution of the breakpoint intervals of
+the QC-passing recombination events in the ARG.
+We found an overall preponderance of breakpoint intervals
 towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene
 (Figure~\ref{fig:recombinant_intervals}A,B),
-consistent with patterns observed in previous
-studies\cite{Bobay2020recombination,Turakhia2022,
+consistent with the patterns seen in previous
+studies \cite{Bobay2020recombination,Turakhia2022,
 Smith2023tracking,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
 
-Furthermore, we find a negative relationship between
-breakpoint interval size and the amount of divergence between recombinant parents,
-which is measured by time to their MRCA (Figure~\ref{fig:recombinant_intervals}).
-When the two parental lineages have diverged for longer periods of time (the rightmost points),
-more information becomes available on either side of a breakpoint to pinpoint its location,
+Using the size of a breakpoint interval as a proxy,
+we quantified how precisely breakpoints could be
+localized along the genome.
+Across the QC-passing recombination events,
+we found the median interval size to be 2,207 bases
+(Figure~\ref{fig:recombinant_intervals}C),
+indicating that the breakpoints of half of the events
+could be narrowed to a small region (less than ~7\% of the genome),
+while the uncertainty around the breakpoints of the other events
+is considerably greater.
+We further found a negative relationship between
+breakpoint interval size and
+the amount of divergence between recombinant parents,
+which is measured by time to their MRCA
+(Figure~\ref{fig:recombinant_intervals}D).
+When the two parental lineages have diverged
+for longer periods of time (the rightmost points),
+more information becomes available
+on either side of a breakpoint to pinpoint its location,
 resulting in shorter intervals.
-For instance, the breakpoint intervals tend to be the smallest for events involving recombination
-between the deeply divergent Omicron BA.1 and BA.2 sublineages
-(the red points in Figure~\ref{fig:recombinant_intervals}).
+For instance, the breakpoint intervals tend to be the smallest
+for events involving recombination between
+the deeply divergent Omicron BA.1 and BA.2 sublineages
+(the red points in Figure~\ref{fig:recombinant_intervals}D).
+
+% Not interesting enough
+Another key feature of genealogical methods
+is that they can also provide \emph{time} intervals
+reflecting uncertainty in the timing of recombination events.
+We calculated the time interval of a recombination node
+as the difference between the age of the youngest parent and
+the age of the oldest child of the recombination node in the ARG
+(either given as collection dates or estimated using tsdate).
+We found that for three quarters of the QC-passing events,
+the time interval is less than ~2 months
+(Figure~\ref{fig:recombinant_intervals}D),
+% Do we want to refer to the CIs around the node dates?
+% Maybe we could use this result to lead to the next section?
+% Connect to epidemiology a bit?
+indicating that the ARG can precisely estimate
+the emergence of recombination events.
 
 
 \begin{figure}[h]
