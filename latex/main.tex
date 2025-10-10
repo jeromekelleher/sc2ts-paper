@@ -976,25 +976,36 @@ pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-
 
 \subsection*{Recombination breakpoint intervals}
 
-Although in practice
-the exact location of a recombination breakpoint
-is impossible to pinpoint,
-bounds can be placed by
-examining the parental and recombinant sequences.
-In methods \cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb},
-and approaches (e.g., Pango designation),
-based on lineage-associated mutations,
-the breakpoints are limited in precision to these mutations.
+The location of a recombination breakpoint is generally
+impossible to pinpoint exactly, and instead an interval
+containing the breakpoint can be inferred through
+examining the parental and recombinant sequences. 
+Some methods \cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}
+and approaches (e.g., Pango designation) infer this
+as the genomic distance between lineage-associated
+mutations that differentiate the two parental strains.
 Similarly, methods based on probabilistic representations of
-mutational profiles (e.g.\cite{Varabyou2021rapid})
-suffer from this limitation.
-However, genealogical methods, such as sc2ts and RIPPLES,
+mutational profiles \cite{Varabyou2021rapid}
+can only be as accurate as examination of the two
+parent lineages allows.
+However, genealogical methods (such as sc2ts and RIPPLES) are
 based on identifying exact parental \emph{sequences},
-are in principle maximally precise,
-assuming that the parental sequences are well represented in the ARG.
+so are in principle maximally precise.
 
-We explored the genomic distribution of the breakpoint intervals of
+The breakpoint interval of a recombinant is bounded by
+two positions: a left position where the recombinant
+matches the left parent sequence but not the right, and
+a right position where the recombinant matches the right
+parent sequence but not the left. 
+How well the time and position of a recombination event
+can be inferred thus depends on the divergence between the
+parent sequences (measured as time to their MRCA). 
+
+First, we explored the genomic distribution of the breakpoint intervals of
 the QC-passing recombination events in the ARG.
+
+Between these two positions, there is no genetic variation
+to distinguish the parental source of inheritance.
 We found an overall preponderance of breakpoint intervals
 towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene
@@ -1006,7 +1017,7 @@ While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
 
-Using the size of a breakpoint interval,
+Next, using the size of a breakpoint interval,
 we measured how precisely breakpoints could
 be localized along the genome.
 Across the QC-passing recombination events,
@@ -1015,12 +1026,13 @@ we found the median breakpoint interval size to be 2,207 bases
 indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
-is considerably large.
+is considerably larger (up to $\sim$54\% of the genome).
 Further, we found a negative relationship between
 the size of a breakpoint interval and
-the amount of divergence between recombinant parents,
-which is measured by time to their MRCA
+the amount of divergence between recombinant parents
+(measured by time to their MRCA),
 (Figure~\ref{fig:recombinant_intervals}D).
+which follows theoretical expectation (STAR Methods).
 When the two parental lineages have diverged
 for longer periods of time (the rightmost points),
 more information becomes available
@@ -1033,41 +1045,46 @@ the deeply divergent Omicron BA.1 and BA.2 sublineages
 
 Another key feature of genealogical methods
 is that they can also provide \emph{time} intervals
-which reflect uncertainty
-in the estimated timing of recombination events.
+which reflect uncertainty in the timing of recombination events.
 The time interval of a recombination node in the ARG is bounded by
 the age of the youngest parent and
 the age of the oldest child of the recombination node
 (either given as collection dates or estimated using tsdate).
-We found that for three quarters of the QC-passing events,
-the time interval spans less than $\sim$2 months
-(Figure~\ref{fig:recombinant_intervals}D),
-with long time intervals suggesting that
-a parental lineage or the recombinant lineage
-might be unsampled for an extended period of time.
+We found that for $\sim$75\% of the QC-passing recombination events,
+the time interval size is less than $\sim$2 months
+(Figure~\ref{fig:recombinant_intervals}D);
+% Jackson samples in <= 7 day range:
+% Group B ERR5058070 (5 day), singleton ERR5054123 (7 days)
+for example, the time intervals of
+the events associated with the Jackson et al.\ samples
+span 5 to 48 days.
+% Q3: 60 days, max: 259 days
+Longer time intervals imply that a parental or a recombinant lineage
+might have been unsampled for an extended period of time.
 % Do we want to refer to the CIs around the node dates?
-This result indicates that the ARG can pinpoint
-when new recombinant lineages emerge with fine resolution.
+These results show that the ARG can finely pinpoint
+the emergence of new recombinant lineages in time.
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{recombinant_intervals}
 \caption{
-Recombination breakpoint intervals.
+Recombination intervals.
 (A) Distribution of the breakpoint intervals of
 354 recombination events along the genome
 (annotated with gene labels on top).
-Each line represents an interval colored by its size.
+Each line represents a breakpoint interval colored by its size.
 (B) Number of overlapping breakpoint intervals per site.
-(C) Distribution of breakpoint interval size (bases).
+(C) Length distribution of breakpoint intervals.
 (D) Relationship between breakpoint interval size and
 time between the recombination event and the parental MRCA.
-The black curve shows the theoretical expected relationship
-between these quantities,
-estimated by minimizing the sum of squared residuals
-given a single parameter (the mutation rate) (STAR Methods).
-(E) Distribution of time interval size (months).
+The black curve shows
+the theoretical expected relationship between these quantities,
+which is calculated assuming a nucleotide substitution rate of
+$\sim$2 per site per day \cite{Duchene2020,Ghafari2022,Markov2023},
+or $\sim$0.06 per day (STAR Methods).
+(E) Length distribution of time intervals around recombination events.
 }
 \label{fig:recombinant_intervals}
 \end{figure}
@@ -2479,6 +2496,7 @@ by subtracting one from the left coordinate and adding two to the right coordina
 
 
 \subsubsection*{Calculation of Pango lineage distance using pangonet}
+
 We define a ``pseudo-phylogenetic'' distance
 to quantify the divergence between two Pango lineages.
 The idea is to count the number of edges
@@ -2490,10 +2508,40 @@ in the ``alias\_key.json'' and ``lineage\_notes.txt'' files
 from the Pango designation issues
 (\url{https://github.com/cov-lineages/pango-designation}).
 If two Pango lineages are siblings in the pseudo-phylogeny,
-the distance is defined as the sum of the number of edges from each lineage to their MRCA;
-if they are non-siblings (i.e. one Pango is a descendant of the other),
-the distance is defined as the number of edges separating them;
+the distance is defined as
+the sum of the number of edges from each lineage to their MRCA;
+if they are non-siblings (i.e., one Pango is a descendant of the other),
+the distance is defined as
+the number of edges separating them;
 if they are identical, the distance is defined as zero.
+
+
+\subsubsection*{Expected lengths of recombination breakpoint intervals}
+
+Recombination breakpoint intervals are imprecise
+when the recombining parents are identical in sequence
+at sites spanning the breakpoint.
+Here, we estimate the interval lengths expected around a breakpoint,
+given a genome-wide mutation rate $\mu$,
+total time between two samples ($T$), and
+sufficient support to detect the recombination event.
+If a breakpoint occurs a fraction $P$ along a genome of length $L$ and
+$k$ mutations have occurred to the left of the breakpoint,
+then we expect the nearest mutation to occur $P L / (k + 1)$ bases to the left.
+If we require $n$ mutations on both sides of the breakpoint,
+we can calculate the expected value of the interval to the left
+by summing across a Poisson-distributed number of mutations,
+conditioned on having at least $n$ mutations:
+
+\[I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{\Gamma(n) - \Gamma(n, P T \mu)}\]
+
+A similar result holds for the right interval ($I_{right}$),
+but with $P$ replaced with $1–P$.
+Summing the two intervals ($I_{left}+I_{right}$)
+gives the expected interval length.
+As detectable recombination events
+tend to be closer to the middle of the genome,
+we use $P=0.5$ in Figure~\ref{fig:recombinant_intervals}D.
 
 
 \subsection*{Quantification and statistical analysis}
@@ -2517,30 +2565,8 @@ if they are identical, the distance is defined as zero.
 %%%  used to determine whether the data met
 %%%  assumptions of the statistical approach.
 
-\subsubsection*{Estimating interval lengths}
-Recombination intervals are imprecise
-when the recombining parents are identical in sequence at sites spanning the breakpoint.
-Here we estimate the interval lengths expected around a breakpoint,
-given a genome-wide mutation rate $\mu$,
-total time between two samples ($T$), and
-sufficient support to detect the recombination event.
-If a breakpoint occurs a fraction $P$ along a genome of length $L$ and
-$k$ mutations have occurred to the left of the breakpoint,
-then we expect the nearest mutation to occur $P L / (k + 1)$ bases to the left.
-If we require $n$ mutations on both sides of the breakpoint,
-we can calculate the expected value of the interval to the left
-by summing across a Poisson-distributed number of mutations,
-conditioned on having at least $n$ mutations:
-
-\[I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{\Gamma(n) - \Gamma(n, P T \mu)}\]
-
-A similar result holds for the right interval ($I_{right}$), but with $P$ replaced with $1–P$.
-Summing the two intervals ($I_{left}+I_{right}$) gives the expected interval length.
-As detectable recombination events are nearer the center of the chromosome,
-we use $P=½$ in Figure X.
-
-
 \subsubsection*{Analyzing global case counts}
+
 To explore the timing of emergence of recombinants,
 case count data were downloaded from
 the COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE)
@@ -2621,9 +2647,6 @@ although filtering the recombination events to the 354 with better support revea
 
 \subsection{Analysis of deletion events}
 \label{sec:supplement_dels}
-% [TODO This is too terse and too vague.
-% Be concrete and precise.
-%WHICH deletions are we talking about?]
 
 % See https://github.com/jeromekelleher/sc2ts-paper/issues/628
 Although uncommon relative to single nucleotide mutations,
@@ -2643,8 +2666,8 @@ in Table~\ref{tab:rec_dels},
 we list the recurrent deletions in the ARG
 which are each observed in at least 10,000 (0.4\%) samples
 % [FIXME define how we measured this].
-(i.e., for a deletion caused by multiple events in the ARG,
-the total of all the samples inheriting the deletion across those events).
+(i.e., for a deletion resulting from multiple events in the ARG,
+this is the total samples inheriting the deletion).
 
 Most of the deletions in these tables
 occur in coding regions
@@ -2895,6 +2918,7 @@ for details.
 
 \subsection{Imputation comparison of sc2ts and UShER}
 \label{sec:supplement_sc2ts_usher_imputation}
+
 Both sc2ts and UShER support missing data in input alignments, and effectively
 ``hard call'' these values when the samples are integrated into the tree/ARG. 
 In doing so, we impute the missing and ambiguous data for these samples.
@@ -2902,7 +2926,8 @@ We evaluate the imputation performance of sc2ts and UShER by comparing their
 outputs on the Viridian alignments.
 
 The total aligned dataset for 2,475,418 samples and 27,507 sites 
-in the sc2ts and UShER intersection ARGs represents 63.41GiB of nucleotide calls. 
+in the sc2ts and UShER intersection ARGs represents
+63.41 GiB of nucleotide calls.
 Of the 162,838,461 missing data calls (Ns) in the alignments,
 sc2ts and UShER disagreed in their imputed values for only 203,579 (0.125\%).
 Additionally, 956,859 calls made use of the IUPAC uncertainty codes. 
@@ -2930,6 +2955,7 @@ for details.
 
 \subsection{Pango lineage ``origination'' events}
 \label{sec:supplement_pango_lineages}
+
 To analyze how well the ARG reflects the phylogenetic structure implicit in the
 Pango lineage naming system, we considered the Pango assignments generated by
 Pangolin on the alignments for each node in the ARG (STAR Methods). If the ARG
