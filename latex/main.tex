@@ -848,9 +848,30 @@ The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
 the Jackson et al. recombinants (Document~\ref{sec:jackson_recombs}).
+This QC filter also correlates strongly with results of other 
+recombination detection methods when run on the putative 
+recombinant sequences (see next section).
 
+\subsection*{Validating and evaluating plausibility of recombination events}
+[THIS IS VERY MUCH WIP]
 
-\subsection*{Quantification of evidence for recombination}
+We validated the recombination events in the sc2ts ARG by running 
+several recombination detection programs on the putative recombinant
+sequences. [TODO generate supplemental table summarising results of 
+valiation.]
+
+We first ran 3SEQ~\cite{Lam2018improved} [etc etc].
+
+To assess the evidence for these putative novel recombination events we 
+ran CovRecomb~\cite{Li2024CovRecomb} and rebar on the corresponding sequences 
+(STAR Methods). Of the 354 QC-passing sc2ts recombination events, 
+90 are classified as 
+recombinant by CovRecomb (all but 2 of the 510 QC-failing recombinants 
+were classified as non-recombinant).
+Rebar classified 203 of the QC-passing sc2ts recombination events, 
+as recombinant, with only 10 of those failing QC being classified 
+as recombinant.
+
 
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
 of quantifying the plausibility of a given recombination event.
@@ -868,7 +889,6 @@ with support ranging from very strong in the case of XC
 (the most parsimonious non-recombinant placement would
 require 37 additional mutations) to marginal for XG and XW,
 which have the minimal possible number of averted mutations.
-
 
 \begin{figure}[h]
 \centering
@@ -929,6 +949,7 @@ rate is much lower for recombinants with closely related
 parents (Figure~\ref{fig:recombinant_evidence}B,C) suggesting that 
 sc2ts may have a higher sensitivity.
 
+See Figure~\ref{fig:recombinant_evidence_cov_recomb} CovRecomb
 See Figure~\ref{fig:recombinant_evidence_rebar} for rebar,
 Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p4
 and Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p3.
@@ -4046,6 +4067,13 @@ TODO caption
 \caption{Intersection of the RIPPLES and sc2ts recombination events at
 different values of the RIPPLES parsimony parameter, p.}
 \label{fig:ripples_sc2ts_events}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_evidence_cov_recomb}
+\caption{Things}
+\label{fig:recombinant_evidence_cov_recomb}
 \end{figure}
 
 \begin{figure}
