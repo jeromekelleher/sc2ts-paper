@@ -36,6 +36,8 @@ rule all:
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
         # CovRecomb output is left in its own file
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_CovRecomb_output.csv",
+        # 3SEQ output
+        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_3seq.csv",
         # Events corresponding to Pango X lineages. This is the pango_x_events.csv file
         # in the top-level data directory
         "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
@@ -623,6 +625,36 @@ rule usher_sc2ts_comparison:
     notebook:
         "notebooks/usher_sc2ts_comparison.py.ipynb"
 
+# ################
+# # 3SEQ
+# ################
+
+# # TODO add rule to download and compile 3seq
+
+rule generate_triplets:
+    conda: "sc2ts.yml"
+    input: 
+        "{SQ_PREFIX}.trees",
+        "{SQ_PREFIX}_recombinants.csv"
+    output:
+        directory("{SQ_PREFIX}_3seq_triplets")
+    shell:
+      """
+      mkdir -p {output}
+      python scripts/run_3seq.py generate-fasta {input} {output}
+      """
+        
+rule run3seq:
+    conda: "sc2ts.yml"
+    input: 
+        "{RSQ_PREFIX}_recombinants.csv",
+        "{RSQ_PREFIX}_3seq_triplets"
+    output:
+        "{RSQ_PREFIX}_3seq.csv"
+    shell:
+        """
+        python scripts/run_3seq.py run-3seq {input} {output}
+        """
 
 ################
 # Rebar stuff
