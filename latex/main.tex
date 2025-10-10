@@ -851,6 +851,7 @@ the Jackson et al. recombinants (Document~\ref{sec:jackson_recombs}).
 
 
 \subsection*{Quantification of evidence for recombination}
+
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
 of quantifying the plausibility of a given recombination event.
 To do this, we force the HMM to find a Viterbi solution for the 
@@ -974,24 +975,23 @@ rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (does
 pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
 
 
-\subsection*{Recombination breakpoint intervals}
+\subsection*{Precision of recombination event times and positions}
 
 The location of a recombination breakpoint is generally
 impossible to pinpoint exactly, and instead an interval
-containing the breakpoint can be inferred through
-examining the parental and recombinant sequences. 
+containing the breakpoint can be inferred by
+examining the parental and recombinant sequences.
 Some methods \cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}
 and approaches (e.g., Pango designation) infer this
 as the genomic distance between lineage-associated
-mutations that differentiate the two parental strains.
+mutations that differentiate the two parental \emph{lineages}.
 Similarly, methods based on probabilistic representations of
 mutational profiles \cite{Varabyou2021rapid}
-can only be as accurate as examination of the two
+can only be as precise as examination of the two
 parent lineages allows.
 However, genealogical methods (such as sc2ts and RIPPLES) are
 based on identifying exact parental \emph{sequences},
 so are in principle maximally precise.
-
 The breakpoint interval of a recombinant is bounded by
 two positions: a left position where the recombinant
 matches the left parent sequence but not the right, and
@@ -1001,12 +1001,9 @@ How well the time and position of a recombination event
 can be inferred thus depends on the divergence between the
 parent sequences (measured as time to their MRCA). 
 
-First, we explored the genomic distribution of the breakpoint intervals of
-the QC-passing recombination events in the ARG.
-
-Between these two positions, there is no genetic variation
-to distinguish the parental source of inheritance.
-We found an overall preponderance of breakpoint intervals
+The distribution of breakpoint intervals of
+the QC-passing recombination events
+shows an overall enrichment of breakpoints
 towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene
 (Figure~\ref{fig:recombinant_intervals}A,B),
@@ -1015,37 +1012,24 @@ studies \cite{Bobay2020recombination,Turakhia2022,
 Smith2023tracking,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
-allowing recombination endpoints to be estimated more precisely.
-
-Next, using the size of a breakpoint interval,
-we measured how precisely breakpoints could
-be localized along the genome.
-Across the QC-passing recombination events,
-we found the median breakpoint interval size to be 2,207 bases
+making recombination events more likely to be detectable, and 
+allowing breakpoint intervals to be estimated more precisely.
+We found the median breakpoint interval size to be 2,207 bases
 (Figure~\ref{fig:recombinant_intervals}C),
 indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
 is considerably larger (up to $\sim$54\% of the genome).
-Further, we found a negative relationship between
+As expected, we found a negative relationship between
 the size of a breakpoint interval and
-the amount of divergence between recombinant parents
-(measured by time to their MRCA),
-(Figure~\ref{fig:recombinant_intervals}D).
+divergence between recombinant parents
+(Figure~\ref{fig:recombinant_intervals}D),
 which follows theoretical expectation (STAR Methods).
-When the two parental lineages have diverged
-for longer periods of time (the rightmost points),
-more information becomes available
-on either side of a breakpoint to pinpoint its location,
-resulting in shorter intervals.
-For instance, the breakpoint intervals tend to be the smallest
+Breakpoint intervals tend to be the smallest
 for events involving recombination between
 the deeply divergent Omicron BA.1 and BA.2 sublineages
 (the red points in Figure~\ref{fig:recombinant_intervals}D).
 
-Another key feature of genealogical methods
-is that they can also provide \emph{time} intervals
-which reflect uncertainty in the timing of recombination events.
 The time interval of a recombination node in the ARG is bounded by
 the age of the youngest parent and
 the age of the oldest child of the recombination node
@@ -1061,9 +1045,6 @@ span 5 to 48 days.
 % Q3: 60 days, max: 259 days
 Longer time intervals imply that a parental or a recombinant lineage
 might have been unsampled for an extended period of time.
-% Do we want to refer to the CIs around the node dates?
-These results show that the ARG can finely pinpoint
-the emergence of new recombinant lineages in time.
 
 
 \begin{figure}[h]
@@ -1082,7 +1063,12 @@ time between the recombination event and the parental MRCA.
 The black curve shows
 the theoretical expected relationship between these quantities,
 which is calculated assuming a nucleotide substitution rate of
-$\sim$2 per site per day \cite{Duchene2020,Ghafari2022,Markov2023},
+% N.B. This is a pre-VOC estimate.
+% This study (https://pmc.ncbi.nlm.nih.gov/articles/PMC8807201/#sup1)
+% estimated background rate including VOCs.
+% 0.00065 * 30000 / 12 = 1.625 per month
+$\sim2$ x $10^{-6}$ per site per day
+\cite{Duchene2020,Ghafari2022,Markov2023},
 or $\sim$0.06 per day (STAR Methods).
 (E) Length distribution of time intervals around recombination events.
 }
@@ -1093,7 +1079,8 @@ or $\sim$0.06 per day (STAR Methods).
 \subsection*{Emergence of recombinants over time}
 
 We examined the frequency of emergence of the recombinants
-over the course of the COVID-19 pandemic (Figure \ref{fig:recombinants_over_time}).
+over the course of the COVID-19 pandemic
+(Figure \ref{fig:recombinants_over_time}).
 We explored two hypotheses for the timing of recombination.
 First, we would expect recombination events to occur more often when case counts are high,
 which increases the chance of co-infection within an individual, allowing recombination.
@@ -1753,16 +1740,18 @@ Tskit also provides a ``provenance'' table, which provides a mechanism
 for recording software version and parameter information through each
 step of complex processing pipelines.
 
-\subsubsection*{Pandemic scale alignment storage}
-To provide the efficient access to alignment data required for inference with sc2ts, we
-developed a new format based on the VCF Zarr~\cite{Czech2025} specification.
+
+\subsubsection*{Pandemic-scale alignment storage}
+To provide the efficient access to alignment data required for inference with sc2ts,
+we developed a new format based on the VCF Zarr~\cite{Czech2025} specification.
 Briefly, Zarr is a storage format for scientific data,
 originally developed for the
 \textit{Anopheles gambiae}
 1000 Genomes Project~\cite{Anopheles2017genetic}, and
 is now seeing widespread adoption across the 
 sciences~\cite{Abernathey2021cloud,Moore2021ome,Gowan2022using,
-Dhapola2022scarf,Virshup2023scverse,Baker2023emobject,Marconato2024spatialdata,Ruan2024image}.
+Dhapola2022scarf,Virshup2023scverse,Baker2023emobject,
+Marconato2024spatialdata,Ruan2024image}.
 Zarr is essentially a simple mechanism for storing n-dimensional array
 data as a regular grid of compressed chunks, which provides 
 high levels of data compression, efficient access across multiple
@@ -1805,7 +1794,7 @@ Both the pipeline and converted Viridian dataset are available for download;
 see Data and code availability for details. 
 
 
-\subsubsection*{Sample filtering and alignment preprocessing}
+\subsubsection*{Sample filtering and alignment pre-processing}
 
 The collection date of a sample
 is an important piece of information for sc2ts.
@@ -2540,7 +2529,7 @@ but with $P$ replaced with $1–P$.
 Summing the two intervals ($I_{left}+I_{right}$)
 gives the expected interval length.
 As detectable recombination events
-tend to be closer to the middle of the genome,
+tend to be closer to the center of the genome,
 we use $P=0.5$ in Figure~\ref{fig:recombinant_intervals}D.
 
 
@@ -2981,6 +2970,7 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_pango\_events\_in\_arg.ipynb}
 {analysis\_pango\_events\_in\_arg.ipynb}
 for details.
+
 
 \subsection*{Evaluating inferred node dates}
 \label{sec:evaluating_node_dates}
