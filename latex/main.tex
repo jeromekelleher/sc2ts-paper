@@ -976,23 +976,22 @@ pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-
 
 \subsection*{Recombination breakpoint intervals}
 
-Although the exact location of a recombination breakpoint
-is impossible to pinpoint in practice,
-bounds can be placed by examining the parental and recombinant sequences.
-% Cite VirusRecomb
-In methods \cite{Alfonsi2024,Li2024CovRecomb}, and
-approaches (e.g., Pango designation)
+Although in practice
+the exact location of a recombination breakpoint
+is impossible to pinpoint,
+bounds can be placed by
+examining the parental and recombinant sequences.
+In methods \cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb},
+and approaches (e.g., Pango designation),
 based on lineage-associated mutations,
 the breakpoints are limited in precision to these mutations.
 Similarly, methods based on probabilistic representations of
-% Cite Bolotie
-mutational profiles (e.g., Bolotie) suffer from this limitation.
-% Does RIPPLES qualify as a genealogical method?
-Genealogical methods, such as sc2ts and RIPPLES,
-based on pinpointing exact parental \emph{sequences},
+mutational profiles (e.g.\cite{Varabyou2021rapid})
+suffer from this limitation.
+However, genealogical methods, such as sc2ts and RIPPLES,
+based on identifying exact parental \emph{sequences},
 are in principle maximally precise,
-assuming that the parental sequences
-are well represented in the ARG.
+assuming that the parental sequences are well represented in the ARG.
 
 We explored the genomic distribution of the breakpoint intervals of
 the QC-passing recombination events in the ARG.
@@ -1007,18 +1006,18 @@ While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 allowing recombination endpoints to be estimated more precisely.
 
-Using the size of a breakpoint interval as a proxy,
-we quantified how precisely breakpoints could be
-localized along the genome.
+Using the size of a breakpoint interval,
+we measured how precisely breakpoints could
+be localized along the genome.
 Across the QC-passing recombination events,
-we found the median interval size to be 2,207 bases
+we found the median breakpoint interval size to be 2,207 bases
 (Figure~\ref{fig:recombinant_intervals}C),
 indicating that the breakpoints of half of the events
-could be narrowed to a small region (less than ~7\% of the genome),
+could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
-is considerably greater.
-We further found a negative relationship between
-breakpoint interval size and
+is considerably large.
+Further, we found a negative relationship between
+the size of a breakpoint interval and
 the amount of divergence between recombinant parents,
 which is measured by time to their MRCA
 (Figure~\ref{fig:recombinant_intervals}D).
@@ -1032,22 +1031,23 @@ for events involving recombination between
 the deeply divergent Omicron BA.1 and BA.2 sublineages
 (the red points in Figure~\ref{fig:recombinant_intervals}D).
 
-% Not interesting enough
 Another key feature of genealogical methods
 is that they can also provide \emph{time} intervals
-reflecting uncertainty in the timing of recombination events.
-We calculated the time interval of a recombination node
-as the difference between the age of the youngest parent and
-the age of the oldest child of the recombination node in the ARG
+which reflect uncertainty
+in the estimated timing of recombination events.
+The time interval of a recombination node in the ARG is bounded by
+the age of the youngest parent and
+the age of the oldest child of the recombination node
 (either given as collection dates or estimated using tsdate).
 We found that for three quarters of the QC-passing events,
-the time interval is less than ~2 months
+the time interval spans less than $\sim$2 months
 (Figure~\ref{fig:recombinant_intervals}D),
+with long time intervals suggesting that
+a parental lineage or the recombinant lineage
+might be unsampled for an extended period of time.
 % Do we want to refer to the CIs around the node dates?
-% Maybe we could use this result to lead to the next section?
-% Connect to epidemiology a bit?
-indicating that the ARG can precisely estimate
-the emergence of recombination events.
+This result indicates that the ARG can pinpoint
+when new recombinant lineages emerge with fine resolution.
 
 
 \begin{figure}[h]
@@ -1059,15 +1059,16 @@ Recombination breakpoint intervals.
 354 recombination events along the genome
 (annotated with gene labels on top).
 Each line represents an interval colored by its size.
-(B) Number of overlapping breakpoint intervals.
+(B) Number of overlapping breakpoint intervals per site.
 (C) Distribution of breakpoint interval size (bases).
 (D) Relationship between breakpoint interval size and
 time between the recombination event and the parental MRCA.
 The black curve shows the theoretical expected relationship
 between these quantities,
 estimated by minimizing the sum of squared residuals
-given a single parameter (the mutation rate) (STAR Methods).}
+given a single parameter (the mutation rate) (STAR Methods).
 (E) Distribution of time interval size (months).
+}
 \label{fig:recombinant_intervals}
 \end{figure}
 
