@@ -724,6 +724,16 @@ rule generate_all_usher_fastas:
         touch {output}
         """
 
+rule run_ripples_3seq:
+    input: 
+        "ripples_3seq_tmp/all_fastas_generated"
+    output:
+        "ripples_p3_3seq.csv",
+    shell:
+        """     
+        python3 scripts/run_3seq.py run-ripples-3seq ripples_p3/recombination.tsv ripples_3seq_tmp/ {output}
+        """
+
 ################
 # Rebar stuff
 ################
