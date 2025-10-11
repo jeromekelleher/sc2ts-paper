@@ -656,6 +656,84 @@ rule run3seq:
         python scripts/run_3seq.py run-3seq {input} {output}
         """
 
+# NOTE this is all much more complicated than it should be to handle limits
+# on numbers of open files.
+rule generate_sample_list:
+    conda: "sc2ts.yml"
+    input: 
+        "ripples_p3/recombination.tsv",
+    output:
+        "ripples_3seq_tmp/sample_list_generated",
+    shell:
+        """
+        python scripts/run_3seq.py generate-ripples-sample-list {input} \
+            ripples_3seq_tmp/sample_list > {output}
+        """
+
+rule generate_usher_vcf:
+    conda: "pangolin.yml"
+    input: 
+        "tree.all_viridian.202409.pb.gz",
+        "ripples_3seq_tmp/sample_list_{INDEX}.txt",
+    output:
+        "ripples_3seq_tmp/usher_{INDEX}.vcf"
+    shell:
+        """
+        matUtils extract -i {input[0]} -s {input[1]} -v {output}
+        """
+
+rule fixup_usher_vcf:
+    conda: "vcflib.yml"
+    input: 
+        "ripples_3seq_tmp/usher_{INDEX}.vcf"
+    output: 
+        "ripples_3seq_tmp/usher_{INDEX}_fixup.vcf"
+    shell:
+        """
+        bcftools view {input} > {output}
+        """
+
+rule generate_usher_fastas:
+    conda: "vcflib.yml"
+    input: 
+        "ripples_3seq_tmp/usher_{INDEX}_fixup.vcf"
+    output:
+        "ripples_3seq_tmp/fastas_generated_{INDEX}"
+    shell:
+        """     
+        vcf2fasta -f NC_045512v2.fa {input}  -p ripples_3seq_tmp/
+        touch {output}
+        """
+
+def get_sample_lists():
+    path = "ripples_3seq_tmp/sample_list_generated"
+    if os.path.exists(path):
+        nchunks = int(open(path).read())
+        return [path] + [f"ripples_3seq_tmp/fastas_generated_{j}" for j in range(nchunks)]
+    else:
+        return [path]
+    
+# No doubt this is reinventing the Snakemake wheel a bit, but it works.
+rule generate_all_usher_fastas:
+    input: 
+        get_sample_lists(),
+    output:
+        "ripples_3seq_tmp/all_fastas_generated"
+    shell:
+        """     
+        touch {output}
+        """
+
+rule run_ripples_3seq:
+    input: 
+        "ripples_3seq_tmp/all_fastas_generated"
+    output:
+        "ripples_p3_3seq.csv",
+    shell:
+        """     
+        python3 scripts/run_3seq.py run-ripples-3seq ripples_p3/recombination.tsv ripples_3seq_tmp/ {output}
+        """
+
 ################
 # Rebar stuff
 ################
