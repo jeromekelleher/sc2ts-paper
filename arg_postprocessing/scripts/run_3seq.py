@@ -24,32 +24,37 @@ def _old_run_single_3seq(fasta_file):
         output = pd.read_csv(pathlib.Path(tempdir) / "3s.rec.csv")
     return output
 
+
 def run_single_3seq(child_fasta, parent_fastas):
 
     exe = os.path.abspath("./tmp/3seq/3seq")
-    # with tempfile.TemporaryDirectory() as tempdir:
-        # tempdir = pathlib.Path(tempdir)
-    if True:
-        tempdir = pathlib.Path("tmp/")
+    # if True:
+    #     tempdir = pathlib.Path("tmp/")
+    with tempfile.TemporaryDirectory() as tempdir:
+        tempdir = pathlib.Path(tempdir)
         parents_file = (tempdir / "parents.fasta").absolute()
         with open(parents_file, "w") as fw:
             for j, parent_file in enumerate(parent_fastas):
                 with open(parent_file) as fr:
-                    for line in fr.read():
+                    for line in fr.readlines():
                         if line.startswith(">"):
                             print(f">parent_{j}", file=fw)
                         else:
                             print(line, file=fw)
-
         # NOTE: I can't get 3seq to run in -triplet mode whatever I do,
         # but full seems to work. Same thing, ultimately?
-        subprocess.check_output(
-            f"yes | {exe} -full {parents_file} {child_fasta}", shell=True, cwd=tempdir
-        )
-        output = pd.read_csv(tempdir / "3s.rec.csv")
+        cmd = f"{exe} -full {parents_file} {child_fasta}"
+        subprocess.check_output(f"yes | {cmd}", shell=True, cwd=tempdir)
+        # Note: this emits a parser warning when 3SEQ suggests multiple
+        # breakpoints, as it uses commas to separate them (sigh). So, we
+        # thrown away that information here. This is better than the
+        # alternative, which gets column alignment completely wrong.
+        output = pd.read_csv(tempdir / "3s.rec.csv", index_col=False)
     return output
 
 
+# TODO rejigger this to use the new run_single_3seq function above and
+# use the different approach to putting fastas together.
 @click.command()
 @click.argument("recombinants_csv")
 @click.argument("fasta_dir")
@@ -114,21 +119,18 @@ def generate_fasta(ts, recombinants_csv, output_dir):
 @click.argument("output")
 def generate_ripples_sample_list(ripples_file, output):
     df = pd.read_csv(ripples_file, sep="\t")
-    samples = set(df["#recomb_node_id"]) | set(df["donor_node_id"]) | set(df["acceptor_node_id"])
+    samples = (
+        set(df["#recomb_node_id"])
+        | set(df["donor_node_id"])
+        | set(df["acceptor_node_id"])
+    )
     samples = np.array(list(samples))
     # We to do this messing around to chunk the VCF to FASTA conversion up
-    n = len(samples) // 900 # Ensure we have no more than 1000
+    n = len(samples) // 900  # Ensure we have no more than 1000
     splits = np.array_split(samples, n)
     for j, a in enumerate(splits):
         np.savetxt(f"{output}_{j}.txt", a, fmt="%s")
     print(len(splits))
-
-
-@dataclasses.dataclass
-class Work3seq:
-    child_fasta: str
-    parents_fasta: str
-
 
 
 @click.command()
@@ -142,22 +144,28 @@ def run_ripples_3seq(ripples_file, fasta_dir, output):
     # The dataframe can contain multiple events for each recombination node. We
     # pick the one with the "maximum" parsimony (i.e., the one with the lowest
     # parsimony score). If there's several, we pick one arbitrarily.
-    df  = df.loc[df.groupby(["recomb_node_id"])["recomb_parsimony"].idxmin()]
+    df = df.loc[df.groupby(["recomb_node_id"])["recomb_parsimony"].idxmin()]
     print(f"Have {df.shape[0]} unique recombination events")
     # samples = set(df["#recomb_node_id"]) | set(df["donor_node_id"]) | set(df["acceptor_node_id"])
     # samples = np.array(list(samples))
     # np.savetxt(output, samples, fmt="%s")
 
     def fasta_file(name):
-        return os.path.abspath(pathlib.Path(fasta_dir) / f"{name}_consensus.fasta")
+        return os.path.abspath(pathlib.Path(fasta_dir) / f"{name}_NC_045512:0.fa")
 
-    for _, row in df.iterrows():
-        run_single_3seq(
+    data = []
+    for _, row in tqdm.tqdm(list(df.iterrows())):
+        out = run_single_3seq(
             fasta_file(row["recomb_node_id"]),
-            [fasta_file(row["donor_node_id"]), fasta_file(row["acceptor_node_id"])])
-        break
+            [fasta_file(row["donor_node_id"]), fasta_file(row["acceptor_node_id"])],
+        )
+        if len(out) > 0:
+            out["recombinant"] = row["recomb_node_id"]
+            data.append(out)
+    df = pd.concat(data)
 
-
+    df.to_csv(output, index=False)
+    print(df)
 
 
 @click.group()
