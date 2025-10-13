@@ -735,11 +735,12 @@ Document S2 for ARG visualizations of the Pango X lineages.
 
 
 \subsection*{Comparison with RIPPLES}
+
 RIPPLES~\cite{Turakhia2022} is a method for detecting 
 recombination events using a tree inferred by UShER,
 and is the only method directly comparable with sc2ts.
 Recombination is detected by first identifying plausible branches
-carrying multiple mutations .
+carrying multiple mutations.
 For each candidate branch,
 RIPPLES then systematically splits the sequence into 2 or 3 segments, and
 finds parsimonious placements for each segment independently.
@@ -1035,14 +1036,14 @@ While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 making recombination events more likely to be detectable, and 
 allowing breakpoint intervals to be estimated more precisely.
-We found the median breakpoint interval size to be 2,207 bases
+We found the median breakpoint interval length to be 2,207 bases
 (Figure~\ref{fig:recombinant_intervals}C),
 indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
 is considerably larger (up to $\sim$54\% of the genome).
 As expected, we found a negative relationship between
-the size of a breakpoint interval and
+the length of a breakpoint interval and
 divergence between recombinant parents
 (Figure~\ref{fig:recombinant_intervals}D),
 which follows theoretical expectation (STAR Methods).
@@ -1072,25 +1073,20 @@ might have been unsampled for an extended period of time.
 \centering
 \includegraphics[width=\linewidth]{recombinant_intervals}
 \caption{
-Recombination intervals.
+Recombination breakpoint and time intervals.
 (A) Distribution of the breakpoint intervals of
 354 recombination events along the genome
 (annotated with gene labels on top).
-Each line represents a breakpoint interval colored by its size.
+Each line represents a breakpoint interval colored by its length.
 (B) Number of overlapping breakpoint intervals per site.
 (C) Length distribution of breakpoint intervals.
-(D) Relationship between breakpoint interval size and
+(D) Relationship between breakpoint interval length and
 time between the recombination event and the parental MRCA.
 The black curve shows
 the theoretical expected relationship between these quantities,
-which is calculated assuming a nucleotide substitution rate of
-% N.B. This is a pre-VOC estimate.
-% This study (https://pmc.ncbi.nlm.nih.gov/articles/PMC8807201/#sup1)
-% estimated background rate including VOCs.
-% 0.00065 * 30000 / 12 = 1.625 per month
-$\sim2$ x $10^{-6}$ per site per day
-\cite{Duchene2020,Ghafari2022,Markov2023},
-or $\sim$0.06 per day (STAR Methods).
+which is calculated assuming
+a genome-wide nucleotide substitution rate of
+$\sim$0.06 per day (STAR Methods).
 (E) Length distribution of time intervals around recombination events.
 }
 \label{fig:recombinant_intervals}
@@ -2532,7 +2528,7 @@ Recombination breakpoint intervals are imprecise
 when the recombining parents are identical in sequence
 at sites spanning the breakpoint.
 Here, we estimate the interval lengths expected around a breakpoint,
-given a genome-wide mutation rate $\mu$,
+given a genome-wide nucleotide substitution rate $\mu$,
 total time between two samples ($T$), and
 sufficient support to detect the recombination event.
 If a breakpoint occurs a fraction $P$ along a genome of length $L$ and
@@ -2552,6 +2548,19 @@ gives the expected interval length.
 As detectable recombination events
 tend to be closer to the center of the genome,
 we use $P=0.5$ in Figure~\ref{fig:recombinant_intervals}D.
+
+In Figure~\ref{fig:recombinant_intervals}D,
+we calculated the expected lengths of breakpoint intervals
+by setting $\mu$ to $\sim$0.0598 per day.
+This is based on published estimates of
+the per-site nucleotide substitution rate of
+% N.B. This is a pre-VOC estimate.
+% This study 
+% (https://pmc.ncbi.nlm.nih.gov/articles/PMC8807201/#sup1)
+% estimated background rate including VOCs.
+% 0.00065 * 30000 / 12 = 1.625 per month
+$\sim2$ x $10^{-6}$ per site per day
+\cite{Duchene2020,Ghafari2022,Markov2023}.
 
 
 \subsection*{Quantification and statistical analysis}
@@ -2993,7 +3002,7 @@ See notebook
 for details.
 
 
-\subsection*{Evaluating inferred node dates}
+\subsection{Evaluating inferred node dates}
 \label{sec:evaluating_node_dates}
 
 To validate the accuracy of times for non-sample internal nodes inserted 
