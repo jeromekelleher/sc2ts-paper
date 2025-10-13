@@ -656,77 +656,58 @@ rule run3seq:
         python scripts/run_3seq.py run-3seq {input} {output}
         """
 
-# NOTE this is all much more complicated than it should be to handle limits
-# on numbers of open files.
 rule generate_sample_list:
     conda: "sc2ts.yml"
     input: 
-        "ripples_p3/recombination.tsv",
+        "ripples_p{PARSIMONY}/recombination.tsv",
     output:
-        "ripples_3seq_p{PARSIMONY}_tmp/sample_list_generated",
+        "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     shell:
         """
-        python scripts/run_3seq.py generate-ripples-sample-list {input} \
-            ripples_3seq_p{wildcards.PARSIMONY}_tmp/sample_list > {output}
+        python scripts/run_3seq.py generate-ripples-sample-list {input} {output}
         """
 
-rule generate_usher_vcf:
+rule generate_usher_vcfs:
     conda: "pangolin.yml"
     input: 
         "tree.all_viridian.202409.pb.gz",
-        "ripples_3seq_p{PARSIMONY}_tmp/sample_list_{INDEX}.txt",
+        "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     output:
-        "ripples_3seq_p{PARSIMONY}_tmp/usher_{INDEX}.vcf"
-    shell:
-        """
-        matUtils extract -i {input[0]} -s {input[1]} -v {output}
-        """
-
-rule fixup_usher_vcf:
-    conda: "vcflib.yml"
-    input: 
-        "ripples_3seq_p{PARSIMONY}_tmp/usher_{INDEX}.vcf"
-    output: 
-        "ripples_3seq_p{PARSIMONY}_tmp/usher_{INDEX}_fixup.vcf"
-    shell:
-        """
-        bcftools view {input} > {output}
+        "ripples_3seq_p{PARSIMONY}_tmp/vcfs_generated"
+    shell:  
+        # NOTE we're forced to do this annoying splitting and combining
+        # because of an apparaent bug in matUtils, where it doesn't output
+        # all the samples in the VCF for larger sample sizes.
+        """     
+        cd ripples_3seq_p{wildcards.PARSIMONY}_tmp
+        split sample_list.txt
+        for f in `ls x*`; do
+            echo $f
+            matUtils extract -i ../{input[0]} -s $f -v tmp.vcf;
+            bcftools view tmp.vcf > fixed_$f.vcf;
+        done
+        touch vcfs_generated
         """
 
 rule generate_usher_fastas:
     conda: "vcflib.yml"
     input: 
-        "ripples_3seq_p{PARSIMONY}_tmp/usher_{INDEX}_fixup.vcf"
+        "ripples_3seq_p{PARSIMONY}_tmp/vcfs_generated"
     output:
-        "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated_{INDEX}"
+        "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated"
     shell:
         """     
-        vcf2fasta -f NC_045512v2.fa {input}  -p ripples_3seq_p{PARSIMONY}_tmp/
-        touch {output}
-        """
-
-def get_sample_lists(prefix):
-    path = "{prefix}/sample_list_generated"
-    if os.path.exists(path):
-        nchunks = int(open(path).read())
-        return [path] + [f"{prefix}/fastas_generated_{j}" for j in range(nchunks)]
-    else:
-        return [path]
-    
-# No doubt this is reinventing the Snakemake wheel a bit, but it works.
-rule generate_all_usher_fastas:
-    input: 
-        get_sample_lists("ripples_3seq_p4_tmp"),
-    output:
-        "ripples_3seq_p{PARSIMONY}_tmp/all_fastas_generated"
-    shell:
-        """     
-        touch {output}
+        cd ripples_3seq_p{wildcards.PARSIMONY}_tmp
+        for f in `ls fixed_*.vcf`; do
+            echo $f
+            vcf2fasta -f ../NC_045512v2.fa $f 
+        done
+        touch fastas_generated
         """
 
 rule run_ripples_3seq:
     input: 
-        "ripples_3seq_p{PARSIMONY}_tmp/all_fastas_generated"
+        "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated"
     output:
         "ripples_3seq_p{PARSIMONY}.csv",
     shell:

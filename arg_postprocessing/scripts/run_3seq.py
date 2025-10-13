@@ -28,8 +28,8 @@ def _old_run_single_3seq(fasta_file):
 def run_single_3seq(child_fasta, parent_fastas):
 
     exe = os.path.abspath("./tmp/3seq/3seq")
-    if True:
-        tempdir = pathlib.Path("tmp/")
+    # if True:
+    #     tempdir = pathlib.Path("tmp/")
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
         parents_file = (tempdir / "parents.fasta").absolute()
@@ -118,13 +118,8 @@ def generate_ripples_sample_list(ripples_file, output):
         | set(df["donor_node_id"])
         | set(df["acceptor_node_id"])
     )
-    samples = np.array(list(samples))
-    # We to do this messing around to chunk the VCF to FASTA conversion up
-    n = len(samples) // 900  # Ensure we have no more than 1000
-    splits = np.array_split(samples, n)
-    for j, a in enumerate(splits):
-        np.savetxt(f"{output}_{j}.txt", a, fmt="%s")
-    print(len(splits))
+    samples = np.array(sorted(list(samples)))
+    np.savetxt(f"{output}", samples, fmt="%s")
 
 
 @click.command()
@@ -140,9 +135,6 @@ def run_ripples_3seq(ripples_file, fasta_dir, output):
     # parsimony score). If there's several, we pick one arbitrarily.
     df = df.loc[df.groupby(["recomb_node_id"])["recomb_parsimony"].idxmin()]
     print(f"Have {df.shape[0]} unique recombination events")
-    # samples = set(df["#recomb_node_id"]) | set(df["donor_node_id"]) | set(df["acceptor_node_id"])
-    # samples = np.array(list(samples))
-    # np.savetxt(output, samples, fmt="%s")
 
     def fasta_file(name):
         return os.path.abspath(pathlib.Path(fasta_dir) / f"{name}_NC_045512:0.fa")
