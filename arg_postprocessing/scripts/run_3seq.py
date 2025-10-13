@@ -36,13 +36,7 @@ def run_single_3seq(child_fasta, parent_fastas):
         with open(parents_file, "w") as fw:
             for j, parent_file in enumerate(parent_fastas):
                 with open(parent_file) as fr:
-                    for line in fr.readlines():
-                        if line.startswith(">"):
-                            print(f">parent_{j}", file=fw)
-                        else:
-                            print(line, file=fw)
-        # NOTE: I can't get 3seq to run in -triplet mode whatever I do,
-        # but full seems to work. Same thing, ultimately?
+                    fw.write(fr.read())
         cmd = f"{exe} -full {parents_file} {child_fasta}"
         subprocess.check_output(f"yes | {cmd}", shell=True, cwd=tempdir)
         # Note: this emits a parser warning when 3SEQ suggests multiple
@@ -124,13 +118,8 @@ def generate_ripples_sample_list(ripples_file, output):
         | set(df["donor_node_id"])
         | set(df["acceptor_node_id"])
     )
-    samples = np.array(list(samples))
-    # We to do this messing around to chunk the VCF to FASTA conversion up
-    n = len(samples) // 900  # Ensure we have no more than 1000
-    splits = np.array_split(samples, n)
-    for j, a in enumerate(splits):
-        np.savetxt(f"{output}_{j}.txt", a, fmt="%s")
-    print(len(splits))
+    samples = np.array(sorted(list(samples)))
+    np.savetxt(f"{output}", samples, fmt="%s")
 
 
 @click.command()
@@ -146,9 +135,6 @@ def run_ripples_3seq(ripples_file, fasta_dir, output):
     # parsimony score). If there's several, we pick one arbitrarily.
     df = df.loc[df.groupby(["recomb_node_id"])["recomb_parsimony"].idxmin()]
     print(f"Have {df.shape[0]} unique recombination events")
-    # samples = set(df["#recomb_node_id"]) | set(df["donor_node_id"]) | set(df["acceptor_node_id"])
-    # samples = np.array(list(samples))
-    # np.savetxt(output, samples, fmt="%s")
 
     def fasta_file(name):
         return os.path.abspath(pathlib.Path(fasta_dir) / f"{name}_NC_045512:0.fa")
