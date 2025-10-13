@@ -28,21 +28,15 @@ def _old_run_single_3seq(fasta_file):
 def run_single_3seq(child_fasta, parent_fastas):
 
     exe = os.path.abspath("./tmp/3seq/3seq")
-    # if True:
-    #     tempdir = pathlib.Path("tmp/")
+    if True:
+        tempdir = pathlib.Path("tmp/")
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
         parents_file = (tempdir / "parents.fasta").absolute()
         with open(parents_file, "w") as fw:
             for j, parent_file in enumerate(parent_fastas):
                 with open(parent_file) as fr:
-                    for line in fr.readlines():
-                        if line.startswith(">"):
-                            print(f">parent_{j}", file=fw)
-                        else:
-                            print(line, file=fw)
-        # NOTE: I can't get 3seq to run in -triplet mode whatever I do,
-        # but full seems to work. Same thing, ultimately?
+                    fw.write(fr.read())
         cmd = f"{exe} -full {parents_file} {child_fasta}"
         subprocess.check_output(f"yes | {cmd}", shell=True, cwd=tempdir)
         # Note: this emits a parser warning when 3SEQ suggests multiple
