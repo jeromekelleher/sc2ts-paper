@@ -4055,7 +4055,29 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \centering
 \includegraphics[width=\linewidth]{samples-per-day}
 \caption{
-TODO caption
+Daily statistics of samples analyzed
+during the ARG inference process.
+(A) The number of samples
+processed from the input sequence alignments,
+exactly matched to a node in the current ARG, and
+added to the ARG
+all peak in December, 2022
+and subsequently around February, 2022.
+(B) The fraction of exactly matched samples and
+the fraction of samples added to the ARG
+mirror each other.
+Around the peak of sample volume,
+the fraction of exactly matched samples
+is relatively high (above 0.50).
+As expected, this fraction later decreases
+when sampling effort decreases.
+(C) The mean HMM cost per sample is relatively high
+at the beginning as the ARG had not accumulated
+enough genetic diversity yet.
+(D) Proportion of samples classified
+by Scorpio designation.
+These proportions reflect waves of infections
+driven by the emergence of Alpha, Delta, and Omicron.
 }\label{fig:samples_per_day}
 \end{figure}
 
@@ -4064,7 +4086,13 @@ TODO caption
 \centering
 \includegraphics[width=\linewidth]{inference-resources}
 \caption{
-TODO caption
+Usage of computational resources
+during the ARG inference process.
+(A) The amount of time to process a daily batch of samples
+peaks when the sample volume is the highest.
+(B) Mean time to process a sample remained low.
+(C) Max RAM usage also peaks around the time
+that sampling effort is the highest.
 }
 \label{fig:inference_resources}
 \end{figure}
