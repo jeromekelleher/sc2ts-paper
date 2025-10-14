@@ -734,99 +734,7 @@ associated with Table~\ref{tab:pango_x_lineages}, and
 Document S2 for ARG visualizations of the Pango X lineages.
 
 
-\subsection*{Comparison with RIPPLES}
-
-RIPPLES~\cite{Turakhia2022} is a method for identifying
-recombination \emph{events} using a phylogeny inferred by UShER.
-It is the only \emph{genealogical} method built for this purpose and
-therefore the only method directly comparable to sc2ts.
-A recombination event is detected by first
-identifying plausible branches carrying multiple mutations.
-For each candidate branch,
-RIPPLES systematically splits the sequence into 2 or 3 segments, and
-finds parsimonious placements for each segment independently.
-A recombination event at that node is then flagged if
-the overall parsimony of these multiple placements
-sufficiently improves over
-the original single-parent origin in the phylogeny
-(the ``parsimony improvement'' parameter, $p=3$, by default).
-RIVET~\cite{Smith2023tracking} is a tool for quality control and
-visualization of these recombination events.
-
-We ran fast-RIPPLES\cite{Smith2023tracking}
-on the Viridian UShER phylogeny
-subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-At $p=3$, this resulted in a total of 4111 recombination events.
-Most of these subtend $<10$ samples (2616 singletons),
-with 4 events subtending more than 100,000 samples.
-Analysis of the descending samples for each event shows that
-10 of the 44 Pango X lineages present in the dataset
-% NOTE: listing them like this for sorting and manipulation purposes
-(%
-XA, 
-XAC, 
-XAE, 
-XAJ,
-XB, 
-XBB, 
-XBM, 
-XC, 
-XL, 
-XW%
-)
-are associated unequivocally with a single recombination event.
-7 lineages 
-(%
-XAL,
-XAM,
-XBD, 
-XBR, 
-XE,
-XS,
-XY%
-)
-are associated with two events. Finally, 
-one event subtending 1321 samples suggests that 
-XAF,
-XAL, 
-XE, 
-XH, 
-XJ, 
-XM, 
-XY, 
-and 
-82 BA.2 samples share a recombination event [With what breakpoint and parents?].
-We also ran RIPPLES with $p=4$, which reduced the overall number of
-events to 1174 (roughly 4-fold) but also approximately halved the number of
-events involving X lineages, missing well-characterized events,
-such as XBB (Table~\ref{tab:ripples_x_lineages}).
-
-To compare these results with the sc2ts ARG, we first matched clades
-by finding the most recent common ancestor (MRCA) of the samples
-descending from each RIPPLES event. Overall, clade agreement was
-high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
-where descendants match exactly. Of these nodes, 68\% had no recombinant
-ancestry. Of the remainder, 595 could be matched with
-one of the 855 recombination events in the sc2ts ARG
-(Figure~\ref{fig:ripples_sc2ts_events}).
-Table~\ref{tab:ripples_x_lineages} shows a summary of
-all recombination events associated with Pango X lineages detected by RIPPLES,
-and their relationship with the sc2ts ARG.
-Of the 16 Class I events (Pango X lineages unequivocally associated with
-a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
-8 have corresponding recombination events (4, at $p=4$).
-Of the 5 Type II events
-(recombination nodes with more complex assocation with X lineages),
-two have close matches, with XBM matching exactly
-(including 2 descending BF.3 samples),
-and XE/XH is similar (but without including the 2 XH samples in the clade).
-Two events in the RIPPLES set correspond to likely false negatives
-in sc2ts: XB (Document~\ref{sec:dd_xb})
-and XAJ (Document~\ref{sec:dd_xaj}).
-See Document~\ref{sec:detailed_ripples} for more detailed analysis.
-
-
-\subsection*{Quality control of recombination events}
+\subsection*{Quality control and validation of recombination events}
 
 Sequencing errors in genome assemblies \cite{Turakhia2020},
 read misalignments \cite{Hunt2024}, and
@@ -835,8 +743,8 @@ can cause short regions of a sample genome to match more closely
 to an alternative genome rather than the true parent.
 Such genomic regions can be mistaken for evidence of recombination,
 because the LS HMM counts each base separately.
-We developed a quality control (QC) measure
-which counts the number of ``loci'' (clusters of closely spaced sites)
+We use a simple quality control (QC) measure
+that counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (STAR Methods),
 and effectively identifies a range of issues.
 Figure~\ref{fig:recombinant_qc} shows
@@ -851,32 +759,25 @@ known to be affected by amplicon dropout\cite{Sanderson2021}.
 The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
-the Jackson et al. recombinants (Document~\ref{sec:jackson_recombs}).
-This QC filter also correlates strongly with results of other 
-recombination detection methods when run on the putative 
-recombinant sequences (see next section).
-
-\subsection*{Validating and evaluating plausibility of recombination events}
-[THIS IS VERY MUCH WIP]
+the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 
 We validated the recombination events in the sc2ts ARG by running 
-several recombination detection programs on the putative recombinant
-sequences. [TODO generate supplemental table summarising results of 
-valiation.]
+the 3SEQ~\cite{Lam2018improved}, CovRecomb~\cite{Li2024CovRecomb} and rebar 
+recombination detection methods on the putative recombinant sequences
+(STAR Methods) summarised in Table~\ref{tab:recombinant_validation}.
+Overall, validation among the QC-passing recombinants is highest
+at with 3SEQ at 88\%, and is lowest for CovRecomb at xx\%. 
+CovRecomb has been previously shown to be 
+less sensitive than other methods~\cite{Li2024CovRecomb}, 
+and is specifically intended 
+to detect interlineage recombinants. The 12\% of recombinants 
+not passing 3SEQ validation are also the most marginally supported
+(see next section; Figure~\ref{fig:recombinant_evidence}).
+All of the validation metrics also correlate strongly with the 
+QC filter, with very few of the QC-failing recombinants
+passing external validation (Table~\ref{tab:recombinant_validation}).
 
-We first ran 3SEQ~\cite{Lam2018improved} [etc etc].
-
-To assess the evidence for these putative novel recombination events we 
-ran CovRecomb~\cite{Li2024CovRecomb} and rebar on the corresponding sequences 
-(STAR Methods). Of the 354 QC-passing sc2ts recombination events, 
-90 are classified as 
-recombinant by CovRecomb (all but 2 of the 510 QC-failing recombinants 
-were classified as non-recombinant).
-Rebar classified 203 of the QC-passing sc2ts recombination events, 
-as recombinant, with only 10 of those failing QC being classified 
-as recombinant.
-
-
+\subsection*{Assessing evidence for recombination events}
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
 of quantifying the plausibility of a given recombination event.
 To do this, we force the HMM to find a Viterbi solution for the 
@@ -925,38 +826,14 @@ in the recombinant vs non-recombinant HMM solutions (upper scatter plot)
 and the resulting distribution of the number of 
 averted mutations (lower histogram)
 over all 354 recombination events that pass QC. 
-Of these, only 24 
-(21 associated with Pango X lineages in Table~\ref{tab:pango_x_lineages},
-and 3 additional from Jackon et al in Table~\ref{tab:jackson}) have 
-been thoroughly characterised.  
-To assess the evidence for these putative novel recombination events we 
-ran CovRecomb~\cite{Li2024CovRecomb} and rebar on the corresponding sequences 
-(STAR Methods). Of the 354 QC-passing sc2ts recombination events, 
-90 are classified as 
-recombinant by CovRecomb (all but 2 of the 510 QC-failing recombinants 
-were classified as non-recombinant).
-Rebar classified 203 of the QC-passing sc2ts recombination events, 
-as recombinant, with only 10 of those failing QC being classified 
-as recombinant.
-
-[WIP]
-Of the 38 recombinants that are strongly supported (at least 10 averted
-mutations), 29 are novel. The known recombinants are XA, XC, XS, XBR, 
-and 5 from Jackson et al. All but 2 of the 38 are classified as
-recombinant by rebar. The majority (20) of these novel strongly supported
-recombinants are singletons, with 9 having further descendants in the ARG.
-Of the remaining 316 recombinants with less than 10 averted mutations,
-only 151 are classified as recombinant by rebar. 
-While some are likely to 
-be false positives, it is also interesting to note that rebar validation
-rate is much lower for recombinants with closely related 
-parents (Figure~\ref{fig:recombinant_evidence}B,C) suggesting that 
-sc2ts may have a higher sensitivity.
-
-See Figure~\ref{fig:recombinant_evidence_cov_recomb} CovRecomb
-See Figure~\ref{fig:recombinant_evidence_rebar} for rebar,
-Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p4
-and Figure~\ref{fig:recombinant_evidence_ripples_p4} for RIPPLES p3.
+Also shown is the 3SEQ classification status of these recombinants.
+All of the 12\% of recombinants that do not pass 3SEQ validation are 
+from the most weakly supported, with 4 or 5 averted mutations.
+Figures~\ref{fig:recombinant_evidence_cov_recomb} and
+~\ref{fig:recombinant_evidence_rebar} 
+same the same information for CovRecomb and rebar validation,
+showing that their validation status tends to be function 
+of the divergence between the recombinant parents.
 
 Recombination is rare in SARS-CoV-2, and ultimately judgements about
 plausibility require expert analysis. 
@@ -993,11 +870,72 @@ highlighting specific types of QC problem (and more details on the
 visualisation).
 
 
-Two further recombinants in the sc2ts ARG that are likely to be 
-spurious are important to discuss.
-[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
-rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
-pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
+\subsection*{Comparison with UShER+RIPPLES}
+
+RIPPLES~\cite{Turakhia2022} is a method for identifying
+recombination events using a phylogeny inferred by UShER.
+This distinguishes RIPPLES from other recombination detection
+methods such as 3SEQ, which classify particular \emph{sequences}
+as recombinant or not and can only identify potential onward 
+transmission post-hoc. The combination of UShER and RIPPLES
+is therefore the only method that is directly comparable 
+to sc2ts. It works by first identifying plausible long 
+branches in the input tree.
+For each candidate branch,
+RIPPLES systematically splits the sequence into 2 or 3 segments, and
+finds parsimonious placements for each segment independently.
+A recombination event at that node is then flagged if
+the overall parsimony of these multiple placements
+sufficiently improves over
+the original single-parent origin in the phylogeny
+(the ``parsimony improvement'' parameter, $p=3$, by default).
+RIVET~\cite{Smith2023tracking} is a tool for quality control and
+visualization of these recombination events.
+
+To compare the accuracy of sc2ts with UShER+RIPPLES we ran
+RIPPLES the Viridian UShER phylogeny
+subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
+We used the RIPPLES parameter $p=4$ as is equivalent to the 
+sc2ts $k=4$ parameter used to build the ARG, which resulted 
+in 11[XX] distinct recombination events. We then ran 3SEQ on
+each of the candidate trios, giving an overall validation
+rate of XX\% (STAR Methods). Comparing events identified 
+in the UShER tree and sc2ts ARG is not straightforward in 
+general, and so we focus comparison on the singleton recombinants
+returned by both. Although these are likely to be enriched for 
+artefacts, both methods face the same challenges and the 
+events can be compared like-for like. Of the 11XX recombination
+events returned by RIPPLES, 757 are singletons (resp 525/855 for 
+sc2ts). Of the RIPPLES singletons, 705 are also singletons 
+in the sc2ts ARG. [There's a complicated story to tell here 
+about extra singletons in the RIPPLES set which pass
+3SEQ validation, but have parents from the future.]
+Thus, 216 of these recombinants  pass 3SEQ validation, have 
+at least one parent that is on average 63 days \emph{younger}
+than the sequence itself. These parents were not available
+to sc2ts as potential matches, as it enforces strict 
+time ordering based on sample metadata.
+Further study is required to determine
+if the metadata is incorrect in these cases, or if these 
+should be flagged as false positives. However, the 
+key point is that RIPPLES is dependent on signals
+embedded in the UShER tree, and therefore we cannot 
+decouple the finer details of post-hoc recombinant detection
+from the tree building algorithm.
+
+We also compared the recombination events output by RIPPLES with
+the Pango X lineages. At p=4, we found that only XX of the 
+X lineages were present and many well-characterized events 
+such as XBB were not present. We therefore reran at p=3,
+resulting in XXXX events overall. At p=4, events involving
+XX of the 44 Pango X lineages present in the dataset,
+with unequivocal origins for 10 lineages, and 
+7 lineages other lineages associated with two competing events. 
+[More summary]
+
+[Paragraph summing things up]
+See Document~\ref{sec:detailed_ripples} for more detailed analysis 
+of the UShER+RIPPLES results.
 
 
 \subsection*{Precision of recombination event times and positions}
@@ -2895,6 +2833,24 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 \end{tabular}
 \end{table}
 
+\begin{table}
+\caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
+all 855 recombinants (total) and XXX passing and XXX failing QC.
+TODO FILL OUT DETAILS.
+}
+\label{tab:recombinant_validation}
+\centering
+\begin{tabular}{llll}
+\toprule
+Method & Overall & QC Pass & QC Fail \\
+\midrule
+3SEQ & xx & 88\% \\
+CovRecomb & \\
+rebar & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 \subsection{Parsimony comparison of sc2ts and UShER}
 \label{sec:supplement_sc2ts_usher_parsimony}
@@ -3047,6 +3003,88 @@ of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
+
+
+At $p=3$, this resulted in a total of 4111 recombination events.
+Most of these subtend $<10$ samples (2616 singletons),
+with 4 events subtending more than 100,000 samples.
+Analysis of the descending samples for each event shows that
+10 of the 44 Pango X lineages present in the dataset
+% NOTE: listing them like this for sorting and manipulation purposes
+(%
+XA, 
+XAC, 
+XAE, 
+XAJ,
+XB, 
+XBB, 
+XBM, 
+XC, 
+XL, 
+XW%
+)
+are associated unequivocally with a single recombination event.
+7 lineages 
+(%
+XAL,
+XAM,
+XBD, 
+XBR, 
+XE,
+XS,
+XY%
+)
+are associated with two events. Finally, 
+one event subtending 1321 samples suggests that 
+XAF,
+XAL, 
+XE, 
+XH, 
+XJ, 
+XM, 
+XY, 
+and 
+82 BA.2 samples share a recombination event [With what breakpoint and parents?].
+We also ran RIPPLES with $p=4$, which reduced the overall number of
+events to 1174 (roughly 4-fold) but also approximately halved the number of
+events involving X lineages, missing well-characterized events,
+such as XBB (Table~\ref{tab:ripples_x_lineages}).
+
+To compare these results with the sc2ts ARG, we first matched clades
+by finding the most recent common ancestor (MRCA) of the samples
+descending from each RIPPLES event. Overall, clade agreement was
+high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
+where descendants match exactly. Of these nodes, 68\% had no recombinant
+ancestry. Of the remainder, 595 could be matched with
+one of the 855 recombination events in the sc2ts ARG
+(Figure~\ref{fig:ripples_sc2ts_events}).
+Table~\ref{tab:ripples_x_lineages} shows a summary of
+all recombination events associated with Pango X lineages detected by RIPPLES,
+and their relationship with the sc2ts ARG.
+Of the 16 Class I events (Pango X lineages unequivocally associated with
+a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
+8 have corresponding recombination events (4, at $p=4$).
+Of the 5 Type II events
+(recombination nodes with more complex assocation with X lineages),
+two have close matches, with XBM matching exactly
+(including 2 descending BF.3 samples),
+and XE/XH is similar (but without including the 2 XH samples in the clade).
+Two events in the RIPPLES set correspond to likely false negatives
+in sc2ts: XB (Document~\ref{sec:dd_xb})
+and XAJ (Document~\ref{sec:dd_xaj}).
+See Document~\ref{sec:detailed_ripples} for more detailed analysis.
+
+
+[TODO Discuss  the large effect recombinants inferred by both]
+
+Two further recombinants in the sc2ts ARG that are likely to be 
+spurious are important to discuss.
+[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
+rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
+pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
+
+
+
 
 \begin{table}
 \caption{
