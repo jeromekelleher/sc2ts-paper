@@ -499,6 +499,7 @@ rule process_ripples:
         "sc2ts.yml"
     input:
         "ripples_p{PARSIMONY}",
+        "usher_intersection_2023-02-21.pb",
         "{SC2TS_ARG_VERSION}.trees.tsz",
     output:
         "{SC2TS_ARG_VERSION}_ripples_p{PARSIMONY}.csv"

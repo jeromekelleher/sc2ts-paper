@@ -218,6 +218,9 @@ dependencies:
   - zipp=3.22.0
   - zstandard=0.23.0
   - zstd=1.5.7
+  # NOTE this isn't complete, should include the protobuf libs etc
+  # We need this for programmaticaly accessing the Usher trees.
+  - bte=0.9.3
   # FIXME wedgeing this in temporarily
   - nbconvert
   - jupyter
@@ -243,4 +246,4 @@ dependencies:
       - -e git+https://github.com/phac-nml/pangonet.git#egg=pangonet
       # FIXME change to released version when it is done
       - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts
-# This is a counter to force an update: 17
+# This is a counter to force an update: 18
