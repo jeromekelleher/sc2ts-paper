@@ -157,7 +157,7 @@ A basic assumption of methods to infer genealogies from viral
 genetic sequence data is that recombination is negligible and 
 the genealogy is a tree.
 Recombinant lineages have risen to global prevalence in SARS-CoV-2,
-and therefore simple tree representations are necessarily
+and simple tree representations are therefore necessarily
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies 
 as an Ancestral Recombination Graph (ARG) for SARS-CoV-2
@@ -166,7 +166,8 @@ We use sc2ts to infer an ARG of 2.48 million genomes,
 and show that it captures a broad range of 
 known evolutionary features and provides novel 
 insights into the relationships between previously identified
-recombinant lineages.
+recombinant lineages. [NOTE: mention overall estimate
+of recombination compared with UShER+RIPPLES?]
 Together, the ARG, inference method and 
 suite of open-source analysis tools, 
 represent a powerful resource for future research.
@@ -231,10 +232,10 @@ surveillance data collected during the COVID-19 pandemic presents fundamental ch
 in two ways. Firstly, the sheer amount of data 
 overwhelmed even approximate distance-matrix based methods.
 % Accessed GISAID/EpiCov on 08 Oct., 2025
-At the peak in February, 2022, about 80 thousand samples
-were submitted on average per day to GISAID\cite{Shu2017},
+At the peak in February 2022 about 80 thousand samples
+per day  were submitted to GISAID\cite{Shu2017},
 accumulating to a total of over 17.5 million samples
-as of October, 2025.
+as of October 2025.
 Regularly reinferring trees de-novo from such rapidly
 growing datasets is untenable.
 The UShER\cite{Turakhia2021} method is based on adding
@@ -311,8 +312,10 @@ We show that sc2ts automatically and accurately detects details about
 known recombinant lineages that were painstakingly collated in a community 
 process, and provides novel insights into the relationships between these
 recombinant lineages. We compare the recombination events detected by 
-sc2ts with the state-of-the-art RIPPLES method~\cite{Turakhia2022}, showing
-that sc2ts is more sensitive and has a substantially lower false positive rate.
+sc2ts with the state-of-the-art combination of UShER and 
+RIPPLES ~\cite{Turakhia2022}, showing that sc2ts is more sensitive,
+detecting more of the well-characterized recombination events 
+curated by the Pango lineage designation community.
 The output of sc2ts---incorporating
 genealogical relationships, point mutations, deletions, and 
 recombination---provides a basis for the study of SARS-CoV-2
@@ -382,7 +385,8 @@ recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
 In the interest of interpretability, we simplified this model to 
 use a single parameter $k$ which essentially 
 controls the number of recurrent mutations that is preferred to 
-switching to a different parent via recombination (we use $k=4$ here).
+switching to a different parent via recombination (we use $k=4$ here
+[TODO cite support for this, like CovRecomb etc]).
 We used the highly efficient LS HMM implementation in tsinfer\cite{Kelleher2019},
 with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
@@ -455,7 +459,7 @@ a previous study \cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We validated that the broad phylogenetic structure of the ARG and 
 UShER tree closely match by generating tanglegrams for a set of representative
-samples from 814 deeply-sampled lineages (STAR Methods; 
+samples from 814 well-sampled lineages (STAR Methods; 
 Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
@@ -477,8 +481,9 @@ The ARG is time-resolved, with internal node dates estimated by
 a non-parametric method~\cite{Pope2025} (STAR Methods). 
 We show that the dates agree reasonably with NextStrain 
 estimates (Figure \ref{fig:pango_vs_nextstrain_node_times})
-and overall accuracy to another large-scale
-method~\cite{sanderson2021chronumental} (Document \ref{sec:evaluating_node_dates}).
+and overall accuracy comparable to 
+Chronumental~\cite{sanderson2021chronumental} applied to 
+an UShER tree (Document \ref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the 
 Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
@@ -489,8 +494,9 @@ VOCs reflect expectations from the literature\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
 Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
-but are not incorporated into UShER trees and can be difficult
-to account for. Because deletions are difficult to distinguish 
+but are not incorporated into UShER trees and must therefore
+be accounted for separately.
+Because deletions are difficult to distinguish 
 from bioinformatics errors
 and their multi-base nature presents challenges
 to the Markovian structure of the LS HMM,
