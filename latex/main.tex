@@ -794,16 +794,17 @@ passing external validation (Table~\ref{tab:recombinant_validation}).
 
 \subsection*{Assessing evidence for recombination events}
 
-The LS HMM at the heart of sc2ts provides a simple and powerful means 
+The LS HMM at the heart of sc2ts provides a simple and powerful means
 of quantifying the plausibility of a given recombination event.
-To do this, we force the HMM to find a Viterbi solution for the 
-putative recombinant sequence with no recombination by specifying
+To do this, we force the HMM to find a Viterbi solution
+for the putative recombinant sequence
+with no recombination by specifying
 a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between
 the two solutions---the number of mutations
 ``averted'' by recombination---is a measure of
-the evidence in favor of recombination  (similar to 
-idea of ``parsimony improvement'' in RIPPLES.)
+the evidence in favor of recombination
+(similar to the idea of ``parsimony improvement'' in RIPPLES.)
 Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
 for each of the 21 recombination events associated with Pango X lineages,
 with support ranging from very strong in the case of XC
@@ -837,18 +838,20 @@ undesignated recombination event under XBB, which we refer to as XBB.x.}
 \end{figure}
 
 
-Figure~\ref{fig:recombinant_evidence}A plots the number of mutations required
-in the recombinant vs non-recombinant HMM solutions (upper scatter plot)
-and the resulting distribution of the number of 
+Figure~\ref{fig:recombinant_evidence}A plots
+the number of mutations required
+in the recombinant versus non-recombinant
+Viterbi solutions (upper scatter plot)
+and the resulting distribution of the number of
 averted mutations (lower histogram)
-over all 354 recombination events that pass QC. 
+over all 354 recombination events that pass QC.
 Also shown is the 3SEQ classification status of these recombinants.
-All of the 12\% of recombinants that do not pass 3SEQ validation are 
+All of the 12\% of recombinants that do not pass 3SEQ validation are
 from the most weakly supported, with 4 or 5 averted mutations.
 Figures~\ref{fig:recombinant_evidence_cov_recomb} and
 ~\ref{fig:recombinant_evidence_rebar} 
-same the same information for CovRecomb and rebar validation,
-showing that their validation status tends to be function 
+plot the same information for CovRecomb and rebar validation,
+showing that their validation status tends to be function
 of the divergence between the recombinant parents.
 
 Recombination is rare in SARS-CoV-2, and
@@ -921,34 +924,35 @@ is not straightforward in general, and
 so we focus comparison on the singleton recombinants
 returned by both.
 Although these are likely to be enriched for artefacts,
-both methods face the same challenges and the 
-events can be compared like-for like. Of the 11XX recombination
-events returned by RIPPLES, 757 are singletons (resp 525/855 for 
-sc2ts). Of the RIPPLES singletons, 705 are also singletons 
-in the sc2ts ARG. [There's a complicated story to tell here 
+both methods face the same challenges and
+the events can be compared like-for like.
+Of the 11XX recombination events returned by RIPPLES,
+757 are singletons (respectively, 525/855 for sc2ts).
+Of the RIPPLES singletons, 705 are also singletons in the sc2ts ARG.
+[There's a complicated story to tell here
 about extra singletons in the RIPPLES set which pass
 3SEQ validation, but have parents from the future.]
-Thus, 216 of these recombinants pass 3SEQ validation, have 
-at least one parent that is on average 63 days \emph{younger}
-than the sequence itself. These parents were not available
-to sc2ts as potential matches, as it enforces strict 
-time ordering based on sample metadata.
+Thus, 216 of these recombinants pass 3SEQ validation,
+have at least one parent that is on average
+63 days \emph{younger} than the sequence itself.
+These parents were not available to sc2ts as potential matches,
+as it enforces strict time ordering based on sample metadata.
 Further study is required to determine
-if the metadata is incorrect in these cases, or if these 
-should be flagged as false positives. However, the 
-key point is that RIPPLES is dependent on signals
-embedded in the UShER tree, and therefore we cannot 
+if the metadata is incorrect in these cases, or
+if these should be flagged as false positives.
+However, the key point is that RIPPLES is dependent on signals
+embedded in the UShER tree, and therefore we cannot
 decouple the finer details of post-hoc recombinant detection
 from the tree building algorithm.
 
-We also compared the recombination events output by RIPPLES with
-the Pango X lineages. At p=4, we found that only XX of the 
-X lineages were present and many well-characterized events 
-such as XBB were not present. We therefore reran at p=3,
-resulting in XXXX events overall. At p=4, events involving
-XX of the 44 Pango X lineages present in the dataset,
-with unequivocal origins for 10 lineages, and 
-7 lineages other lineages associated with two competing events. 
+We also compared the recombination events
+output by RIPPLES with the Pango X lineages.
+At p=4, we found that only XX of the Pango X lineages were present and
+many well-characterized events such as XBB were not present.
+We therefore reran at p=3, resulting in XXXX events overall.
+At p=4, events involving XX of the 44 Pango X lineages
+present in the dataset, with unequivocal origins for 10 lineages, and
+7 lineages other lineages associated with two competing events.
 [More summary]
 
 [Paragraph summing things up]
