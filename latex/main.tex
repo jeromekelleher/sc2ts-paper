@@ -888,78 +888,6 @@ Figure~\ref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
 (and more details on the visualizations).
 
-
-\subsection*{Comparison with UShER+RIPPLES}
-
-RIPPLES~\cite{Turakhia2022} is a method for identifying
-recombination events using a phylogeny inferred by UShER.
-This distinguishes RIPPLES from other recombination detection
-methods such as 3SEQ, which classify particular \emph{sequences}
-as recombinant or not and can only identify potential onward 
-transmission post-hoc. The combination of UShER and RIPPLES
-is therefore the only method that is directly comparable 
-to sc2ts. It works by first identifying plausible long 
-branches in the input tree.
-For each candidate branch,
-RIPPLES systematically splits the sequence into 2 or 3 segments, and
-finds parsimonious placements for each segment independently.
-A recombination event at that node is then flagged if
-the overall parsimony of these multiple placements
-sufficiently improves over
-the original single-parent origin in the phylogeny
-(the ``parsimony improvement'' parameter, $p=3$, by default).
-RIVET~\cite{Smith2023tracking} is a tool for quality control and
-visualization of these recombination events.
-
-To compare the accuracy of sc2ts with UShER+RIPPLES
-we ran RIPPLES the Viridian UShER phylogeny
-subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-We used the RIPPLES parameter $p=4$ as is equivalent to the
-sc2ts $k=4$ parameter used to build the ARG,
-which resulted in 11[XX] distinct recombination events.
-We then ran 3SEQ on each of the candidate trios,
-giving an overall validation rate of XX\% (STAR Methods).
-Comparing events identified in the UShER tree and sc2ts ARG
-is not straightforward in general, and
-so we focus comparison on the singleton recombinants
-returned by both.
-Although these are likely to be enriched for artefacts,
-both methods face the same challenges and
-the events can be compared like-for like.
-Of the 11XX recombination events returned by RIPPLES,
-757 are singletons (respectively, 525/855 for sc2ts).
-Of the RIPPLES singletons, 705 are also singletons in the sc2ts ARG.
-[There's a complicated story to tell here
-about extra singletons in the RIPPLES set which pass
-3SEQ validation, but have parents from the future.]
-Thus, 216 of these recombinants pass 3SEQ validation,
-have at least one parent that is on average
-63 days \emph{younger} than the sequence itself.
-These parents were not available to sc2ts as potential matches,
-as it enforces strict time ordering based on sample metadata.
-Further study is required to determine
-if the metadata is incorrect in these cases, or
-if these should be flagged as false positives.
-However, the key point is that RIPPLES is dependent on signals
-embedded in the UShER tree, and therefore we cannot
-decouple the finer details of post-hoc recombinant detection
-from the tree building algorithm.
-
-We also compared the recombination events
-output by RIPPLES with the Pango X lineages.
-At p=4, we found that only XX of the Pango X lineages were present and
-many well-characterized events such as XBB were not present.
-We therefore reran at p=3, resulting in XXXX events overall.
-At p=4, events involving XX of the 44 Pango X lineages
-present in the dataset, with unequivocal origins for 10 lineages, and
-7 lineages other lineages associated with two competing events.
-[More summary]
-
-[Paragraph summing things up]
-See Document~\ref{sec:detailed_ripples} for more detailed analysis 
-of the UShER+RIPPLES results.
-
-
 \subsection*{Precision of recombination event times and positions}
 
 The location of a recombination breakpoint is generally
@@ -1141,56 +1069,129 @@ unknown cases and heterozygosity not captured by the Scorpio labels.
 \end{figure}
 
 
-\subsection*{Efficient inference and analysis of a pandemic-scale ARG}
+\subsection*{Comparison with UShER+RIPPLES}
+RIPPLES~\cite{Turakhia2022} is a method for identifying
+recombination events using a phylogeny inferred by UShER.
+This distinguishes RIPPLES from other recombination detection
+methods such as 3SEQ, which classify particular \emph{sequences}
+as recombinant or not and can only identify potential onward transmission post-hoc. 
+The combination of UShER and RIPPLES
+is therefore the only method that is directly comparable to sc2ts. 
+RIPPLES works by first identifying long 
+branches in the input tree, by default those carrying 3 or more 
+mutations. For each candidate branch,
+RIPPLES systematically splits the sequence into 2 or 3 segments, and
+finds parsimonious placements for each segment independently.
+A recombination event at that node is then flagged if
+the overall parsimony of these multiple placements
+sufficiently improves over
+the original single-parent origin in the phylogeny.
+This ``parsimony improvement'' parameter ($p$)
+is equivalent to the sc2ts recombination penalty ($k$).
 
-The COVID-19 pandemic resulted in the collection of viral genome sequence data on an unprecedented scale,
-which overwhelmed existing computational approaches,
-motivating the rapid development of new methods \cite{Turakhia2021,DeMaio2023,Hinrichs2024}.
-Although the computational tools used in phylogenetics and population genetics have historically been largely distinct,
-the functionality required largely overlaps.
-Sc2ts was built by modifying components of the tskit ARG software ecosystem \cite{Kelleher2019,Ralph2020,Baumdicker2022,Wong2024}
-and the VCF Zarr data storage format \cite{Czech2025}
-to describe relationships among virus samples,
-building an ARG over time as data becomes available.
-By reusing high-quality and high-performance components of these toolkits,
-we could develop the sc2ts inference method itself and
-perform all the pandemic-scale analyses in this article
-with Python code alone and no compiled languages.
+To compare the performance of sc2ts and UShER+RIPPLES 
+in terms of recombinant detection, we ran RIPPLES the Viridian UShER phylogeny
+subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
+Using the RIPPLES parameter $p=4$ (equivalent to $k=4$ used 
+to build the sc2ts ARG) resulted in 1174 reported recombination events.
+We ran 3SEQ on each of the candidate trios (STAR Methods) and 601 
+were classified as recombinant, giving an overall validation rate of 51\%.
+Aligning the events reported by both methods using the sets of descendant
+samples (STAR Methods), 468 of the events are shared by both, 
+with the intersection comprising 40\% of the RIPPLES events
+and 55\% of the sc2ts events (Figure~\ref{fig:ripples_sc2ts_events}). 
+The 706 recombination events output by RIPPLES that do not 
+correspond to a recombination in the sc2ts ARG can largely
+be explained by a combination of two factors.
+Firstly, 408 of these RIPPLES identified recombination events
+have one or more parents that are \emph{younger} than the
+recombinant sequence based on metadata. Thus, the parental
+sequences were simply not available to match against for 
+sc2ts (which enforces strict time ordering) when the 
+recombinant sequence was inserted. Secondly, of the 179
+remaining events with matching clades and in which the 
+sc2ts node has more than 4 mutations, of the total
+1,167 mutations, 452 of these occured at sites that were 
+remapped during post-hoc parsimony. The remaining ``missing''
+events are likely attributable to the finer details of the 
+differences in tree building approaches between UShER
+and sc2ts.
 
-To illustrate the power of these libraries, we provide some examples
-in which we compare the Usher and sc2ts intersections in tskit format described earlier.
-First, we computed levels of concordance when imputing missing and ambiguous bases in the alignments.
-The total aligned dataset for 1,226,587 samples and 27,431 sites
-shared by the sc2ts and Usher tree sequences represents 31.34 GB of nucleotide calls.
-Of the 80,574,518 missing data calls (Ns) in the alignments,
-sc2ts and Usher disagreed in their imputed values for only 56,782 sites (0.07\%).
-Additionally, 413,303 calls made use of the IUPAC uncertainty codes.
-Of these sc2ts imputed only 77 (0.02\%) incorrectly
-(i.e., with a base that is not compatible with the ambiguity code).
-UShER imputed only 4 calls from this set incorrectly,
-reflecting its explicit incorporation of IUPAC uncertainty codes in parsimony calculations.
-This computation,
-performed by co-iterating over the sites in the alignments and the sc2ts and Usher trees,
-required 30 lines of Python code and took 2m 59s on an intel i7-9700 CPU,
-with a peak memory usage of about 4.5 GB
-(see \cite{Czech2025} for further benchmarks for
-processing the Viridian data in VCF Zarr format).
-Performing this analysis using matUtils would require
-exporting the full dataset to VCF, and
-converting the VCF to FASTA, and
-then comparing the alignments one-by-one to the source FASTA alignments.
-In contrast with matUtils and most phylogenetic software,
-which provide a command line interface and suite of predefined operations that typically output text files,
-tskit is a Python API (with C and Rust interfaces also supported)
-which has many advantages \cite{Baumdicker2022}.
-As an illustration of the open-ended and efficient nature of the analyses this enables,
-we computed the number of polytomies (nodes that have $> 2$ children)
-and the maximum number of children per node in the Usher and sc2ts outputs.
-In the Usher tree it took 116 ms and 4 lines of code to count polytomies (171,148)
-and compute the maximum number of children (5918).
-In the sc2ts ARG, it took 385 ms and 6 lines of code
-to find the maximum number of polytomies (137,001) and
-maximum number of children (7708) across all 348 local trees.
+The 387 events detected by sc2ts and not by UShER+RIPPLES
+would require a detailed dissection of the UShER tree
+to explain, which is beyond the scope of this work.
+However, the set does contain some well characterised events such as XBB.
+We also compared the recombination events
+output by RIPPLES with the Pango X lineages.
+At p=4, we found that only XX of the Pango X lineages were present and
+many well-characterized events such as XBB were not present.
+We therefore reran at p=3, resulting in 4111 events overall,
+and increasing the intersection of events with sc2ts to 595 (70\%).
+At p=3, events involving XX of the 44 Pango X lineages
+present in the dataset, with unequivocal origins for 10 lineages, and
+7 lineages other lineages associated with two competing events.
+[More summary]
+
+
+[Paragraph summing things up. It seems like RIPPLES is doing its
+job, and the question is really whether UShER is giving 
+the correct signals for it to detect. Sc2ts detects more of the 
+well-known events. Needs careful explanation.].
+See Document~\ref{sec:detailed_ripples} for more detailed analysis 
+of the UShER+RIPPLES results.
+
+
+% TODO convert this into a discussion pargraph..
+% \subsection*{Efficient inference and analysis of a pandemic-scale ARG}
+
+% The COVID-19 pandemic resulted in the collection of viral genome sequence data on an unprecedented scale,
+% which overwhelmed existing computational approaches,
+% motivating the rapid development of new methods \cite{Turakhia2021,DeMaio2023,Hinrichs2024}.
+% Although the computational tools used in phylogenetics and population genetics have historically been largely distinct,
+% the functionality required largely overlaps.
+% Sc2ts was built by modifying components of the tskit ARG software ecosystem \cite{Kelleher2019,Ralph2020,Baumdicker2022,Wong2024}
+% and the VCF Zarr data storage format \cite{Czech2025}
+% to describe relationships among virus samples,
+% building an ARG over time as data becomes available.
+% By reusing high-quality and high-performance components of these toolkits,
+% we could develop the sc2ts inference method itself and
+% perform all the pandemic-scale analyses in this article
+% with Python code alone and no compiled languages.
+
+% To illustrate the power of these libraries, we provide some examples
+% in which we compare the Usher and sc2ts intersections in tskit format described earlier.
+% First, we computed levels of concordance when imputing missing and ambiguous bases in the alignments.
+% The total aligned dataset for 1,226,587 samples and 27,431 sites
+% shared by the sc2ts and Usher tree sequences represents 31.34 GB of nucleotide calls.
+% Of the 80,574,518 missing data calls (Ns) in the alignments,
+% sc2ts and Usher disagreed in their imputed values for only 56,782 sites (0.07\%).
+% Additionally, 413,303 calls made use of the IUPAC uncertainty codes.
+% Of these sc2ts imputed only 77 (0.02\%) incorrectly
+% (i.e., with a base that is not compatible with the ambiguity code).
+% UShER imputed only 4 calls from this set incorrectly,
+% reflecting its explicit incorporation of IUPAC uncertainty codes in parsimony calculations.
+% This computation,
+% performed by co-iterating over the sites in the alignments and the sc2ts and Usher trees,
+% required 30 lines of Python code and took 2m 59s on an intel i7-9700 CPU,
+% with a peak memory usage of about 4.5 GB
+% (see \cite{Czech2025} for further benchmarks for
+% processing the Viridian data in VCF Zarr format).
+% Performing this analysis using matUtils would require
+% exporting the full dataset to VCF, and
+% converting the VCF to FASTA, and
+% then comparing the alignments one-by-one to the source FASTA alignments.
+% In contrast with matUtils and most phylogenetic software,
+% which provide a command line interface and suite of predefined operations that typically output text files,
+% tskit is a Python API (with C and Rust interfaces also supported)
+% which has many advantages \cite{Baumdicker2022}.
+% As an illustration of the open-ended and efficient nature of the analyses this enables,
+% we computed the number of polytomies (nodes that have $> 2$ children)
+% and the maximum number of children per node in the Usher and sc2ts outputs.
+% In the Usher tree it took 116 ms and 4 lines of code to count polytomies (171,148)
+% and compute the maximum number of children (5918).
+% In the sc2ts ARG, it took 385 ms and 6 lines of code
+% to find the maximum number of polytomies (137,001) and
+% maximum number of children (7708) across all 348 local trees.
 
 
 \section*{DISCUSSION}
