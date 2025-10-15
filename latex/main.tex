@@ -764,20 +764,30 @@ the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 We validated the recombination events in the sc2ts ARG by running 
 the 3SEQ~\cite{Lam2018improved}, CovRecomb~\cite{Li2024CovRecomb} and rebar 
 recombination detection methods on the putative recombinant sequences
-(STAR Methods) summarised in Table~\ref{tab:recombinant_validation}.
-Overall, validation among the QC-passing recombinants is highest
-at with 3SEQ at 88\%, and is lowest for CovRecomb at xx\%. 
-CovRecomb has been previously shown to be 
+(STAR Methods) summarized in Table~\ref{tab:recombinant_validation}.
+Overall, validation among the QC-passing recombinants is
+the highest for 3SEQ at 88\% and
+the lowest for CovRecomb at 25\%.
+CovRecomb has been previously shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}, 
-and is specifically intended 
-to detect interlineage recombinants. The 12\% of recombinants 
+and is specifically intended to detect interlineage recombinants.
+As expected, CovRecomb missed most of the recombinants that
+involve closely related parental Pango lineages
+(Figure~\ref{fig:recombinant_evidence_cov_recomb}C),
+in contrast to RIPPLES
+which can detect intralineage recombinants
+(see Figure~\ref{fig:recombinant_evidence_ripples_p4} and
+Figure~\ref{fig:recombinant_evidence_ripples_p3}).
+The 12\% of recombinants
 not passing 3SEQ validation are also the most marginally supported
 (see next section; Figure~\ref{fig:recombinant_evidence}).
 All of the validation metrics also correlate strongly with the 
 QC filter, with very few of the QC-failing recombinants
 passing external validation (Table~\ref{tab:recombinant_validation}).
 
+
 \subsection*{Assessing evidence for recombination events}
+
 The LS HMM at the heart of sc2ts provides a simple and powerful means 
 of quantifying the plausibility of a given recombination event.
 To do this, we force the HMM to find a Viterbi solution for the 
@@ -835,39 +845,39 @@ same the same information for CovRecomb and rebar validation,
 showing that their validation status tends to be function 
 of the divergence between the recombinant parents.
 
-Recombination is rare in SARS-CoV-2, and ultimately judgements about
-plausibility require expert analysis. 
-To aid such interpretation and help identify quality control
-issues we developed a visualisation 
-based on SnpIt~\cite{OToole2024} and 
-the recombinant view from RIVET~\cite{Smith2023tracking},
-showing the informative genomic positions between 
-a recombinant and its parent sequences, and highlighting 
-potentially problematic loci.
+Recombination is rare in SARS-CoV-2, and
+ultimately judgments about plausibility require expert analysis.
+To aid such interpretation and help identify quality control issues
+we developed a visualization tool
+inspired by SnpIt~\cite{OToole2024} and 
+the recombinant view of RIVET~\cite{Smith2023tracking},
+showing the recombination-informative sites
+between a recombinant and its parent sequences, and
+highlighting potentially problematic loci.
 Each copying pattern shows the positions
 where the allelic state in a recombinant
-(middle row) matches that of the left (upper row, coloured green) 
-or right parent (lower row, coloured blue),
-or where the recombination event requires a de-novo mutation
+(middle row) matches that of the left (upper row, colored green) 
+or right parent (lower row, colored blue),
+or where the recombination event requires a \emph{de novo} mutation
 (gold, with mutational change below).
 Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
 illustrating this spectrum of plausibility.
 XA is an example of a highly plausible recombinant, shown by the 
 large number of supporting loci on the left and right. As we have 
-only one de-novo mutation, we can be sure that the parents are closely
+only one \emph{de novo} mutation, we can be sure that the parents are closely
 observed [Some details about XA here, how well the parents were sampled etc].
 XBB is also strongly supported by many loci on the left and right, 
-but the presence of many de-novo mutations
+but the presence of many \emph{de novo} mutations
 observed in the copying patterns suggests the existence of
 many genetically distinct, unsampled ancestors 
 [FIXME: in this case, probably BJ.1, see issue 336],
 and some caution should be exercised in interpreting them. 
 See Figures~\ref{fig:recombinant_evidence}D and
-\ref{fig:pango_x_copying_patterns} for copying patterns of the 
-Pango X lineages, and 
+\ref{fig:pango_x_copying_patterns}
+for copying patterns of the Pango X lineages, and
 Figure~\ref{fig:copying_pattern_examples} for copying patterns
-highlighting specific types of QC problem (and more details on the 
-visualisation).
+highlighting specific types of QC problems
+(and more details on the visualizations).
 
 
 \subsection*{Comparison with UShER+RIPPLES}
@@ -892,25 +902,27 @@ the original single-parent origin in the phylogeny
 RIVET~\cite{Smith2023tracking} is a tool for quality control and
 visualization of these recombination events.
 
-To compare the accuracy of sc2ts with UShER+RIPPLES we ran
-RIPPLES the Viridian UShER phylogeny
+To compare the accuracy of sc2ts with UShER+RIPPLES
+we ran RIPPLES the Viridian UShER phylogeny
 subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-We used the RIPPLES parameter $p=4$ as is equivalent to the 
-sc2ts $k=4$ parameter used to build the ARG, which resulted 
-in 11[XX] distinct recombination events. We then ran 3SEQ on
-each of the candidate trios, giving an overall validation
-rate of XX\% (STAR Methods). Comparing events identified 
-in the UShER tree and sc2ts ARG is not straightforward in 
-general, and so we focus comparison on the singleton recombinants
-returned by both. Although these are likely to be enriched for 
-artefacts, both methods face the same challenges and the 
+We used the RIPPLES parameter $p=4$ as is equivalent to the
+sc2ts $k=4$ parameter used to build the ARG,
+which resulted in 11[XX] distinct recombination events.
+We then ran 3SEQ on each of the candidate trios,
+giving an overall validation rate of XX\% (STAR Methods).
+Comparing events identified in the UShER tree and sc2ts ARG
+is not straightforward in general, and
+so we focus comparison on the singleton recombinants
+returned by both.
+Although these are likely to be enriched for artefacts,
+both methods face the same challenges and the 
 events can be compared like-for like. Of the 11XX recombination
 events returned by RIPPLES, 757 are singletons (resp 525/855 for 
 sc2ts). Of the RIPPLES singletons, 705 are also singletons 
 in the sc2ts ARG. [There's a complicated story to tell here 
 about extra singletons in the RIPPLES set which pass
 3SEQ validation, but have parents from the future.]
-Thus, 216 of these recombinants  pass 3SEQ validation, have 
+Thus, 216 of these recombinants pass 3SEQ validation, have 
 at least one parent that is on average 63 days \emph{younger}
 than the sequence itself. These parents were not available
 to sc2ts as potential matches, as it enforces strict 
@@ -4127,10 +4139,14 @@ driven by the emergence of Alpha, Delta, and Omicron.
 Usage of computational resources
 during the ARG inference process.
 (A) The amount of time to process a daily batch of samples
-peaks when the sample volume is the highest.
-(B) Mean time to process a sample remained low.
+peaks when the sampling effort is the highest.
+(B) Mean time to process a sample remained low throughout,
+except towards the very end when there were few exact matches.
+The HMM cost was moderate initially,
+then noticeably decreased when sampling effort is the highest
+before increasing again towards the end.
 (C) Max RAM usage also peaks around the time
-that sampling effort is the highest.
+when sampling effort is the highest.
 }
 \label{fig:inference_resources}
 \end{figure}
