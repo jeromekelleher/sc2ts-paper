@@ -1096,6 +1096,8 @@ is equivalent to the sc2ts recombination penalty ($k$).
 To compare the performance of sc2ts and UShER+RIPPLES 
 in terms of recombinant detection, we ran RIPPLES on the Viridian UShER phylogeny
 subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
+Note that we are interested in the direct output of sc2ts and UShER+RIPPLES
+here, and do not perform QC filtering of either.
 Using the RIPPLES parameter $p=4$ (equivalent to $k=4$ used 
 to build the sc2ts ARG) resulted in 1174 reported recombination events.
 We ran 3SEQ on each of the candidate trios (STAR Methods) and 601 
@@ -1118,30 +1120,57 @@ sc2ts node has more than 4 mutations, of the total
 1,167 mutations, 452 of these occurred at sites that were 
 remapped during post-hoc parsimony. The remaining ``missing''
 events are likely attributable to the finer details of the 
-differences in tree building approaches between UShER
-and sc2ts.
+differences in tree building approaches between UShER and sc2ts.
+
 
 The 387 events detected by sc2ts and not by UShER+RIPPLES
 would require a detailed dissection of the UShER tree
 to explain, which is beyond the scope of this work.
 However, the set does contain some well characterized events such as XBB.
 We also compared the recombination events
-output by RIPPLES with the Pango X lineages.
-At p=4, we found that only XX of the Pango X lineages were present and
-many well-characterized events such as XBB were not present.
+output by RIPPLES with the Pango X lineages
+(Table~\ref{tab:ripples_x_lineages}).
+At p=4, we found that only 9 of the Pango X lineages were present and
+with unequivocal recombinant origin for 6 (contrast with 
+16 Type I events in Table~\ref{tab:pango_x_lineages}).
 We therefore reran at p=3, resulting in 4111 events overall,
 and increasing the intersection of events with sc2ts to 595 (70\%).
 At p=3, events involving XX of the 44 Pango X lineages
 are present in the dataset, with unequivocal origins for 10 lineages, and
 7 lineages other lineages associated with two competing events.
 [More summary]
+[Note somewhere here that XB and XAJ are found to be recombinants 
+at p=4, showing that UShER is doing better here for some reason]
 
-[Paragraph summing things up. It seems like RIPPLES is doing its
-job, and the question is really whether UShER is giving 
-the correct signals for it to detect. Sc2ts detects more of the 
-well-known events. Needs careful explanation.].
+In terms of \emph{detecting} recombination events, 
+sc2ts and the combination of UShER and RIPPLES have much in common, 
+and it is likely that very similar results could be obtained if run
+in the same way. That is, if we constructed an UShER tree by 
+incrementally adding the same daily batches as used for sc2ts
+and examined any newly-added long branches each day
+using RIPPLES, we would likely get very similar results to sc2ts
+in terms recombinants detected.
+For a given matching operation, RIPPLES and the LS HMM 
+(under its current parameterisation) 
+are deterministically solving the same well-defined problem
+(albeit with radically different implementations) and they 
+must therefore produce similar answers. 
+Where sc2ts and UShER+RIPPLES diverge, however, is in terms 
+of how well such signals of recombination can be preserved
+over longer timescales. Continuing our thought experiment
+in which we run UShER and RIPPLES in daily batches, suppose
+that on a given day a branch with 4 mutations is identified 
+as being a recombinant. Unless this branch is specifically 
+``protected'' as representing a recombinant it may 
+be broken up by subsequent parsimony operations, thus 
+erasing the signal of recombination. This would appear
+to be the mostly likely explanation for the ``missing'' 
+X-lineages like XBB (detected by sc2ts at $k=4$ but 
+not by UShER+RIPPLES at $p=4$). 
+
 See Document~\ref{sec:detailed_ripples} for more detailed analysis 
 of the UShER+RIPPLES results.
+[
 
 
 % TODO convert this into a discussion pargraph..
@@ -1198,6 +1227,10 @@ of the UShER+RIPPLES results.
 
 
 \section*{DISCUSSION}
+
+[NOTE: the discussion needs to be reworked, and hasn't been updated
+to account for changes. See the new draft subsection on prevalence of recombination,
+though]
 
 %%% The discussion should explain the significance of the results
 %%% and place them into a broader context. Subheadings are permitted.
@@ -1327,6 +1360,9 @@ the Viridian data that does not have clear signals for recombination
 of X lineages such as XBB at the $p=4$ threshold. 
 The inference of recombination is therefore intrinsically linked
 with the underlying genealogy inference method.
+
+[Same point for us with XB. We don't pick up XB because of a long 
+branch and we don't have the right parents present.]
 
 [Whether k=3 or k=4 is ``correct'' is a matter for debate, and feeds
 into the next point.]
