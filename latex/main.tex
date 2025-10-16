@@ -807,8 +807,10 @@ a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between
 the two solutions---the number of mutations
 ``averted'' by recombination---is a measure of
-the evidence in favor of recombination
-(similar to the idea of ``parsimony improvement'' in RIPPLES.)
+the evidence in favor of recombination.
+[FIXME need to insert a sentence saying this is similar to 
+metrics used by RIPPLES and other methods, contrasting
+recombinant vs non-recombinant explanations.]
 Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
 for each of the 21 recombination events associated with Pango X lineages,
 with support ranging from very strong in the case of XC
@@ -823,7 +825,7 @@ which have the minimal possible number of averted mutations.
 Properties of recombination events. A,B,C 
 show summaries of the 354 sc2ts recombination nodes
 passing quality control filters
-colored by CovRecomb classification (recombinant: purple, non-recombinant: gray).
+colored by 3SEQ classification (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
@@ -832,7 +834,7 @@ those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.
 Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
-by allowing recombination (i.e. $x$-$y$).
+by allowing recombination (i.e. $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
