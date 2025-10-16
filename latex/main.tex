@@ -773,14 +773,11 @@ the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 We validated the recombination events in the sc2ts ARG by running 
 3SEQ~\cite{Lam2018improved} on the putative recombinant 
 sequence trios (STAR Methods), 
-and 383 of the 855 (45\%) were classified as recombinant.
+and 484 of the 855 (57\%) were classified as recombinant.
 Validation status correlates strongly with our QC filter, with 
-88\% of the 354 QC-passing recombinants 
-and 14\% of the QC-failing recombinants
+95\% of the QC-passing recombinants 
+and 29\% of the QC-failing recombinants
 being classified as recombinant.
-The 12\% of QC-passing recombinants
-not validated by 3SEQ are also among the most marginally supported
-(see next section; Figure~\ref{fig:recombinant_evidence}).
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
 and rebar recombination detection methods on the putative recombinant 
 sequences, summarized in Table~\ref{tab:recombinant_validation}.
@@ -838,8 +835,7 @@ by allowing recombination (i.e. $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
-for XA, XW, XBB, and an
-undesignated recombination event under XBB, which we refer to as XBB.x.}
+for XA, XW and XBB.}
 \label{fig:recombinant_evidence}
 \end{figure}
 
@@ -852,8 +848,9 @@ and the resulting distribution of the number of
 averted mutations (lower histogram)
 over all 354 recombination events that pass QC.
 Also shown is the 3SEQ classification status of these recombinants.
-All of the 12\% of recombinants that do not pass 3SEQ validation are
-from the most weakly supported, with 4 or 5 averted mutations.
+The 5\% of recombinants that do not pass 3SEQ validation are
+among the most weakly supported, with 4 or 5 averted mutations.
+[TODO discuss B and C]
 Figures~\ref{fig:recombinant_evidence_cov_recomb} and
 ~\ref{fig:recombinant_evidence_rebar} 
 plot the same information for CovRecomb and rebar validation,
@@ -2892,11 +2889,11 @@ all 855 recombinants and the 354 passing and 501 failing QC.
 \centering
 \begin{tabular}{llll}
 \toprule
-Method & Total & QC Pass & QC Fail \\
+Method & Total    & QC Pass & QC Fail \\
 \midrule
-3SEQ & 383 & 71 & 312 \\
-CovRecomb & 92& 90 & 2\\
-rebar & 213& 203 & 10 \\
+3SEQ        & 484 & 338     & 146 \\
+CovRecomb   & 92  & 90      & 2\\
+rebar       & 213 & 203     & 10 \\
 \bottomrule
 \end{tabular}
 \end{table}
