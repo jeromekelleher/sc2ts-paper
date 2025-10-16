@@ -47,22 +47,24 @@ def run_single_3seq(child_fasta, parent_fastas):
     return output
 
 
-# TODO rejigger this to use the new run_single_3seq function above and
-# use the different approach to putting fastas together.
 @click.command()
 @click.argument("recombinants_csv")
 @click.argument("fasta_dir")
 @click.argument("output")
-def run_3seq(recombinants_csv, fasta_dir, output):
+def run_sc2ts_3seq(recombinants_csv, fasta_dir, output):
     fasta_dir = pathlib.Path(fasta_dir)
     dfr = pd.read_csv(recombinants_csv)
 
+    def fasta_file(node_id):
+        return (fasta_dir / f"{node_id}.fasta").absolute()
+
     data = []
-    for recombinant in tqdm.tqdm(dfr["recombinant"].values):
-        fasta = fasta_dir / f"{recombinant}.fasta"
-        out = run_single_3seq(fasta)
+    for _, row in tqdm.tqdm(list(dfr.iterrows())):
+        child_fasta = fasta_file(row["recombinant"])
+        parent_fastas = [fasta_file(row[p]) for p in ["parent_left", "parent_right"]]
+        out = run_single_3seq(child_fasta.absolute(), parent_fastas)
         if len(out) > 0:
-            out["recombinant"] = recombinant
+            out["recombinant"] = row["recombinant"]
             data.append(out)
     # print(data)
     df = pd.concat(data)
@@ -73,7 +75,7 @@ def run_3seq(recombinants_csv, fasta_dir, output):
 @click.argument("ts")
 @click.argument("recombinants_csv")
 @click.argument("output_dir")
-def generate_fasta(ts, recombinants_csv, output_dir):
+def generate_sc2ts_fasta(ts, recombinants_csv, output_dir):
     output_dir = pathlib.Path(output_dir)
     ts = tszip.load(ts)
     dfr = pd.read_csv(recombinants_csv)
@@ -87,7 +89,7 @@ def generate_fasta(ts, recombinants_csv, output_dir):
     if not np.all(ts.nodes_flags == tskit.NODE_IS_SAMPLE):
         raise ValueError("Not all the nodes are samples.")
 
-    labels = ["sample", "parent_left", "parent_right"]
+    labels = ["recombinant", "parent_left", "parent_right"]
     samples = []
     for _, row in dfr.iterrows():
         samples.extend([row[label] for label in labels])
@@ -99,13 +101,11 @@ def generate_fasta(ts, recombinants_csv, output_dir):
     )
     print("done")
 
-    for _, row in dfr.iterrows():
-        d = {label: alignments[row[label]] for label in labels}
-        output = output_dir / f"{row['recombinant']}.fasta"
+    for k, v in alignments.items():
+        output = output_dir / f"{k}.fasta"
         with open(f"{output}", "w") as f:
-            for k, v in d.items():
-                f.write(f">{k}\n")
-                f.write(v + "\n")
+            f.write(f">{k}\n")
+            f.write(v + "\n")
 
 
 @click.command()
@@ -159,9 +159,8 @@ def cli():
     pass
 
 
-cli.add_command(run_3seq)
-# TODO rename
-cli.add_command(generate_fasta)
+cli.add_command(run_sc2ts_3seq)
+cli.add_command(generate_sc2ts_fasta)
 cli.add_command(generate_ripples_sample_list)
 cli.add_command(run_ripples_3seq)
 cli()

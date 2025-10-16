@@ -632,29 +632,29 @@ rule usher_sc2ts_comparison:
 
 # # TODO add rule to download and compile 3seq
 
-rule generate_triplets:
+rule generate_sc2ts_fasta:
     conda: "sc2ts.yml"
     input: 
         "{SQ_PREFIX}.trees",
         "{SQ_PREFIX}_recombinants.csv"
     output:
-        directory("{SQ_PREFIX}_3seq_triplets")
+        directory("{SQ_PREFIX}_3seq_fasta")
     shell:
       """
       mkdir -p {output}
-      python scripts/run_3seq.py generate-fasta {input} {output}
+      python scripts/run_3seq.py generate-sc2ts-fasta {input} {output}
       """
         
 rule run3seq:
     conda: "sc2ts.yml"
     input: 
         "{RSQ_PREFIX}_recombinants.csv",
-        "{RSQ_PREFIX}_3seq_triplets"
+        "{RSQ_PREFIX}_3seq_fasta"
     output:
         "{RSQ_PREFIX}_3seq.csv"
     shell:
         """
-        python scripts/run_3seq.py run-3seq {input} {output}
+        python scripts/run_3seq.py run-sc2ts-3seq {input} {output}
         """
 
 rule generate_sample_list:
