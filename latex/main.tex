@@ -807,8 +807,10 @@ a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between
 the two solutions---the number of mutations
 ``averted'' by recombination---is a measure of
-the evidence in favor of recombination
-(similar to the idea of ``parsimony improvement'' in RIPPLES.)
+the evidence in favor of recombination.
+[FIXME need to insert a sentence saying this is similar to 
+metrics used by RIPPLES and other methods, contrasting
+recombinant vs non-recombinant explanations.]
 Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
 for each of the 21 recombination events associated with Pango X lineages,
 with support ranging from very strong in the case of XC
@@ -823,7 +825,7 @@ which have the minimal possible number of averted mutations.
 Properties of recombination events. A,B,C 
 show summaries of the 354 sc2ts recombination nodes
 passing quality control filters
-colored by CovRecomb classification (recombinant: purple, non-recombinant: gray).
+colored by 3SEQ classification (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
@@ -832,7 +834,7 @@ those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.
 Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
-by allowing recombination (i.e. $x$-$y$).
+by allowing recombination (i.e. $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
@@ -2213,27 +2215,13 @@ workflow (see \nameref{sec:data_and_code_availability}).
 
 
 \subsubsection*{Quality control of recombination events}
-[TODO rewrite this to account for new Results section]
 
-Sequencing errors in genome assemblies \cite{Turakhia2020},
-read misalignments \cite{Hunt2024}, and
-multi-nucleotide substitutions (MNS \cite{DeMaio2020issues})
-can cause short regions of a sample genome to match more closely
-to an alternative genome rather than the true parent.
-Such genomic regions can be mistaken for evidence of recombination,
-because the LS HMM counts each base separately.
-Fortunately, artefactual recombinants caused by this effect are usually
-identifiable because they affect multiple adjacent or near-adjacent
-bases simultaneously.
-
-We devised a quality control (QC) measure based on this observation, and
-applied it to each putative recombination event in the ARG.
 We examined the genomic positions
 at which the suggested parents differed in allelic state.
 Where such sites clustered closely (3 or fewer bases apart),
 we treated the entire cluster of sites as a single \emph{locus}.
 For each genomic region identified by the HMM as having a single parent,
-we calculated the "net number of supporting loci"
+we calculated the ``net number of supporting loci''
 by counting the number of loci in the region
 that supported the suggested parent minus the number that did not support it.
 Finally, with all the recombination events in the ARG having a single breakpoint,
@@ -2284,6 +2272,19 @@ which has been identified as a sequencing error
 due to incomplete read trimming \cite{DeMaio2024}.
 There are 9 recombination events involving this particular MNS,
 of which 6 failed QC.
+
+\subsubsection*{Validation of recombination events}
+
+We validated recombination events in the sc2ts ARG 
+using 3SEQ~\cite{Lam2018improved} as follows.
+We first exported the alignments for the recombination node and both 
+parents to FASTA format, and then rand 3SEQ in ``full mode''
+independently for each recombinant. Specifically, we 
+ran \texttt{3seq -full  parents.fa recombinant.fa} using default 
+thresholds.
+
+We used 3SEQ source code downloaded from \url{https://gitlab.com/lamhm/3seq}
+at git hash e45ee3b4 for all analyses.
 
 \subsubsection*{Likely spurious ancestrally-important recombinants}
 \label{sec:spurious-ancestrally-important-recombinants}
