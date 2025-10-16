@@ -513,19 +513,17 @@ correctly identified many known
 high-frequency deletions (Table~\ref{tab:major_dels}) and
 recurrent deletions (Table~\ref{tab:rec_dels}).
 For example, the three characteristic deletions of Alpha \cite{RambautAlpha2020}
-(11288+9, 21765+6, 21991+3,
-where the first and second numbers are
-the start position and length, respectively)
+(11288:9, 21765:6, 21991:3)
 are correctly mapped above the Alpha origin in the ARG
 (Figure~\ref{fig:subgraph_alpha}).
 The ARG captures known recurrent deletions
 in the N-terminal domain of the S1 unit of Spike
 (which is a deletion hotspot \cite{McCarthy2021})
 for example,
-the 21765+6 deletion ($\Delta$H69/V70),
+the 21765:6 deletion ($\Delta$H69/V70),
 which causes S-Gene Target Failure \cite{Walker2021} and
 is associated with increased efficiency in cell entry \cite{Meng2021}, and
-the 21991+3 deletion
+the 21991:3 deletion
 which is associated with antibody escape \cite{McCarthy2021}.
 See Document~\ref{sec:supplement_dels} for further analysis.
 
@@ -670,7 +668,7 @@ can be attributed to the clarity of the rules under which new lineages
 are designated and their explicitly phylogenetic basis.
 The first recombinant lineage XA was designated in 2021
 based on the analysis of Jackson et al.\cite{Jackson2021},
-which established that recombination with onward transmission had occurred [weak FIXME].
+which established that recombination with onward transmission had occurred.
 Although the process of incorporating recombinant lineages
 in the Pango nomenclature system is well defined,
 the identification of such events is much more subjective,
@@ -718,7 +716,10 @@ nesting among the Pango X lineage origin nodes within the ARG,
 with two major clusters of particular note. Although XQ is 
 directly associated with a recombination event in the ARG, 
 XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
-that they are more parsimoniously explained as sublineages or sisters of XQ
+% NOTE: deleted the "sister" bit because it's confusing when
+% reading the document at this level. Keep the detailed hyptothese
+% to the deep dives.
+that they are more parsimoniously explained as sublineages of XQ
 than de-novo recombinant lineages (Document \ref{sec:dd_xq}). 
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
@@ -770,28 +771,29 @@ contain all of the recombinants associated with Pango X lineages
 the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 
 We validated the recombination events in the sc2ts ARG by running 
-the 3SEQ~\cite{Lam2018improved}, CovRecomb~\cite{Li2024CovRecomb} and rebar 
-recombination detection methods on the putative recombinant sequences
-(STAR Methods) summarized in Table~\ref{tab:recombinant_validation}.
-Overall, validation among the QC-passing recombinants is
-the highest for 3SEQ at 88\% and
-the lowest for CovRecomb at 25\%.
-CovRecomb has been previously shown to be
-less sensitive than other methods~\cite{Li2024CovRecomb}, 
-and is specifically intended to detect interlineage recombinants.
-As expected, CovRecomb missed most of the recombinants that
-involve closely related parental Pango lineages
-(Figure~\ref{fig:recombinant_evidence_cov_recomb}C),
-in contrast to RIPPLES
-which can detect intralineage recombinants
-(see Figure~\ref{fig:recombinant_evidence_ripples_p4} and
-Figure~\ref{fig:recombinant_evidence_ripples_p3}).
-The 12\% of recombinants
-not passing 3SEQ validation are also the most marginally supported
+3SEQ~\cite{Lam2018improved} on the putative recombinant 
+sequence trios (STAR Methods), 
+and 383 of the 855 (45\%) were classified as recombinant.
+Validation status correlates strongly with our QC filter, with 
+88\% of the 354 QC-passing recombinants 
+and 14\% of the QC-failing recombinants
+being classified as recombinant.
+The 12\% of QC-passing recombinants
+not validated by 3SEQ are also among the most marginally supported
 (see next section; Figure~\ref{fig:recombinant_evidence}).
-All of the validation metrics also correlate strongly with the 
-QC filter, with very few of the QC-failing recombinants
-passing external validation (Table~\ref{tab:recombinant_validation}).
+In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
+and rebar recombination detection methods on the putative recombinant 
+sequences, summarized in Table~\ref{tab:recombinant_validation}.
+CovRecomb has a substantially lower validation rate at 25\% 
+among the QC-passing recombinants. This is expected, as 
+CovRecomb and is specifically intended to detect interlineage recombinants
+and been previously shown to be
+less sensitive than other methods~\cite{Li2024CovRecomb}.
+Rebar validation is intermediate, at 57\% among QC-passing recombinants.
+(See also Figures~\ref{fig:recombinant_evidence_cov_recomb},
+and \ref{fig:recombinant_evidence_rebar}.)
+% We don't talk about RIPPLES results yet as we haven't discussed it, a
+% and that would be confusing.
 
 
 \subsection*{Assessing evidence for recombination events}
@@ -2883,18 +2885,17 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 
 \begin{table}
 \caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
-all 855 recombinants (total) and XXX passing and XXX failing QC.
-TODO FILL OUT DETAILS.
+all 855 recombinants and the 354 passing and 501 failing QC.
 }
 \label{tab:recombinant_validation}
 \centering
 \begin{tabular}{llll}
 \toprule
-Method & Overall & QC Pass & QC Fail \\
+Method & Total & QC Pass & QC Fail \\
 \midrule
-3SEQ & xx & 88\% \\
-CovRecomb & \\
-rebar & \\
+3SEQ & 383 & 71 & 312 \\
+CovRecomb & 92& 90 & 2\\
+rebar & 213& 203 & 10 \\
 \bottomrule
 \end{tabular}
 \end{table}
