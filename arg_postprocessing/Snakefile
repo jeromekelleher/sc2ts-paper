@@ -630,37 +630,50 @@ rule usher_sc2ts_comparison:
 # # 3SEQ
 # ################
 
-# # TODO add rule to download and compile 3seq
+rule gitlab_3seq:
+    output: 
+        directory("3seq")
+    shell: 
+        """
+        git clone https://gitlab.com/lamhm/3seq.git;
+        cd 3seq && git checkout e45ee3b4365d2e9d1bcad62b47ce1a62ea6e21ba
+        """
 
-rule generate_triplets:
+rule build_3seq:
+    output: 
+        "3seq/3seq",
+    shell: 
+        "cd 3seq && make"
+
+rule generate_sc2ts_fasta:
     conda: "sc2ts.yml"
     input: 
         "{SQ_PREFIX}.trees",
         "{SQ_PREFIX}_recombinants.csv"
     output:
-        directory("{SQ_PREFIX}_3seq_triplets")
+        directory("{SQ_PREFIX}_3seq_fasta")
     shell:
       """
       mkdir -p {output}
-      python scripts/run_3seq.py generate-fasta {input} {output}
+      python scripts/run_3seq.py generate-sc2ts-fasta {input} {output}
       """
         
 rule run3seq:
     conda: "sc2ts.yml"
     input: 
         "{RSQ_PREFIX}_recombinants.csv",
-        "{RSQ_PREFIX}_3seq_triplets"
+        "{RSQ_PREFIX}_3seq_fasta"
     output:
         "{RSQ_PREFIX}_3seq.csv"
     shell:
         """
-        python scripts/run_3seq.py run-3seq {input} {output}
+        python scripts/run_3seq.py run-sc2ts-3seq {input} {output}
         """
 
 rule generate_sample_list:
     conda: "sc2ts.yml"
     input: 
-        "ripples_p{PARSIMONY}/recombination.tsv",
+        "sc2ts_viridian_v1.2_ripples_p{PARSIMONY}.csv",
     output:
         "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     shell:
@@ -708,13 +721,15 @@ rule generate_usher_fastas:
 
 rule run_ripples_3seq:
     input: 
-        "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated"
+        "sc2ts_viridian_v1.2_ripples_p{PARSIMONY}.csv",
+        "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated",
+        "3seq/3seq",
     output:
         "ripples_3seq_p{PARSIMONY}.csv",
     shell:
         """     
         python3 scripts/run_3seq.py run-ripples-3seq \
-            ripples_p{wildcards.PARSIMONY}/recombination.tsv \
+            {input[0]} \
             ripples_3seq_p{wildcards.PARSIMONY}_tmp/ {output}
         """
 
