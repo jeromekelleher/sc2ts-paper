@@ -385,8 +385,10 @@ recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
 In the interest of interpretability, we simplified this model to 
 use a single parameter $k$ which essentially 
 controls the number of recurrent mutations that is preferred to 
-switching to a different parent via recombination (we use $k=4$ here
-[TODO cite support for this, like CovRecomb etc]).
+switching to a different parent via recombination 
+% This is quite a big thing really, and ultimately what determines
+% the number of recombinants detected.
+(we use $k=4$ here; see STAR Methods and Discussion).
 We used the highly efficient LS HMM implementation in tsinfer\cite{Kelleher2019},
 with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
@@ -1074,7 +1076,8 @@ RIPPLES~\cite{Turakhia2022} is a method for identifying
 recombination events using a phylogeny inferred by UShER.
 This distinguishes RIPPLES from other recombination detection
 methods such as 3SEQ, which classify particular \emph{sequences}
-as recombinant or not and can only identify potential onward transmission post-hoc. 
+as recombinant or not and can only identify 
+potential onward transmission post-hoc. 
 The combination of UShER and RIPPLES
 is therefore the only method that is directly comparable to sc2ts. 
 RIPPLES works by first identifying long 
@@ -1303,12 +1306,37 @@ enabling and accelerating studies of SARS-CoV-2 for years to come.
 [Rough first draft taken from earlier location. Sticking in a heading to
 make it clear it's distinct from other paragraphs.]
 
-This estimate for effective recombination in SARS-CoV-2 is much lower 
-than previous studies have suggested.
+The number of recombination events that we detect is largely 
+driven by the choice of recombination penalty, $k$ (or $p$
+for RIPPLES). 
+At $k=4$ we detect fewer recombinants overall than the combination of 
+UShER and RIPPLES at the same threshold. 
+However, most of the extra recombinants detected by UShER+RIPPLES
+involve violations of time ordering; whether this is due to incorrect
+metadata or these are false positives would require further study.
+However, at $p=4$, UShER+RIPPLES detects very few of the well-characterised
+Pango X-lineages which are detected by sc2ts. At the more lenient
+threshold of $p=3$, more of these events are detected (but still fewer
+than sc2ts) but at the cost of nearly 4 times more recombination
+events overall. Our detailed analysis shows that RIPPLES has a well
+defined task, which it performs well, finding the potential events
+in an exhaustive search. However, it can only operate within the
+input that it is provided, and it is the UShER tree provided with
+the Viridian data that does not have clear signals for recombination
+of X lineages such as XBB at the $p=4$ threshold. 
+The inference of recombination is therefore intrinsically linked
+with the underlying genealogy inference method.
+
+[Whether k=3 or k=4 is ``correct'' is a matter for debate, and feeds
+into the next point.]
+
+The estimate for effective recombination in SARS-CoV-2 that we obtain
+at k=4 is much lower 
+than previous studies have suggbalanced
 % Bolotie: , we identified 225 anomalous SARS-CoV-2 genomes of likely
 % recombinant origins out of the first 87,695 genomes to be released
 In an early analysis, 225 potentially recombinant sequences out 
-of 87,695 samples [WHAT DATE?]\cite{Varabyou2021rapid}.
+of 87,695 samples collected before October 2020\cite{Varabyou2021rapid}.
 Over the same time period, XX events are present in the sc2ts ARG,
 representing a total of XX samples.
 In the flagship analysis for the RIPPLES method~\cite{Turakhia2022}, 
@@ -1342,8 +1370,6 @@ of recombination in SARS-CoV-2.
 % recombinant origins out of the first 87,695 genomes to be released
 % recombination events, 
 % RecombinHunt just looks at X lineages (I think?)
-
-
 
 \subsection*{Limitations of the study}
 
