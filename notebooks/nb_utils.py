@@ -58,10 +58,10 @@ def standard_recombinant_labels(ts, pango_x_events_file):
                 key=lambda i: tree.num_samples(pango_x_events.closest_recombinant[i])
             )
             use[sorted_indexes[-1]] = True
-    
+
     labels = {row.closest_recombinant: row.root_pango for row in pango_x_events[use].itertuples()}
     assert len(labels) == np.sum(use)
-    
+
     labels = {row.closest_recombinant: row.root_pango for row in pango_x_events[use].itertuples()}
     for re_node, rows in pango_x_events[pango_x_events.root_type != "R"].groupby("closest_recombinant"):
         if re_node >=0:
@@ -71,25 +71,27 @@ def standard_recombinant_labels(ts, pango_x_events_file):
                     labels[re_node] = rows.iloc[0].root_pango
                 else:
                     labels[re_node] = "/".join(sorted(rows.root_pango.values))
-    
+
     # Tweak the "XBB.1" RE node label, which should have a bespoke label because it's not
     # reflective of the majority of XBB.1 samples
     XBB_1 = [k for k, v in labels.items() if v == "XBB.1"][0]
     labels[XBB_1] = "XBB.x"
+    # Remove this from the list, as it's not interesting enough to point out.
+    del labels[XBB_1]
     Xx = [k for k, v in labels.items() if "XZ" in v][0]
     labels[Xx] = "Xx"
-    
+
     # Add particular pangos that are not X but are recombinants
-    
+
     #for re_pango in ["BQ.1.21"]:  # BQ.1.21 is not robust, so skip it
     #    potential_re_node = ts.first().mrca(*df.loc[df.pango == re_pango, "node_id"])
     #    assert ts.node(potential_re_node).flags & sc2ts.NODE_IS_RECOMBINANT
     #    labels[potential_re_node] = re_pango
-    
+
     # Add the Jackson recombinants
     XA = [k for k, v in labels.items() if v == "XA"][0]
     labels[XA] = "XA(JA)"
-    
+
     jackson_recombs = {
         "JB": "ERR5058070",
         "JC": "ERR5232711",
@@ -98,7 +100,7 @@ def standard_recombinant_labels(ts, pango_x_events_file):
         "J2": "ERR5304348", # MILK-103C712
         "J3": "ERR5238288", # QEUH-1067DEF
     }
-    
+
     for label, sample_id in jackson_recombs.items():
         u = df.loc[sample_id, "node_id"]
         it = tree.ancestors(u)
@@ -106,7 +108,7 @@ def standard_recombinant_labels(ts, pango_x_events_file):
             u = next(it)
         assert u != -1
         labels[int(u)] = label
-    
+
     return labels
 
 
@@ -546,7 +548,7 @@ class D3ARG_viz:
                 self.d3arg.mutations.loc[np.isin(match, use), "stroke"] = (
                     colour
                 )
-                
+
 
         if highlight_nodes:
             self.d3arg.nodes.loc[select_nodes, "fill"] = highlight_colour
