@@ -11,23 +11,9 @@ import os.path
 import dataclasses
 
 
-def _old_run_single_3seq(fasta_file):
-
-    exe = os.path.abspath("./tmp/3seq/3seq")
-    fasta_file = os.path.abspath(fasta_file)
-    with tempfile.TemporaryDirectory() as tempdir:
-        # NOTE: I can't get 3seq to run in -triplet mode whatever I do,
-        # but full seems to work. Same thing, ultimately?
-        subprocess.check_output(
-            f"yes | {exe} -full {fasta_file}", shell=True, cwd=tempdir
-        )
-        output = pd.read_csv(pathlib.Path(tempdir) / "3s.rec.csv")
-    return output
-
-
 def run_single_3seq(child_fasta, parent_fastas):
 
-    exe = os.path.abspath("./tmp/3seq/3seq")
+    exe = os.path.abspath("./3seq/3seq")
     # if True:
     #     tempdir = pathlib.Path("tmp/")
     with tempfile.TemporaryDirectory() as tempdir:
@@ -112,12 +98,8 @@ def generate_sc2ts_fasta(ts, recombinants_csv, output_dir):
 @click.argument("ripples_file")
 @click.argument("output")
 def generate_ripples_sample_list(ripples_file, output):
-    df = pd.read_csv(ripples_file, sep="\t")
-    samples = (
-        set(df["#recomb_node_id"])
-        | set(df["donor_node_id"])
-        | set(df["acceptor_node_id"])
-    )
+    df = pd.read_csv(ripples_file)
+    samples = set(df["recombinant"]) | set(df["parent1"]) | set(df["parent2"])
     samples = np.array(sorted(list(samples)))
     np.savetxt(f"{output}", samples, fmt="%s")
 
@@ -127,14 +109,8 @@ def generate_ripples_sample_list(ripples_file, output):
 @click.argument("fasta_dir")
 @click.argument("output")
 def run_ripples_3seq(ripples_file, fasta_dir, output):
-    df = pd.read_csv(ripples_file, sep="\t")
-    df["recomb_node_id"] = df["#recomb_node_id"]
-    print(f"Staring with {df.shape[0]} records")
-    # The dataframe can contain multiple events for each recombination node. We
-    # pick the one with the "maximum" parsimony (i.e., the one with the lowest
-    # parsimony score). If there's several, we pick one arbitrarily.
-    df = df.loc[df.groupby(["recomb_node_id"])["recomb_parsimony"].idxmin()]
-    print(f"Have {df.shape[0]} unique recombination events")
+
+    df = pd.read_csv(ripples_file)
 
     def fasta_file(name):
         return os.path.abspath(pathlib.Path(fasta_dir) / f"{name}_NC_045512:0.fa")
@@ -142,11 +118,11 @@ def run_ripples_3seq(ripples_file, fasta_dir, output):
     data = []
     for _, row in tqdm.tqdm(list(df.iterrows())):
         out = run_single_3seq(
-            fasta_file(row["recomb_node_id"]),
-            [fasta_file(row["donor_node_id"]), fasta_file(row["acceptor_node_id"])],
+            fasta_file(row["recombinant"]),
+            [fasta_file(row["parent1"]), fasta_file(row["parent2"])],
         )
         if len(out) > 0:
-            out["recombinant"] = row["recomb_node_id"]
+            out["recombinant"] = row["recombinant"]
             data.append(out)
     df = pd.concat(data)
 
