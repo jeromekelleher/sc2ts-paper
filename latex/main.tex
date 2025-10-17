@@ -1759,20 +1759,20 @@ recombination~\cite{Wong2024} and providing the basis for a range of highly
 efficient 
 algorithms~\cite{Kelleher2016,Ralph2020,Kelleher2020coalescent,Grundler2025geographic,Lehmann2025on}.
 The mature and feature-rich tskit library has interfaces in Python, C and Rust,
-extensive documentation,
-and is the basis of a growing software ecosystem of 
-simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
-visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit},
-inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting}
-% More here? I'm sure there's others
-and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
-tools.
+extensive documentation, and is used in numerous downstream 
+applications~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,
+Tagami2024tstrait,Karthikeyan2025tsbrowse,Kitchens2025tskit,Kelleher2019,
+Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting,
+Fan2022,Nowbandegani2023extremely,Fritze2024forest}.
 
-Similarly to the Mutation Annotated Tree (MAT)~\cite{McBroome2021} format used 
-by UShER (RIPPLES~\cite{Turakhia2022} and matOptimize~\cite{DeMaio2023} are 
-included in the UShER software distribution), 
+Similarly to the Mutation Annotated Tree (MAT)~\cite{McBroome2021} format 
+(used 
+by UShER\cite{Turakhia2021}, matOptimize~\cite{DeMaio2023}, 
+RIPPLES~\cite{Turakhia2022} and 
+RIVET~\cite{Smith2023tracking}),
 tskit incorporates mutational information directly in the data 
-model. This is done using the site (defining the genome position and 
+model. 
+This is done using the site (defining the genome position and 
 ancestral state) and mutation (defining the site, node, and derived state)
 tables. In addition, tskit provides a flexible system for attaching metadata
 to all aspects of the data model, which can either be in JSON format 
@@ -1782,7 +1782,6 @@ sample identifiers and pango assignments in the final ARGs).
 Tskit also provides a ``provenance'' table, which provides a mechanism
 for recording software version and parameter information through each
 step of complex processing pipelines.
-
 
 \subsubsection*{Pandemic-scale alignment storage}
 To provide the efficient access to alignment data required for inference with sc2ts,
@@ -1893,21 +1892,20 @@ The LS model \cite{LiStephens2003} is an approximation of
 the coalescent with recombination
 that captures many of the key features of
 the joint processes of mutation and recombination.
-It is widely used in a range of applications in population genetics,
-% Does Threads use LS?
-including ARG inference \cite{Kelleher2019,Gunnarsson2024}.
+It is widely used in a range of applications in population 
+genetics~\cite{mcvean2019linkage}.
 The LS model is an HMM that models a focal genome
-as a sequence of nucleotides (i.e. the observed states),
+as a sequence of nucleotides (the observed states),
 which are probabilistically emitted
 as an imperfect mosaic of a set of genomes
-in a reference panel (i.e., the hidden states).
+in a reference panel (the hidden states).
 The process of switching between the genomes in the reference panel
 is governed by a transition matrix,
 and mismatches between a focal genome and a genome of the reference panel
 (from which it is ``copied'') are permitted as emissions.
 
-In the original formulation of the LS model
-(see Appendix S1 of \cite{LiStephens2003}),
+In the standard formulations of the LS model
+\cite{LiStephens2003,Donnelly2010-coalescent}
 the probability of switching
 between the hidden states (i.e., genomes in a reference panel)
 when going from one site to the next is dependent on
@@ -1919,7 +1917,6 @@ the ratio between the probability of switching and the probability of mismatch:
 When considering only two copying paths, the path having $k$ mismatches
 and the other path having one switch but no mismatch are equally probable.
 We call this parameter $k$ the ``recombination penalty''.
-% TODO mention that this can be thought of as extended parsimony.
 This parameter thus allows us to adjust
 the relative importance of recombination and mutation
 when finding the best explanation for a given sample.
@@ -1927,25 +1924,6 @@ For simplicity, we assume that any single base mutation
 causing a mismatch is equally probable,
 ignoring transition-transversion biases and
 variation of mutation rate along the genome.
-As data sampling was dense for SARS-CoV-2,
-this assumption was considered tolerable.
-
-We explored using several values of $k$,
-by running sc2ts with $k$ set to 3, 4, and 5
-on the samples collected in 2020.
-We would expect that a good value for $k$
-should lead to parsimonious ARGs
-that capture plausible recombination events
-without incurring too many mutations, particularly reversions.
-A value of $k$ too low could result in many artifactual recombination events,
-whereas a value of $k$ too high could miss many genuine recombination events.
-We found that ARGs built with $k$ set to 3
-contained many dubious recombination events,
-but ARGs built with $k$ set to 5 failed
-to include the well supported recombination events documented
-in a previous study\cite{Jackson2021}.
-Hence, we decided to use $k$ set to 4
-to infer the final ARG described in this study.
 
 A Viterbi algorithm can be used
 to find the most likely ``copying path'' of a focal sample
@@ -1977,6 +1955,26 @@ which were exactly matched to a (sample or non-sample) node in the ARG were not 
 Instead, the copying paths of these samples were recorded,
 and the samples were eventually added back to the ARG in a post-processing step.
 
+\subsubsection*{Choice of k paramter}
+% This is a key decision that we will be referencing the discussion, so 
+% deserves its own section
+
+We explored using several values of $k$,
+by running sc2ts with $k$ set to 3, 4, and 5
+on the samples collected in 2020.
+We would expect that a good value for $k$
+should lead to parsimonious ARGs
+that capture plausible recombination events
+without incurring too many mutations, particularly reversions.
+A value of $k$ too low could result in many artifactual recombination events,
+whereas a value of $k$ too high could miss many genuine recombination events.
+We found that ARGs built with $k$ set to 3
+contained many dubious recombination events,
+but ARGs built with $k$ set to 5 failed
+to include the well supported recombination events documented
+in a previous study\cite{Jackson2021}.
+Hence, we decided to use $k$ set to 4
+to infer the final ARG described in this study.
 
 \subsubsection*{Tree inference from daily sample clusters}
 With tens of thousands of samples being added to the ARG per day,
