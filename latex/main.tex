@@ -662,7 +662,7 @@ For 16 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node, and
 that node is the ancestor of all samples
 assigned to that (or a descendant) Pango lineage.
-These are the Type I events, in which the ARG reflects the
+We designate these as Type I events, where the ARG reflects the
 hierarchical structure of Pango designation.
 Among these events, concordance with the community-consensus 
 parent lineages and breakpoint intervals is excellent,
@@ -753,7 +753,7 @@ sequences, summarized in Table~\ref{tab:recombinant_validation}.
 CovRecomb has a substantially lower validation rate at 25\% 
 among the QC-passing recombinants. This is expected, as 
 CovRecomb and is specifically intended to detect interlineage recombinants
-and been previously shown to be
+and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar validation is intermediate, at 57\% among QC-passing recombinants.
 (See also Figures~\ref{fig:recombinant_evidence_cov_recomb},
@@ -840,7 +840,7 @@ where the allelic state in a recombinant
 (middle row) matches that of the left (upper row, colored green) 
 or right parent (lower row, colored blue),
 or where the recombination event requires a \emph{de novo} mutation
-(gold, with mutational change below).
+(gold, with mutational change below). [should we also mention the red/orange lines under the patterns that identify adjacent sites?]
 Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
 illustrating this spectrum of plausibility.
 XA is an example of a highly plausible recombinant, shown by the 
@@ -1118,7 +1118,7 @@ in the same way. That is, if we constructed an UShER tree by
 incrementally adding the same daily batches as used for sc2ts
 and examined any newly-added long branches each day
 using RIPPLES, we would likely get very similar results to sc2ts
-in terms recombinants detected.
+in terms of recombinants detected.
 For a given matching operation, RIPPLES and the LS HMM 
 (under its current parameterisation) 
 are deterministically solving the same well-defined problem
@@ -1214,7 +1214,16 @@ full spectrum of evolutionary processes shaping SARS-CoV-2.
 
 % P2. This is a conservative lower-bound on recombination. 
 % Discuss other estimates.
-
+% 
+% SHZ: Why should we care about getting this number/frequency right?
+% Sure, popgen folks love estimating this, but to other people,
+% existing estimates already tell us that
+% recombination in SARS-CoV-2 is (qualitatively) rare,
+% even without the advances of sc2ts.
+% Also, we are talking about the frequency of detectable recombination
+% in the last sentence, right?
+% The true frequencey of recombination is unknowable from this type of data.
+% So, the best we are ever going to get is a better lower bound.
 The recombination frequency estimated from the \texttt{sc2ts} ARG is
 substantially lower than that implied by the combination of UShER+RIPPLES,
 largely reflecting differences in model formulation and parameter choice.
@@ -1240,6 +1249,14 @@ the true frequency of recombination in SARS-CoV-2 evolution.
 
 % P3. Clarifies relationships between pango X lineages, simplifying
 % the Omicron sublineage.
+% 
+% SHZ: I don't think knowing the relationships between Pango Xs is what's really important.
+% Sure, phylogeneticists would get a kick out of it,
+% but I don't think the majority of Cell readership would.
+% I think what is important is knowing
+% how many emerging recombinants carrying new combinations of mutations of concern
+% we are actually dealing with in real time.
+% Clarifying the relationships between Pango Xs make this possible.
 
 The Pango X lineage designations represent the community’s best attempt to
 catalogue recombinant SARS-CoV-2 lineages, but they arise from a largely
@@ -1267,7 +1284,9 @@ Omicron-era evolution and bringing the community nomenclature into closer
 alignment with the underlying genealogy.
 
 % P4. Results on global case numbers and frequency of recomb.
-
+% SHZ: Should we mention how the reliability of global case number data
+% and variation in sampling effort over time and across countries
+% might affect our interpretation of these findings?
 [FIXME: This is direct output from ChatGPT.  Review!]
 The dated ARG allows us to place recombination within its epidemiological
 context, revealing clear temporal structure in when recombinant lineages arise.
@@ -1288,7 +1307,12 @@ the ecological conditions for viral recombination are most favourable.
 
 
 % P5. Confirm breakpoints around Spike. 
-
+% SHZ: Maybe we can say it's a known (instead of robust)
+% pattern of detectable recombination in CoVs in general?
+% There are some citations for template switching hotspots in SC2.
+% Also, it's not only about selection favoring new combinations of mutations in Spike.
+% It's about combinations of mutations in, say, ORF1ab, getting selected against.
+% Maybe mention epistasis?
 [FIXME: This is directish output from ChatGPT. Review!]
 The genomic distribution of breakpoints in the ARG is highly uneven, with a
 pronounced enrichment near the $5'$ boundary of the Spike gene and across the
@@ -1312,7 +1336,8 @@ constraints on Spike function.
 
 % P6. Sc2ts method is a major advance. We validate with real data
 % rather than simulations. Forward looking statement about simulations.
-
+% 
+% SHZ: Could at least some of this go into the Introduction?
 In the broader context of pathogen genomics, \texttt{sc2ts} demonstrates that
 it is now possible to reconstruct recombination-aware genealogies at the scale
 of entire pandemics.  Although recombination is recognised as a major
@@ -1381,7 +1406,7 @@ We close by emphasizing several current limitations and potential directions to 
 First, more stringent filters to exclude false positive recombinants during inference
 would obviate post-hoc treatment of these recombinants.
 Second, indels carry important phylogenetic signals,
-for example, as lineage-defining mutations of Alpha and Delta (REF).
+for example, as defining mutations of Alpha and Delta (REF).
 We currently treat multi-base deletions as missing data or multiple independent deletions,
 but they are in reality single events.
 More sophisticated treatments of multi-base indels in the HMM could help recover additional signals
@@ -1402,7 +1427,7 @@ Revisiting the ARG topology periodically
 and better handling of putative recombinants with suspiciously long branches
 (e.g., Delta and Omicron BA.2) might improve the accuracy of the genealogy.
 Finally, future developments may account for geography in the HMM,
-favouring attachment of samples to geographically close lineages.
+favoring attachment of samples to geographically close lineages.
 
 \newpage
 
