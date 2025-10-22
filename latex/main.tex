@@ -1867,7 +1867,7 @@ We therefore masked our 100 mutation-rich sites
 to remove sequencing errors and
 improve matching performance in the LS HMM.
 
-Alignments read from the VCZ Zarr file were first preprocessed
+Alignments read from the VCF Zarr file were first preprocessed
 to mask any non nucleotide characters (A,C,G or T) as missing data.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 Then, we filtered any samples that had missing data at more than 500 sites,
@@ -1875,15 +1875,12 @@ excluding the 100 sites identified as problematic
 (this was set to 10,000 sites for the initial period up to 2020-03-01
 where sampling density is low).
 
-
 \subsubsection*{Li and Stephens haplotype-copying model}
 
 The LS model \cite{LiStephens2003} is an approximation of
 the coalescent with recombination
 that captures many of the key features of
 the joint processes of mutation and recombination.
-It is widely used in a range of applications in population 
-genetics~\cite{mcvean2019linkage}.
 The LS model is an HMM that models a focal genome
 as a sequence of nucleotides (the observed states),
 which are probabilistically emitted
