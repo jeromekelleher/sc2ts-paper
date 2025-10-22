@@ -1867,7 +1867,7 @@ We therefore masked our 100 mutation-rich sites
 to remove sequencing errors and
 improve matching performance in the LS HMM.
 
-Alignments read from the VCZ Zarr file were first preprocessed
+Alignments read from the VCF Zarr file were first preprocessed
 to mask any non nucleotide characters (A,C,G or T) as missing data.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 Then, we filtered any samples that had missing data at more than 500 sites,
@@ -1875,15 +1875,17 @@ excluding the 100 sites identified as problematic
 (this was set to 10,000 sites for the initial period up to 2020-03-01
 where sampling density is low).
 
-
 \subsubsection*{Li and Stephens haplotype-copying model}
 
-The LS model \cite{LiStephens2003} is an approximation of
+The Li and Stephens (LS) model \cite{LiStephens2003} is an approximation of
 the coalescent with recombination
 that captures many of the key features of
 the joint processes of mutation and recombination.
-It is widely used in a range of applications in population 
-genetics~\cite{mcvean2019linkage}.
+It is a Hidden Markov Model (HMM) in which a focal genome
+is modelled as a
+sequence of nucleotides that are probabilistically emitted as
+an imperfect mosaic of a set of reference genomes
+(Figure~\ref{fig:ls_diagram}).
 The LS model is an HMM that models a focal genome
 as a sequence of nucleotides (the observed states),
 which are probabilistically emitted
@@ -2130,13 +2132,11 @@ computational resources are dominated by the LS model
 (Figures~\ref{fig:samples_per_day},\ref{fig:inference_resources}) with all 
 other aspects contributing negligibly.
 
-\subsubsection*{ARG postprocessing}
-\label{sec:arg_postprocessing}
+\subsubsection*{Recombinant rematching}
 The first step in ARG postprocessing is to examine putative recombinants to
 determine whether a more parsimonious explanation is possible. This is done 
 by rematching the inferred recombinant sequence against the ARG pruned back
 to include only samples before the date of the recombinant. 
-
 Where the recent ancestry of a recombinant includes a branch containing
 large numbers of mutations, it is possible
 that a non-recombinant solution could be found by postulating an intermediate
@@ -2166,8 +2166,6 @@ splitting. Of these 16 recombinants, two are noteworthy as
 being the origins of the Delta (B.1.617.2) and Omicron-BA.2 lineages in the ARG.
 Both result in substantially fewer mutations (15 fewer for 
 Delta, 6 for BA.2) than the previous recombinant HMM solution.
-These major saltational lineages highlight the challenges 
-of using the LS HMM with highly diverged samples.
 We then updated the ARG to remove these 74 artefactual 
 recombinants by ``rewiring'' the recombination node to the 
 more parsimonious non-recombinant solution. This 
@@ -2179,18 +2177,29 @@ in Figure \ref{fig:subgraph_delta} and \ref{fig:subgraph_omicron}
 with inserted intermediate nodes leading to the Delta and BA.2
 origination nodes.
 
-
 % and requires a lot of off-topic explanation.
 % It is also noteworthy that the origin of the BA.5
 % lineage is identified as non-recombinant when long-branch
 % splitting is applied to the daily ARG immediately after 
 % its inclusion---for this reason, we have identif
 
-The second postprocessing step performed is to add 1,252,208 samples
-detected as exact matches during primary inference back
-into the ARG. These are not included in the ARG during 
-primary inference to reduce memory usage and improve 
-LS HMM performance. 
+\subsubsection*{Postprocessing pipeline}
+\label{sec:arg_postprocessing}
+This section described the various postprocessing steps that 
+we performed after primary inference, 
+which is encoded as a reproducible Snakemake
+workflow (see \nameref{sec:data_and_code_availability}).
+
+The first step is to perform recombinant rematching as described in the previous 
+section, to find any recombinants that can be more parsimoniously explained
+either by matching to nodes subsequently added or by targeted 
+splitting of long branches.
+
+For performance reasons, samples that match exactly to an existing
+node in the ARG are not added during primary inference, but are 
+stored in a secondary ``match database''.
+During postprocessing, we added 1,252,208 of these exact match samples 
+into the ARG using the stored information.
 
 During primary inference, gap characters (``-'') are masked 
 out as missing data, but this excludes both important information
@@ -2223,26 +2232,44 @@ The resulting Pango and Scorpio designations were then stored as
 metadata associated with each node in the ARG.
 
 When then estimated non-sample node dates using 
-the ``variational-gamma'' algorithm in tsdate\cite{Wohns2022}
-version 0.2.3. [TODO Say something above the node ages?]
+the ``variational-gamma'' algorithm in tsdate\cite{Wohns2022,Pope2025}
+version 0.2.3. See Document \ref{sec:evaluating_node_dates} for 
+more details and analysis of these dates.
 
 Finally, we reduced the metadata stored in the ARG to a minimal
-set (node sample IDs, along with computed Pango and Scorpio 
+set (node sample IDs, and the computed Pango and Scorpio 
 designations), encoded to enable efficient columnar access,
 and compressed the file using tszip (version 0.2.5). The final 
 file requires 32MiB of storage.
 
-This full post-processing pipeline is encoded as a reproducible Snakemake
-workflow (see \nameref{sec:data_and_code_availability}).
-
 \subsubsection*{Evaluating the accuracy of sc2ts}
 
-[Section laying out why we don't use simulation.]
-Benchmarking
-against extensive empirical results for SARS-CoV-2 rather than simulations
-leverages a uniquely rich literature and dataset, ensuring that the resulting
-ARG reflects both biological realism and computational reproducibility.
+% NOTES: This section is a bit weird as it's like a discussion point, but is 
+% too technical and negative to go in there. Nonetheless, we do need to address
+% this point somewhere, as it'll be something that would surely come up.
+% We might get asked to do some simulations, but let's try and steer the 
+% reviewer into asking us to do something simple like crudely recombining
+% different lineages and seeing what we get. 
 
+[NOTE: first draft]
+Sc2ts is a new method to infer ARGs for SARS-CoV-2, and the standard practise 
+is to evaluate new inference methods via a simulation analysis.  
+We have, instead, focused our validation efforts on comparing the output 
+produced by sc2ts to known results.
+Benchmarking against these extensive empirical results rather 
+than simulations leverages the uniquely rich literature, 
+ensuring that the resulting ARG (the primary contribution of this work)
+reflects biological reality.
+While specialised simulation packages for SARS-CoV-2 data
+% JK: did a search for VGSim, no recombination API included.
+exist~\cite{Shchur2022vgsim,DeMaio2022phastsim} there is 
+no support for recombination.
+While bespoke simulation models can be created by manually recombining 
+sequences in order to find false-positive and false-negative
+rates, it is unclear how well this models the complexities 
+of real data. Further work is needed to clarify the processes 
+and frequency of recombination in SARS-CoV-2 in order to 
+create simulations models that would inform this.
 
 \subsubsection*{Quality control of recombination events}
 
