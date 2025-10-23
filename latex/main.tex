@@ -2533,19 +2533,14 @@ to quantify the divergence between two Pango lineages.
 The idea is to count the number of edges
 separating two given Pango lineages in a pseudo-phylogeny
 which relates all the designated Pango lineages.
-To construct this pseudo-phylogeny, we used \textit{pangonet},
+To construct this pseudo-phylogeny, we used 
+pangonet (\url{https://github.com/phac-nml/pangonet})
 which mines the information on the Pango lineages
 in the ``alias\_key.json'' and ``lineage\_notes.txt'' files
-from the Pango designation issues
+defining the designations
 (\url{https://github.com/cov-lineages/pango-designation}).
-If two Pango lineages are siblings in the pseudo-phylogeny,
-the distance is defined as
-the sum of the number of edges from each lineage to their MRCA;
-if they are non-siblings (i.e., one Pango is a descendant of the other),
-the distance is defined as
-the number of edges separating them;
-if they are identical, the distance is defined as zero.
-
+The distance between two Pango lineages is then the number of edges
+separating the corresponding nodes in this graph.
 
 \subsubsection*{Expected lengths of recombination breakpoint intervals}
 
