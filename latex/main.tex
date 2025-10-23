@@ -2465,7 +2465,7 @@ To obtain the WHO label corresponding to a Nextclade-defined clade, we used the 
 The mutation counts were downloaded from
 \url{https://github.com/jbloomlab/SARS2-mut-spectrum/}.
 
-See t he
+See the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/fig\_mutational\_spectra.ipynb}{fig\_mutational\_spectra.ipynb}
 notebook for details.
 
@@ -2590,19 +2590,53 @@ by running \texttt{matUtils extract}.
 We then ran \texttt{ripples-fast}~\cite{Smith2023tracking}
 on this file, using \texttt{-n1} so that all detected 
 recombinants were reported (equivalent to sc2ts). We ran
-ripples with the parsimony improvement parameter $p$
+RIPPLES with the parsimony improvement parameter $p$
 equal to 3 (the default) and 4. 
 
-The output of RIPPLES is two text files, 
+The output of RIPPLES is two text files, ``recombination.tsv''
+and ``descendants.tsv``. We use the ``descendants.tsv'' file,
+which lists the descendant samples of all recombination events
+keyed by the recombinant node ID, to match events with sc2ts.
+Specifically, for each RIPPLES event identified a list of 
+descendant samples, we find the MRCA of 
+that set of samples in the first tree of the sc2ts ARG. 
+The clades are then said to agree if the number of additional 
+samples descending from the sc2ts node is $<2$
+(Figure~\ref{fig:ripples_sc2ts_events}).
 
+We ran 3SEQ on the RIPPLES recombinants by extracting the 
+alignments for the child and parent sequences for each 
+recombination event. We first obtained the parent
+node IDs from the ``recombination.tsv'' file by choosing 
+the most parsimonious event associated with each recombinant
+node,  arbitrarily choosing among the possibilities in 
+the case of ties. We then used this list of child and 
+parent node IDs as 
+input to \texttt{matUtils extract -v} to extract their
+sequences in VCF format. Following this, 
+we used vcflib~\cite{Garrison2022spectrum} to convert
+to alignments in FASTA format, as recommended by
+the UShER documentation (\texttt{vcf2fasta -f NC\_045512v2.fa}).
+We then ran 3SEQ in ``full mode''
+independently for each trio, in the same manner as described
+when validating the sc2ts recombinants.
 
-To compare these results with the sc2ts ARG, we first matched clades
-by finding the most recent common ancestor (MRCA) of the samples
-descending from each RIPPLES event. Overall, clade agreement was
-high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
-where descendants match exactly. Of these nodes, 68\% had no recombinant
-ancestry. Of the remainder, 595 could be matched with
-one of the 855 recombination events in the sc2ts ARG
+The UShER tree is not dated, and so to obtain dates for 
+parent nodes we used sample metadata 
+(Date\_Tree from the Viridian metadata). For the minority 
+of parent sequences that are not samples, we used the oldest
+sample descending from a given internal node as a proxy for 
+its date. We used the BTE Python library 
+(\url{https://jmcbroome.github.io/BTE/build/html/index.html})
+to perform the required traversals on the UShER tree.
+
+The full workflow is encoded in the Snakemake postprocessing 
+pipeline.
+See Document~\ref{sec:detailed_ripples} for detailed analysis
+of the RIPPLES events, 
+and the
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_ripples.ipynb}{analysis\_ripples.ipynb}
+notebook for full methodological details of the analysis.
 
 \subsection*{Quantification and statistical analysis}
 
