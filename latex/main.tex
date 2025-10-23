@@ -2242,34 +2242,32 @@ designations), encoded to enable efficient columnar access,
 and compressed the file using tszip (version 0.2.5). The final 
 file requires 32MiB of storage.
 
-\subsubsection*{Evaluating the accuracy of sc2ts}
+%%% 
+% This is an early draft which was trying to tackle the problem of why
+% we don't compare against sims. Consensus was that it's better to just
+% ignore entirely and see what reviewers say.
+%%%
+% \subsubsection*{Evaluating the accuracy of sc2ts}
 
-% NOTES: This section is a bit weird as it's like a discussion point, but is 
-% too technical and negative to go in there. Nonetheless, we do need to address
-% this point somewhere, as it'll be something that would surely come up.
-% We might get asked to do some simulations, but let's try and steer the 
-% reviewer into asking us to do something simple like crudely recombining
-% different lineages and seeing what we get. 
-
-[NOTE: first draft]
-Sc2ts is a new method to infer ARGs for SARS-CoV-2, and the standard practise 
-is to evaluate new inference methods via a simulation analysis.  
-We have, instead, focused our validation efforts on comparing the output 
-produced by sc2ts to known results.
-Benchmarking against these extensive empirical results rather 
-than simulations leverages the uniquely rich literature, 
-ensuring that the resulting ARG (the primary contribution of this work)
-reflects biological reality.
-While specialised simulation packages for SARS-CoV-2 data
-% JK: did a search for VGSim, no recombination API included.
-exist~\cite{Shchur2022vgsim,DeMaio2022phastsim} there is 
-no support for recombination.
-While bespoke simulation models can be created by manually recombining 
-sequences in order to find false-positive and false-negative
-rates, it is unclear how well this models the complexities 
-of real data. Further work is needed to clarify the processes 
-and frequency of recombination in SARS-CoV-2 in order to 
-create simulations models that would inform this.
+% [NOTE: first draft]
+% Sc2ts is a new method to infer ARGs for SARS-CoV-2, and the standard practise 
+% is to evaluate new inference methods via a simulation analysis.  
+% We have, instead, focused our validation efforts on comparing the output 
+% produced by sc2ts to known results.
+% Benchmarking against these extensive empirical results rather 
+% than simulations leverages the uniquely rich literature, 
+% ensuring that the resulting ARG (the primary contribution of this work)
+% reflects biological reality.
+% While specialised simulation packages for SARS-CoV-2 data
+% % JK: did a search for VGSim, no recombination API included.
+% exist~\cite{Shchur2022vgsim,DeMaio2022phastsim} there is 
+% no support for recombination.
+% While bespoke simulation models can be created by manually recombining 
+% sequences in order to find false-positive and false-negative
+% rates, it is unclear how well this models the complexities 
+% of real data. Further work is needed to clarify the processes 
+% and frequency of recombination in SARS-CoV-2 in order to 
+% create simulations models that would inform this.
 
 \subsubsection*{Quality control of recombination events}
 
@@ -2304,12 +2302,7 @@ This leads to 354 QC-passing recombination events
 compared to 501 recombination events
 for which there is less support and which may be artefactual (shaded quadrants).
 
-We developed a SnipIt-like~\cite{OToole2024} visualisation 
-that shows the informative genomic positions between 
-a recombinant and its parent sequences, and highlights 
-potentially problematic loci
-(See Figure~\ref{fig:copying_pattern_examples} caption for details).
-Inspection of these copying patterns for all the recombination events
+Inspection of the copying patterns for all the recombination events
 identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
 Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
@@ -2335,50 +2328,42 @@ of which 6 failed QC.
 We validated recombination events in the sc2ts ARG 
 using 3SEQ~\cite{Lam2018improved} as follows.
 We first exported the alignments for the recombination node and both 
-parents to FASTA format, and then rand 3SEQ in ``full mode''
+parents to FASTA format, and then ran 3SEQ in ``full mode''
 independently for each recombinant. Specifically, we 
 ran \texttt{3seq -full  parents.fa recombinant.fa} using default 
 thresholds.
-
 We used 3SEQ source code downloaded from \url{https://gitlab.com/lamhm/3seq}
-at git hash e45ee3b4 for all analyses.
+at git hash e45ee3b4.
 
-\subsubsection*{Likely spurious ancestrally-important recombinants}
-\label{sec:spurious-ancestrally-important-recombinants}
-In the sc2ts ARG, there are two recombination events which have a large number of
-descendants but which are not classified as recombinants by Pango. The first of these
-corresponds to recombination event within BA.2 whose breakpoint is at position 27382
-on the far right of the genome (see supplementary document S3, node 1030562). Although
-supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
-meaning that this event does not pass our recombinant quality control measure.
+For CovRecomb\cite{Zhou2023virusrecom}, we obtained the original alignments 
+for the ``causal'' samples for each recombination node, and ran
+CovRecomb-Local-Version with default settings. We used source code 
+downloaded from \url{https://github.com/wuaipinglab/CovRecomb} at 
+git hash 1fbf6b2.
 
-The second of these involves a single breakpoint at position 26858, and is the origin
-of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
-supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
-some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
-sample is added to the ARG, it is possible to construct a more parsimonious
-non-recombinant origin by long branch splitting (see the \nameref{sec:arg_postprocessing}
-section), although subsequent tree building does not make this a parsimonious
-way to rewire the final ARG. We therefore suggest that this too could be an artifactual
-recombination event.
+We ran rebar in a similar manner, exporting the original alignments for the 
+causal samples to FASTA and using default parameter values. We used
+rebar version 0.2.1 from bioconda~\cite{Gruning2018bioconda}, and 
+rebar dataset version ``2025-01-28''.
 
-\subsubsection*{Comparison with UShER}
+These steps are included in the Snakemake postprocessing
+workflow (see \nameref{sec:data_and_code_availability}).
+
+\subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
-UShER tree from MAT~\cite{McBroome2021} to tskit format, which has similar
-properties but is more general 
-(see the \nameref{sec:args} section).
+UShER tree from MAT~\cite{McBroome2021} to tskit format.
 We first downloaded the tree in JSON format (tree.all\_viridian.202409.jsonl)
 and converted the tree topology to tskit node and edge table 
 descriptions. We then downloaded the protobuf formatted
 tree (tree.all\_viridian.202409.pb.gz), exported the mutations to 
 nucleotide format using \texttt{matUtils summary --translate}
-(usher version 0.6.3), and translated
+(usher version 0.6.3 from bioconda), and translated
 these mutations into tskit site and mutation tables. 
-The resulting tszip file 
-(usher\_viridian\_v1.0.trees.tsz) contains 5,345,019 nodes, 3,364,841
-mutations and requires 29MB of storage space.
-We validated that the data was correctly encoded by comparing the 
-variant data for the UShER tskit tree sequence against our alignments.
+The resulting file 
+ contains 5,345,019 nodes, 3,364,841
+mutations and requires 29MB of storage space in tszip format (usher\_viridian\_v1.0.trees.tsz).
+We validated that the data encoding by comparing the 
+variant data for the UShER tskit tree sequence against our MAFFT alignments.
 There was an exact match between the non-ambiguous nucleotide calls 
 at 27,469 sites. 
 % Usher tree has 27,508 vs sc2ts 29,893, or 2385 fewer sites 
@@ -2402,8 +2387,6 @@ the phylogenetic backbones,
 we also dated the intersection tree by fixing
 the sample dates using the ``Date\_tree'' metadata field,
 and using tsdate (version 0.2.3) to date internal nodes.
-We did not date the main UShER tree in this way because
-of the time-travelling samples present.
 
 All conversions were performed as part of the reproducible
 pipeline described in the \nameref{sec:arg_postprocessing} section.
@@ -2411,104 +2394,105 @@ The full UShER tree and the intersection files are available for download
 in tszip format (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
-
 We compare the non-recombinant parts of the ARG with the UShER topology
 by simplifying the phylogenies to a smaller number of
 Pango representative samples.
 We focus on the 1473 Pango lineages that have perfect ``origination events'' 
-as described in \ref{sec:supplement_pango_lineages}, and
-omit Pango designations starting with ``X''
-to avoid recombinants, leaving 1329 Pango lineages.
-To ensure that each sample is a tip (rather than an internal node)
-in the simplified topologies,
+(Document \ref{sec:supplement_pango_lineages}). We then omit
+omit X lineages, leaving 1329 lineages.
+To ensure that each sample is a tip in the simplified topologies,
 a representative sample is then chosen as the oldest sample
 descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
 We then further remove 4 lineages
-which are singleton descendants of a recombination event in the ARG
-(representing potentially missed Pango recombinant lineages),
+which are singleton descendants of a recombination event in the ARG,
+% NOTE: would have been simpler to say we just got rid of XBB and 
+% descendants.
 as well as 43 samples that are descendants of the recombinant XBB
 but which do not start with an ``X''.
 This results in a simplified ARG of 1282 samples,
-each sample having a different Pango designation.
+each sample from a different Pango lineage.
 
 The simplified ARG contains only two recombination nodes, which
-correspond to those on the far right of the genome identified as
-artefactual in the FIXME Xref \ref{sec:spurious-ancestrally-important-recombinants} section.
+are the two likely artefactual events discussed in 
+Document \ref{sec:spurious-ancestrally-important-recombinants}, 
+both of which have breakpoints near the 5' end of genome.
 We therefore compare the Usher topology against the first tree in the ARG (covering
 positions 1-26858; the majority of the genome). To reduce plot density, we consider
-only those Pango lineages with greater than 10 samples, and to aid visualization,
-we divide resulting tree into 4 parts: a BA.5 subtree of 187 Pangos,
-a Delta subtree of 104 Pangos, a BA.2 subtree (excluding BA.5 descendants) of 118 Pangos,
-and a base tree (i.e. excluding all descendants of Delta and BA.2) of 405 Pangos,
-Figures \ref{fig:tanglegram_base}-\ref{fig:tanglegram_ba5} show these trees compared
-against the equivalent dated UShER topologies.
+only those Pango lineages with greater than 10 samples.
+Figure \ref{fig:tanglegram_base} shows the resulting tree compared with 
+the equivalent dated UShER tree as a tanglegram.
+We also show subtrees for Delta (Figure~\ref{fig:tanglegram_delta}),
+BA.2 (Figure~\ref{fig:tanglegram_ba2}),
+and BA.5 (Figure~\ref{fig:tanglegram_ba5}).
+
 The order of tips in each plot was chosen to reduce tangling,
-as calculated using the NeighborNet algorithm from Dendroscope \cite{Scornavacca2011,Huson2012},
+as calculated using the NeighborNet algorithm from 
+Dendroscope \cite{Scornavacca2011,Huson2012},
 with tanglegrams plotted using the SVG outputting facility built into tskit.
 See \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/supp\_pdf-cophylogeny-tanglegrams.ipynb}{supp\_pdf-cophylogeny-tanglegrams.ipynb}
-for details and the pipeline used.
-
-Inspection of Figures~\ref{fig:tanglegram_base}-\ref{fig:tanglegram_ba5} reveals that the majority of resolvable nodes,
-including most high-level Scorpio groupings,
-are shared between the ARG and the UShER tree (magenta nodes), and there is extremely close (usually perfect) agreement on topological relations between the Pango lineages.
-In the few cases where the trees differ, this is often in terms of degree of resolution of polytomies.
-In these cases, sometimes the sc2ts ARG shows greater resolution,
-as in the base of the BA.2 subtree, and
-sometimes the UShER tree shows greater resolution, as in the close relatives of Beta (B.1.351).
+for details.
 
 \subsubsection*{Comparison of mutational spectra}
+% To validate the mutational information contained in the sc2ts ARG,
+% we compared the all-site mutational spectra of major VOCs in the ARG,
+% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
+% and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
+% Mutational spectra are defined as the relative proportions of
+% each possible type of nucleotide change.
 
-To validate the mutational information contained in the sc2ts ARG,
-we compared the all-site mutational spectra of major VOCs in the ARG,
-a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
-and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
-Mutational spectra are defined as the relative proportions of
-each possible type of nucleotide change.
-
-First, we calculated the mutational spectra of Alpha, Delta, Omicron BA.1, BA.2, BA.4, and BA.5
-in the sc2ts ARG, considering mutations (ignoring indels) above the sample nodes and internal nodes
+We calculated the mutational spectra of Alpha, Delta, Omicron BA.1, BA.2, BA.4, and BA.5
+in the sc2ts ARG, considering mutations (ignoring indels) above the sample 
+nodes and internal nodes
 which have Scorpio labels associated with the VOCs
 (e.g., for Alpha, B.1.1.7-like and B.1.1.7-like+E484K).
-These Scorpio labels were assigned to the aligned sequences of the nodes in the ARG using pangolin.
 Note that $\sim$98\% of all the mutations in the ARG occur
 above the nodes that have a Scorpio label associated with these VOCs
 (excluding the nodes with unassigned Scorpio labels).
 
+We calculated the mutational spectra of the same VOCs
+in the intersection UShER tree in tskit format using a similar approach.
+Here, we used the Scorpio sample assignments provided in the Viridian metadata,
+and therefore restricted to mutations above sample nodes only.
+
 Next, we calculated the mutational spectra of the same VOCs
-using the mutational counts from an UShER phylogeny analyzed in Bloom et al.\cite{Bloom2023},
+using the mutational counts from an UShER phylogeny 
+analyzed by Bloom et al.\cite{Bloom2023},
 which was built using a Nextclade pipeline and
 has samples collected worldwide up to November, 2022.
 To obtain the WHO label corresponding to a Nextclade-defined clade, we used the following mapping:
 20I, Alpha; 21I and 21J, Delta; 21K, BA.1; 21L, BA.2; 22A, BA.4; and 22B, BA.5.
-The mutation counts were downloaded from https://github.com/jbloomlab/SARS2-mut-spectrum/.
+The mutation counts were downloaded from
+\url{https://github.com/jbloomlab/SARS2-mut-spectrum/}.
 
-Lastly, we calculated the mutational spectra of the same VOCs
-in the Viridian UShER phylogeny\cite{Hunt2024},
-which was pruned down to the samples present in the sc2ts ARG.
-We used mutations above the sample nodes,
-for which Scorpio labels are available
-in the Viridian metadata provided by Hunt et al.\cite{Hunt2024}.
+See t he
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/fig\_mutational\_spectra.ipynb}{fig\_mutational\_spectra.ipynb}
+notebook for details.
 
-
-\subsubsection*{Comparison with recombination detection methods}
-[TODO Merge in this text that was in the Results]
-
-To evaluate the concordance of the methods in
-identifying the Pango lineages of recombinant parents and locating recombination breakpoints,
-we focus on the Pango X lineages associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
-using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
-For RecombinHunt and CovRecomb,
-we summarized the detection results for these Pango X lineages (if available)
-reported in the original studies \cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
-For each method, we determined the Pango X lineages
-for which the inferred parental lineages and breakpoint intervals
-are concordant with those identified by the community (STAR Methods).
-We found that the methods performed well overall,
-with comparable concordance rates (Table~\ref{tab:method_concordance}),
-indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
-
-[TODO explain why we restrict to the Type I events]
+\subsubsection*{Concordance of recombination events}
+We compare concordance rates of sc2ts in identifying the 
+Pango lineages of recombinant parents and the location
+of breakpoint intervals with RecombinHunt\cite{Alfonsi2024} and 
+CovRecomb\cite{Zhou2023virusrecom}.
+We use these two methods because detection
+results on the Pango X lineages were reported and made available 
+in the original publications. We do not compare here with 
+UShER+RIPPLES+RIVET because curated data on the X lineages is 
+not available for this pipeline (see Document \ref{sec:detailed_ripples}
+and Table~\ref{tab:ripples_x_lineages}, however).
+We use the data from the Pango designation community 
+(\url{https://github.com/cov-lineages/pango-designation/})
+as the ``truth'' when comparing performance in identifying
+parent Pango lineages and breakpoints between the methods.
+We focus on the 16 Type I recombination events 
+(Table~\ref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
+While this is certainly biased in favour of sc2ts (i.e., by 
+ignoring likely sc2ts false negatives such as XB), it helps to 
+understand the probable accuracy of sc2ts on the true positives.
+It is important to emphasise that the ``true'' truth set among
+the Pango X lineages is currently unknown, and there is significant 
+disagreement among methods beyond a core set of lineages 
+(see Discussion).
 
 For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
 from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
@@ -2516,39 +2500,31 @@ One set of results is based on mutational profiles calculated from a global GISA
 and the other set from a global NextStrain dataset.
 The breakpoint intervals identified using RecombinHunt are defined
 as the left and right recombination-informative sites.
-We adjusted their coordinates by adding one to the right coordinate
-so that the intervals are right-exclusive.
 
 For CovRecomb, we summarized the detection results for the Pango X lineages as follows.
-First, we obtained the "independent" recombination events
+First, we obtained the ``independent'' recombination events
 identified by Li et al.\cite{Li2024CovRecomb} (see Table S4 of the study)
 which correspond to the Pango X lineages (if available).
 When multiple events corresponded to a Pango X lineage,
 we took the results of the event which had the highest number of epidemic recombinants.
 For other Pango X lineages, we downloaded the full list of putative recombinants
 identified in the study
-(https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv)
+(\url{https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv}).
 For each of these Pango X lineages,
 we took the most commonly observed combination of
 the left parent, the right parent, and the breakpoint interval.
 The breakpoint intervals are defined as the left and right recombination-informative sites.
-We adjusted the breakpoint intervals by adding one to the right coordinate
-so that they are right-exclusive.
-
-We ran rebar on the sampled sequences associated with each QC-passing recombination event.
-Rebar identifies a sequence as a recombinant if it contains sets of mutations 
-which are pre-determined to be associated with different Pango lineages.
 
 The parents of a Pango X inferred using a method are deemed concordant
 if they have Pango lineage assignments
-that are at least as specific as those proposed by the community.
+that are at least as specific as those proposed by the Pango designation community.
 The breakpoint interval of a Pango X inferred using a method is deemed concordant
 if it overlaps with that proposed by the community by at least one base.
-These breakpoint intervals are defined as ranges of possible site positions
-where a breakpoint is inferred to occur.
-To make these breakpoint intervals right-exclusive, we adjusted them
-by subtracting one from the left coordinate and adding two to the right coordinate.
-
+ 
+The results are reported in Table~\ref{tab:method_concordance}.
+See the
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_methods\_concordance.ipynb}{tab\_methods\_concordance.ipynb}
+notebook for details.
 
 \subsubsection*{Calculation of Pango lineage distance using pangonet}
 
@@ -2557,19 +2533,14 @@ to quantify the divergence between two Pango lineages.
 The idea is to count the number of edges
 separating two given Pango lineages in a pseudo-phylogeny
 which relates all the designated Pango lineages.
-To construct this pseudo-phylogeny, we used \textit{pangonet},
+To construct this pseudo-phylogeny, we used 
+pangonet (\url{https://github.com/phac-nml/pangonet})
 which mines the information on the Pango lineages
 in the ``alias\_key.json'' and ``lineage\_notes.txt'' files
-from the Pango designation issues
+defining the designations
 (\url{https://github.com/cov-lineages/pango-designation}).
-If two Pango lineages are siblings in the pseudo-phylogeny,
-the distance is defined as
-the sum of the number of edges from each lineage to their MRCA;
-if they are non-siblings (i.e., one Pango is a descendant of the other),
-the distance is defined as
-the number of edges separating them;
-if they are identical, the distance is defined as zero.
-
+The distance between two Pango lineages is then the number of edges
+separating the corresponding nodes in this graph.
 
 \subsubsection*{Expected lengths of recombination breakpoint intervals}
 
@@ -2611,6 +2582,27 @@ the per-site nucleotide substitution rate of
 $\sim2$ x $10^{-6}$ per site per day
 \cite{Duchene2020,Ghafari2022,Markov2023}.
 
+\subsubsection*{Comparison with UShER+RIPPLES}
+We began with the Viridian UShER tree downloaded from FigShare.
+To simplify the comparison with sc2ts, we subset this 
+file down to the 2,475,418 samples shared with the sc2ts ARG 
+by running \texttt{matUtils extract}.
+We then ran \texttt{ripples-fast}~\cite{Smith2023tracking}
+on this file, using \texttt{-n1} so that all detected 
+recombinants were reported (equivalent to sc2ts). We ran
+ripples with the parsimony improvement parameter $p$
+equal to 3 (the default) and 4. 
+
+The output of RIPPLES is two text files, 
+
+
+To compare these results with the sc2ts ARG, we first matched clades
+by finding the most recent common ancestor (MRCA) of the samples
+descending from each RIPPLES event. Overall, clade agreement was
+high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
+where descendants match exactly. Of these nodes, 68\% had no recombinant
+ancestry. Of the remainder, 595 could be matched with
+one of the 855 recombination events in the sc2ts ARG
 
 \subsection*{Quantification and statistical analysis}
 
@@ -3292,6 +3284,24 @@ non-recombinant with the largest number of mutations
 The remaining 4 events are mixtures of multiple lineages that are 
 difficult to reconcile with either the other events in the table 
 or the sc2ts ARG.
+
+\subsection*{Likely spurious recombinants with many descendants}
+\label{sec:spurious-ancestrally-important-recombinants}
+In the sc2ts ARG, there are two recombination events which have a large number of
+descendants but which are not classified as recombinants by Pango. The first of these
+corresponds to recombination event within BA.2 whose breakpoint is at position 27382
+on the far right of the genome (see supplementary document S3, node 1030562). Although
+supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
+meaning that this event does not pass our recombinant quality control measure.
+
+The second of these involves a single breakpoint at position 26858, and is the origin
+of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
+supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
+some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
+sample is added to the ARG, it is possible to construct a more parsimonious
+non-recombinant origin by long branch splitting, 
+although subsequent tree building does not make this a parsimonious
+way to rewire the final ARG. 
 
 \subsection{Origins of major VOCs}
 
