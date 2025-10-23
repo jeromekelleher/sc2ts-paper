@@ -2433,40 +2433,41 @@ with tanglegrams plotted using the SVG outputting facility built into tskit.
 See \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/supp\_pdf-cophylogeny-tanglegrams.ipynb}{supp\_pdf-cophylogeny-tanglegrams.ipynb}
 for details.
 
-
 \subsubsection*{Comparison of mutational spectra}
+% To validate the mutational information contained in the sc2ts ARG,
+% we compared the all-site mutational spectra of major VOCs in the ARG,
+% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
+% and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
+% Mutational spectra are defined as the relative proportions of
+% each possible type of nucleotide change.
 
-To validate the mutational information contained in the sc2ts ARG,
-we compared the all-site mutational spectra of major VOCs in the ARG,
-a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
-and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
-Mutational spectra are defined as the relative proportions of
-each possible type of nucleotide change.
-
-First, we calculated the mutational spectra of Alpha, Delta, Omicron BA.1, BA.2, BA.4, and BA.5
-in the sc2ts ARG, considering mutations (ignoring indels) above the sample nodes and internal nodes
+We calculated the mutational spectra of Alpha, Delta, Omicron BA.1, BA.2, BA.4, and BA.5
+in the sc2ts ARG, considering mutations (ignoring indels) above the sample 
+nodes and internal nodes
 which have Scorpio labels associated with the VOCs
 (e.g., for Alpha, B.1.1.7-like and B.1.1.7-like+E484K).
-These Scorpio labels were assigned to the aligned sequences of the nodes in the ARG using pangolin.
 Note that $\sim$98\% of all the mutations in the ARG occur
 above the nodes that have a Scorpio label associated with these VOCs
 (excluding the nodes with unassigned Scorpio labels).
 
+We calculated the mutational spectra of the same VOCs
+in the intersection UShER tree in tskit format using a similar approach.
+Here, we used the Scorpio sample assignments provided in the Viridian metadata,
+and therefore restricted to mutations above sample nodes only.
+
 Next, we calculated the mutational spectra of the same VOCs
-using the mutational counts from an UShER phylogeny analyzed in Bloom et al.\cite{Bloom2023},
+using the mutational counts from an UShER phylogeny 
+analyzed by Bloom et al.\cite{Bloom2023},
 which was built using a Nextclade pipeline and
 has samples collected worldwide up to November, 2022.
 To obtain the WHO label corresponding to a Nextclade-defined clade, we used the following mapping:
 20I, Alpha; 21I and 21J, Delta; 21K, BA.1; 21L, BA.2; 22A, BA.4; and 22B, BA.5.
-The mutation counts were downloaded from https://github.com/jbloomlab/SARS2-mut-spectrum/.
+The mutation counts were downloaded from
+\url{https://github.com/jbloomlab/SARS2-mut-spectrum/}.
 
-Lastly, we calculated the mutational spectra of the same VOCs
-in the Viridian UShER phylogeny\cite{Hunt2024},
-which was pruned down to the samples present in the sc2ts ARG.
-We used mutations above the sample nodes,
-for which Scorpio labels are available
-in the Viridian metadata provided by Hunt et al.\cite{Hunt2024}.
-
+See
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/fig\_mutational\_spectra.ipynb}{fig\_mutational\_spectra.ipynb}
+notebook for details.
 
 \subsubsection*{Comparison with recombination detection methods}
 [TODO Merge in this text that was in the Results]
