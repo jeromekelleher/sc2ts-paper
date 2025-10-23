@@ -2465,7 +2465,7 @@ To obtain the WHO label corresponding to a Nextclade-defined clade, we used the 
 The mutation counts were downloaded from
 \url{https://github.com/jbloomlab/SARS2-mut-spectrum/}.
 
-See t he
+See the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/fig\_mutational\_spectra.ipynb}{fig\_mutational\_spectra.ipynb}
 notebook for details.
 
@@ -2590,14 +2590,17 @@ by running \texttt{matUtils extract}.
 We then ran \texttt{ripples-fast}~\cite{Smith2023tracking}
 on this file, using \texttt{-n1} so that all detected 
 recombinants were reported (equivalent to sc2ts). We ran
-ripples with the parsimony improvement parameter $p$
+RIPPLES with the parsimony improvement parameter $p$
 equal to 3 (the default) and 4. 
 
-The output of RIPPLES is two text files, 
+The output of RIPPLES is two text files, ``recombination.tsv``
+which lists details of putative recombination events and ``descendants.tsv``
+which lists the descendant samples of all recombination events.
+
 
 
 To compare these results with the sc2ts ARG, we first matched clades
-by finding the most recent common ancestor (MRCA) of the samples
+bynding the most recent common ancestor (MRCA) of the samples
 descending from each RIPPLES event. Overall, clade agreement was
 high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
 where descendants match exactly. Of these nodes, 68\% had no recombinant
