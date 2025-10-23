@@ -2582,6 +2582,27 @@ the per-site nucleotide substitution rate of
 $\sim2$ x $10^{-6}$ per site per day
 \cite{Duchene2020,Ghafari2022,Markov2023}.
 
+\subsubsection*{Comparison with UShER+RIPPLES}
+We began with the Viridian UShER tree downloaded from FigShare.
+To simplify the comparison with sc2ts, we subset this 
+file down to the 2,475,418 samples shared with the sc2ts ARG 
+by running \texttt{matUtils extract}.
+We then ran \texttt{ripples-fast}~\cite{Smith2023tracking}
+on this file, using \texttt{-n1} so that all detected 
+recombinants were reported (equivalent to sc2ts). We ran
+ripples with the parsimony improvement parameter $p$
+equal to 3 (the default) and 4. 
+
+The output of RIPPLES is two text files, 
+
+
+To compare these results with the sc2ts ARG, we first matched clades
+by finding the most recent common ancestor (MRCA) of the samples
+descending from each RIPPLES event. Overall, clade agreement was
+high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
+where descendants match exactly. Of these nodes, 68\% had no recombinant
+ancestry. Of the remainder, 595 could be matched with
+one of the 855 recombination events in the sc2ts ARG
 
 \subsection*{Quantification and statistical analysis}
 
