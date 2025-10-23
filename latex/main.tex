@@ -2242,34 +2242,32 @@ designations), encoded to enable efficient columnar access,
 and compressed the file using tszip (version 0.2.5). The final 
 file requires 32MiB of storage.
 
-\subsubsection*{Evaluating the accuracy of sc2ts}
+%%% 
+% This is an early draft which was trying to tackle the problem of why
+% we don't compare against sims. Consensus was that it's better to just
+% ignore entirely and see what reviewers say.
+%%%
+% \subsubsection*{Evaluating the accuracy of sc2ts}
 
-% NOTES: This section is a bit weird as it's like a discussion point, but is 
-% too technical and negative to go in there. Nonetheless, we do need to address
-% this point somewhere, as it'll be something that would surely come up.
-% We might get asked to do some simulations, but let's try and steer the 
-% reviewer into asking us to do something simple like crudely recombining
-% different lineages and seeing what we get. 
-
-[NOTE: first draft]
-Sc2ts is a new method to infer ARGs for SARS-CoV-2, and the standard practise 
-is to evaluate new inference methods via a simulation analysis.  
-We have, instead, focused our validation efforts on comparing the output 
-produced by sc2ts to known results.
-Benchmarking against these extensive empirical results rather 
-than simulations leverages the uniquely rich literature, 
-ensuring that the resulting ARG (the primary contribution of this work)
-reflects biological reality.
-While specialised simulation packages for SARS-CoV-2 data
-% JK: did a search for VGSim, no recombination API included.
-exist~\cite{Shchur2022vgsim,DeMaio2022phastsim} there is 
-no support for recombination.
-While bespoke simulation models can be created by manually recombining 
-sequences in order to find false-positive and false-negative
-rates, it is unclear how well this models the complexities 
-of real data. Further work is needed to clarify the processes 
-and frequency of recombination in SARS-CoV-2 in order to 
-create simulations models that would inform this.
+% [NOTE: first draft]
+% Sc2ts is a new method to infer ARGs for SARS-CoV-2, and the standard practise 
+% is to evaluate new inference methods via a simulation analysis.  
+% We have, instead, focused our validation efforts on comparing the output 
+% produced by sc2ts to known results.
+% Benchmarking against these extensive empirical results rather 
+% than simulations leverages the uniquely rich literature, 
+% ensuring that the resulting ARG (the primary contribution of this work)
+% reflects biological reality.
+% While specialised simulation packages for SARS-CoV-2 data
+% % JK: did a search for VGSim, no recombination API included.
+% exist~\cite{Shchur2022vgsim,DeMaio2022phastsim} there is 
+% no support for recombination.
+% While bespoke simulation models can be created by manually recombining 
+% sequences in order to find false-positive and false-negative
+% rates, it is unclear how well this models the complexities 
+% of real data. Further work is needed to clarify the processes 
+% and frequency of recombination in SARS-CoV-2 in order to 
+% create simulations models that would inform this.
 
 \subsubsection*{Quality control of recombination events}
 
@@ -2304,12 +2302,7 @@ This leads to 354 QC-passing recombination events
 compared to 501 recombination events
 for which there is less support and which may be artefactual (shaded quadrants).
 
-We developed a SnipIt-like~\cite{OToole2024} visualisation 
-that shows the informative genomic positions between 
-a recombinant and its parent sequences, and highlights 
-potentially problematic loci
-(See Figure~\ref{fig:copying_pattern_examples} caption for details).
-Inspection of these copying patterns for all the recombination events
+Inspection of the copying patterns for all the recombination events
 identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
 Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
