@@ -2758,10 +2758,11 @@ we list the major deletion events in the ARG
 which are each inherited by at least 10,000 descendant samples; and
 in Table~\ref{tab:rec_dels},
 we list the recurrent deletions in the ARG
-which are each observed in at least 10,000 (0.4\%) samples
-% [FIXME define how we measured this].
-(i.e., for a deletion resulting from multiple events in the ARG,
-this is the total samples inheriting the deletion).
+which are each observed in at least 10,000 (0.4\%) samples.
+A deletion is said to be observed in a sample here 
+if the gap character is present at the specified positions,
+and the immediately adjacent positions are not the gap
+character.
 
 Most of the deletions in these tables
 occur in coding regions
