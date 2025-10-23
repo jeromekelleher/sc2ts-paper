@@ -2349,23 +2349,21 @@ rebar dataset version ``2025-01-28''.
 These steps are included in the Snakemake postprocessing
 workflow (see \nameref{sec:data_and_code_availability}).
 
-\subsubsection*{Comparison with UShER}
+\subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
-UShER tree from MAT~\cite{McBroome2021} to tskit format, which has similar
-properties but is more general 
-(see the \nameref{sec:args} section).
+UShER tree from MAT~\cite{McBroome2021} to tskit format.
 We first downloaded the tree in JSON format (tree.all\_viridian.202409.jsonl)
 and converted the tree topology to tskit node and edge table 
 descriptions. We then downloaded the protobuf formatted
 tree (tree.all\_viridian.202409.pb.gz), exported the mutations to 
 nucleotide format using \texttt{matUtils summary --translate}
-(usher version 0.6.3), and translated
+(usher version 0.6.3 from bioconda), and translated
 these mutations into tskit site and mutation tables. 
-The resulting tszip file 
-(usher\_viridian\_v1.0.trees.tsz) contains 5,345,019 nodes, 3,364,841
-mutations and requires 29MB of storage space.
-We validated that the data was correctly encoded by comparing the 
-variant data for the UShER tskit tree sequence against our alignments.
+The resulting file 
+ contains 5,345,019 nodes, 3,364,841
+mutations and requires 29MB of storage space in tszip format (usher\_viridian\_v1.0.trees.tsz).
+We validated that the data encoding by comparing the 
+variant data for the UShER tskit tree sequence against our MAFFT alignments.
 There was an exact match between the non-ambiguous nucleotide calls 
 at 27,469 sites. 
 % Usher tree has 27,508 vs sc2ts 29,893, or 2385 fewer sites 
@@ -2389,8 +2387,6 @@ the phylogenetic backbones,
 we also dated the intersection tree by fixing
 the sample dates using the ``Date\_tree'' metadata field,
 and using tsdate (version 0.2.3) to date internal nodes.
-We did not date the main UShER tree in this way because
-of the time-travelling samples present.
 
 All conversions were performed as part of the reproducible
 pipeline described in the \nameref{sec:arg_postprocessing} section.
@@ -2398,51 +2394,45 @@ The full UShER tree and the intersection files are available for download
 in tszip format (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
-
 We compare the non-recombinant parts of the ARG with the UShER topology
 by simplifying the phylogenies to a smaller number of
 Pango representative samples.
 We focus on the 1473 Pango lineages that have perfect ``origination events'' 
-as described in \ref{sec:supplement_pango_lineages}, and
-omit Pango designations starting with ``X''
-to avoid recombinants, leaving 1329 Pango lineages.
-To ensure that each sample is a tip (rather than an internal node)
-in the simplified topologies,
+(Document \ref{sec:supplement_pango_lineages}). We then omit
+omit X lineages, leaving 1329 lineages.
+To ensure that each sample is a tip in the simplified topologies,
 a representative sample is then chosen as the oldest sample
 descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
 We then further remove 4 lineages
-which are singleton descendants of a recombination event in the ARG
-(representing potentially missed Pango recombinant lineages),
+which are singleton descendants of a recombination event in the ARG,
+% NOTE: would have been simpler to say we just got rid of XBB and 
+% descendants.
 as well as 43 samples that are descendants of the recombinant XBB
 but which do not start with an ``X''.
 This results in a simplified ARG of 1282 samples,
-each sample having a different Pango designation.
+each sample from a different Pango lineage.
 
 The simplified ARG contains only two recombination nodes, which
-correspond to those on the far right of the genome identified as
-artefactual in the FIXME Xref \ref{sec:spurious-ancestrally-important-recombinants} section.
+are the two likely artefactual events discussed in 
+Document \ref{sec:spurious-ancestrally-important-recombinants}, 
+both of which have breakpoints near the 5' end of genome.
 We therefore compare the Usher topology against the first tree in the ARG (covering
 positions 1-26858; the majority of the genome). To reduce plot density, we consider
-only those Pango lineages with greater than 10 samples, and to aid visualization,
-we divide resulting tree into 4 parts: a BA.5 subtree of 187 Pangos,
-a Delta subtree of 104 Pangos, a BA.2 subtree (excluding BA.5 descendants) of 118 Pangos,
-and a base tree (i.e. excluding all descendants of Delta and BA.2) of 405 Pangos,
-Figures \ref{fig:tanglegram_base}-\ref{fig:tanglegram_ba5} show these trees compared
-against the equivalent dated UShER topologies.
+only those Pango lineages with greater than 10 samples.
+Figure \ref{fig:tanglegram_base} shows the resulting tree compared with 
+the equivalent dated UShER tree as a tanglegram.
+We also show subtrees for Delta (Figure~\ref{fig:tanglegram_delta}),
+BA.2 (Figure~\ref{fig:tanglegram_ba2}),
+and BA.5 (Figure~\ref{fig:tanglegram_ba5}).
+
 The order of tips in each plot was chosen to reduce tangling,
-as calculated using the NeighborNet algorithm from Dendroscope \cite{Scornavacca2011,Huson2012},
+as calculated using the NeighborNet algorithm from 
+Dendroscope \cite{Scornavacca2011,Huson2012},
 with tanglegrams plotted using the SVG outputting facility built into tskit.
 See \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/supp\_pdf-cophylogeny-tanglegrams.ipynb}{supp\_pdf-cophylogeny-tanglegrams.ipynb}
-for details and the pipeline used.
+for details.
 
-Inspection of Figures~\ref{fig:tanglegram_base}-\ref{fig:tanglegram_ba5} reveals that the majority of resolvable nodes,
-including most high-level Scorpio groupings,
-are shared between the ARG and the UShER tree (magenta nodes), and there is extremely close (usually perfect) agreement on topological relations between the Pango lineages.
-In the few cases where the trees differ, this is often in terms of degree of resolution of polytomies.
-In these cases, sometimes the sc2ts ARG shows greater resolution,
-as in the base of the BA.2 subtree, and
-sometimes the UShER tree shows greater resolution, as in the close relatives of Beta (B.1.351).
 
 \subsubsection*{Comparison of mutational spectra}
 
