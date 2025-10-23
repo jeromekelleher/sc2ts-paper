@@ -710,6 +710,8 @@ for extended analyses on all of the Pango X lineages,
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages}, and
 Document S2 for ARG visualizations of the Pango X lineages.
+[TODO ref Document \ref{sec:supplement_rejected_pango_x_lineages}
+to mention multi breakpoints and close issue 379]
 
 
 \subsection*{Quality control and validation of recombination events}
@@ -3323,7 +3325,7 @@ The remaining 4 events are mixtures of multiple lineages that are
 difficult to reconcile with either the other events in the table 
 or the sc2ts ARG.
 
-\subsection*{Likely spurious recombinants with many descendants}
+\subsection{Likely spurious recombinants with many descendants}
 \label{sec:spurious-ancestrally-important-recombinants}
 In the sc2ts ARG, there are two recombination events which have a large number of
 descendants but which are not classified as recombinants by Pango. The first of these
@@ -3476,68 +3478,6 @@ which are absent in the chosen seed
 but present in many of its inferred descendants.
 Inspection of the subgraph reveals that an alternative choice for a seed would be the later sample SRR17051902. Seeding with this sample would be likely to generate a topology
 in which those five recurrent mutations are shared between BA.1 and BA.2 and subsequently reverted in a number of the deep branching BA.1 lineages such as those to ERR7671333 and ERR7858953.
-
-
-\subsection{Sc2ts detection results of rejected Pango X lineages}
-\label{sec:supplement_rejected_pango_x_lineages}
-
-Ten Pango X lineages which are present in the Viridian v04 dataset
-were not integrated into the ARG
-due to high HMM costs and/or insufficient sample support,
-but their samples were matched against the ARG during inference.
-% https://github.com/jeromekelleher/sc2ts-paper/issues/366
-Table~\ref{tab:extra_hmm_results} summarizes
-the HMM matching results of these Pango X lineages.
-All were identified as recombinants by sc2ts, except XBL.
-(For XBL, the evidence for recombination
-proposed in the Pango designation issue \cite{PangoIssueXBL}
-involves only three informative sites
-supporting the suggested rightmost parent, and
-therefore this likely fell below our threshold of detection.)
-% https://github.com/jeromekelleher/sc2ts-paper/issues/379
-Importantly, these results demonstrate that sc2ts can detect
-recombinants with multiple breakpoints (XAY, XBC, and XBT).
-% https://github.com/jeromekelleher/sc2ts-paper/discussions/776
-% https://github.com/jeromekelleher/sc2ts-paper/discussions/788
-XBC and XBT are relatively clean examples of multiple-breakpoint recombinants,
-with the Pango lineages of the parents and the breakpoint intervals
-concordant with those suggested in the Pango designation issues,
-but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
-Exploring how to integrate these and other recombinants
-with complex recombination patterns \cite{Roemer2023}
-should be an important direction for future work.
-
-
-\begin{table}
-\centering
-\caption{
-Sc2ts detection results for Pango X lineages not added to the ARG.
-The number of samples in Viridian v04 dataset
-assigned to these Pango X lineages,
-the number of samples which passed sequence-level quality control, and
-the number of recombination breakpoints
-in the Viterbi solutions of the samples
-are shown.
-}
-\label{tab:extra_hmm_results}
-\begin{tabular}{crrr}
-\toprule
-Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
-\midrule
-XBJ & 2 & 1 & 1\\
-XBP & 8 & 2 & 1\\
-XBS & 19 & 15 & 1\\
-XBW & 1 & 1 & 1\\
-XCA & 11 & 4 & 1\\
-XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
-XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
-XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
-XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
-XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
-\bottomrule
-\end{tabular}
-\end{table}
-
 
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
@@ -4151,6 +4091,64 @@ This one XBR sample descends from a well supported recombination node.
 Its left parent is a BN.3.1-labeled sample, and
 its right parent is a reconstructed internal node
 that is directly supported by a BQ.1.25-labeled sample identical to it.
+
+
+\subsection{Pango X lineages not present in the ARG}
+\label{sec:supplement_rejected_pango_x_lineages}
+
+Ten Pango X lineages which are present in the Viridian v04 dataset
+were not integrated into the ARG
+due to high HMM costs and/or insufficient sample support,
+but their samples were matched against the ARG during inference.
+% https://github.com/jeromekelleher/sc2ts-paper/issues/366
+Table~\ref{tab:extra_hmm_results} summarizes
+the HMM matching results of these Pango X lineages.
+All were identified as recombinants by sc2ts, except XBL.
+(For XBL, the evidence for recombination
+proposed in the Pango designation issue \cite{PangoIssueXBL}
+involves only three informative sites
+supporting the suggested rightmost parent, and
+therefore this likely fell below our threshold of detection.)
+% https://github.com/jeromekelleher/sc2ts-paper/issues/379
+Importantly, these results demonstrate that sc2ts can detect
+recombinants with multiple breakpoints (XAY, XBC, and XBT).
+% https://github.com/jeromekelleher/sc2ts-paper/discussions/776
+% https://github.com/jeromekelleher/sc2ts-paper/discussions/788
+XBC and XBT are relatively clean examples of multiple-breakpoint recombinants,
+with the Pango lineages of the parents and the breakpoint intervals
+concordant with those suggested in the Pango designation issues,
+but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
+
+
+\begin{table}
+\centering
+\caption{
+Sc2ts detection results for Pango X lineages not added to the ARG.
+The number of samples in Viridian v04 dataset
+assigned to these Pango X lineages,
+the number of samples which passed sequence-level quality control, and
+the number of recombination breakpoints
+in the Viterbi solutions of the samples
+are shown.
+}
+\label{tab:extra_hmm_results}
+\begin{tabular}{crrr}
+\toprule
+Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
+\midrule
+XBJ & 2 & 1 & 1\\
+XBP & 8 & 2 & 1\\
+XBS & 19 & 15 & 1\\
+XBW & 1 & 1 & 1\\
+XCA & 11 & 4 & 1\\
+XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
+XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
+XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
+XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
+XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
+\bottomrule
+\end{tabular}
+\end{table}
 
 
 \subsection{Analysis of the Jackson et al. recombinants}
