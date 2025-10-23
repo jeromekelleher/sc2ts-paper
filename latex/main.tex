@@ -2328,32 +2328,26 @@ of which 6 failed QC.
 We validated recombination events in the sc2ts ARG 
 using 3SEQ~\cite{Lam2018improved} as follows.
 We first exported the alignments for the recombination node and both 
-parents to FASTA format, and then rand 3SEQ in ``full mode''
+parents to FASTA format, and then ran 3SEQ in ``full mode''
 independently for each recombinant. Specifically, we 
 ran \texttt{3seq -full  parents.fa recombinant.fa} using default 
 thresholds.
-
 We used 3SEQ source code downloaded from \url{https://gitlab.com/lamhm/3seq}
-at git hash e45ee3b4 for all analyses.
+at git hash e45ee3b4.
 
-\subsubsection*{Likely spurious ancestrally-important recombinants}
-\label{sec:spurious-ancestrally-important-recombinants}
-In the sc2ts ARG, there are two recombination events which have a large number of
-descendants but which are not classified as recombinants by Pango. The first of these
-corresponds to recombination event within BA.2 whose breakpoint is at position 27382
-on the far right of the genome (see supplementary document S3, node 1030562). Although
-supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
-meaning that this event does not pass our recombinant quality control measure.
+For CovRecomb\cite{Zhou2023virusrecom}, we obtained the original alignments 
+for the ``causal'' samples for each recombination node, and ran
+CovRecomb-Local-Version with default settings. We used source code 
+downloaded from \url{https://github.com/wuaipinglab/CovRecomb} at 
+git hash 1fbf6b2.
 
-The second of these involves a single breakpoint at position 26858, and is the origin
-of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
-supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
-some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
-sample is added to the ARG, it is possible to construct a more parsimonious
-non-recombinant origin by long branch splitting (see the \nameref{sec:arg_postprocessing}
-section), although subsequent tree building does not make this a parsimonious
-way to rewire the final ARG. We therefore suggest that this too could be an artifactual
-recombination event.
+We ran rebar in a similar manner, exporting the original alignments for the 
+causal samples to FASTA and using default parameter values. We used
+rebar version 0.2.1 from bioconda~\cite{Gruning2018bioconda}, and 
+rebar dataset version ``2025-01-28''.
+
+These steps are included in the Snakemake postprocessing
+workflow (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison with UShER}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
@@ -2528,9 +2522,6 @@ The breakpoint intervals are defined as the left and right recombination-informa
 We adjusted the breakpoint intervals by adding one to the right coordinate
 so that they are right-exclusive.
 
-We ran rebar on the sampled sequences associated with each QC-passing recombination event.
-Rebar identifies a sequence as a recombinant if it contains sets of mutations 
-which are pre-determined to be associated with different Pango lineages.
 
 The parents of a Pango X inferred using a method are deemed concordant
 if they have Pango lineage assignments
@@ -3285,6 +3276,24 @@ non-recombinant with the largest number of mutations
 The remaining 4 events are mixtures of multiple lineages that are 
 difficult to reconcile with either the other events in the table 
 or the sc2ts ARG.
+
+\subsection*{Likely spurious recombinants with many descendants}
+\label{sec:spurious-ancestrally-important-recombinants}
+In the sc2ts ARG, there are two recombination events which have a large number of
+descendants but which are not classified as recombinants by Pango. The first of these
+corresponds to recombination event within BA.2 whose breakpoint is at position 27382
+on the far right of the genome (see supplementary document S3, node 1030562). Although
+supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
+meaning that this event does not pass our recombinant quality control measure.
+
+The second of these involves a single breakpoint at position 26858, and is the origin
+of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
+supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
+some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
+sample is added to the ARG, it is possible to construct a more parsimonious
+non-recombinant origin by long branch splitting, 
+although subsequent tree building does not make this a parsimonious
+way to rewire the final ARG. 
 
 \subsection{Origins of major VOCs}
 
