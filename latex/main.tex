@@ -2465,28 +2465,34 @@ To obtain the WHO label corresponding to a Nextclade-defined clade, we used the 
 The mutation counts were downloaded from
 \url{https://github.com/jbloomlab/SARS2-mut-spectrum/}.
 
-See
+See t he
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/fig\_mutational\_spectra.ipynb}{fig\_mutational\_spectra.ipynb}
 notebook for details.
 
-\subsubsection*{Comparison with recombination detection methods}
-[TODO Merge in this text that was in the Results]
-
-To evaluate the concordance of the methods in
-identifying the Pango lineages of recombinant parents and locating recombination breakpoints,
-we focus on the Pango X lineages associated with the Type I recombination events (Table~\ref{tab:pango_x_lineages}),
-using the data from the Pango designation community (https://github.com/cov-lineages/pango-designation/) as a common comparison.
-For RecombinHunt and CovRecomb,
-we summarized the detection results for these Pango X lineages (if available)
-reported in the original studies \cite{Alfonsi2024,Li2024CovRecomb} (STAR Methods).
-For each method, we determined the Pango X lineages
-for which the inferred parental lineages and breakpoint intervals
-are concordant with those identified by the community (STAR Methods).
-We found that the methods performed well overall,
-with comparable concordance rates (Table~\ref{tab:method_concordance}),
-indicating that sc2ts can characterize recombinants as well as the state-of-the-art methods.
-
-[TODO explain why we restrict to the Type I events]
+\subsubsection*{Concordance of recombination events}
+We compare concordance rates of sc2ts in identifying the 
+Pango lineages of recombinant parents and the location
+of breakpoint intervals with RecombinHunt\cite{Alfonsi2024} and 
+CovRecomb\cite{Zhou2023virusrecom}.
+We use these two methods because detection
+results on the Pango X lineages were reported and made available 
+in the original publications. We do not compare here with 
+UShER+RIPPLES+RIVET because curated data on the X lineages is 
+not available for this pipeline (see Document \ref{sec:detailed_ripples}
+and Table~\ref{tab:ripples_x_lineages}, however).
+We use the data from the Pango designation community 
+(\url{https://github.com/cov-lineages/pango-designation/})
+as the ``truth'' when comparing performance in identifying
+parent Pango lineages and breakpoints between the methods.
+We focus on the 16 Type I recombination events 
+(Table~\ref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
+While this is certainly biased in favour of sc2ts (i.e., by 
+ignoring likely sc2ts false negatives such as XB), it helps to 
+understand the probable accuracy of sc2ts on the true positives.
+It is important to emphasise that the ``true'' truth set among
+the Pango X lineages is currently unknown, and there is significant 
+disagreement among methods beyond a core set of lineages 
+(see Discussion).
 
 For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
 from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
@@ -2494,36 +2500,31 @@ One set of results is based on mutational profiles calculated from a global GISA
 and the other set from a global NextStrain dataset.
 The breakpoint intervals identified using RecombinHunt are defined
 as the left and right recombination-informative sites.
-We adjusted their coordinates by adding one to the right coordinate
-so that the intervals are right-exclusive.
 
 For CovRecomb, we summarized the detection results for the Pango X lineages as follows.
-First, we obtained the "independent" recombination events
+First, we obtained the ``independent'' recombination events
 identified by Li et al.\cite{Li2024CovRecomb} (see Table S4 of the study)
 which correspond to the Pango X lineages (if available).
 When multiple events corresponded to a Pango X lineage,
 we took the results of the event which had the highest number of epidemic recombinants.
 For other Pango X lineages, we downloaded the full list of putative recombinants
 identified in the study
-(https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv)
+(\url{https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv}).
 For each of these Pango X lineages,
 we took the most commonly observed combination of
 the left parent, the right parent, and the breakpoint interval.
 The breakpoint intervals are defined as the left and right recombination-informative sites.
-We adjusted the breakpoint intervals by adding one to the right coordinate
-so that they are right-exclusive.
-
 
 The parents of a Pango X inferred using a method are deemed concordant
 if they have Pango lineage assignments
-that are at least as specific as those proposed by the community.
+that are at least as specific as those proposed by the Pango designation community.
 The breakpoint interval of a Pango X inferred using a method is deemed concordant
 if it overlaps with that proposed by the community by at least one base.
-These breakpoint intervals are defined as ranges of possible site positions
-where a breakpoint is inferred to occur.
-To make these breakpoint intervals right-exclusive, we adjusted them
-by subtracting one from the left coordinate and adding two to the right coordinate.
-
+ 
+The results are reported in Table~\ref{tab:method_concordance}.
+See the
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_methods\_concordance.ipynb}{tab\_methods\_concordance.ipynb}
+notebook for details.
 
 \subsubsection*{Calculation of Pango lineage distance using pangonet}
 
