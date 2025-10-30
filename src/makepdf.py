@@ -32,9 +32,13 @@ def convert_file(infile, outdir):
             # Replace the javascript in the notebook code
             # to change mutation symbols and node labels to contain URLs.
             # This is a complete hack that fakes tooltips in a pdf, as URLS appear on hover.
+            add_mut_links = False
             for line in input.readlines():
                 ## Mutation symbols have a hover that shows the position and state change
-                if line.rstrip().endswith(r'var mut_symbol_rect = mut_symbol\n",'):
+                if "var mut_symbol = svg" in line:
+                    add_mut_links = True
+                if add_mut_links and ".enter()" in line:
+                    add_mut_links = False
                     start, end = line.rsplit(r'\n', 1)
                     output.write(start + r'.append(\"a\").attr(\"href\", d => \"mut:\" + d.label)\n' + end)
                 #  Line labels where the second line starts with (DRR, (ERR, or (SRR
