@@ -154,6 +154,12 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 
 
 \section*{INTRODUCTION}
+% SHZ: The first paragraph should explain
+% why recombination "can" be important in pathogens.
+% Then, we explain why we need recombination-aware methods for pathogens.
+% This should set the stage for why this work is really important,
+% not just for SC2 but more broadly for the field of pathogen genomics.
+
 % Classical phylo methods fundamentally do not apply to SARS-CoV-2 data, both
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
@@ -706,12 +712,17 @@ has been thoroughly characterized \cite{Gutierrez2022} and
 may have misclassified by sc2ts due to limitations in
 handling deletions or matching against long branches (Document \ref{sec:dd_xb}). 
 See Document~\ref{sec:supplement_indepth_pango_x_lineages}
-for extended analyses on all of the Pango X lineages,
+for extended analyses on all the Pango X lineages;
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
-associated with Table~\ref{tab:pango_x_lineages}, and
-Document S2 for ARG visualizations of the Pango X lineages.
-[TODO ref Document \ref{sec:supplement_rejected_pango_x_lineages}
-to mention multi breakpoints and close issue 379]
+associated with Table~\ref{tab:pango_x_lineages};
+Document S2 for ARG visualizations of the Pango X lineages; and
+% TODO: ref Document \ref{sec:supplement_rejected_pango_x_lineages}
+% to mention multi breakpoints and close issue 379
+Document \ref{sec:supplement_rejected_pango_x_lineages}
+for an analysis of the Pango X lineages
+which were detected as multiple-breakpoint recombinants by sc2ts
+but were not added to the ARG
+due to high HMM costs and/or poor sample support.
 
 
 \subsection*{Quality control and validation of recombination events}
@@ -964,8 +975,10 @@ We examined the frequency of emergence of the recombinants
 over the course of the COVID-19 pandemic
 (Figure \ref{fig:recombinants_over_time}).
 We explored two hypotheses for the timing of recombination.
-First, we would expect recombination events to occur more often when case counts are high,
-which increases the chance of co-infection within an individual, allowing recombination.
+First, we would expect recombination events
+to occur more often when case counts are high,
+which increases the chance of co-infection within an individual,
+allowing recombination.
 Second, we would expect recombination events to be detected
 more often when lineage diversity is high,
 as this increases the chance that
@@ -985,7 +998,7 @@ inferred within each week along the ARG,
 focusing on the 354 events passing QC filters.
 Recombination events were inferred more often
 during the Delta and Omicron waves, when case counts were high.
-Overall, the number of recombinant events rose with the global number of cases
+Overall, the number of recombination events rose with the global case count
 (Figure~\ref{fig:recombinants_over_time}B; 
 % JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
 linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
@@ -1197,7 +1210,10 @@ of the UShER+RIPPLES results.
 
 % P1. The ARG. Unique resource. Emphasise utility of UShER and how 
 % this has more.
-
+% SHZ: This makes it sound like we are just making analyses
+% (which people can do already using existing methods and tools)
+% easier to do
+% rather than making a leap forward from anything else out there.
 We present the first pandemic-scale ancestral recombination graph (ARG) for
 SARS-CoV-2, reconstructed from 2.48 million genomes using \texttt{sc2ts}. This
 ARG represents a step change in how the evolutionary history of this virus can
@@ -1220,7 +1236,7 @@ full spectrum of evolutionary processes shaping SARS-CoV-2.
 % SHZ: Why should we care about getting this number/frequency right?
 % Sure, popgen folks love estimating this, but to other people,
 % existing estimates already tell us that
-% recombination in SARS-CoV-2 is (qualitatively) rare,
+% detectable recombination in SARS-CoV-2 is (qualitatively) rare,
 % even without the advances of sc2ts.
 % Also, we are talking about the frequency of detectable recombination
 % in the last sentence, right?
@@ -1258,7 +1274,7 @@ the true frequency of recombination in SARS-CoV-2 evolution.
 % I think what is important is knowing
 % how many emerging recombinants carrying new combinations of mutations of concern
 % we are actually dealing with.
-% Clarifying the relationships between Pango Xs make this possible.
+% Clarifying the relationships between Pango Xs helps with this task.
 
 The Pango X lineage designations represent the community’s best attempt to
 catalogue recombinant SARS-CoV-2 lineages, but they arise from a largely
@@ -1313,7 +1329,8 @@ the ecological conditions for viral recombination are most favourable.
 % pattern of detectable recombination in CoVs in general?
 % There are some citations for template switching hotspots in SC2.
 % Also, it's not only about selection favoring new combinations of mutations in Spike.
-% It's about combinations of mutations in, say, ORF1ab, getting selected against.
+% It's about combinations of mutations in, say, ORF1ab, getting selected against
+% (or just low mutation rates).
 % Maybe mention epistasis?
 [FIXME: This is directish output from ChatGPT. Review!]
 The genomic distribution of breakpoints in the ARG is highly uneven, with a
@@ -1397,42 +1414,192 @@ SARS-CoV-2 and catalyse methodological refinement and targeted biological
 studies of recombination across systems where such extensions prove feasible.
 
 
+%%% WIP: SHZ
+We present the first pandemic-scale
+ancestral recombination graph (ARG) for SARS-CoV-2,
+reconstructed from $\sim$2.48 million genomes using \textit{sc2ts}.
+We demonstrate how this ARG, for the first time,
+enables systematic identification and characterization of
+recombination events in fine-grained
+detail--in terms of their parents, breakpoints, and timing of
+emergence--providing richer and more nuanced
+genealogical, genomic, and epidemiological context
+than existing phylogenetic approaches.
+Together, sc2ts and the ARG represent a new paradigm in
+how we study the evolution of pathogens in the face of ongoing sampling.
+
+Accounting for recombination is a key challenge in pathogen genomics, and
+recombination has been largely ignored in analysis of viral genomes.
+Existing phylogenetic approaches for pathogens detect recombination
+\textit{post hoc} (e.g., UShER+RIPPLES),
+treat it as a nuance (e.g., XX), or
+discard its signals from downstream analyses (e.g., XX).
+Sc2ts addresses this challenge
+by using the ARG as the underlying data model,
+explicitly representing recombination events as individual nodes and
+relating them to specific parents in the ARG.
+The ARG provides a coherent framework to determine and represent
+the relationships between recombinants and their specific parents
+(which are not possible using a tree-based data model,
+e.g., the Mutation Annotated Tree format of UShER).
+The ARG reveals and clarifies the relationships between
+individual samples of the same recombinant origin,
+avoiding issues such as over-naming recombinants
+(e.g., the samples assigned to
+five differently labeled recombinant Pango lineages
+descending from the “Xx” recombination event in the ARG).
+Our results show how an ARG can considerably simplify
+efforts to identify and monitor emerging recombinants,
+facilitating communication of genomic surveillance results.
+
+% SHZ: A bit vague, but is this worth discussing?
+% What else to say about the timing of these events?
+% TODO: Example with say XBB?
+% TODO: Say we don’t explore this fully, but it could be a follow-up study?
+The timing of recombination events is of key interest in
+pathogen genomic epidemiology,
+because this information may yield insights into
+% Probably A bad idea to say this.
+how the emergence of a new recombinant might be
+linked with changes in public health policies.
+Using the ARG, we reconstructed a historical timeline of
+recombination events during the COVID-19 pandemic,
+showing that it is possible to pinpoint the occurrence of
+recombination events precisely in time,
+within windows of X to X months
+(given the intensity of sampling in the COVID-19 dataset).
+
+The overall frequency of detectable recombination events
+estimated from the sc2ts ARG is substantially lower than
+that from UShER+RIPPLES,
+largely reflecting differences in model formulation and parameter choice.
+When applied \textit{post hoc} to an UShER phylogeny of
+$\sim$1.6 million genomes sampled up to May, 2021,
+RIPPLES reported 589 unique recombination events with 43,104 descendant
+samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
+Using the same time interval, sc2ts \(k=4\) identifies
+14 high-confidence recombination events with
+172 descendant samples among 501,235 samples \(0.034\%\),
+a 40- to 80-fold reduction.
+Much of this difference is explained by
+the stricter parsimony penalty used here:
+increasing the penalty from p=3 (as used in the RIPPLES analysis) to
+k=4 greatly reduces false positives
+while retaining nearly all verified recombinant lineages,
+including those missed by RIPPLES at equivalent thresholds.
+These indirect comparisons suggest that
+our estimate represents a conservative lower bound.
+In future studies, dissecting the methodological differences
+between sc2ts and UShER+RIPPLES may
+inspire new ideas to develop or improve ARG building methods
+for SARS-CoV-2 (and potentially other pathogens).
+
+The ARG itself is a powerful resource
+to support future studies of SARS-CoV-2.
+Our results show that the ARG captures and unifies
+important features of SARS-CoV-2 evolution,
+which are shown in different studies
+using various methods, tools, and approaches.
+The ARG also compactly encodes genetic variation in
+millions of SARS-CoV-2 genomes,
+allowing for convenient and efficient reuse of
+this valuable dataset for a range of
+genetic and evolutionary analyses beyond those presented here,
+for instance, to understand
+how the variability in sequencing efforts
+across time and location affects our ability
+to reconstruct the origin of important recombinant lineages and
+to estimate when they emerge.
+Because building the ARG is computationally expensive, and
+checking and improving various aspects of its quality is laborious,
+we hope that making this resource openly available will
+save significant time and effort for other researchers,
+enabling immediate focus on analyzing the information
+contained within the COVID-19 dataset.
+% TODO: Briefly discussion software tools here or in a subsequent paragraph.
+
+Recent developments in ARG methods have focused almost exclusively on
+applications to human sequencing data.
+The availability of human ARGs reconstructed from large datasets
+has already had a tremendous impact on improving
+our understanding of human genetic ancestry and past demography.
+We anticipate similar advances to be made
+by adapting existing inference methods for human ARGs
+to use the sc2ts ARG for the genealogy-based study of
+natural selection or the geographic spread of SARS-CoV-2 through time.
+
+The unprecedented throughput and pace of genome sequencing are
+creating ample opportunity to understand the impacts of recombination
+on pathogen evolution and epidemiology.
+We hope that this study will spur
+development of ARG methods for pathogens,
+ultimately making recombination-aware genome analysis
+routine for all sorts of pathogens beyond SARS-CoV-2.
+
+
 \subsection*{Limitations of the study}
 
 %%% A "limitations" or "limitations of the study" subsection in the discussion is encouraged
 %%% and may be required for some journals and some article formats.
 
-[TODO]
+We close by emphasizing several current limitations
+as well as potential directions to improve sc2ts,
+which we hope will also inspire future research
+to develop ARG methods for other pathogens.
 
-We close by emphasizing several current limitations and potential directions to improve sc2ts.
-First, more stringent filters to exclude false positive recombinants during inference
-would obviate post-hoc treatment of these recombinants.
-Second, indels carry important phylogenetic signals,
-for example, as defining mutations of Alpha and Delta (REF).
-We currently treat multi-base deletions as missing data or multiple independent deletions,
-but they are in reality single events.
-More sophisticated treatments of multi-base indels in the HMM could help recover additional signals
+Deletions which are reverted can be strong signals of recombination,
+because bases which are lost cannot be easily regained,
+except through recombination involving
+a lineage that has bases at the deleted sites.
+We currently treat multi-base deletions as missing data.
+More sophisticated treatments of such indels in the HMM
+may help recover additional signals
 (and avoid false signals) of recombination.
-Third, the current HMM assumes a simplistic mutation model,
-which does not account for documented transition-to-transversion rate bias (REF)
-and context-dependent variation in mutation rate (REF).
-A more realistic mutation model may help improve inference of local genetic relationships in the ARG.
-Fourth, an inherent limitation of detecting recombination from sequence data,
-which applies to all methods, is that it is impossible to detect events with few (or no) supporting bases,
+
+The current HMM assumes a simplistic mutation model
+(where mutation to any other allele is equally probable) and
+implicitly assumes a uniform mutation rate along the SARS-CoV-2 genome.
+However, genome analyses have revealed
+transition-to-transversion rate bias in SARS-CoV-2 \cite{Bloom2023} and
+sequence context-dependent variation
+in the mutation rate along the SARS-CoV-2 genome (REF).
+A more realistic mutation model may help improve
+inference of local genetic relationships in the ARG, and
+accounting for mutation rate heterogeneity
+during sample matching or in the HMM cost
+(e.g., down-weighing sites in highly mutable regions)
+may help reduce false positive recombinants.
+
+We developed and used several methods
+to exclude poor-quality recombination events post hoc, including
+filtering by supporting loci per parent and
+long-branch splitting.
+These methods could instead be run immediately
+after sample matching during ARG inference,
+obviating the need for post-processing of the ARG.
+
+An inherent limitation of detecting recombination from sequence data,
+which applies to all methods,
+is that it is impossible to detect events with few (or no) supporting bases,
 as these cannot be distinguished from mutation events.
-This limitation makes it particularly challenging to detect events near the termini of linear viral genomes.
-Fifth, it is challenging to accurately reconstruct global events
-when there are regions with poor sampling and jurisdictions with long delays
-before sequences become publicly available (REF).
+This limitation makes it particularly challenging
+to detect events near the termini of linear viral genomes.
+
+It is challenging to accurately reconstruct global events
+when there are regions with poor sampling and jurisdictions
+with long delays before sequences become publicly available (REF).
 Revisiting the ARG topology periodically
-(e.g., rewinding the ARG a month and repeating with samples that became available later)
-and better handling of putative recombinants with suspiciously long branches
-(e.g., Delta and Omicron BA.2) might improve the accuracy of the genealogy.
+(e.g., rewinding the ARG a month and repeating
+with samples that became available later) and
+better handling of putative recombinants
+with suspiciously long branches (e.g., Delta and Omicron BA.2)
+might improve the accuracy of the genealogy.
+
+% TODO: Add a short discussion of the node dates and
+% some references to the literature, closing issue 725.
+
 Finally, future developments may account for geography in the HMM,
 favoring attachment of samples to geographically close lineages.
- 
-TODO: add a short discussion of the node dates and some references
-to the literature, closing issue 725
 
 \newpage
 
@@ -2335,8 +2502,9 @@ using 3SEQ~\cite{Lam2018improved} as follows.
 We first exported the alignments for the recombination node and both 
 parents to FASTA format, and then ran 3SEQ in ``full mode''
 independently for each recombinant. Specifically, we 
-ran \texttt{3seq -full  parents.fa recombinant.fa} using default 
-thresholds.
+ran \texttt{3seq -full parents.fa recombinant.fa}
+% TODO: Should we mention the default p-value threshold is 0.05?
+using default thresholds.
 We used 3SEQ source code downloaded from \url{https://gitlab.com/lamhm/3seq}
 at git hash e45ee3b4.
 
@@ -2553,16 +2721,21 @@ Recombination breakpoint intervals are imprecise
 when the recombining parents are identical in sequence
 at sites spanning the breakpoint.
 Here, we estimate the interval lengths expected around a breakpoint,
-given a genome-wide nucleotide substitution rate $\mu$,
+given a genome-wide nucleotide substitution rate ($\mu$),
 total time between two samples ($T$), and
 sufficient support to detect the recombination event.
-If a breakpoint occurs a fraction $P$ along a genome of length $L$ and
+If a breakpoint occurs a fraction $P$
+along a genome of length $L$ and
 $k$ mutations have occurred to the left of the breakpoint,
-then we expect the nearest mutation to occur $P L / (k + 1)$ bases to the left.
+then we expect the nearest mutation
+to occur $P L / (k + 1)$ bases to the left.
 If we require $n$ mutations on both sides of the breakpoint,
 we can calculate the expected value of the interval to the left
 by summing across a Poisson-distributed number of mutations,
-conditioned on having at least $n$ mutations:
+conditioned on having at least $n$ mutations,
+using the following equation
+(where $\Gamma(x)$ is the gamma function, and
+$\Gamma(x, y)$ is the upper incomplete gamma function):
 
 \[I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{\Gamma(n) - \Gamma(n, P T \mu)}\]
 
@@ -2643,6 +2816,7 @@ and the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_ripples.ipynb}{analysis\_ripples.ipynb}
 notebook for full methodological details of the analysis.
 
+
 \subsection*{Quantification and statistical analysis}
 
 %%%  Please describe here all statistical analysis
@@ -2666,38 +2840,44 @@ notebook for full methodological details of the analysis.
 
 \subsubsection*{Analyzing global case counts}
 
-To explore the timing of emergence of recombinants,
+To explore the timing of emergence of recombination events,
 case count data were downloaded from
 the COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE)
-at Johns Hopkins University \cite{Dong2020} and binned by week from January, 2020 to March, 2023.
+at Johns Hopkins University \cite{Dong2020} and
+binned by week from January, 2020 to March, 2023.
 The proportion of each lineage $i$ in each week ($p_i$) was then inferred
 from the Scorpio designation at each node within the ARG for that week.
 Genetic variation was measured as the ``expected heterozygosity'' across lineages,
 which is the chance that two lineages chosen at random
 from that week had different Scorpio designations ($\sum_{i} \sum_{j>i} 2 p_i p_j$).
-The linear regression models reported in \textbf{Figure} \ref{fig:recombinants_over_time} allowed for a non-zero intercept,
+The linear regression models reported in \textbf{Figure} \ref{fig:recombinants_over_time}
+allowed for a non-zero intercept,
 because there may be unreported cases even without any reported cases.
 The slopes were highly significant, and
 the p-values were confirmed by randomly permuting the predictor variable 10,000 times.
-ANOVAs were conducted to determine which single predictor ($n$, $H$, $n \; H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
+ANOVAs were conducted to determine which single predictor
+($n$, $H$, $n \; H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
 These statistical tests and graphics were conducted
+% TODO: The link!
 in \textit{Mathematica} 14.2 (Wolfram 2024) and available at GITHUB LINK.
 
-In addition to the analysis of the 354 recombination events 
-that pass QC,
+In addition to the analysis of the 354 recombination events that pass QC,
 we analyzed the relationship between the full set of 855 recombinants and case numbers.
-These additional recombinants occurred disproportionately during the Delta and first Omicron wave (July, 2021 to February, 2022).
-Again, the number of recombinant events rose with the global number of cases
+These additional recombinants occurred disproportionately
+during the Delta and first Omicron wave (July, 2021 to February, 2022).
+Again, the number of recombinant events rose with the global case count
 (linear regression: $3.1 + 5.3 \; 10^{-7} x$, $p = 0.0006$)
 and with the diversity of lineages in each week
 (linear regression: $0.42 + 18.3 x$, $p = 2 \; 10^{-12}$).
-The single best predictor of recombination events among the predictors tested ($n$, $H$, $n \; H$, $n^2$, $n^2 H$)
+The single best predictor of recombination events
+among the predictors tested ($n$, $H$, $n \; H$, $n^2$, $n^2 H$)
 was again the product of cases and diversity ($n \; H$),
 with an adjusted $R^2$ of 26.9\%,
 although this was now followed closely by expected heterozygosity on its own ($H$),
 with an adjusted $R^2$ of 26.5\%.
 Thus, similar conclusions are reached with either dataset,
-although filtering the recombination events to the 354 with better support revealed a stronger relationship with case numbers.
+although filtering the recombination events to the 354
+with better support revealed a stronger relationship with case numbers.
 
 
 % \subsection*{Additional resources}
@@ -4093,7 +4273,7 @@ its right parent is a reconstructed internal node
 that is directly supported by a BQ.1.25-labeled sample identical to it.
 
 
-\subsection{Pango X lineages not present in the ARG}
+\subsection{Pango X lineages not added to the ARG}
 \label{sec:supplement_rejected_pango_x_lineages}
 
 Ten Pango X lineages which are present in the Viridian v04 dataset
