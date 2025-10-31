@@ -307,8 +307,14 @@ class D3ARG_viz:
         def label_lines(row):
             if getattr(row, "sample_id", "") == "Vestigial_ignore":
                 return [""]
-            lab = getattr(row, self.pangolin_field)
-            return [lab, f"({row.Index})"] if add_strain_names else [lab]
+            lab = str(getattr(row, self.pangolin_field))
+            if lab == "nan":
+                lab = "."
+            if add_strain_names:
+                strain_name = str(row.Index)
+                if not strain_name.startswith("node_"):
+                    return [lab, f"({strain_name})"]
+            return [lab]
 
         node_labels = {}
         for row in tqdm(
@@ -364,6 +370,7 @@ class D3ARG_viz:
         highlight_mutations=None,
         parent_pangos=None,
         positions_file=None,
+        save_filename=None,
         **kwargs,
     ):
         """
@@ -422,7 +429,7 @@ class D3ARG_viz:
             highlight_nodes=highlight_nodes,
             parent_levels=parent_levels,
             child_levels=child_levels,
-            save_filename="-".join(pangos),
+            save_filename=save_filename or "-".join(pangos),
             **kwargs,
         )
 
