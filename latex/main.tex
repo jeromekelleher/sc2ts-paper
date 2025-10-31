@@ -711,19 +711,19 @@ XB, on the other hand,
 has been thoroughly characterized \cite{Gutierrez2022} and
 may have misclassified by sc2ts due to limitations in
 handling deletions or matching against long branches (Document \ref{sec:dd_xb}). 
+
+The remaining 10 X lineages (97 samples) present in the dataset are not 
+included in the ARG because the HMM cost exceeds the inclusion threshold
+and there was insufficient support for retrospective inclusion (STAR Methods).
+These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
+which are confirmed by sc2ts to have multiple breakpoints; see 
+Document \ref{sec:supplement_rejected_pango_x_lineages} and Table 
+\ref{tab:extra_hmm_results} for details.
 See Document~\ref{sec:supplement_indepth_pango_x_lineages}
-for extended analyses on all the Pango X lineages;
+for extended analyses on all the Pango X lineages in the ARG;
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages};
-Document S2 for ARG visualizations of the Pango X lineages; and
-% TODO: ref Document \ref{sec:supplement_rejected_pango_x_lineages}
-% to mention multi breakpoints and close issue 379
-Document \ref{sec:supplement_rejected_pango_x_lineages}
-for an analysis of the Pango X lineages
-which were detected as multiple-breakpoint recombinants by sc2ts
-but were not added to the ARG
-due to high HMM costs and/or poor sample support.
-
+and Document S2 for ARG visualizations of the Pango X lineages.
 
 \subsection*{Quality control and validation of recombination events}
 
@@ -4330,6 +4330,8 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 \end{tabular}
 \end{table}
 
+% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
+% 97
 
 \subsection{Analysis of the Jackson et al. recombinants}
 \label{sec:jackson_recombs}
