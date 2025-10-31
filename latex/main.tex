@@ -999,7 +999,7 @@ focusing on the 354 events passing QC filters.
 Recombination events were inferred more often
 during the Delta and Omicron waves, when case counts were high.
 Overall, the number of recombination events rose with the global case count
-(Figure~\ref{fig:recombinants_over_time}B; 
+(Figure~\ref{fig:recombinants_over_time}B;
 % JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
 linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
 Recombination events also rose with the diversity of lineages in each week
@@ -1536,53 +1536,61 @@ routine for all sorts of pathogens beyond SARS-CoV-2.
 We close by emphasizing several current limitations
 as well as potential directions to improve sc2ts,
 which we hope will also inspire future research
-to develop ARG methods for other pathogens.
+to develop ARG methods for SARS-CoV-2 and other pathogens.
 
-Deletions which are reverted can be strong signals of recombination,
-because bases which are lost cannot be easily regained,
-except through recombination involving
-a lineage that has bases at the deleted sites.
-We currently treat multi-base deletions as missing data.
-More sophisticated treatments of such indels in the HMM
-may help recover additional signals
-(and avoid false signals) of recombination.
+Reversions of deletions can indicate recombination,
+because bases that are lost are unlikely to be regained,
+except via recombination with a lineage that has those bases.
+We presently treat multi-base deletions as missing data.
+Explicitly modeling deletions in the HMM
+could help recover additional signals of recombination
+and reduce false positives.
 
 The current HMM assumes a simplistic mutation model
 (where mutation to any other allele is equally probable) and
 implicitly assumes a uniform mutation rate along the SARS-CoV-2 genome.
-However, genome analyses have revealed
+However, genomic analyses have revealed
 transition-to-transversion rate bias \cite{Bloom2023,Simmonds2024} and
-sequence context-dependent variation
-in the mutation rate in the SARS-CoV-2 genome \cite{Haddox2025}.
-A more realistic mutation model may help improve
-inference of local genetic relationships in the ARG, and
+sequence context-dependent mutation rate variation
+across the SARS-CoV-2 genome \cite{Haddox2025}.
+Using a more realistic mutation model and
 accounting for mutation rate heterogeneity
-during sample matching or in the HMM cost
-(e.g., down-weighing sites in highly mutable regions)
-may help reduce false positive recombinants.
+could improve
+inference of local genetic relationships in the ARG and
+reduce spurious recombinants.
 
-Finally, future developments may account for geography in the HMM,
+Future developments may account for geography in the HMM,
 favoring attachment of samples to geographically close lineages.
 
 % TODO: Add a short discussion of the node dates and
 % some references to the literature, closing issue 725.
 
+We have developed and used filters
+to detect time traveling samples in the Viridian dataset and
+to exclude them from the ARG,
+yielding a set of samples with reliable collection dates.
+Future studies could leverage the ARG
+to flag wrongly dated samples or
+to infer the dates of samples
+with missing or incomplete collection dates in the metadata.
+
 It is challenging to accurately reconstruct global events
 when there are regions with poor sampling and
 jurisdictions with long delays
-before sequences become publicly available (REF).
+before sequences become publicly
+available \cite{Lancet2021,Kalia2021,Chen2022}.
 For example, revisiting the ARG topology periodically
 (e.g., rewinding the ARG a month and repeating
 with samples that became available later)
 might improve the accuracy of the genealogy.
 
-Several methods are developed and used
-to exclude probable false positive recombination events \textit{post hoc},
+We have developed and used several methods
+to exclude spurious recombination events \textit{post hoc},
 including filtering by supporting loci per parent and
-splitting of suspiciously long branches.
+splitting of suspiciously long branches (e.g., Delta and Omicron BA.2).
 These methods could instead be run immediately
 after sample matching during ARG inference,
-obviating the need for post-processing of the ARG.
+reducing the number of ARG post-processing steps.
 
 Finally, an inherent limitation of detecting recombination from sequence data,
 which applies to all methods,
