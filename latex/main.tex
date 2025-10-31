@@ -1560,9 +1560,9 @@ The current HMM assumes a simplistic mutation model
 (where mutation to any other allele is equally probable) and
 implicitly assumes a uniform mutation rate along the SARS-CoV-2 genome.
 However, genome analyses have revealed
-transition-to-transversion rate bias in SARS-CoV-2 \cite{Bloom2023} and
+transition-to-transversion rate bias \cite{Bloom2023,Simmonds2024} and
 sequence context-dependent variation
-in the mutation rate along the SARS-CoV-2 genome (REF).
+in the mutation rate in the SARS-CoV-2 genome \cite{Haddox2025}.
 A more realistic mutation model may help improve
 inference of local genetic relationships in the ARG, and
 accounting for mutation rate heterogeneity
@@ -1570,36 +1570,36 @@ during sample matching or in the HMM cost
 (e.g., down-weighing sites in highly mutable regions)
 may help reduce false positive recombinants.
 
-We developed and used several methods
-to exclude poor-quality recombination events post hoc, including
-filtering by supporting loci per parent and
-long-branch splitting.
+Finally, future developments may account for geography in the HMM,
+favoring attachment of samples to geographically close lineages.
+
+% TODO: Add a short discussion of the node dates and
+% some references to the literature, closing issue 725.
+
+It is challenging to accurately reconstruct global events
+when there are regions with poor sampling and
+jurisdictions with long delays
+before sequences become publicly available (REF).
+For example, revisiting the ARG topology periodically
+(e.g., rewinding the ARG a month and repeating
+with samples that became available later)
+might improve the accuracy of the genealogy.
+
+Several methods are developed and used
+to exclude probable false positive recombination events \textit{post hoc},
+including filtering by supporting loci per parent and
+splitting of suspiciously long branches.
 These methods could instead be run immediately
 after sample matching during ARG inference,
 obviating the need for post-processing of the ARG.
 
-An inherent limitation of detecting recombination from sequence data,
+Finally, an inherent limitation of detecting recombination from sequence data,
 which applies to all methods,
 is that it is impossible to detect events with few (or no) supporting bases,
 as these cannot be distinguished from mutation events.
 This limitation makes it particularly challenging
 to detect events near the termini of linear viral genomes.
 
-It is challenging to accurately reconstruct global events
-when there are regions with poor sampling and jurisdictions
-with long delays before sequences become publicly available (REF).
-Revisiting the ARG topology periodically
-(e.g., rewinding the ARG a month and repeating
-with samples that became available later) and
-better handling of putative recombinants
-with suspiciously long branches (e.g., Delta and Omicron BA.2)
-might improve the accuracy of the genealogy.
-
-% TODO: Add a short discussion of the node dates and
-% some references to the literature, closing issue 725.
-
-Finally, future developments may account for geography in the HMM,
-favoring attachment of samples to geographically close lineages.
 
 \newpage
 
@@ -1684,9 +1684,9 @@ TODO add these to the list above with actual URLs
 %%%  from non-authors and list funding sources,
 %%%  including grant numbers.
 
-SHZ is supported by an Intermediate Research Fellowship
-from the Nuffield Department of Population Health,
-University of Oxford.
+SHZ is supported by an NDPH Intermediate Research Fellowship
+from Oxford Population Health, University of Oxford.
+
 
 \section*{AUTHOR CONTRIBUTIONS}
 
@@ -1703,6 +1703,7 @@ funding acquisition, S.C.P. and S.Y.W.;
 resources, M.E.V and C.K.B.;
 supervision, A.B., N.L.W., and A.A.D.
 
+
 \section*{DECLARATION OF INTERESTS}
 
 %%%  This component is required for all articles, even
@@ -1712,7 +1713,9 @@ supervision, A.B., N.L.W., and A.A.D.
 %%%  declaration of interests policy:
 %%%  https://www.cell.com/declaration-of-interests
 
-S.Y.W. is an employee and shareholder of COMPANY.
+% TODO: Close https://github.com/jeromekelleher/sc2ts-paper/issues/922
+The authors declare no competing interests.
+
 
 \section*{DECLARATION OF GENERATIVE AI AND AI-ASSISTED TECHNOLOGIES}
 
@@ -1724,7 +1727,7 @@ S.Y.W. is an employee and shareholder of COMPANY.
 %%%  If you have nothing to disclose, please do not
 %%%  include this component.
 
-During the preparation of this work, the author(s) used ChatGPT  
+During the preparation of this work, the author(s) used ChatGPT
 in order to obtain editorial input on the text.
 After using this tool or service, the author(s) reviewed
 and edited the content as needed and take(s) full responsibility for the content of the publication.
