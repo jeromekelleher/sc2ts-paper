@@ -3330,27 +3330,35 @@ for details.
 \subsection{Evaluating inferred node dates}
 \label{sec:evaluating_node_dates}
 
-To validate the accuracy of times for non-sample internal nodes inserted 
-into the ARG
-(inferred using tsdate), we compared the dates of first emergence of
-Nextstrain clades against the Nextstrain SARS-CoV-2 tree (downloaded on 
-2023-01-21). Figure \ref{fig:pango_vs_nextstrain_node_times} shows relatively
-close agreement for most clades, with only three 
-disagreeing by more than 28 days: 20C (an early lineage from 2020), 20E (Pango B.1.177 also known as EU1, emerging mid-2020), and 21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
+To validate the accuracy of times for non-sample internal nodes
+inserted into the ARG (inferred using tsdate),
+we compared the dates of first emergence of
+Nextstrain clades against the Nextstrain SARS-CoV-2 tree
+(downloaded on 2023-01-21).
+Figure~\ref{fig:pango_vs_nextstrain_node_times} shows
+relatively close agreement for most clades,
+with only three disagreeing by more than 28 days:
+20C (an early lineage from 2020),
+20E (Pango B.1.177 also known as EU1, emerging mid-2020), and
+21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
 
-Then, to gauge internal consistency of the time estimation procedure, we
-selected a subset of sample nodes, matching the distribution of node times 
-and average number of children of the non-sample internal nodes. These
-selected sample nodes were then re-dated, and the inferred dates compared 
-against their recorded collection dates. The results in Figure 
-\ref{fig:node_time_testing} demonstrate that although the inferred and true
-times are generally very close, there is a clear bias with re-estimated times
-being consistently older (by an average of 37 days). This is in line with 
-the findings of other recent
-work \cite{sanderson2021chronumental}, and is likely to be a consequence
-of edges carrying more mutations than would be expected under a neutral
-molecular clock prior (either due to errors in tree-building or genuinely varying mutation rates), as well as inaccuracies in the recording of 
-sample dates.
+Then, to gauge internal consistency of the time estimation procedure,
+we selected a subset of sample nodes,
+matching the distribution of node times  and
+average number of children of the non-sample internal nodes.
+These selected sample nodes were then re-dated, and
+the inferred dates compared against their recorded collection dates.
+The results in Figure~\ref{fig:node_time_testing} demonstrate that
+although the inferred and true times are generally very close,
+there is a clear bias with re-estimated times
+being consistently older (by an average of 37 days).
+This is in line with the findings of
+other recent work \cite{sanderson2021chronumental}, and
+is likely to be a consequence of edges
+carrying more mutations than would be expected
+under a neutral molecular clock prior
+(either due to errors in tree-building or genuinely varying mutation rates),
+as well as inaccuracies in the recording of sample dates.
 
 
 \subsection{Pango X lineage events}
