@@ -347,7 +347,7 @@ while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 \label{fig:methodology}
 \end{figure}
 
-
+[FIXME Going in too fast here]
 Sc2ts reconstructs an ARG by incrementally adding
 daily batches of sequences (Figure~\ref{fig:methodology}).
 First, sc2ts infers likely ``copying paths'' connecting each sample
@@ -362,8 +362,8 @@ typically parameterized by population-scaled mutation and
 recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
 In the interest of interpretability, we simplified this model
 to use a single parameter $k$
-which controls the number of recurrent mutations
-that is preferred to switching to a different parent via recombination
+that controls the number of recurrent mutations
+that is allowed before switching to a different parent via recombination
 % This is quite a big thing really, and ultimately what determines
 % the number of recombinants detected.
 (we use $k=4$ here; see STAR Methods and Discussion).
@@ -371,7 +371,9 @@ We used the highly efficient LS HMM implementation in tsinfer~\cite{Kelleher2019
 with some additional optimizations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
 given the current ARG.
-Note that this is a form of parsimony,
+% TODO note the parsimony is an OK model here, as Sally suggests?
+% Could cite paper showing parsimony works well too.
+Note that this is a form of parsimony, 
 with the recombination penalty $k$
 defining the relative parsimoniousness of
 recombinant versus non-recombinant solutions to the HMM.
@@ -407,7 +409,7 @@ at 29,893 sites,
 and is stored in a 32 MB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
-(some events occurred at the same breakpoints [vague, rephrase]).
+(some events occurred at the same breakpoints).
 % NOTE: if we keep this we should redo on Yan's laptop and quote those numbers
 Using the tskit Python API,
 % TODO: Concrete numbers?
@@ -466,7 +468,7 @@ The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (STAR Methods).
 We show that the dates agree reasonably well with
 NextStrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
-and overall accuracy comparable to 
+and overall accuracy is comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
 an UShER tree (Document~\ref{sec:evaluating_node_dates}).
 Finally, we verified
@@ -478,12 +480,12 @@ Omicron (Figure~\ref{fig:subgraph_omicron}, Document~\ref{sec:dd_omicron})
 VOCs reflect expectations from the literature~\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
-Deletions are an important part of SARS-CoV-2 evolution~\cite{Jeronimo2023},
+Deletions are an important part of SARS-CoV-2 evolution~\cite{Jeronimo2023}
 but are not incorporated into UShER trees and
 therefore must be accounted for separately.
 Because deletions are difficult to distinguish
 % SHZ: Sequencing errors or misleading alignment.
-from bioinformatics errors
+from bioinformatic errors
 and their multi-base nature presents challenges
 to the Markovian structure of the LS HMM,
 we masked out all gap characters as missing data during primary inference.
@@ -625,7 +627,7 @@ XAP & Xx & 4 & 66 & 1     && {XAP:20} \\
 XZ  & Xx & 4 & 48 & 1     && {XZ:48} \\
 
 \midrule
-\multicolumn{7}{l}{Type IV events: non recombinants}\\
+\multicolumn{7}{l}{Type IV events: Non recombinants in the ARG}\\
 pango & muts &&&& parent & descendants \\
 \midrule
 
@@ -673,14 +675,15 @@ sc2ts provides us with a systematic means of
 discovering and assessing evidence around these events.
 Table~\ref{tab:pango_x_lineages} summarizes
 these results for the 44 Pango X lineages present in the ARG
-(XAC and XAD have been omitted, and XM partially represented,
-corresponding to 23 omitted samples in total;
-see Document~\ref{sec:supplement_x_pango_lineages}).
+% (XAC and XAD have been omitted, and XM partially represented,
+% corresponding to 23 omitted samples in total;
+(see Document~\ref{sec:supplement_x_pango_lineages}).
 For 16 Pango X lineages, the oldest node
-that has been assigned to the focal Pango lineage is a recombination node, and
+that has been assigned to the focal Pango lineage is a recombination node and
 that node is the ancestor of all samples
 assigned to that (or a descendant) Pango lineage.
-We designate these as Type I events, where the ARG reflects the
+We consider these to be fully concordant (Type I) events,
+where the ARG reflects the
 hierarchical structure of Pango designation.
 Among these events, concordance with the community-consensus 
 parent lineages and breakpoint intervals is excellent,
