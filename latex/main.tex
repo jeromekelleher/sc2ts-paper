@@ -277,18 +277,18 @@ Here we present sc2ts, a new method to infer ARGs for SARS-CoV-2
 that incrementally adds samples over time in a similar manner 
 to UShER, but also automatically detects and incorporates recombination
 in real-time. Based on the Viridian dataset, a freely available  
-resource purged of various systematic errors and artifacts \cite{Hunt2024},
+resource purged of various systematic errors and artifacts~\cite{Hunt2024},
 we infer an ARG with 2.48 million whole genome sequences.
 We show that this ARG is highly congruent with the UShER phylogeny built 
-from the same dataset as well as the Pango nomenclature system\cite{Rambaut2020},
+from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020},
 and also accurately captures evolutionary features such as mutational 
-spectra\cite{Bloom2023} and deletions\cite{Li2023indels}.
+spectra~\cite{Bloom2023} and deletions\cite{Li2023indels}.
 We show that sc2ts automatically and accurately detects details about
 known recombinant lineages that were painstakingly collated in a community 
 process, and provides novel insights into the relationships between these
 recombinant lineages. We compare the recombination events detected by 
 sc2ts with the state-of-the-art combination of UShER and 
-RIPPLES ~\cite{Turakhia2022}, showing that sc2ts is more sensitive,
+RIPPLES~\cite{Turakhia2022}, showing that sc2ts is more sensitive,
 detecting more of the well-characterized recombination events 
 curated by the Pango lineage designation community.
 The output of sc2ts---incorporating
@@ -296,7 +296,7 @@ genealogical relationships, point mutations, deletions, and
 recombination---provides a basis for the study of SARS-CoV-2
 that systematically accounts for all of these evolutionary forces.
 This ARG, coupled with the rich suite of supporting software
-in the tskit\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
+in the tskit~\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
 enables pandemic-scale analysis on a laptop. 
 These resources
 will help us to learn from the vast troves of data collected during the
@@ -440,7 +440,7 @@ We found that they were very similar in terms of parsimony
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG
-against the UShER tree and a previous study \cite{Bloom2023} (STAR Methods),
+against the UShER tree and a previous study~\cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We validated that the broad phylogenetic structure of
 the ARG and UShER tree closely match by generating tanglegrams
@@ -468,7 +468,7 @@ We show that the dates agree reasonably well with
 NextStrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
-an UShER tree (Document \ref{sec:evaluating_node_dates}).
+an UShER tree (Document~\ref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the
 Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
@@ -490,7 +490,7 @@ we masked out all gap characters as missing data during primary inference.
 To approximate the effects of the most important deletions into the ARG,
 we remapped data using \textit{post hoc} parsimony at 75 sites
 involved in deletions with a frequency of
-$\geq 1\%$ reported by Li et al.\cite{Li2023indels}
+$\geq 1\%$ reported by Li et al.~\cite{Li2023indels}
 during post-processing (STAR Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
@@ -498,19 +498,19 @@ correctly identified many known
 high-frequency deletions (Table~\ref{tab:major_dels}) and
 recurrent deletions (Table~\ref{tab:rec_dels}).
 For example,
-the three defining deletions of Alpha \cite{RambautAlpha2020}
+the three defining deletions of Alpha~\cite{RambautAlpha2020}
 (11288:9, 21765:6, 21991:3)
 are correctly mapped above the Alpha origin in the ARG
 (Figure~\ref{fig:subgraph_alpha}).
 The ARG captures known recurrent deletions
 in the N-terminal domain of the S1 unit of Spike
-(which is a deletion hot spot \cite{McCarthy2021}),
+(which is a deletion hot spot~\cite{McCarthy2021}),
 for example,
 the 21765:6 deletion ($\Delta$H69/V70),
 which causes S-Gene Target Failure \cite{Walker2021} and
-is associated with increased efficiency in cell entry \cite{Meng2021}, and
+is associated with increased efficiency in cell entry~\cite{Meng2021}, and
 the 21991:3 deletion
-which is associated with antibody escape \cite{McCarthy2021}.
+which is associated with antibody escape~\cite{McCarthy2021}.
 See Document~\ref{sec:supplement_dels} for further analysis.
 
 
@@ -528,7 +528,8 @@ For the two recombination nodes, a genome bar above shows
 the location of the inferred breakpoint interval relative to the Spike gene.
 For simplicity, ancestral lineages above the recombinant parents or the MRCA are omitted.
 (A) Subgraph around the recombination node associated with XA.
-Two ``Group A'' recombinant samples reported by Jackson et al.\cite{Jackson2021} are shown.
+Two ``Group A'' recombinant samples
+reported by Jackson et al.~\cite{Jackson2021} are shown.
 (B) Subgraph around the recombination node associated with a 
 group of ``nested'' Pango X lineages: we use the 
 label Xx as a shorthand for this related group of recombinants; and
@@ -653,7 +654,7 @@ Part of the success of the Pango nomenclature system~\cite{Rambaut2020}
 can be attributed to the clarity of the rules under which new lineages 
 are designated and their explicitly phylogenetic basis.
 The first recombinant lineage XA was designated in 2021
-based on the analysis of Jackson et al.\cite{Jackson2021},
+based on the analysis of Jackson et al.~\cite{Jackson2021},
 which established that recombination with onward transmission had occurred.
 Although the process of incorporating recombinant lineages
 in the Pango nomenclature system is well defined,
@@ -684,8 +685,8 @@ hierarchical structure of Pango designation.
 Among these events, concordance with the community-consensus 
 parent lineages and breakpoint intervals is excellent,
 with similar performance to
-the RecombinHunt \cite{Alfonsi2024}
-and CovRecomb \cite{Li2024CovRecomb} detection methods
+the RecombinHunt~\cite{Alfonsi2024}
+and CovRecomb~\cite{Li2024CovRecomb} detection methods
 (STAR Methods; Table~\ref{tab:method_concordance}; see also
 Document~\ref{sec:jackson_recombs} for analysis of the 
 Jackson et al.\ recombinants).
@@ -706,20 +707,20 @@ XAA, XAG, XAM, XR and XU are all closely derived, suggesting
 % reading the document at this level. Keep the detailed hyptothese
 % to the deep dives.
 that they are more parsimoniously explained as sublineages of XQ
-than de-novo recombinant lineages (Document \ref{sec:dd_xq}). 
+than de-novo recombinant lineages (Document~\ref{sec:dd_xq}). 
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
-(Figure~\ref{fig:subgraphs}B, Document \ref{sec:dd_xx}). 
+(Figure~\ref{fig:subgraphs}B, Document~\ref{sec:dd_xx}). 
 
 The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
 corresponds to nodes that are not associated with a recombination event.
 These vary in their plausibility of being non-recombinant.
 For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
 distant from a BA.2 sample and has little additional evidence
-to suggest recombination (Document \ref{sec:dd_xn}).
+to suggest recombination (Document~\ref{sec:dd_xn}).
 XB, on the other hand,
-has been thoroughly characterized \cite{Gutierrez2022} and
+has been thoroughly characterized~\cite{Gutierrez2022} and
 may have misclassified by sc2ts due to limitations in
 handling deletions or matching against long branches (Document \ref{sec:dd_xb}). 
 
@@ -735,6 +736,7 @@ for extended analyses on all the Pango X lineages in the ARG;
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages};
 and Document S2 for ARG visualizations of the Pango X lineages.
+
 
 \subsection*{Quality control and validation of recombination events}
 
@@ -904,7 +906,7 @@ The location of a recombination breakpoint is generally
 impossible to pinpoint exactly, and instead an interval
 containing the breakpoint can be inferred by
 examining the parental and recombinant sequences.
-Some methods \cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}
+Some methods~\cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}
 and approaches (e.g., Pango designation) infer this
 as the genomic distance between lineage-associated
 mutations that differentiate the two parental \emph{lineages}.
@@ -931,7 +933,7 @@ towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene
 (Figure~\ref{fig:recombinant_intervals}A,B),
 consistent with the patterns seen in previous
-studies \cite{Bobay2020recombination,Turakhia2022,
+studies~\cite{Bobay2020recombination,Turakhia2022,
 Smith2023tracking,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
@@ -1049,7 +1051,7 @@ that recombination events occur more often when infection rates are common
 and are detected more often when viral diversity is high,
 we note several sources of uncertainty.
 Global case numbers were underreported,
-particularly during the Delta and Omicron waves \cite{Wang2025}.
+particularly during the Delta and Omicron waves~\cite{Wang2025}.
 Furthermore, there may be substantial uncertainty in the timing of a recombination event,
 particularly if these occur in chronically infected individuals
 (as reported by \cite{Burel2022})
