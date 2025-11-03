@@ -326,18 +326,20 @@ pandemic, and to prepare for the next.
 \includegraphics[width=0.85\linewidth]{sc2ts_methodology}
 \caption{
 Schematic overview of sc2ts.
-(A) Process to build an ARG by incrementally updating it with samples 
-sorted by collection dates.
+(A) Process to build an ARG by incrementally updating it
+with samples sorted by collection dates.
 (B) The ARG resulting from the inference process.
 Sample 0 is used to initialize the ARG as the root.
-Next, Sample 1 is attached, mapping mutations onto the new branch to explain it.
+Next, Sample 1 is attached,
+mapping mutations onto the new branch to explain it.
 When Sample 4 is detected as a recombinant,
-a node representing the recombination event is inserted with two edges 
-connecting to its parents,
+a node representing the recombination event is inserted with
+two edges connecting to its parents,
 with Sample 4 itself attached to this node as its child.
 (C) Two local trees contained in the resulting ARG,
 one on each side of the inferred breakpoint which occurs at position 50.
-The genomic coordinates of the segments inherited from different recombinant parents
+The genomic coordinates of the segments
+inherited from different recombinant parents
 are denoted by two half-open intervals.
 (D) Copying paths for Sample 4 inferred under the LS model
 while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
@@ -345,42 +347,45 @@ while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 \label{fig:methodology}
 \end{figure}
 
-Sc2ts reconstructs an ARG by incrementally adding daily batches of 
-sequences (Figure~\ref{fig:methodology}).
-First, sc2ts infers likely ``copying paths'' connecting each sample in the 
-batch to node(s) in the current ARG
-using a simplified version of the Li and Stephens (LS) model\cite{LiStephens2003}. 
+
+Sc2ts reconstructs an ARG by incrementally adding
+daily batches of sequences (Figure~\ref{fig:methodology}).
+First, sc2ts infers likely ``copying paths'' connecting each sample
+in the batch to node(s) in the current ARG
+using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens2003}.
 % Important to go into a bit of detail about LS here as it's so fundamental
 % and novel in the area.
 The LS model is a Hidden Markov Model (HMM) widely used in human genomics
-to approximate the effects of mutation and recombination on genetic
-inheritance\citep{Delaneau2019-wl,Browning2018-nk},
-typically parameterised by population-scaled mutation and
+to approximate the effects of mutation and recombination
+on genetic inheritance~\cite{Delaneau2019-wl,Browning2018-nk},
+typically parameterized by population-scaled mutation and
 recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
-In the interest of interpretability, we simplified this model to 
-use a single parameter $k$ which essentially 
-controls the number of recurrent mutations that is preferred to 
-switching to a different parent via recombination 
+In the interest of interpretability, we simplified this model
+to use a single parameter $k$
+which controls the number of recurrent mutations
+that is preferred to switching to a different parent via recombination
 % This is quite a big thing really, and ultimately what determines
 % the number of recombinants detected.
 (we use $k=4$ here; see STAR Methods and Discussion).
-We used the highly efficient LS HMM implementation in tsinfer\cite{Kelleher2019},
-with some additional optimisations enabled by our simplified model,
+We used the highly efficient LS HMM implementation in tsinfer~\cite{Kelleher2019},
+with some additional optimizations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
 given the current ARG.
-Note that this is a form of parsimony, with the recombination
-penalty $k$ defining the relative parsimoniousness of recombinant
-vs non-recombinant solutions to the HMM.
-The per-sample copying paths produced by the HMM (most of which do not 
-involve recombination) form clusters of samples within a batch, which 
-are then resolved using standard phylogenetic techniques.
+Note that this is a form of parsimony,
+with the recombination penalty $k$
+defining the relative parsimoniousness of
+recombinant versus non-recombinant solutions to the HMM.
+The per-sample copying paths produced by the HMM
+(most of which do not involve recombination)
+form clusters of samples within a batch,
+which are then resolved using standard phylogenetic techniques.
 Finally, sc2ts attaches the phylogenies of the clusters to the current ARG, and
-applies parsimony-improving heuristics to address issues introduced 
+applies parsimony-improving heuristics to address issues introduced
 by the inherent greediness of this strategy.
 Sc2ts is implemented in Python,
 building on core PyData infrastructure~\cite{Harris2020array,Virtanen2020scipy,
-Mckinney2010data,Lam2015numba} and bioinformatics 
-packages\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
+Mckinney2010data,Lam2015numba} and
+bioinformatics packages~\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
 See STAR Methods for details on all aspects of the method.
 
 
@@ -389,25 +394,29 @@ See STAR Methods for details on all aspects of the method.
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
 Using sc2ts, we built an ARG from 2,482,157 samples
-from the Viridian v04 dataset \cite{Hunt2024},
+from the Viridian v04 dataset~\cite{Hunt2024},
 collected between 2020-01-01 and 2023-02-20.
-Inference took 21 days on a server with 64 cores (2X AMD EPYC 7502)
-and 512 GB of RAM ($\sim$5 CPU years; Figure~\ref{fig:inference_resources}).
-After postprocessing, the ARG
-contains 2,689,054 nodes,  % Note the estimated dates ?
-2,748,838 edges, and 2,285,344 mutations at 29,893 sites,
-and is stored in a 32MiB file.
+Inference took 21 days on a server with
+64 cores (2X AMD EPYC 7502) and 512 GB of RAM
+($\sim$5 CPU years; Figure~\ref{fig:inference_resources}).
+After post-processing, the ARG contains
+2,689,054 nodes,  % Note the estimated dates ?
+2,748,838 edges, and
+2,285,344 mutations
+at 29,893 sites,
+and is stored in a 32 MB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
 (some events occurred at the same breakpoints [vague, rephrase]).
 % NOTE: if we keep this we should redo on Yan's laptop and quote those numbers
-Using the tskit Python API, the ARG can be loaded into 
-memory in less than a second [Concrete numbers?], and the 
-vectorised representation integrates tightly with 
-powerful data-science tools such as NumPy~\cite{Harris2020array}.
-For example, a tabular summary for the 2.75m nodes, including
-sample IDs and Pango assignments (stored as metadata in the ARG),
-can be derived as a Pandas dataframe~\cite{Mckinney2010data} in 0.6s.
+Using the tskit Python API,
+% TODO: Concrete numbers?
+the ARG can be loaded into memory in less than a second,
+and the vectorized representation integrates tightly
+with powerful data science tools, such as NumPy~\cite{Harris2020array}.
+For example, a tabular summary for the 2.75 million nodes,
+including sample IDs and Pango assignments (stored as metadata in the ARG),
+can be derived as a Pandas data frame~\cite{Mckinney2010data} in 0.6 second.
 The ARG can therefore be easily accessed using familiar tools
 with minimal hardware requirements, enabling diverse bespoke analyses.
 
@@ -415,85 +424,87 @@ with minimal hardware requirements, enabling diverse bespoke analyses.
 % point is to summarise a mountain of validation and provide links to the 
 % details. 
 
-% NOTE: Trying to clarify that this of the pandemic period and we're 
-% not trying to cover *all* history.
-The ARG is a comprehensive and deeply validated record of the pandemic phase 
-of SARS-CoV-2 evolutionary history, accurately reflecting
-a range of results from the literature.
-First, we compared the sc2ts ARG and with the state-of-the-art UShER 
-tree inferred from the same dataset
-by pruning both to their intersection of 2,475,418 samples and 27,507 sites
-(STAR Methods)
+% NOTE: Trying to clarify that this of the pandemic period and
+% we're not trying to cover *all* history.
+The ARG is a comprehensive and deeply validated record of
+the pandemic phase of SARS-CoV-2 evolutionary history,
+accurately reflecting a range of results from the literature.
+First, we compared the sc2ts ARG
+with the state-of-the-art UShER tree inferred from the same dataset
+by pruning both to their intersection of
+2,475,418 samples and 27,507 sites (STAR Methods).
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
-and found they were very similar in terms of parsimony
+We found that they were very similar in terms of parsimony
 (Document~\ref{sec:supplement_sc2ts_usher_parsimony})
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We also compared the mutational spectra of major VOCs in the ARG
-against the UShER tree and 
-a previous study \cite{Bloom2023} (STAR Methods),
+against the UShER tree and a previous study \cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
-We validated that the broad phylogenetic structure of the ARG and 
-UShER tree closely match by generating tanglegrams for a set of representative
-samples from 814 well-sampled lineages (STAR Methods; 
-Figures~\ref{fig:tanglegram_base},
+We validated that the broad phylogenetic structure of
+the ARG and UShER tree closely match by generating tanglegrams
+for a set of representative samples from 814 well-sampled lineages
+(STAR Methods; Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
-We also evaluated how well the ARG reflects the structure
-of the Pango nomenclature system by computing
-Pango assignments for all 2.75 million nodes in the ARG using
-Pangolin~\cite{OToole2021assignment} (STAR Methods).
+We also evaluated how well the ARG reflects the structure of
+the Pango nomenclature system
+by computing Pango assignments for all 2.75 million nodes in the ARG
+using Pangolin~\cite{OToole2021assignment} (STAR Methods).
 All but 21,680 of the exported sample alignments (0.87\%) agreed
 with the source consensus sequences in terms of Pango lineage assignment
 (comparable to the 0.27\% disagreement between pangolin-data
 versions 1.21 and 1.29 in the source Viridian metadata).
 A majority of these lineages (1473 of 2058)
-have monophyletic origins within the ARG,
+have monophyletic origins in the ARG,
 increasing to 1779 (86\%) when we allow
 for multiple sibling origination nodes
 (Document~\ref{sec:supplement_pango_lineages}).
-The ARG is time-resolved, with internal node dates estimated by
-a non-parametric method~\cite{Pope2025} (STAR Methods). 
-We show that the dates agree reasonably with NextStrain 
-estimates (Figure \ref{fig:pango_vs_nextstrain_node_times})
+The ARG is time-resolved, with internal node dates estimated
+by a non-parametric method~\cite{Pope2025} (STAR Methods).
+We show that the dates agree reasonably well with
+NextStrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
 an UShER tree (Document \ref{sec:evaluating_node_dates}).
 Finally, we verified
-that the origins of the 
+that the origins of the
 Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
 Delta (Figure~\ref{fig:subgraph_delta}, Document~\ref{sec:dd_delta})
 and
 Omicron (Figure~\ref{fig:subgraph_omicron}, Document~\ref{sec:dd_omicron})
-VOCs reflect expectations from the literature\cite{RambautAlpha2020,ECDCreport,
+VOCs reflect expectations from the literature~\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
-Deletions are an important part of SARS-CoV-2 evolution \cite{Jeronimo2023},
-but are not incorporated into UShER trees and must therefore
-be accounted for separately.
-Because deletions are difficult to distinguish 
+Deletions are an important part of SARS-CoV-2 evolution~\cite{Jeronimo2023},
+but are not incorporated into UShER trees and
+therefore must be accounted for separately.
+Because deletions are difficult to distinguish
+% SHZ: Sequencing errors or misleading alignment.
 from bioinformatics errors
 and their multi-base nature presents challenges
 to the Markovian structure of the LS HMM,
 we masked out all gap characters as missing data during primary inference.
 To approximate the effects of the most important deletions into the ARG,
-we remapped data using post hoc parsimony at 75 sites involved in deletions
-with a frequency of $\geq 1\%$ reported by Li et al.\cite{Li2023indels}
+we remapped data using \textit{post hoc} parsimony at 75 sites
+involved in deletions with a frequency of
+$\geq 1\%$ reported by Li et al.\cite{Li2023indels}
 during post-processing (STAR Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known
 high-frequency deletions (Table~\ref{tab:major_dels}) and
 recurrent deletions (Table~\ref{tab:rec_dels}).
-For example, the three characteristic deletions of Alpha \cite{RambautAlpha2020}
+For example,
+the three defining deletions of Alpha \cite{RambautAlpha2020}
 (11288:9, 21765:6, 21991:3)
 are correctly mapped above the Alpha origin in the ARG
 (Figure~\ref{fig:subgraph_alpha}).
 The ARG captures known recurrent deletions
 in the N-terminal domain of the S1 unit of Spike
-(which is a deletion hotspot \cite{McCarthy2021})
+(which is a deletion hot spot \cite{McCarthy2021}),
 for example,
 the 21765:6 deletion ($\Delta$H69/V70),
 which causes S-Gene Target Failure \cite{Walker2021} and
@@ -727,9 +738,9 @@ and Document S2 for ARG visualizations of the Pango X lineages.
 
 \subsection*{Quality control and validation of recombination events}
 
-Sequencing errors in genome assemblies \cite{Turakhia2020},
-read misalignments \cite{Hunt2024}, and
-multi-nucleotide substitutions \cite{DeMaio2020issues}
+Sequencing errors in genome assemblies~\cite{Turakhia2020},
+incorrect read alignments~\cite{Hunt2024}, and
+multi-nucleotide substitutions~\cite{DeMaio2020issues}
 can cause short regions of a sample genome to match more closely
 to an alternative genome rather than the true parent.
 Such genomic regions can be mistaken for evidence of recombination,
@@ -746,26 +757,28 @@ are highly enriched for samples sequenced using the AmpliSeq V1 protocol
 % https://github.com/jeromekelleher/sc2ts-paper/issues/808
 (70\% of the recombinants despite making up 2\% of the Viridian dataset), and
 71 (14\%) are associated with 6-base deletion in the Delta lineage,
-known to be affected by amplicon dropout\cite{Sanderson2021}.
+known to be affected by amplicon dropout~\cite{Sanderson2021}.
 The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
 the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 
-We validated the recombination events in the sc2ts ARG by running 
-3SEQ~\cite{Lam2018improved} on the putative recombinant 
-sequence trios (STAR Methods), 
+We validated the recombination events in the sc2ts ARG
+by running 3SEQ~\cite{Lam2018improved}
+on the putative recombinant sequence trios (STAR Methods),
 and 484 of the 855 (57\%) were classified as recombinant.
-Validation status correlates strongly with our QC filter, with 
-95\% of the QC-passing recombinants 
+Validation status correlates strongly with our QC filter,
+with 95\% of the QC-passing recombinants
 and 29\% of the QC-failing recombinants
 being classified as recombinant.
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
-and rebar recombination detection methods on the putative recombinant 
-sequences, summarized in Table~\ref{tab:recombinant_validation}.
-CovRecomb has a substantially lower validation rate at 25\% 
-among the QC-passing recombinants. This is expected, as 
-CovRecomb and is specifically intended to detect interlineage recombinants
+and rebar recombination detection methods
+on the putative recombinant sequences,
+summarized in Table~\ref{tab:recombinant_validation}.
+CovRecomb has a substantially lower validation rate
+at 25\% among the QC-passing recombinants.
+This is expected, as CovRecomb is specifically intended
+to detect interlineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar validation is intermediate, at 57\% among QC-passing recombinants.
@@ -787,7 +800,8 @@ The difference between the numbers of mutations between
 the two solutions---the number of mutations
 ``averted'' by recombination---is a measure of
 the evidence in favor of recombination.
-[FIXME need to insert a sentence saying this is similar to 
+% TODO
+[FIXME need to insert a sentence saying this is similar to
 metrics used by RIPPLES and other methods, contrasting
 recombinant vs non-recombinant explanations.]
 Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
@@ -797,27 +811,27 @@ with support ranging from very strong in the case of XC
 require 37 additional mutations) to marginal for XG and XW,
 which have the minimal possible number of averted mutations.
 
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
 \caption{
-Properties of recombination events. A,B,C 
-show summaries of the 354 sc2ts recombination nodes
-passing quality control filters
+Properties of recombination events.
+A,B,C show summaries of the 354 sc2ts recombination nodes passing QC filters
 colored by 3SEQ classification (recombinant: purple, non-recombinant: gray).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
 recombination nodes in Table~\ref{tab:pango_x_lineages} are labeled starting with `X' and
-those identified by Jackson et al.\cite{Jackson2021} are prefixed with a `J', e.g.
-Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
+those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
+e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e. $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
-(D) Copying patterns (STAR Methods, Figure~\ref{fig:copying_pattern_examples}) 
-for XA, XW and XBB.}
+(D) Copying patterns
+(STAR Methods, Figure~\ref{fig:copying_pattern_examples}) for XA, XW and XBB.}
 \label{fig:recombinant_evidence}
 \end{figure}
 
@@ -839,9 +853,15 @@ plot the same information for CovRecomb and rebar validation,
 showing that their validation status tends to be function
 of the divergence between the recombinant parents.
 
+% SHZ: We should be more careful with the wording.
+% Recombination is likely frequent,
+% but detectable recombination
+% leading to lineages that are competitive enough to be sampled
+% compared to their (VOC) parents
+% is rare.
 Recombination is rare in SARS-CoV-2, and
 ultimately judgments about plausibility require expert analysis.
-To aid such interpretation and help identify quality control issues
+To aid such interpretation and help identify QC issues,
 we developed a visualization tool
 inspired by SnpIt~\cite{OToole2024} and 
 the recombinant view of RIVET~\cite{Smith2023tracking},
@@ -849,29 +869,34 @@ showing the recombination-informative sites
 between a recombinant and its parent sequences, and
 highlighting potentially problematic loci.
 Each copying pattern shows the positions
-where the allelic state in a recombinant
-(middle row) matches that of the left (upper row, colored green) 
+where the allelic state
+in a recombinant (middle row) matches that of
+the left (upper row, colored green) 
 or right parent (lower row, colored blue),
-or where the recombination event requires a \emph{de novo} mutation
-(gold, with mutational change below). [should we also mention the red/orange lines under the patterns that identify adjacent sites?]
+or where the recombination event requires
+a \textit{de novo} mutation (gold, with mutational change below).
+[FIXME: Should we also mention the red/orange lines
+under the patterns that identify adjacent sites?]
 Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
-illustrating this spectrum of plausibility.
-XA is an example of a highly plausible recombinant, shown by the 
-large number of supporting loci on the left and right. As we have 
-only one \emph{de novo} mutation, we can be sure that the parents are closely
-observed [Some details about XA here, how well the parents were sampled etc].
+illustrating a spectrum of plausibility.
+XA is an example of a highly plausible recombinant,
+shown by the large number of supporting loci on the left and right.
+As we have only one \textit{de novo} mutation,
+we can be sure that the parents are closely observed
+[FIXME: Some details about XA here, how well the parents were sampled, etc.].
 XBB is also strongly supported by many loci on the left and right, 
-but the presence of many \emph{de novo} mutations
+but the presence of many \textit{de novo} mutations
 observed in the copying patterns suggests the existence of
-many genetically distinct, unsampled ancestors 
+many genetically distinct, un-sampled ancestors
 [FIXME: in this case, probably BJ.1, see issue 336],
-and some caution should be exercised in interpreting them. 
+and some caution should be exercised when interpreting them.
 See Figures~\ref{fig:recombinant_evidence}D and
 \ref{fig:pango_x_copying_patterns}
 for copying patterns of the Pango X lineages, and
 Figure~\ref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
 (and more details on the visualizations).
+
 
 \subsection*{Precision of recombination event times and positions}
 
@@ -1538,16 +1563,17 @@ routine for all sorts of pathogens beyond SARS-CoV-2.
 %%% A "limitations" or "limitations of the study" subsection in the discussion is encouraged
 %%% and may be required for some journals and some article formats.
 
+% SHZ: Should we do point form?
 We close by emphasizing several current limitations
 as well as potential directions to improve sc2ts,
 which we hope will also inspire future research
 to develop ARG methods for SARS-CoV-2 and other pathogens.
 
-Reversions of deletions can indicate recombination,
+Reversion of deletions can indicate recombination,
 because bases that are lost are unlikely to be regained,
 except via recombination with a lineage that has those bases.
 We presently treat multi-base deletions as missing data.
-Explicitly modeling deletions in the HMM
+Modeling deletions (and more generally insertions) in the HMM
 could help recover additional signals of recombination
 and reduce false positives.
 
@@ -1636,7 +1662,9 @@ to detect events near the termini of linear viral genomes.
 %%%  only the lead contact’s information may be
 %%%  provided in this section.
 
-Requests for further information and resources should be directed to and will be fulfilled by the lead contact, XX (XX@university.edu).
+Requests for further information and resources
+should be directed to and will be fulfilled
+by the lead contact, XX (XX@university.edu).
 
 \subsection*{Materials availability}
 
@@ -1648,7 +1676,8 @@ Requests for further information and resources should be directed to and will be
 %%%  state this, e.g.: This study did not generate new
 %%%  materials.
 
-This study did not generate new materials
+This study did not generate new materials.
+
 
 \subsection*{Data and code availability}
 \label{sec:data_and_code_availability}
@@ -1688,7 +1717,7 @@ TODO add these to the list above with actual URLs
 %%%  including grant numbers.
 
 SHZ is supported by an NDPH Intermediate Research Fellowship
-from Oxford Population Health, University of Oxford.
+(Oxford Population Health, University of Oxford).
 
 
 \section*{AUTHOR CONTRIBUTIONS}
@@ -1934,22 +1963,24 @@ Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting,
 Fan2022,Nowbandegani2023extremely,Fritze2024forest}.
 
 Similarly to the Mutation Annotated Tree (MAT)~\cite{McBroome2021} format 
-(used 
-by UShER\cite{Turakhia2021}, matOptimize~\cite{DeMaio2023}, 
-RIPPLES~\cite{Turakhia2022} and 
+(used by
+UShER\cite{Turakhia2021},
+matOptimize~\cite{DeMaio2023},
+RIPPLES~\cite{Turakhia2022}, and
 RIVET~\cite{Smith2023tracking}),
-tskit incorporates mutational information directly in the data 
-model. 
-This is done using the site (defining the genome position and 
-ancestral state) and mutation (defining the site, node, and derived state)
-tables. In addition, tskit provides a flexible system for attaching metadata
-to all aspects of the data model, which can either be in JSON format 
-for flexibility (used heavily by sc2ts for debugging information) 
-or in a vectorisable packed binary format for efficiency (used to attach
-sample identifiers and pango assignments in the final ARGs). 
-Tskit also provides a ``provenance'' table, which provides a mechanism
-for recording software version and parameter information through each
-step of complex processing pipelines.
+tskit incorporates mutational information directly in the data model.
+This is done using
+the site (defining the genome position and ancestral state) and
+mutation (defining the site, node, and derived state)
+tables.
+In addition, tskit provides a flexible system for attaching metadata
+to all aspects of the data model, which can either be in JSON format
+for flexibility (used heavily by sc2ts for debugging information)
+or in a vectorisable packed binary format for efficiency
+(used to attach sample identifiers and pango assignments in the final ARGs).
+Tskit also provides a ``provenance'' table,
+which provides a mechanism for recording software version and
+parameter information through each step of complex processing pipelines.
 
 \subsubsection*{Pandemic-scale alignment storage}
 To provide the efficient access to alignment data required for inference with sc2ts,
@@ -2847,25 +2878,33 @@ notebook for full methodological details of the analysis.
 \subsubsection*{Analyzing global case counts}
 
 To explore the timing of emergence of recombination events,
-case count data were downloaded from
-the COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE)
+global case count data were downloaded from
+the COVID-19 Data Repository by the Center
+for Systems Science and Engineering (CSSE)
 at Johns Hopkins University \cite{Dong2020} and
 binned by week from January, 2020 to March, 2023.
-The proportion of each lineage $i$ in each week ($p_i$) was then inferred
-from the Scorpio designation at each node within the ARG for that week.
-Genetic variation was measured as the ``expected heterozygosity'' across lineages,
+The proportion of each lineage $i$ in each week ($p_i$)
+was then inferred from the Scorpio designation
+at each node within the ARG for that week.
+Genetic variation was measured
+as the ``expected heterozygosity'' across lineages,
 which is the chance that two lineages chosen at random
-from that week had different Scorpio designations ($\sum_{i} \sum_{j>i} 2 p_i p_j$).
-The linear regression models reported in \textbf{Figure} \ref{fig:recombinants_over_time}
+from that week had different Scorpio designations
+($\sum_{i} \sum_{j>i} 2 p_i p_j$).
+The linear regression models reported in
+Figure~\ref{fig:recombinants_over_time}
 allowed for a non-zero intercept,
 because there may be unreported cases even without any reported cases.
 The slopes were highly significant, and
-the p-values were confirmed by randomly permuting the predictor variable 10,000 times.
+the p-values were confirmed
+by randomly permuting the predictor variable 10,000 times.
 ANOVAs were conducted to determine which single predictor
-($n$, $H$, $n \; H$, $n^2$, $n^2 H$) explained the most variation in recombination events by week.
+($n$, $H$, $n \; H$, $n^2$, $n^2 H$)
+explained the most variation in recombination events by week.
 These statistical tests and graphics were conducted
 % TODO: The link!
-in \textit{Mathematica} 14.2 (Wolfram 2024) and available at GITHUB LINK.
+in \textit{Mathematica} 14.2 (Wolfram 2024) and
+available at GITHUB LINK.
 
 In addition to the analysis of the 354 recombination events that pass QC,
 we analyzed the relationship between the full set of 855 recombinants and case numbers.
