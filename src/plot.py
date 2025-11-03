@@ -76,6 +76,10 @@ def inference_resources():
     ax[2].plot(x, df.max_memory / 1024**3)
     ax[2].set_ylabel("Max memory (GiB)")
 
+    ax[0].text(x=-0.02, y=1.0, s="A", size=20, transform=ax[0].transAxes)
+    ax[1].text(x=-0.02, y=1.0, s="B", size=20, transform=ax[1].transAxes)
+    ax[2].text(x=-0.02, y=1.0, s="C", size=20, transform=ax[2].transAxes)
+
     for a in ax:
         a.grid()
     savefig("inference-resources")
@@ -151,6 +155,11 @@ def samples_per_day():
         labels=[" ".join(s.split("_")) for s in df_scorpio],
     )
     ax4.legend(loc="upper left", ncol=2)
+
+    ax1.text(x=-0.02, y=1.0, s="A", size=20, transform=ax1.transAxes)
+    ax2.text(x=-0.02, y=1.0, s="B", size=20, transform=ax2.transAxes)
+    ax3.text(x=-0.02, y=1.0, s="C", size=20, transform=ax3.transAxes)
+    ax4.text(x=-0.02, y=1.0, s="D", size=20, transform=ax4.transAxes)
 
     savefig("samples-per-day")
 

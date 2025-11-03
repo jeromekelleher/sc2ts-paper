@@ -4481,24 +4481,14 @@ during the ARG inference process.
 (A) The number of samples
 processed from the input sequence alignments,
 exactly matched to a node in the current ARG, and
-added to the ARG
-all peak in December, 2022
-and subsequently around February, 2022.
+added to the ARG per day.
 (B) The fraction of exactly matched samples and
 the fraction of samples added to the ARG
 mirror each other.
-Around the peak of sample volume,
-the fraction of exactly matched samples
-is relatively high (above 0.50).
-As expected, this fraction later decreases
-when sampling effort decreases.
-(C) The mean HMM cost per sample is relatively high
-at the beginning as the ARG had not accumulated
-enough genetic diversity yet.
-(D) Proportion of samples classified
-by Scorpio designation.
-These proportions reflect waves of infections
-driven by the emergence of Alpha, Delta, and Omicron.
+The fraction of exact matches is a function of 
+both sampling depth and composition of the global population.
+(C) The mean HMM cost per sample is a useful metric.
+(D) Proportion of samples classified by (simplified) Scorpio designation.
 }\label{fig:samples_per_day}
 \end{figure}
 
@@ -4507,17 +4497,17 @@ driven by the emergence of Alpha, Delta, and Omicron.
 \centering
 \includegraphics[width=\linewidth]{inference-resources}
 \caption{
-Usage of computational resources
-during the ARG inference process.
+Computational resources used during the ARG inference process.
 (A) The amount of time to process a daily batch of samples
-peaks when the sampling effort is the highest.
-(B) Mean time to process a sample remained low throughout,
-except towards the very end when there were few exact matches.
-The HMM cost was moderate initially,
-then noticeably decreased when sampling effort is the highest
-before increasing again towards the end.
-(C) Max RAM usage also peaks around the time
-when sampling effort is the highest.
+and the number of samples processed per day.
+(B) Mean time to process a sample is less than 5s except
+when the number of samples is small. 
+(C) RAM usage is the most difficult resource to manage, and depends
+on the sample composition. The sharp drop in 2022-01 corresponds to the 
+sweep in which Omicron BA.1 replaced Delta and there was very little sample
+diversity. The drop in RAM usage around 2022-02 corresponds to a change
+in configuration where we reduced the number of HMM threads from 128 to 80
+to better fit into available memory. 
 }
 \label{fig:inference_resources}
 \end{figure}
