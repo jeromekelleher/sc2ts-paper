@@ -3380,10 +3380,26 @@ as well as inaccuracies in the recording of sample dates.
 
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
-[TODO DOCUMENT DETAILS of deriving events]
+Most of the Pango X lineages had straightforward origination events 
+as defined in Section~\ref{sec:supplement_pango_lineages} 
+and are represented in Table~\ref{tab:pango_x_lineages}.
+Three lineages were treated specially, 
+corresponding to 23 omitted samples in total.
 
-The nested samples not assigned to the focal pango lineage are
-either from different pango X lineages (see next paragraph), 
+XM has 4 separate origins, 3 singletons and one dominant node
+with 26 descendants. We include the dominant node in 
+Table~\ref{tab:pango_x_lineages} and omit the singletons. See
+Document~\ref{sec:dd_xm} for further details.
+XAC has 4 separate origins, and has been omitted from 
+Table~\ref{tab:pango_x_lineages}. However, as Figure~\ref{fig:subgraphs}B
+shows, these are all descending from a single BA.2 classified node 
+descending from the putative Xx event. 
+Similarly, XAD has two independent origins descending from the Xx
+event, and we omit it for simplicity.
+See Document~\ref{sec:dd_xx} for more details on the Xx event.
+
+In cases where nested samples not assigned to the focal pango lineage are
+either from different pango X lineages 
 or given a generic BA.2 assignment. Of these 59 generic assignents
 6 had conflicts in their UShER placements and could have been
 assigned an X lineage (XJ: 3, XU: 2, XN: 1), and 
@@ -3391,6 +3407,10 @@ assigned an X lineage (XJ: 3, XU: 2, XN: 1), and
 failed to find a specific lineage (accounting for 7\%
 of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 2,747,985 alignments).
+
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_pango\_x\_events.ipynb}
+{tab\_pango\_x\_events.ipynb} for details.
 
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
