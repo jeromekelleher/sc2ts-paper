@@ -20,6 +20,7 @@
 \usepackage[super,comma,sort&compress]
    {natbib}\bibliographystyle{numbered}
 \usepackage[right]{lineno} \linenumbers
+\usepackage[normalem]{ulem}
 
 \graphicspath{ {../figures/} }
 
@@ -437,7 +438,7 @@ by pruning both to their intersection of
 2,475,418 samples and 27,507 sites (STAR Methods).
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
-We found that they were very similar in terms of parsimony
+Eliminating recombination nodes and their descendants (which we expected to differ), we found very similar relationships among  lineages in terms of parsimony
 (Document~\ref{sec:supplement_sc2ts_usher_parsimony})
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
@@ -770,12 +771,14 @@ the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 
 We validated the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
-on the putative recombinant sequence trios (STAR Methods),
+on the putative recombinant sequence trios (STAR Methods)\sout{,
 and 484 of the 855 (57\%) were classified as recombinant.
 Validation status correlates strongly with our QC filter,
 with 95\% of the QC-passing recombinants
 and 29\% of the QC-failing recombinants
-being classified as recombinant.
+being classified as recombinant.}
+.
+Of the 855 recombination events identified by sc2ts, 3SEQ verified 57\% of them, rising to 95\% verification among the 354 recombinants that passed our QC filter. 
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
 and rebar recombination detection methods
 on the putative recombinant sequences,
@@ -3041,9 +3044,7 @@ which are associated with
 increased efficiency in cell entry \cite{Meng2021} and
 antibody escape \cite{McCarthy2021}, respectively.
 In addition, we found recurrent deletions in ORF8 and NSP3,
-which have been suggested to be indel hotspots
-[FIXME broken reference]
-\cite{Akaishi2022}.
+which have been suggested to be indel hotspots\cite{Akaishi2022}.
 Together, these findings demonstrate that
 the ARG captures genuine deletion events in SARS-CoV-2 evolution.
 A comprehensive evolutionary analysis of the deletion events in the ARG
@@ -3610,7 +3611,7 @@ appears without the characteristic mutation C3267T
 However, this is only a single sample and
 given that it also appears two months after the first Alpha samples
 we treat its placement with caution.
-Note that the list of mutations in \cite{RambautAlpha2020}
+Note that the list of mutations in ref\cite{RambautAlpha2020}
 includes a T26801C in the M gene
 which should no longer be considered characteristic of Alpha,
 as the Wuhan-Hu-1 reference at 26,801 has since been updated to C.
@@ -3618,9 +3619,8 @@ In the ARG, a one-base non-coding deletion (position 28,271)
 is also associated with the Alpha root;
 although this is not in the original list of
 characteristic Alpha mutations,
-it has been suggested elsewhere as an Alpha-defining mutation 
-(\cite{Li2023indels}).
-
+it has been suggested elsewhere as an Alpha-defining 
+mutation\cite{Li2023indels}.
 
 \subsubsection{Delta}
 \label{sec:dd_delta}
@@ -3636,7 +3636,7 @@ Delta belongs to the ``B.1.617'' clade,
 which also includes Kappa (B.1.617.1) and B.1.617.3 \cite{ECDCreport}.
 Previous phylogenetic analyses suggest that
 Delta and B.1.617.3 are more closely related to each other
-than either is to Kappa (\cite{Cherian2021,Farinholt2021}).
+than either is to Kappa\cite{Cherian2021,Farinholt2021}.
 In the ARG, however, Delta and Kappa appear as sibling lineages
 (see the subgraph in Figure~\ref{fig:subgraph_delta}).
 This reflects the closest approximation to the relationships
@@ -3719,6 +3719,9 @@ in which those five recurrent mutations are shared between BA.1 and BA.2 and sub
 
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
+In this section we provide some additional analysis on Pango X lineages
+in the ARG. These analyses are intended to be read in conjunction with
+the subgraph illustrations in Document S2.
 
 \newcommand{\scghdiscussion}[1]{%
 See \href{https://github.com/jeromekelleher/sc2ts-paper/discussions/#1}%
@@ -3739,7 +3742,7 @@ which is one of the XA consensus mutations
 As mentioned elsewhere,
 the sc2ts detection results in terms of
 the Pango lineages of the parents and the breakpoint intervals
-agree with the results reported by Jackson et al. (\ref{tab:jackson}).
+agree with the results reported by Jackson et al. (Table \ref{tab:jackson}).
 Two of the Jackson et al. XA samples
 are present in the ARG (ERR5308556 and ERR5414941);
 these samples are specifically marked in Figure~\ref{fig:subgraphs},
@@ -3752,29 +3755,31 @@ The displayed subgraph shows a small selection of the 192 XB samples.
 XB was originally defined as a recombinant between
 the closely related lineages B.1.634 (left parent) and B.1.631 (right parent)
 from North and Central America \cite{Gutierrez2022}.
-However, these parent lineages were not added to the ARG due to a high HMM cost.
+However, these parent lineages were not added to the ARG due to high HMM costs.
 Together with other lineages such as B.1.627
 (sister to B.1.631 \cite{Gutierrez2022}),
 they are likely to attach somewhere along the long branch
-in the subgraph visualization (with $> 30$ mutations),
-which also contains the key ``R2'' deletion
-associated with XB / B.1.634 \cite{Gutierrez2022}.
+in the subgraph visualization (with $> 30$ mutations).
+If samples from these parental lineages were available for attachment,
+then XB would be detected as a recombinant by sc2ts.
+% which also contains the key ``R2'' deletion
+% associated with XB / B.1.634 \cite{Gutierrez2022}.
 
-We hypothesize that there are a set of samples
-from a number of Pango lineages (including B.1.627, B.1.631, B.1.634)
-which, should they be added to the ARG, would break up the long branch,
-with XB being a recombination between two of them.
-In the absence of these, sc2ts cannot detect XB as a recombinant.
-Also, note that the XB consensus mutations all occur on or above the long branch.
-We suspect that the child node of the long branch
-represents the (potentially recombinant) origin of XB, and
-the B.1 samples at the bottom left of the subgraph
-may be misclassified by pangolin.
+% We hypothesize that there are a set of samples
+% from a number of Pango lineages (including B.1.627, B.1.631, B.1.634)
+% which, should they be added to the ARG, would break up the long branch,
+% with XB being a recombination between two of them.
+% In the absence of these, sc2ts cannot detect XB as a recombinant.
+% Also, note that the XB consensus mutations all occur on or above the long branch.
+% We suspect that the child node of the long branch
+% represents the (potentially recombinant) origin of XB, and
+% the B.1 samples at the bottom left of the subgraph
+% may be misclassified by pangolin.
 
-Further work is required to determine
-why these additional samples were not gradually added
-to the ARG by the daily sample matching process or
-retrospective sample grouping.
+% Further work is required to determine
+% why these additional samples were not gradually added
+% to the ARG by the daily sample matching process or
+% retrospective sample grouping.
 
 \scghdiscussion{780}
 
