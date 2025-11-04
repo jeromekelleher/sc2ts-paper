@@ -1571,34 +1571,37 @@ routine for all sorts of pathogens beyond SARS-CoV-2.
 %%% A "limitations" or "limitations of the study" subsection in the discussion is encouraged
 %%% and may be required for some journals and some article formats.
 
-% SHZ: Should we do point form?
+% SHZ: WIP
 We close by emphasizing several current limitations
-as well as potential directions to improve sc2ts,
+and potential directions to improve sc2ts,
 which we hope will also inspire future research
-to develop ARG methods for SARS-CoV-2 and other pathogens.
+to develop ARG inference methods for pathogens beyond SARS-CoV-2.
 
-Reversion of deletions can indicate recombination,
+We suggest several ways to extend the HMM.
+First, reversion of deletions can indicate recombination,
 because bases that are lost are unlikely to be regained,
 except via recombination with a lineage that has those bases.
-We presently treat multi-base deletions as missing data.
-Modeling deletions (and more generally insertions) in the HMM
-could help recover additional signals of recombination
-and reduce false positives.
-
-The current HMM assumes a simplistic mutation model
+We presently treated multi-base deletions as missing data, and
+added deletions to the ARG \textit{post hoc}.
+Instead, by explicitly modeling deletions (and more generally insertions) in the HMM,
+we should be able to recover additional signals of recombination
+and reduce spurious recombinants.
+Second, the current HMM assumes a simplistic mutation model
 (where mutation to any other allele is equally probable) and
-implicitly assumes a uniform mutation rate along the SARS-CoV-2 genome.
+a uniform mutation rate along the SARS-CoV-2 genome.
 However, genomic analyses have revealed
-transition-to-transversion rate bias \cite{Bloom2023,Simmonds2024} and
+transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024} and
 sequence context-dependent mutation rate variation
-across the SARS-CoV-2 genome \cite{Haddox2025}.
+across the SARS-CoV-2 genome~\cite{Haddox2025}.
 Using a more realistic mutation model and
 accounting for mutation rate heterogeneity
-could improve inference of local genetic relationships in the ARG and
-reduce spurious recombinants.
-
-Future developments may account for geography in the HMM,
+could improve inference of local genetic relationships in the ARG.
+Third, geography can be accounted for in the HMM,
 favoring attachment of samples to geographically close lineages.
+This should also improve precise identification of recombinant parents,
+because parents sampled in the same region or geographically close regions
+are expected to be more plausible
+than parents sampled in geographically distant regions.
 
 % TODO: Add a short discussion of the node dates and
 % some references to the literature, closing issue 725.
@@ -1616,7 +1619,7 @@ It is challenging to accurately reconstruct global events
 when there are regions with poor sampling and
 jurisdictions with long delays
 before sequences become publicly
-available \cite{Lancet2021,Kalia2021,Chen2022}.
+available~\cite{Lancet2021,Kalia2021,Chen2022}.
 For example, revisiting the ARG topology periodically
 (e.g., rewinding the ARG a month and repeating
 with samples that became available later)
