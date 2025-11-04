@@ -16,6 +16,7 @@
 \usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{placeins}
 \usepackage{orcidlink}
 \usepackage[super,comma,sort&compress]
    {natbib}\bibliographystyle{numbered}
@@ -807,18 +808,14 @@ a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between
 the two solutions---the number of mutations
 ``averted'' by recombination---is a measure of
-the evidence in favor of recombination.
-% TODO
-[FIXME need to insert a sentence saying this is similar to
-metrics used by RIPPLES and other methods, contrasting
-recombinant vs non-recombinant explanations.]
+the evidence in favor of recombination (similar to the  
+``parsimony improvement'' score in RIPPLES~\cite{Turakhia2022}).
 Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
 for each of the 21 recombination events associated with Pango X lineages,
 with support ranging from very strong in the case of XC
 (the most parsimonious non-recombinant placement would
 require 37 additional mutations) to marginal for XG and XW,
 which have the minimal possible number of averted mutations.
-
 
 \begin{figure}[h]
 \centering
@@ -843,7 +840,6 @@ by allowing recombination (i.e. $x-y$).
 \label{fig:recombinant_evidence}
 \end{figure}
 
-
 Figure~\ref{fig:recombinant_evidence}A plots
 the number of mutations required
 in the recombinant versus non-recombinant
@@ -854,20 +850,15 @@ over all 354 recombination events that pass QC.
 Also shown is the 3SEQ classification status of these recombinants.
 The 5\% of recombinants that do not pass 3SEQ validation are
 among the most weakly supported, with 4 or 5 averted mutations.
-[TODO discuss B and C]
+Figures~\ref{fig:recombinant_evidence}B and C shows the 
+distribution of recombination events as a function the 
+divergence between the parents.
 Figures~\ref{fig:recombinant_evidence_cov_recomb} and
 ~\ref{fig:recombinant_evidence_rebar} 
-plot the same information for CovRecomb and rebar validation,
-showing that their validation status tends to be function
-of the divergence between the recombinant parents.
+plot the same information as Figure~\ref{fig:recombinant_evidence} 
+broken down by CovRecomb and rebar validation status.
 
-% SHZ: We should be more careful with the wording.
-% Recombination is likely frequent,
-% but detectable recombination
-% leading to lineages that are competitive enough to be sampled
-% compared to their (VOC) parents
-% is rare.
-Recombination is rare in SARS-CoV-2, and
+Detectable recombination is rare in SARS-CoV-2, and
 ultimately judgments about plausibility require expert analysis.
 To aid such interpretation and help identify QC issues,
 we developed a visualization tool
@@ -882,29 +873,23 @@ in a recombinant (middle row) matches that of
 the left (upper row, colored green) 
 or right parent (lower row, colored blue),
 or where the recombination event requires
-a \textit{de novo} mutation (gold, with mutational change below).
-[FIXME: Should we also mention the red/orange lines
-under the patterns that identify adjacent sites?]
+a de novo mutation (gold, with mutational change below).
 Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
 illustrating a spectrum of plausibility.
 XA is an example of a highly plausible recombinant,
 shown by the large number of supporting loci on the left and right.
-As we have only one \textit{de novo} mutation,
-we can be sure that the parents are closely observed
-[FIXME: Some details about XA here, how well the parents were sampled, etc.].
 XBB is also strongly supported by many loci on the left and right, 
-but the presence of many \textit{de novo} mutations
+but the presence of many de novo mutations
 observed in the copying patterns suggests the existence of
 many genetically distinct, un-sampled ancestors
-[FIXME: in this case, probably BJ.1, see issue 336],
-and some caution should be exercised when interpreting them.
+and some caution should be exercised when interpreting them
+(see Document~\ref{sec:dd_xbb} for more details).
 See Figures~\ref{fig:recombinant_evidence}D and
 \ref{fig:pango_x_copying_patterns}
 for copying patterns of the Pango X lineages, and
 Figure~\ref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
 (and more details on the visualizations).
-
 
 \subsection*{Precision of recombination event times and positions}
 
@@ -4516,6 +4501,7 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 \end{tabular}
 \end{table}
 
+\FloatBarrier
 
 \section*{Supplementary Figures}
 
