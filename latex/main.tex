@@ -1188,382 +1188,354 @@ not by UShER+RIPPLES at $p=4$).
 See Document~\ref{sec:detailed_ripples} for more detailed analysis 
 of the UShER+RIPPLES results.
 
-% \section*{DISCUSSION}
-
-% NOTES: paragraph structure. Lead with the biological insights first 
-% to prevent the ``this is a methods paper'' criticism
-
-% \begin{itemize}
-% \item We present a landmark ARG, which has a comprehensive representation
-% of evolutionary history.
-% \item This is a conservative lower-bound on the occurance of recombination.
-% Very high validation rate post-QC.
-% Substantially lower than previous estimate. 
-% The first order term of this 
-% is the choice of $p$ parameter. With p=4 we show that the ARG contains
-% more of the previously identified recombinants.
-% \item Truth data for recombination is difficult to find. The closest we have is the 
-% pango X lineages. No methods agrees with all of the designations being 
-% true recombinants. Our analysis suggests that there is significant over-naming
-% with the same underlying recombination event getting associated with 
-% multiple X lienages at least twice. Also many lineages are not suggested 
-% as being recombinant. This resolves long-standing complexity in 
-% the Omicron evolution and simplifies our understanding.
-% \item Based on this cleaned up and conservative estimate of recombination
-% prevalance. Supports the idea that  recombination frequency in SARS-CoV-2 
-% is driven jointly by viral
-% load in the population and lineage diversity, implying predictable
-% recombination ``hot periods'' during pandemics
-% \item Also found evidence that breakpoints are enriched near spike, 
-% supporting findings of earlier studies.
-% Suggests functional constraints or template-switching
-% biases that may shape SARS-CoV-2 evolution.
-% Spike gene junctions are recurrent recombination zones, likely under both
-% mechanistic and selective pressures.
-% \item This ARG is base on a new method, sc2ts. Major methodological 
-% breakthrough in terms of handling recombination. We validate the method
-% by using results from the literature. We don't use simulations because 
-% there's no real point in this case. We're just focusing on SARS-CoV-2.
-% We could create some simulations and generate some metrics about how
-% well sc2ts picks up simulated recombination events on clean data, 
-% but what would that tell us ultimately? (Similarly for tree reconstruction.)
-% Certainly standardised simulations would help to refine methods, but
-% we have moved the bar forwards massively here and made a great starting
-% point for subsequent method development.
-% \item There is great potential for using this ARG in future studies,
-% and using sc2ts as a baseline to judge future methods.
-% \item The tskit and VCF Zarr toolchains enable this research.
-% \item We have shown that recombination can be handled, provided
-% feasible methods to infer it, and shown that a preexisting tool
-% chain can provide quick insignts. The future is bright.
-
-% \end{itemize}
 
 \section*{DISCUSSION}
-[NOTE: this is two different WIP versions of the Discussion. 
-The ChatGPT based stuff was only ever intended as a starting point,
-and not to be taken literally.]
+There are two primary contributions of this work. The first is a
+Ancestral Recombination Graph (ARG) for 2.48 million SARS-CoV-2 genomes.
+Through multiple layers of validation against results from the 
+literature, we have demonstrated that this ARG successfully synthesises
+the evolutionary features of genetic inheritance, point mutations,
+deletions and recombination in a single cohesive structure.
+The ARG is freely available and easily accessible using the 
+tskit software ecosystem, a rich and efficient platform for 
+recombination-aware analysis widely used in population genomics.
+This combination of a deeply validated ARG with a pre-existing
+and highly capable software platform forms a unique resource.
+Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
+have helped spur the development of numerous ARG-aware 
+methods in human 
+genomics~\cite{Tagami2024tstrait,Mejia2025using} [NOTE add more refs 
+if we like this].
+We hope that the ARG provided here will similarly
+enable a range recombination-aware analyses of SARS-CoV-2, and 
+catalyse a wave of methodological improvements fully integrating
+recombination into pathogen genomics.
+
+The second primary contribution of this work is the method used to 
+infer the ARG, sc2ts. [WIP]
 
 
-% P1. The ARG. Unique resource. Emphasise utility of UShER and how 
-% this has more.
-% SHZ: This makes it sound like we are just making analyses
-% (which people can do already using existing methods and tools)
-% easier to do
-% rather than making a leap forward from anything else out there.
-We present the first pandemic-scale ancestral recombination graph (ARG) for
-SARS-CoV-2, reconstructed from 2.48 million genomes using \texttt{sc2ts}. This
-ARG represents a step change in how the evolutionary history of this virus can
-be represented and analysed. Like the UShER phylogeny, it provides a
-comprehensive and continuously updatable record of global genomic diversity,
-but it extends this paradigm by embedding recombination directly into the
-genealogy. The ARG unifies point mutations, deletions, and recombination events
-within a single, compact data structure, enabling analyses that
-were previously fragmented across multiple methods and data models. By encoding
-reticulate ancestry explicitly rather than assuming a single tree, the ARG
-provides a complete and internally consistent representation of SARS-CoV-2
-evolution. In this way, the
-ARG offers the same accessibility and scalability that made the UShER tree
-indispensable during the pandemic, while expanding its scope to encompass the
-full spectrum of evolutionary processes shaping SARS-CoV-2.
+% Old discussions
 
-% P2. This is a conservative lower-bound on recombination. 
-% Discuss other estimates.
-% 
-% SHZ: Why should we care about getting this number/frequency right?
-% Sure, popgen folks love estimating this, but to other people,
-% existing estimates already tell us that
-% detectable recombination in SARS-CoV-2 is (qualitatively) rare,
-% even without the advances of sc2ts.
-% Also, we are talking about the frequency of detectable recombination
-% in the last sentence, right?
-% The true frequencey of recombination is unknowable from this type of data.
-% So, the best we are ever going to get is a better lower bound.
-The recombination frequency estimated from the \texttt{sc2ts} ARG is
-substantially lower than that implied by the combination of UShER+RIPPLES,
-largely reflecting differences in model formulation and parameter choice.
-RIPPLES, applied post-hoc to UShER trees of 1.6 million genomes up to May 2021,
-reported 589 unique recombination events with 43,104 descendant
-samples---corresponding to roughly 2.7\% of all genomes being of recombinant
-origin.  Using the same time interval, our inference at \(k=4\) identifies only
-14 high-confidence recombination events with 172 descendants among 501,235
-genomes (0.034\%), a 40- to 80-fold reduction.  This difference is largely
-explained by the stricter parsimony penalty adopted here: increasing the
-penalty from \(p=3\) (as used in the RIPPLES analysis) 
-to \(k=4\) greatly reduces false
-positives while retaining nearly all verified recombinant lineages, 
-including those missed by RIPPLES at equivalent thresholds.  
-We argue that the post-hoc nature of UShER+RIPPLES can erase evidence 
-of recombination as
-tree rearrangements proceed, thereby requiring the more lenient 
-threshold in order to find known recombinats.
-These comparisons suggest that our estimate represents a conservative 
-lower bound. Further work will be required to determine
-the true frequency of recombination in SARS-CoV-2 evolution.
+% % P1. The ARG. Unique resource. Emphasise utility of UShER and how 
+% % this has more.
+% % SHZ: This makes it sound like we are just making analyses
+% % (which people can do already using existing methods and tools)
+% % easier to do
+% % rather than making a leap forward from anything else out there.
+% We present the first pandemic-scale ancestral recombination graph (ARG) for
+% SARS-CoV-2, reconstructed from 2.48 million genomes using \texttt{sc2ts}. This
+% ARG represents a step change in how the evolutionary history of this virus can
+% be represented and analysed. Like the UShER phylogeny, it provides a
+% comprehensive and continuously updatable record of global genomic diversity,
+% but it extends this paradigm by embedding recombination directly into the
+% genealogy. The ARG unifies point mutations, deletions, and recombination events
+% within a single, compact data structure, enabling analyses that
+% were previously fragmented across multiple methods and data models. By encoding
+% reticulate ancestry explicitly rather than assuming a single tree, the ARG
+% provides a complete and internally consistent representation of SARS-CoV-2
+% evolution. In this way, the
+% ARG offers the same accessibility and scalability that made the UShER tree
+% indispensable during the pandemic, while expanding its scope to encompass the
+% full spectrum of evolutionary processes shaping SARS-CoV-2.
 
-
-% P3. Clarifies relationships between pango X lineages, simplifying
-% the Omicron sublineage.
-% 
-% SHZ: I don't think knowing the relationships between Pango Xs is what's really important.
-% Sure, phylogeneticists would get a kick out of it,
-% but I don't think the majority of Cell readership would.
-% I think what is important is knowing
-% how many emerging recombinants carrying new combinations of mutations of concern
-% we are actually dealing with.
-% Clarifying the relationships between Pango Xs helps with this task.
-
-The Pango X lineage designations represent the community’s best attempt to
-catalogue recombinant SARS-CoV-2 lineages, but they arise from a largely
-manual, volunteer-driven process that synthesizes multiple lines of evidence
-and expert judgment rather than a single automated criterion.  As a result, the
-system provides the closest available approximation to “truth data,” but
-inevitably contains inconsistencies and over-splitting.  Within the
-\texttt{sc2ts} ARG, 44 Pango X lineages are represented, of which 16 correspond
-directly to recombination nodes (Type I events).  Examination of their
-genealogical relationships shows that many of these 44 lineages share common
-ancestral recombination events rather than arising independently.  In
-particular, five lineages—XAA, XAG, XAM, XR, and XU—descend from the same
-recombinant ancestor associated with XQ, while another five—XZ, XAC, XAD, XAE,
-and XAP—share a second common ancestor that we refer to as “Xx.”  These
-clusters account for roughly half of all X designations in the dataset,
-indicating that the community process has at times produced multiple labels for
-the descendants of a single recombinant lineage.  Conversely, several [TODO 
-be more concrete]
-designated X lineages show little or no evidence of recombination in the ARG,
-suggesting that some may reflect convergent mutation or limited sampling rather
-than hybrid origin.  Together, these results provide a data-driven synthesis in
-which the 44 currently recognized recombinant lineages collapse into a smaller
-number of well-supported ancestral events, simplifying the complex picture of
-Omicron-era evolution and bringing the community nomenclature into closer
-alignment with the underlying genealogy.
-
-% P4. Results on global case numbers and frequency of recomb.
-% SHZ: Should we mention how the reliability of global case number data
-% and variation in sampling effort over time and across countries
-% might affect our interpretation of these findings?
-[FIXME: This is direct output from ChatGPT.  Review!]
-The dated ARG allows us to place recombination within its epidemiological
-context, revealing clear temporal structure in when recombinant lineages arise.
-The frequency of inferred recombination events follows global case numbers
-through the pandemic, with peaks during the Delta and Omicron waves when both
-infection prevalence and genetic diversity were high.  Quantitatively, the best
-single predictor of weekly recombinant counts is the product of global cases
-and lineage heterozygosity (\(nH\)), which explains nearly a quarter of the
-variation in event frequency (\(R^{2}_{\mathrm{adj}} = 0.24\)).  This
-relationship is consistent with the mechanistic expectation that recombination
-requires both frequent co-infections (driven by high case numbers) and
-genetically distinct co-infecting viruses (driven by lineage diversity).  In
-other words, recombination becomes most detectable when epidemiological and
-evolutionary opportunity coincide.  These results imply that the emergence of
-novel recombinants is not uniform through time but concentrated into
-predictable ``hot periods'' during large, antigenically diverse outbreaks, when
-the ecological conditions for viral recombination are most favourable.
+% % P2. This is a conservative lower-bound on recombination. 
+% % Discuss other estimates.
+% % 
+% % SHZ: Why should we care about getting this number/frequency right?
+% % Sure, popgen folks love estimating this, but to other people,
+% % existing estimates already tell us that
+% % detectable recombination in SARS-CoV-2 is (qualitatively) rare,
+% % even without the advances of sc2ts.
+% % Also, we are talking about the frequency of detectable recombination
+% % in the last sentence, right?
+% % The true frequencey of recombination is unknowable from this type of data.
+% % So, the best we are ever going to get is a better lower bound.
+% The recombination frequency estimated from the \texttt{sc2ts} ARG is
+% substantially lower than that implied by the combination of UShER+RIPPLES,
+% largely reflecting differences in model formulation and parameter choice.
+% RIPPLES, applied post-hoc to UShER trees of 1.6 million genomes up to May 2021,
+% reported 589 unique recombination events with 43,104 descendant
+% samples---corresponding to roughly 2.7\% of all genomes being of recombinant
+% origin.  Using the same time interval, our inference at \(k=4\) identifies only
+% 14 high-confidence recombination events with 172 descendants among 501,235
+% genomes (0.034\%), a 40- to 80-fold reduction.  This difference is largely
+% explained by the stricter parsimony penalty adopted here: increasing the
+% penalty from \(p=3\) (as used in the RIPPLES analysis) 
+% to \(k=4\) greatly reduces false
+% positives while retaining nearly all verified recombinant lineages, 
+% including those missed by RIPPLES at equivalent thresholds.  
+% We argue that the post-hoc nature of UShER+RIPPLES can erase evidence 
+% of recombination as
+% tree rearrangements proceed, thereby requiring the more lenient 
+% threshold in order to find known recombinats.
+% These comparisons suggest that our estimate represents a conservative 
+% lower bound. Further work will be required to determine
+% the true frequency of recombination in SARS-CoV-2 evolution.
 
 
-% P5. Confirm breakpoints around Spike. 
-% SHZ: Maybe we can say it's a known (instead of robust)
-% pattern of detectable recombination in CoVs in general?
-% There are some citations for template switching hotspots in SC2.
-% Also, it's not only about selection favoring new combinations of mutations in Spike.
-% It's about combinations of mutations in, say, ORF1ab, getting selected against
-% (or just low mutation rates).
-% Maybe mention epistasis?
-[FIXME: This is directish output from ChatGPT. Review!]
-The genomic distribution of breakpoints in the ARG is highly uneven, with a
-pronounced enrichment near the $5'$ boundary of the Spike gene and across the
-S1–S2 junction.  This pattern closely mirrors that observed in the
-UShER+RIPPLES dataset \citep{Turakhia2022} and in earlier 
-analyses \citep{Jackson2021} [more cites], but here it is recovered
-independently over a much longer sampling period and under a more conservative
-inference regime.  Under our more conservative estimate of the overall
-prevalence of recombination, we find that this enrichment persists despite a substantial
-reduction in the total number of inferred recombination events, indicating that
-it reflects a genuine and stable feature of SARS-CoV-2 evolution rather than a
-by-product of detection sensitivity.  Across all high-confidence events, the
-median breakpoint interval length is $\sim 2.2$kb and declines with parental
-divergence, consistent with expectations from sequence-based localization
-accuracy.  These results show that even with a conservative lower bound on
-recombination frequency, the concentration of breakpoints around Spike remains
-a robust signature of coronavirus genome biology—likely reflecting a
-combination of mechanistic biases in template switching and selective
-constraints on Spike function.
+% % P3. Clarifies relationships between pango X lineages, simplifying
+% % the Omicron sublineage.
+% % 
+% % SHZ: I don't think knowing the relationships between Pango Xs is what's really important.
+% % Sure, phylogeneticists would get a kick out of it,
+% % but I don't think the majority of Cell readership would.
+% % I think what is important is knowing
+% % how many emerging recombinants carrying new combinations of mutations of concern
+% % we are actually dealing with.
+% % Clarifying the relationships between Pango Xs helps with this task.
+
+% The Pango X lineage designations represent the community’s best attempt to
+% catalogue recombinant SARS-CoV-2 lineages, but they arise from a largely
+% manual, volunteer-driven process that synthesizes multiple lines of evidence
+% and expert judgment rather than a single automated criterion.  As a result, the
+% system provides the closest available approximation to “truth data,” but
+% inevitably contains inconsistencies and over-splitting.  Within the
+% \texttt{sc2ts} ARG, 44 Pango X lineages are represented, of which 16 correspond
+% directly to recombination nodes (Type I events).  Examination of their
+% genealogical relationships shows that many of these 44 lineages share common
+% ancestral recombination events rather than arising independently.  In
+% particular, five lineages—XAA, XAG, XAM, XR, and XU—descend from the same
+% recombinant ancestor associated with XQ, while another five—XZ, XAC, XAD, XAE,
+% and XAP—share a second common ancestor that we refer to as “Xx.”  These
+% clusters account for roughly half of all X designations in the dataset,
+% indicating that the community process has at times produced multiple labels for
+% the descendants of a single recombinant lineage.  Conversely, several [TODO 
+% be more concrete]
+% designated X lineages show little or no evidence of recombination in the ARG,
+% suggesting that some may reflect convergent mutation or limited sampling rather
+% than hybrid origin.  Together, these results provide a data-driven synthesis in
+% which the 44 currently recognized recombinant lineages collapse into a smaller
+% number of well-supported ancestral events, simplifying the complex picture of
+% Omicron-era evolution and bringing the community nomenclature into closer
+% alignment with the underlying genealogy.
+
+% % P4. Results on global case numbers and frequency of recomb.
+% % SHZ: Should we mention how the reliability of global case number data
+% % and variation in sampling effort over time and across countries
+% % might affect our interpretation of these findings?
+% [FIXME: This is direct output from ChatGPT.  Review!]
+% The dated ARG allows us to place recombination within its epidemiological
+% context, revealing clear temporal structure in when recombinant lineages arise.
+% The frequency of inferred recombination events follows global case numbers
+% through the pandemic, with peaks during the Delta and Omicron waves when both
+% infection prevalence and genetic diversity were high.  Quantitatively, the best
+% single predictor of weekly recombinant counts is the product of global cases
+% and lineage heterozygosity (\(nH\)), which explains nearly a quarter of the
+% variation in event frequency (\(R^{2}_{\mathrm{adj}} = 0.24\)).  This
+% relationship is consistent with the mechanistic expectation that recombination
+% requires both frequent co-infections (driven by high case numbers) and
+% genetically distinct co-infecting viruses (driven by lineage diversity).  In
+% other words, recombination becomes most detectable when epidemiological and
+% evolutionary opportunity coincide.  These results imply that the emergence of
+% novel recombinants is not uniform through time but concentrated into
+% predictable ``hot periods'' during large, antigenically diverse outbreaks, when
+% the ecological conditions for viral recombination are most favourable.
 
 
-% P6. Sc2ts method is a major advance. We validate with real data
-% rather than simulations. Forward looking statement about simulations.
-% 
-% SHZ: Could at least some of this go into the Introduction?
-In the broader context of pathogen genomics, \texttt{sc2ts} demonstrates that
-it is now possible to reconstruct recombination-aware genealogies at the scale
-of entire pandemics.  Although recombination is recognised as a major
-evolutionary force in many pathogens—including RNA viruses such as influenza
-and HIV, and numerous bacterial species—genealogical analyses have typically
-relied on tree-based approximations that ignore or collapse recombination.
-This simplification has limited the accuracy of downstream evolutionary and
-epidemiological inference, even in well-studied systems.  \texttt{Sc2ts}
-overcomes this barrier by directly inferring an ancestral recombination graph
-from millions of viral genomes, producing the first coherent reticulate
-genealogy for any pathogen dataset of comparable size.  The ability to
-integrate recombination into genome-wide genealogies at this scale represents a
-major conceptual step forward: it transforms recombination from a confounding
-complication into an analyzable component of pathogen evolution.  
+% % P5. Confirm breakpoints around Spike. 
+% % SHZ: Maybe we can say it's a known (instead of robust)
+% % pattern of detectable recombination in CoVs in general?
+% % There are some citations for template switching hotspots in SC2.
+% % Also, it's not only about selection favoring new combinations of mutations in Spike.
+% % It's about combinations of mutations in, say, ORF1ab, getting selected against
+% % (or just low mutation rates).
+% % Maybe mention epistasis?
+% [FIXME: This is directish output from ChatGPT. Review!]
+% The genomic distribution of breakpoints in the ARG is highly uneven, with a
+% pronounced enrichment near the $5'$ boundary of the Spike gene and across the
+% S1–S2 junction.  This pattern closely mirrors that observed in the
+% UShER+RIPPLES dataset \citep{Turakhia2022} and in earlier 
+% analyses \citep{Jackson2021} [more cites], but here it is recovered
+% independently over a much longer sampling period and under a more conservative
+% inference regime.  Under our more conservative estimate of the overall
+% prevalence of recombination, we find that this enrichment persists despite a substantial
+% reduction in the total number of inferred recombination events, indicating that
+% it reflects a genuine and stable feature of SARS-CoV-2 evolution rather than a
+% by-product of detection sensitivity.  Across all high-confidence events, the
+% median breakpoint interval length is $\sim 2.2$kb and declines with parental
+% divergence, consistent with expectations from sequence-based localization
+% accuracy.  These results show that even with a conservative lower bound on
+% recombination frequency, the concentration of breakpoints around Spike remains
+% a robust signature of coronavirus genome biology—likely reflecting a
+% combination of mechanistic biases in template switching and selective
+% constraints on Spike function.
 
-% P7. The software ecosystem enables diverse besplike analysis.
 
-[TODO: This is close, needs revision]
-The practical value of the ARG is amplified by its integration into the broader
-software ecosystems built around \texttt{tskit} and VCF~Zarr.  These mature,
-open-source libraries provide highly efficient storage and analysis of tree
-sequences and variant data, allowing millions of genomes to be explored
-interactively within familiar environments such as Python and Jupyter
-notebooks.  Analyses that previously required bespoke phylogenetic
-pipelines—such as extracting local genealogies, summarising ancestral
-relationships, mapping mutations to branches, or tracking recombinant ancestry
-through time—can now be performed with concise, reproducible code on standard
-hardware.  Because \texttt{tskit} and VCF~Zarr share a common data model, the
-ARG integrates seamlessly with widely used tools in the PyData ecosystem,
-enabling users to combine genealogical information with epidemiological,
-geographic, or phenotypic metadata in the same workflow.  This interoperability
-transforms what can be done with large viral genome collections, lowering the
-barrier to sophisticated evolutionary analysis and making recombination-aware
-genealogy inference accessible to a wide community of researchers.
+% % P6. Sc2ts method is a major advance. We validate with real data
+% % rather than simulations. Forward looking statement about simulations.
+% % 
+% % SHZ: Could at least some of this go into the Introduction?
+% In the broader context of pathogen genomics, \texttt{sc2ts} demonstrates that
+% it is now possible to reconstruct recombination-aware genealogies at the scale
+% of entire pandemics.  Although recombination is recognised as a major
+% evolutionary force in many pathogens—including RNA viruses such as influenza
+% and HIV, and numerous bacterial species—genealogical analyses have typically
+% relied on tree-based approximations that ignore or collapse recombination.
+% This simplification has limited the accuracy of downstream evolutionary and
+% epidemiological inference, even in well-studied systems.  \texttt{Sc2ts}
+% overcomes this barrier by directly inferring an ancestral recombination graph
+% from millions of viral genomes, producing the first coherent reticulate
+% genealogy for any pathogen dataset of comparable size.  The ability to
+% integrate recombination into genome-wide genealogies at this scale represents a
+% major conceptual step forward: it transforms recombination from a confounding
+% complication into an analyzable component of pathogen evolution.  
 
-% P8. Outlook
+% % P7. The software ecosystem enables diverse besplike analysis.
 
-[TODO a bit muddled, refine]
-Together, these results demonstrate that recombination in SARS-CoV-2 can be
-systematically incorporated into genealogical inference at pandemic scale. The
-\texttt{sc2ts} ARG captures the complexity of viral evolution in a form that is
-both biologically realistic and computationally tractable, showing that
-recombination can be modelled rather than ignored. Embedded within an
-interoperable software ecosystem, it provides a comprehensive record of
-SARS-CoV-2 ancestry and a practical framework for real-time,
-recombination-aware genomic surveillance—turning large sequence archives into
-dynamic evolutionary models that can be queried with concise, reproducible code. 
-More broadly, this work marks a transition from
-tree-based pandemic phylogenetics to recombination-aware genealogy inference.
-While our focus is SARS-CoV-2, the approach offers a blueprint and a starting
-point for other recombining pathogens: the core ideas are portable,
-even though effective deployment will require pathogen-specific adjustments. 
-We anticipate that this resource will clarify the recent history of
-SARS-CoV-2 and catalyse methodological refinement and targeted biological
-studies of recombination across systems where such extensions prove feasible.
+% [TODO: This is close, needs revision]
+% The practical value of the ARG is amplified by its integration into the broader
+% software ecosystems built around \texttt{tskit} and VCF~Zarr.  These mature,
+% open-source libraries provide highly efficient storage and analysis of tree
+% sequences and variant data, allowing millions of genomes to be explored
+% interactively within familiar environments such as Python and Jupyter
+% notebooks.  Analyses that previously required bespoke phylogenetic
+% pipelines—such as extracting local genealogies, summarising ancestral
+% relationships, mapping mutations to branches, or tracking recombinant ancestry
+% through time—can now be performed with concise, reproducible code on standard
+% hardware.  Because \texttt{tskit} and VCF~Zarr share a common data model, the
+% ARG integrates seamlessly with widely used tools in the PyData ecosystem,
+% enabling users to combine genealogical information with epidemiological,
+% geographic, or phenotypic metadata in the same workflow.  This interoperability
+% transforms what can be done with large viral genome collections, lowering the
+% barrier to sophisticated evolutionary analysis and making recombination-aware
+% genealogy inference accessible to a wide community of researchers.
 
-[NOTE: This is Shing's WIP alternative]
+% % P8. Outlook
 
-%%% SHZ: WIP alternative.
-We present the first pandemic-scale
-ancestral recombination graph (ARG) for SARS-CoV-2,
-reconstructed from $\sim$2.48 million genomes using \textit{sc2ts}.
-We demonstrate how this ARG, for the first time,
-enables systematic identification and characterization of
-recombination events in fine-grained
-detail--in terms of their parents, breakpoints, and timing of
-emergence--providing richer and more nuanced
-genealogical, genomic, and epidemiological context
-than existing phylogenetic approaches.
-Together, sc2ts and the ARG represent a new paradigm in
-how we study the evolution of pathogens in the face of ongoing sampling.
+% [TODO a bit muddled, refine]
+% Together, these results demonstrate that recombination in SARS-CoV-2 can be
+% systematically incorporated into genealogical inference at pandemic scale. The
+% \texttt{sc2ts} ARG captures the complexity of viral evolution in a form that is
+% both biologically realistic and computationally tractable, showing that
+% recombination can be modelled rather than ignored. Embedded within an
+% interoperable software ecosystem, it provides a comprehensive record of
+% SARS-CoV-2 ancestry and a practical framework for real-time,
+% recombination-aware genomic surveillance—turning large sequence archives into
+% dynamic evolutionary models that can be queried with concise, reproducible code. 
+% More broadly, this work marks a transition from
+% tree-based pandemic phylogenetics to recombination-aware genealogy inference.
+% While our focus is SARS-CoV-2, the approach offers a blueprint and a starting
+% point for other recombining pathogens: the core ideas are portable,
+% even though effective deployment will require pathogen-specific adjustments. 
+% We anticipate that this resource will clarify the recent history of
+% SARS-CoV-2 and catalyse methodological refinement and targeted biological
+% studies of recombination across systems where such extensions prove feasible.
 
-Accounting for recombination is a key challenge in pathogen genomics, and
-recombination has been largely ignored in analysis of viral genomes.
-Existing phylogenetic approaches for pathogens detect recombination
-\textit{post hoc} (e.g., UShER+RIPPLES),
-treat it as a nuance (e.g., XX), or
-discard its signals from downstream analyses (e.g., XX).
-Sc2ts addresses this challenge
-by using the ARG as the underlying data model,
-explicitly representing recombination events as individual nodes and
-relating them to specific parents in the ARG.
-The ARG provides a coherent framework to determine and represent
-the relationships between recombinants and their specific parents
-(which are not possible using a tree-based data model, e.g., the MAT format of UShER).
-The ARG reveals and clarifies the relationships between
-individual samples of the same recombinant origin,
-avoiding issues such as over-naming recombinants
-(e.g., the samples assigned to
-five differently labeled recombinant Pango lineages
-descending from the “Xx” recombination event in the ARG).
-Our results show how an ARG can considerably simplify
-efforts to identify and monitor emerging recombinants,
-facilitating communication of genomic surveillance results.
+% [NOTE: This is Shing's WIP alternative]
 
-% SHZ: Very WIP
-% Discuss the new preprint from Turakhia.
-The timing of recombination events is of key interest in
-pathogen genomic epidemiology.
-because this information may yield insights into
-how the emergence of a new recombinant might be
-linked with changes in public health policies.
+% %%% SHZ: WIP alternative.
+% We present the first pandemic-scale
+% ancestral recombination graph (ARG) for SARS-CoV-2,
+% reconstructed from $\sim$2.48 million genomes using \textit{sc2ts}.
+% We demonstrate how this ARG, for the first time,
+% enables systematic identification and characterization of
+% recombination events in fine-grained
+% detail--in terms of their parents, breakpoints, and timing of
+% emergence--providing richer and more nuanced
+% genealogical, genomic, and epidemiological context
+% than existing phylogenetic approaches.
+% Together, sc2ts and the ARG represent a new paradigm in
+% how we study the evolution of pathogens in the face of ongoing sampling.
 
-The overall frequency of detectable recombination events
-estimated from the sc2ts ARG is substantially lower than
-that from UShER+RIPPLES,
-largely reflecting differences in model formulation and parameter choice.
-When applied \textit{post hoc} to an UShER phylogeny of
-$\sim$1.6 million genomes sampled up to May, 2021,
-RIPPLES reported 589 unique recombination events with 43,104 descendant
-samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
-Using the same time interval, sc2ts \(k=4\) identifies
-14 high-confidence recombination events with
-172 descendant samples among 501,235 samples \(0.034\%\),
-a 40- to 80-fold reduction.
-Much of this difference is explained by
-the stricter parsimony penalty used here:
-increasing the penalty from p=3 (as used in the RIPPLES analysis) to
-k=4 greatly reduces false positives
-while retaining nearly all verified recombinant lineages,
-including those missed by RIPPLES at equivalent thresholds.
-These indirect comparisons suggest that
-our estimate represents a conservative lower bound.
-In future studies, dissecting the methodological differences
-between sc2ts and UShER+RIPPLES may
-inspire new ideas to develop or improve ARG building methods
-for SARS-CoV-2 (and potentially other pathogens).
+% Accounting for recombination is a key challenge in pathogen genomics, and
+% recombination has been largely ignored in analysis of viral genomes.
+% Existing phylogenetic approaches for pathogens detect recombination
+% \textit{post hoc} (e.g., UShER+RIPPLES),
+% treat it as a nuance (e.g., XX), or
+% discard its signals from downstream analyses (e.g., XX).
+% Sc2ts addresses this challenge
+% by using the ARG as the underlying data model,
+% explicitly representing recombination events as individual nodes and
+% relating them to specific parents in the ARG.
+% The ARG provides a coherent framework to determine and represent
+% the relationships between recombinants and their specific parents
+% (which are not possible using a tree-based data model, e.g., the MAT format of UShER).
+% The ARG reveals and clarifies the relationships between
+% individual samples of the same recombinant origin,
+% avoiding issues such as over-naming recombinants
+% (e.g., the samples assigned to
+% five differently labeled recombinant Pango lineages
+% descending from the “Xx” recombination event in the ARG).
+% Our results show how an ARG can considerably simplify
+% efforts to identify and monitor emerging recombinants,
+% facilitating communication of genomic surveillance results.
 
-The ARG itself is a powerful resource
-to support future studies of SARS-CoV-2.
-Our results show that the ARG captures and unifies
-important features of SARS-CoV-2 evolution,
-which are shown in different studies
-using various methods, tools, and approaches.
-The ARG also compactly encodes genetic variation in
-millions of SARS-CoV-2 genomes,
-allowing for convenient and efficient reuse of
-this valuable dataset for a range of
-genetic and evolutionary analyses beyond those presented here,
-for instance, to understand
-how the variability in sequencing efforts
-across time and location affects our ability
-to reconstruct the origin of important recombinant lineages and
-to estimate when they emerge.
-Because building the ARG is computationally expensive, and
-checking and improving various aspects of its quality is laborious,
-we hope that making this resource openly available will
-save significant time and effort for other researchers,
-enabling immediate focus on analyzing the information
-contained within the COVID-19 dataset.
+% % SHZ: Very WIP
+% % Discuss the new preprint from Turakhia.
+% The timing of recombination events is of key interest in
+% pathogen genomic epidemiology.
+% because this information may yield insights into
+% how the emergence of a new recombinant might be
+% linked with changes in public health policies.
 
-% TODO: Briefly discussion software tools here or in a subsequent paragraph.
+% The overall frequency of detectable recombination events
+% estimated from the sc2ts ARG is substantially lower than
+% that from UShER+RIPPLES,
+% largely reflecting differences in model formulation and parameter choice.
+% When applied \textit{post hoc} to an UShER phylogeny of
+% $\sim$1.6 million genomes sampled up to May, 2021,
+% RIPPLES reported 589 unique recombination events with 43,104 descendant
+% samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
+% Using the same time interval, sc2ts \(k=4\) identifies
+% 14 high-confidence recombination events with
+% 172 descendant samples among 501,235 samples \(0.034\%\),
+% a 40- to 80-fold reduction.
+% Much of this difference is explained by
+% the stricter parsimony penalty used here:
+% increasing the penalty from p=3 (as used in the RIPPLES analysis) to
+% k=4 greatly reduces false positives
+% while retaining nearly all verified recombinant lineages,
+% including those missed by RIPPLES at equivalent thresholds.
+% These indirect comparisons suggest that
+% our estimate represents a conservative lower bound.
+% In future studies, dissecting the methodological differences
+% between sc2ts and UShER+RIPPLES may
+% inspire new ideas to develop or improve ARG building methods
+% for SARS-CoV-2 (and potentially other pathogens).
 
-Recent developments in ARG methods have focused almost exclusively on
-applications to human sequencing data.
-The availability of human ARGs reconstructed from large datasets
-has already had a tremendous impact on improving
-our understanding of human genetic ancestry and past demography.
-We anticipate similar advances to be made
-by adapting existing inference methods for human ARGs
-to use the sc2ts ARG for the genealogy-based study of
-natural selection or the geographic spread of SARS-CoV-2 through time.
+% The ARG itself is a powerful resource
+% to support future studies of SARS-CoV-2.
+% Our results show that the ARG captures and unifies
+% important features of SARS-CoV-2 evolution,
+% which are shown in different studies
+% using various methods, tools, and approaches.
+% The ARG also compactly encodes genetic variation in
+% millions of SARS-CoV-2 genomes,
+% allowing for convenient and efficient reuse of
+% this valuable dataset for a range of
+% genetic and evolutionary analyses beyond those presented here,
+% for instance, to understand
+% how the variability in sequencing efforts
+% across time and location affects our ability
+% to reconstruct the origin of important recombinant lineages and
+% to estimate when they emerge.
+% Because building the ARG is computationally expensive, and
+% checking and improving various aspects of its quality is laborious,
+% we hope that making this resource openly available will
+% save significant time and effort for other researchers,
+% enabling immediate focus on analyzing the information
+% contained within the COVID-19 dataset.
 
-The unprecedented throughput and pace of genome sequencing are
-creating ample opportunity to understand the impacts of recombination
-on pathogen evolution and epidemiology.
-We hope that this study will spur
-development of ARG methods for pathogens,
-ultimately making recombination-aware genome analysis
-routine for all sorts of pathogens beyond SARS-CoV-2.
+% % TODO: Briefly discussion software tools here or in a subsequent paragraph.
+
+% Recent developments in ARG methods have focused almost exclusively on
+% applications to human sequencing data.
+% The availability of human ARGs reconstructed from large datasets
+% has already had a tremendous impact on improving
+% our understanding of human genetic ancestry and past demography.
+% We anticipate similar advances to be made
+% by adapting existing inference methods for human ARGs
+% to use the sc2ts ARG for the genealogy-based study of
+% natural selection or the geographic spread of SARS-CoV-2 through time.
+
+% The unprecedented throughput and pace of genome sequencing are
+% creating ample opportunity to understand the impacts of recombination
+% on pathogen evolution and epidemiology.
+% We hope that this study will spur
+% development of ARG methods for pathogens,
+% ultimately making recombination-aware genome analysis
+% routine for all sorts of pathogens beyond SARS-CoV-2.
 
 
 \subsection*{Limitations of the study}
