@@ -2240,19 +2240,21 @@ samples enriched for errors as well as time-travellers.
 \subsubsection*{Inserting saltation lineages}
 The HMM cost threshold approach outlined in the previous section is 
 effective at removing time-traveling samples, but it also filters out 
-important evolutionary events such as 
-the major ``saltations'' that characterize many VOCs.
+important evolutionary events such as
+``saltations'' that characterize major VOCs.
 These lineages are characterized by a high number of accumulated mutations,
 and are hypothesized to emerge from chronic infections
 during which the virus is exposed to individual-specific immune selective
 % Other refs here for this Sally?
 pressures\cite{Otto2021origins,Markov2023}.
 To distinguish time travelers from true saltation lineages,
-we reevaluate the evidence for each lineage with a high HMM cost as additional samples are added.
-If these samples form a sufficiently plausible group over successive days (under criteria
-described in the next paragraph) sc2ts adds the group to the ARG as a 
-``retrospective sample group'' using same mechanisms as standard
-daily sample clusters.
+we re-evaluate the evidence for each lineage with a high HMM cost
+as additional samples are added.
+If these samples form a sufficiently plausible group over successive days
+(under criteria described in the next paragraph)
+sc2ts adds the group to the ARG as a 
+``retrospective sample group'' using same mechanisms
+as standard daily sample clusters.
 
 Distinguishing a truly emerging outbreak from different forms of
 correlated error is non-trivial, and sc2ts has 5 parameters to fine
@@ -2261,11 +2263,11 @@ group to ensure there is sufficient support over a time window of
 7 days. Then, we build a local tree of the samples and consider
 some tree metrics to evaluate whether the samples within the 
 group are closely related. If we have at least 2 mutations 
-shared by all samples, there's at most 2 recurrent mutations
+shared by all samples, there are at most 2 recurrent mutations
 within the group and at most 5 mutations unique to each sample, 
 the retrospective group is accepted for inclusion.
 Although this process is highly heuristic, it successfully 
-captured the majority of saltational lineages
+captured the majority of saltation lineages
 such as Alpha (Figure~\ref{fig:subgraph_alpha}), and the 
 vast majority of samples were added following the standard
 daily sample grouping mechanisms. 
