@@ -296,8 +296,8 @@ that systematically accounts for all of these evolutionary forces.
 This ARG, coupled with the rich suite of supporting software
 in the tskit~\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
 enables pandemic-scale analysis on a laptop. 
-These resources
-will help us to learn from the vast troves of data collected during the
+These resources provide a strong platform for future research,
+helping us to learn from the vast troves of data collected during the
 pandemic, and to prepare for the next.
 
 
@@ -345,11 +345,10 @@ while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 \label{fig:methodology}
 \end{figure}
 
-[FIXME Going in too fast here]
-Sc2ts reconstructs an ARG by incrementally adding
-daily batches of sequences (Figure~\ref{fig:methodology}).
-First, sc2ts infers likely ``copying paths'' connecting each sample
-in the batch to node(s) in the current ARG
+Sc2ts is a real-time inference method, updated incrementally 
+with daily batches of sequence data (Figure~\ref{fig:methodology}).
+For each batch, sc2ts first infers likely ``copying paths'' connecting each sample
+to node(s) in the current ARG
 using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens2003}.
 % Important to go into a bit of detail about LS here as it's so fundamental
 % and novel in the area.
@@ -364,7 +363,7 @@ that controls the number of recurrent mutations
 that is allowed before switching to a different parent via recombination
 % This is quite a big thing really, and ultimately what determines
 % the number of recombinants detected.
-(we use $k=4$ here; see STAR Methods and Discussion).
+(we use $k=4$ here; see STAR Methods).
 We used the highly efficient LS HMM implementation in tsinfer~\cite{Kelleher2019},
 with some additional optimizations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
@@ -489,10 +488,10 @@ Because deletions are difficult to distinguish
 % SHZ: Sequencing errors or misleading alignment.
 from bioinformatic errors
 and their multi-base nature presents challenges
-to the Markovian structure of the LS HMM,
+to the LS HMM,
 we masked out all gap characters as missing data during primary inference.
 To approximate the effects of the most important deletions into the ARG,
-we remapped data using \textit{post hoc} parsimony at 75 sites
+we remapped data using post hoc parsimony at 75 sites
 involved in deletions with a frequency of
 $\geq 1\%$ reported by Li et al.~\cite{Li2023indels}
 during post-processing (STAR Methods).
@@ -726,8 +725,8 @@ distant from a BA.2 sample and has little additional evidence
 to suggest recombination (Document~\ref{sec:dd_xn}).
 XB, on the other hand,
 has been thoroughly characterized~\cite{Gutierrez2022} and
-may have misclassified by sc2ts due to limitations in
-handling deletions or matching against long branches (Document \ref{sec:dd_xb}). 
+is likely misclassified by sc2ts because the required
+parent lineages were not present (Document \ref{sec:dd_xb}). 
 
 The remaining 10 X lineages (97 samples) present in the dataset are not 
 included in the ARG because the HMM cost exceeds the inclusion threshold
@@ -776,7 +775,9 @@ Of the 855 recombination events identified by sc2ts, 3SEQ verified 57\% of them,
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
-summarized in Table~\ref{tab:recombinant_validation}.
+summarized in Table~\ref{tab:recombinant_validation}
+(see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
+and \ref{fig:recombinant_evidence_rebar}).
 CovRecomb has a substantially lower validation rate
 at 25\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
@@ -784,8 +785,6 @@ to detect interlineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar validation is intermediate, at 57\% among QC-passing recombinants.
-(See also Figures~\ref{fig:recombinant_evidence_cov_recomb},
-and \ref{fig:recombinant_evidence_rebar}.)
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -843,11 +842,11 @@ over all 354 recombination events that pass QC.
 Also shown is the 3SEQ classification status of these recombinants.
 The 5\% of recombinants that do not pass 3SEQ validation are
 among the most weakly supported, with 4 or 5 averted mutations.
-Figures~\ref{fig:recombinant_evidence}B and C shows the 
+Figures~\ref{fig:recombinant_evidence}B,C show the 
 distribution of recombination events as a function the 
 divergence between the parents.
 Figures~\ref{fig:recombinant_evidence_cov_recomb} and
-~\ref{fig:recombinant_evidence_rebar} 
+\ref{fig:recombinant_evidence_rebar} 
 plot the same information as Figure~\ref{fig:recombinant_evidence} 
 broken down by CovRecomb and rebar validation status.
 
