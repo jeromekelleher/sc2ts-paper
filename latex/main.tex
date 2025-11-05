@@ -1078,32 +1078,38 @@ unknown cases and heterozygosity not captured by the Scorpio labels.
 
 
 \subsection*{Comparison with UShER+RIPPLES}
-RIPPLES~\cite{Turakhia2022} is a method for identifying
-recombination events using a phylogeny inferred by UShER.
-This distinguishes RIPPLES from other recombination detection
-methods such as 3SEQ, which classify particular \emph{sequences}
-as recombinant or not and can only identify 
-potential onward transmission post-hoc. 
-The combination of UShER and RIPPLES
-is therefore the only method that is directly comparable to sc2ts. 
-RIPPLES works by first identifying long 
-branches in the input tree, by default those carrying 3 or more 
-mutations. For each candidate branch,
-RIPPLES systematically splits the sequence into 2 or 3 segments, and
-finds parsimonious placements for each segment independently.
-A recombination event at that node is then flagged if
+
+The most comprehensive analysis on recombination in SARS-CoV-2 to 
+date has been performed using the combination of UShER and 
+RIPPLES~\cite{Turakhia2022}. RIPPLES works by taking a
+pre-existing UShER phylogeny and systematically breaking up
+sequences subtended by long branches into multiple segments 
+that are placed independently.
+A recombination event at a node is flagged if
 the overall parsimony of these multiple placements
 sufficiently improves over
 the original single-parent origin in the phylogeny.
-This ``parsimony improvement'' parameter ($p$)
-is equivalent to the sc2ts recombination penalty ($k$).
+This approach has much in common with the LS HMM
+used in sc2ts, but with one important distinction.
+While sc2ts detects and incorporates recombination
+in ``real-time'' as sequences are added to the ARG in daily
+batches, RIPPLES operates on a complete phylogeny,
+attempting to detect recombination post-hoc among millions of nodes. 
+Like any phylogenetic reconstruction method
+that ignores recombination, UShER must force placement of recombinant
+sequences in places that minimize the discrepancy across the entire sequence,
+which may not be near any of the true parents. 
+These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences}
+and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
+may break up the artefactual long branches used to detect recombination.
 
 To compare the performance of sc2ts and UShER+RIPPLES 
 in terms of recombinant detection, we ran RIPPLES on the Viridian UShER phylogeny
 subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
 Note that we are interested in the direct output of sc2ts and UShER+RIPPLES
 here, and do not perform QC filtering of either.
-Using the RIPPLES parameter $p=4$ (matching $k=4$ in the sc2ts ARG) resulted in 1174 reported recombination events.
+Using the RIPPLES parameter $p=4$ (matching $k=4$ used in the sc2ts ARG) 
+resulted in 1174 reported recombination events.
 We ran 3SEQ on each of the candidate trios (STAR Methods) and 601 
 were classified as recombinant, giving an overall validation rate of 51\%.
 Aligning the events reported by both methods using the sets of descendant
@@ -1112,69 +1118,48 @@ with the intersection comprising 40\% of the RIPPLES events
 and 55\% of the sc2ts events (Figure~\ref{fig:ripples_sc2ts_events}). 
 The 706 recombination events output by RIPPLES that do not 
 correspond to a recombination event in the sc2ts ARG can largely
-be explained by a combination of two factors.
-Firstly, 408 of these RIPPLES identified recombination events
-have one or more parents that are \emph{younger} than the
-recombinant sequence based on metadata. Thus, the parental
-sequences were simply not available to match against for 
-sc2ts (which enforces strict time ordering) when the 
-recombinant sequence was inserted. Secondly, of the 179
-remaining events with matching clades and in which the 
-sc2ts node has more than 4 mutations, of the total
-1,167 mutations, 452 of these occurred at sites that were 
-remapped during post-hoc parsimony. The remaining ``missing''
-events are likely attributable to the finer details of the 
-differences in tree building approaches between UShER and sc2ts.
-
-
+be explained by a combination the choice of sites 
+used for inference, and the strict time ordering imposed
+by sc2ts (Document~\ref{sec:detailed_ripples}).
 The 387 events detected by sc2ts and not by UShER+RIPPLES
 would require a detailed dissection of the UShER tree
 to explain, which is beyond the scope of this work.
-However, the set does contain some well characterized events such as XBB.
-We also compared the recombination events
-output by RIPPLES with the Pango X lineages
-(Table~\ref{tab:ripples_x_lineages}).
-At p=4, we found that only 9 of the Pango X lineages were present and
-with unequivocal recombinant origin for 6 (contrast with 
-16 Type I events in Table~\ref{tab:pango_x_lineages}).
-We therefore reran at p=3, resulting in 4111 events overall,
-and increasing the intersection of events with sc2ts to 595 (70\%).
-At p=3, events involving XX of the 44 Pango X lineages
+However, the set does contain some well characterized events 
+associated with the Pango X lineages.
+Table~\ref{tab:ripples_x_lineages} shows the events detected 
+by UShER+RIPPLES associated with samples assigned to Pango X
+lineages. At the RIPPLES ``parsimony improvement'' parameter
+$p=4$ (equivalent to $k=4$ used to build the sc2ts ARG)
+only 9 of the Pango X lineages are present and
+with unequivocal recombinant origin for 6 
+(contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
+We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall,
+and increasing the intersection of events with sc2ts to 595 (70\%;
+Figure~\ref{fig:ripples_sc2ts_events}).
+At this more lenient threshold, 23 of the 44 Pango X lineages
 are present in the dataset, with unequivocal origins for 10 lineages, and
-7 lineages other lineages associated with two competing events.
-[More summary]
-[Note somewhere here that XB and XAJ are found to be recombinants 
-at p=4, showing that UShER is doing better here for some reason]
+7 lineages associated with two competing events 
+(Document~\ref{sec:detailed_ripples}).
+XB and XAJ are among the lineages detected by UShER+RIPPLES,
+strengthening evidence that these are false negatives 
+for sc2ts (Table~\ref{tab:pango_x_lineages}).
 
-In terms of \emph{detecting} recombination events, 
-sc2ts and the combination of UShER and RIPPLES have much in common, 
-and it is likely that very similar results could be obtained if run
-in the same way. That is, if we constructed an UShER tree by 
-incrementally adding the same daily batches as used for sc2ts
-and examined any newly-added long branches each day
-using RIPPLES, we would likely get very similar results to sc2ts
-in terms of recombinants detected.
-For a given matching operation, RIPPLES and the LS HMM 
-(under its current parameterisation) 
-are deterministically solving the same well-defined problem
-(albeit with radically different implementations) and they 
-must therefore produce similar answers. 
-Where sc2ts and UShER+RIPPLES diverge, however, is in terms 
-of how well such signals of recombination can be preserved
-over longer timescales. Continuing our thought experiment
-in which we run UShER and RIPPLES in daily batches, suppose
-that on a given day a branch with 4 mutations is identified 
-as being a recombinant. Unless this branch is specifically 
-``protected'' as representing a recombinant it may 
-be broken up by subsequent parsimony operations, thus 
-erasing the signal of recombination. This would appear
-to be the mostly likely explanation for the ``missing'' 
-X-lineages like XBB (detected by sc2ts at $k=4$ but 
-not by UShER+RIPPLES at $p=4$). 
-
-See Document~\ref{sec:detailed_ripples} for more detailed analysis 
-of the UShER+RIPPLES results.
-
+The choice of the $p$ threshold has a large effect 
+on the number of recombination events detected by RIPPLES, and 
+previous studies have used the more lenient (default) value of 
+$3$\cite{Turakhia2022,Smith2023tracking}.
+For example, when applied to an UShER phylogeny of
+$\sim$1.6 million genomes sampled up to May, 2021,
+RIPPLES reported 589 unique recombination events with 43,104 descendant
+samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
+Over the same time interval, the sc2ts ARG ($k=4$) identifies
+14 high-confidence recombination events with
+172 descendant samples among 501,235 samples (0.034\%),
+a 40- to 80-fold reduction.
+The sc2ts ARG identifies more of the well-characteristed X-lineages
+at a more stringent threshold, and therefore provides us with a 
+conservative lower bound
+on the prevalance of detectable recombination in SARS-CoV-2.
 
 \section*{DISCUSSION}
 There are two major contributions of this work. The first is an
@@ -4366,6 +4351,20 @@ and XAJ (Document~\ref{sec:dd_xaj}).
 See Document~\ref{sec:detailed_ripples} for more detailed analysis.
 
 
+Firstly, 408 of these RIPPLES identified recombination events
+have one or more parents that are \emph{younger} than the
+recombinant sequence based on metadata. Thus, the parental
+sequences were simply not available to match against for 
+sc2ts (which enforces strict time ordering) when the 
+recombinant sequence was inserted. Secondly, of the 179
+remaining events with matching clades and in which the 
+sc2ts node has more than 4 mutations, of the total
+1,167 mutations, 452 of these occurred at sites that were 
+remapped during post-hoc parsimony. The remaining ``missing''
+events are likely attributable to the finer details of the 
+differences in tree building approaches between UShER and sc2ts
+
+
 [TODO Discuss  the large effect recombinants inferred by both]
 
 Two further recombinants in the sc2ts ARG that are likely to be 
@@ -4386,7 +4385,7 @@ along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
 where applicable, grouped by class.
 Events also present at p = 4 are indicated.
 Clades are matched by finding the most recent common ancestor of
-the samples associated with each UShER/RIPPLES event in the sc2ts ARG.
+the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
 The clade differences indicates how close this match is.
 }
 \label{tab:ripples_x_lineages}
