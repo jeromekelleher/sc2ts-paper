@@ -885,32 +885,26 @@ highlighting specific types of QC problems
 
 \subsection*{Precision of recombination event times and positions}
 
-The location of a recombination breakpoint is generally
-impossible to pinpoint exactly, and instead an interval
-containing the breakpoint can be inferred by
-examining the parental and recombinant sequences.
-Some methods~\cite{Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}
-and approaches (e.g., Pango designation) infer this
-as the genomic distance between lineage-associated
-mutations that differentiate the two parental \emph{lineages}.
-Similarly, methods based on probabilistic representations of
-mutational profiles \cite{Varabyou2021rapid}
-can only be as precise as examination of the two
-parent lineages allows.
-However, genealogical methods (such as sc2ts and RIPPLES) are
-based on identifying exact parental \emph{sequences},
-so are in principle maximally precise.
-The breakpoint interval of a recombinant is bounded by
+The precise genomic location of a recombination breakpoint is 
+in general impossible to determine, but we can place 
+bounds by inspecting sequences of the recombinant and its parents.
+The breakpoint interval of a recombinant is defined by
 two positions: a left position where the recombinant
 matches the left parent sequence but not the right, and
 a right position where the recombinant matches the right
 parent sequence but not the left. 
-How well the time and position of a recombination event
-can be inferred thus depends on the divergence between the
-parent sequences (measured as time to their MRCA). 
+Genealogical methods such as sc2ts and UShER+RIPPLES
+use inferred parental sequences and are therefore 
+in principle maximally precise.
+Other methods are limited in precision by the various proxies 
+used to represent distinct parental \emph{lineages}~\cite{%
+Varabyou2021rapid,Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}.
+% How well the time and position of a recombination event
+% can be inferred thus depends on the divergence between the
+% parent sequences (measured as time to their MRCA). 
 
 The distribution of breakpoint intervals of
-the QC-passing recombination events
+the QC-passing recombination events in the sc2ts ARG
 shows an overall enrichment of breakpoints
 towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene
@@ -928,11 +922,10 @@ indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
 is considerably larger (up to $\sim$54\% of the genome).
-As expected, we found a negative relationship between
+As expected from theory (STAR Methods), we found a negative relationship between
 the length of a breakpoint interval and
 divergence between recombinant parents
-(Figure~\ref{fig:recombinant_intervals}D),
-which follows theoretical expectation (STAR Methods).
+(Figure~\ref{fig:recombinant_intervals}D).
 Breakpoint intervals tend to be the smallest
 for events involving recombination between
 the deeply divergent Omicron BA.1 and BA.2 sublineages
@@ -940,8 +933,7 @@ the deeply divergent Omicron BA.1 and BA.2 sublineages
 
 The time interval of a recombination node in the ARG is bounded by
 the age of the youngest parent and
-the age of the oldest child of the recombination node
-(either given as collection dates or estimated using tsdate).
+the age of the oldest child of the recombination node.
 We found that for $\sim$75\% of the QC-passing recombination events,
 the time interval size is less than $\sim$2 months
 (Figure~\ref{fig:recombinant_intervals}D);
