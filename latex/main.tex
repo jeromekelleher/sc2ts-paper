@@ -1078,6 +1078,67 @@ unknown cases and heterozygosity not captured by the Scorpio labels.
 
 
 \subsection*{Comparison with UShER+RIPPLES}
+
+Things to say.
+\begin{itemize}
+\item Explain how it works. Post-hoc. Note methodological distinction 
+with sc2ts.
+\item Comparison at k/p=4 overall.
+\item Discussion of X lineages.
+\item Discussion of parameter choice and our lower bound on recomb.
+\end{itemize}
+
+The most comprehensive analysis on recombination in SARS-CoV-2 to 
+date has been performed using the combination of UShER and 
+RIPPLES~\cite{Turakhia2022}. RIPPLES works by taking a
+pre-existing UShER phylogeny and systematically breaking up
+sequences subtended by long branches into multiple segments 
+that are placed independently.
+A recombination event at a node is flagged if
+the overall parsimony of these multiple placements
+sufficiently improves over
+the original single-parent origin in the phylogeny.
+This approach has much in common with the LS HMM
+used in sc2ts, but with one important distinction.
+While sc2ts detects and incorporates recombination
+in ``real-time'' as sequences are added to the ARG in daily
+batches, RIPPLES operates on a complete phylogeny,
+attempting to detect recombination post-hoc among millions of nodes. 
+Like any phylogenetic reconstruction method
+that ignores recombination, UShER must force placement of recombinant
+sequences in places that minimize the discrepancy across the entire sequence,
+which may not be near any of the parent lineages. 
+These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences}
+and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
+may break up the erroneous long branches used to detect 
+recombination.
+
+
+
+
+
+[Text from Sally]
+The main advantage of sc2ts over previous methods to infer recombination
+phylogenetically is that recombination events are explicitly handled as the ARG
+is built. Other methods (e.g., RIPPLES) first build a phylogeny, assuming no
+recombination, and then look for unusual features (e.g., unusually long
+branches). Phylogenetic methods that ignore recombination, however, distort the
+tree shape (REFS - Schierup and Hein 2000) and force placement of recombinant
+lineages in places that minimize the discrepancy across the entire sequence,
+rather than near either of the parent lineages.  As a consequence, many true
+recombination events can be missed because their branches are artificially
+inferred to be short on reconstructed trees that do not incorporate
+recombination. In addition, many of the recombinant sequences can be placed
+before their parents in time, because recombinants can appear to be more
+similar to ancestral sequences that are known with more uncertainty [OR because
+recombinants are placed anywhere on a tree that best fits].
+
+
+
+This ``parsimony improvement'' parameter ($p$)
+is equivalent to the sc2ts recombination penalty ($k$).
+
+
 RIPPLES~\cite{Turakhia2022} is a method for identifying
 recombination events using a phylogeny inferred by UShER.
 This distinguishes RIPPLES from other recombination detection
@@ -1091,12 +1152,6 @@ branches in the input tree, by default those carrying 3 or more
 mutations. For each candidate branch,
 RIPPLES systematically splits the sequence into 2 or 3 segments, and
 finds parsimonious placements for each segment independently.
-A recombination event at that node is then flagged if
-the overall parsimony of these multiple placements
-sufficiently improves over
-the original single-parent origin in the phylogeny.
-This ``parsimony improvement'' parameter ($p$)
-is equivalent to the sc2ts recombination penalty ($k$).
 
 To compare the performance of sc2ts and UShER+RIPPLES 
 in terms of recombinant detection, we ran RIPPLES on the Viridian UShER phylogeny
@@ -1174,6 +1229,30 @@ not by UShER+RIPPLES at $p=4$).
 
 See Document~\ref{sec:detailed_ripples} for more detailed analysis 
 of the UShER+RIPPLES results.
+
+
+that from UShER+RIPPLES,
+largely reflecting differences in model formulation and parameter choice.
+When applied \textit{post hoc} to an UShER phylogeny of
+$\sim$1.6 million genomes sampled up to May, 2021,
+RIPPLES reported 589 unique recombination events with 43,104 descendant
+samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
+Using the same time interval, sc2ts \(k=4\) identifies
+14 high-confidence recombination events with
+172 descendant samples among 501,235 samples \(0.034\%\),
+a 40- to 80-fold reduction.
+Much of this difference is explained by
+the stricter parsimony penalty used here:
+increasing the penalty from p=3 (as used in the RIPPLES analysis) to
+k=4 greatly reduces false positives
+while retaining nearly all verified recombinant lineages,
+including those missed by RIPPLES at equivalent thresholds.
+These indirect comparisons suggest that
+our estimate represents a conservative lower bound.
+In future studies, dissecting the methodological differences
+between sc2ts and UShER+RIPPLES may
+inspire new ideas to develop or improve ARG building methods
+for SARS-CoV-2 (and potentially other pathogens).
 
 
 \section*{DISCUSSION}
