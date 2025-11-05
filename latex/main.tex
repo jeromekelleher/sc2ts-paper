@@ -775,7 +775,9 @@ Of the 855 recombination events identified by sc2ts, 3SEQ verified 57\% of them,
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
-summarized in Table~\ref{tab:recombinant_validation}.
+summarized in Table~\ref{tab:recombinant_validation}
+(see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
+and \ref{fig:recombinant_evidence_rebar}).
 CovRecomb has a substantially lower validation rate
 at 25\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
@@ -783,8 +785,6 @@ to detect interlineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar validation is intermediate, at 57\% among QC-passing recombinants.
-(See also Figures~\ref{fig:recombinant_evidence_cov_recomb},
-and \ref{fig:recombinant_evidence_rebar}.)
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -842,11 +842,11 @@ over all 354 recombination events that pass QC.
 Also shown is the 3SEQ classification status of these recombinants.
 The 5\% of recombinants that do not pass 3SEQ validation are
 among the most weakly supported, with 4 or 5 averted mutations.
-Figures~\ref{fig:recombinant_evidence}B and C shows the 
+Figures~\ref{fig:recombinant_evidence}B,C show the 
 distribution of recombination events as a function the 
 divergence between the parents.
 Figures~\ref{fig:recombinant_evidence_cov_recomb} and
-~\ref{fig:recombinant_evidence_rebar} 
+\ref{fig:recombinant_evidence_rebar} 
 plot the same information as Figure~\ref{fig:recombinant_evidence} 
 broken down by CovRecomb and rebar validation status.
 
