@@ -754,8 +754,7 @@ incorrect read alignments~\cite{Hunt2024}, and
 multi-nucleotide substitutions~\cite{DeMaio2020issues}
 can cause short regions of a sample genome to match more closely
 to an alternative genome rather than the true parent.
-Such genomic regions can be mistaken for evidence of recombination,
-because the LS HMM counts each base separately.
+Such genomic regions can be mistaken for evidence of recombination.
 We use a simple quality control (QC) measure
 that counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (STAR Methods),
@@ -1562,20 +1561,18 @@ several important directions for future research.
 We close by emphasizing several current limitations of sc2ts
 and suggest potential directions for improvement
 which we hope will inspire future development of ARG inference
-methods for pathogens beyong SARS-CoV2.
+methods for pathogens beyond SARS-CoV2.
 
-We suggest several ways to extend the HMM.
-First, reversion of deletions can indicate recombination,
-because bases that are lost are unlikely to be regained,
-except via recombination with a lineage that has those bases.
-We presently treated multi-base deletions as missing data, and
-added deletions to the ARG \textit{post hoc}.
-Instead, by explicitly modeling deletions (and more generally insertions) in the HMM,
+There are several ways to extend the HMM.
+First, we currently treat multi-base deletions as missing data,
+adding indels to the ARG \textit{post hoc}.
+However, by explicitly modeling deletions as single HMM events, and
+accounting for fact that reversion of deletions is more likely to
+occur through recombination than back-mutation,
 we should be able to recover additional signals of recombination
 and reduce spurious recombinants.
-Second, the current HMM assumes a simplistic mutation model
-(where mutation to any other allele is equally probable) and
-a uniform mutation rate along the SARS-CoV-2 genome.
+Second, the current HMM assumes a simplistic model of equiprobable
+mutation between bases with a uniform mutation rate along the genome.
 However, genomic analyses have revealed
 transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024} and
 sequence context-dependent mutation rate variation
@@ -1616,8 +1613,8 @@ We have developed and used several methods
 to exclude spurious recombination events \textit{post hoc},
 including filtering by supporting loci per parent and
 splitting of suspiciously long branches (e.g., Delta and Omicron BA.2).
-These methods could instead be run immediately
-after sample matching during ARG inference,
+These methods could instead be run during ARG inference,
+immediately after sample matching,
 reducing the number of ARG post-processing steps.
 
 Finally, an inherent limitation of detecting recombination from sequence data,
@@ -1943,6 +1940,7 @@ and edited the content as needed and take(s) full responsibility for the content
 The topology of an Ancestral Recombination Graph (ARG) can be defined 
 % genome seems better than "haplotype" here, and will be clear what it means
 % in the viral context?
+% SHZ: Yes, agree with this.
 as a set of \emph{nodes}, representing a genome that existed at some specific time,
 and \emph{edges} that describe the genetic inheritance relationships between those 
 genomes~\cite{Wong2024}. 
@@ -1975,7 +1973,7 @@ In addition, tskit provides a flexible system for attaching metadata
 to all aspects of the data model, which can either be in JSON format
 for flexibility (used heavily by sc2ts for debugging information)
 or in a vectorisable packed binary format for efficiency
-(used to attach sample identifiers and pango assignments in the final ARGs).
+(used to attach sample identifiers and Pango lineage assignments in the final ARGs).
 Tskit also provides a ``provenance'' table,
 which provides a mechanism for recording software version and
 parameter information through each step of complex processing pipelines.
@@ -2069,7 +2067,7 @@ Only 11 of these sites
 were present in the problematic sites file
 (\url{https://github.com/W-L/ProblematicSites_SARS-CoV2}),
 and most sites in this list were typical
-in terms of the numbers of mutations.
+in terms of the number of mutations.
 We therefore masked our 100 mutation-rich sites
 to remove sequencing errors and
 improve matching performance in the LS HMM.
@@ -2089,7 +2087,7 @@ the coalescent with recombination
 that captures many of the key features of
 the joint processes of mutation and recombination.
 It is a Hidden Markov Model (HMM) in which a focal genome
-is modelled as a
+is modeled as a
 sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
 (Figure~\ref{fig:ls_diagram}).
@@ -2256,7 +2254,7 @@ samples enriched for errors as well as time-travellers.
 
 \subsubsection*{Inserting saltation lineages}
 The HMM cost threshold approach outlined in the previous section is 
-effective at removing time-travelling samples, but it also filters out 
+effective at removing time-traveling samples, but it also filters out 
 important evolutionary events such as 
 the major ``saltations'' that characterize many VOCs.
 These lineages are characterized by a high number of accumulated mutations,
@@ -2273,7 +2271,7 @@ daily sample clusters.
 
 Distinguishing a truly emerging outbreak from different forms of
 correlated error is non-trivial, and sc2ts has 5 parameters to fine
-tune the behaviour. Firstly, we require at least 10 samples in the
+tune the behavior. Firstly, we require at least 10 samples in the
 group to ensure there is sufficient support over a time window of 
 7 days. Then, we build a local tree of the samples and consider
 some tree metrics to evaluate whether the samples within the 
@@ -3034,9 +3032,9 @@ The entire analysis is performed in a short Jupyter
 notebook~\cite{kluyver2016jupyter},
 with the core calculation requiring about 30 lines of Python code.
 Retrieving data from the base alignments and ARGs for 2.48 million samples 
-at the same time over all 27,507 sites took only 6 minutes,
-with a peak memory usage of about 5GiB of RAM
-on a standard desktop computer.
+at the same time over all 27,507 sites took a little under 5 minutes,
+with a peak memory usage of about 4.5GiB of RAM
+on a standard laptop.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/example\_data\_processing.ipynb}{example\_data\_processing.ipynb}
