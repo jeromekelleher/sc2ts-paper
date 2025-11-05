@@ -4685,106 +4685,7 @@ in the BA.1/BA.2 Pango designation issue \cite{RambautOmicron2021}.
 \label{fig:subgraph_omicron}
 \end{figure}
 
-\begin{figure}
-\centering
-\begin{tabular}{cc}
-\includegraphics[width=0.5\linewidth]{ripples_p4_sc2ts_events.pdf}&
-\includegraphics[width=0.5\linewidth]{ripples_p3_sc2ts_events.pdf}\\
-(A) & (B) \\
-\end{tabular}
-\caption{Intersection of the RIPPLES and sc2ts recombination events at
-different values of the RIPPLES parsimony parameter, p.}
-\label{fig:ripples_sc2ts_events}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth]{recombinant_evidence_cov_recomb}
-\caption{Properties of sc2ts recombination events, colored by CovRecomb 
-classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
-\label{fig:recombinant_evidence_cov_recomb}}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth]{recombinant_evidence_rebar}
-\caption{Properties of sc2ts recombination events, colored by rebar
-classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
-\label{fig:recombinant_evidence_rebar}}
-\end{figure}
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=\linewidth]{recombinant_evidence_ripples_p4}
-% \caption{Things}
-% \label{fig:recombinant_evidence_ripples_p4}
-% \end{figure}
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=\linewidth]{recombinant_evidence_ripples_p3}
-% \caption{Things}
-% \label{fig:recombinant_evidence_ripples_p3}
-% \end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth]{recombinant_qc}
-\caption{
-Quality control of recombination events.
-Scatterplot of recombination events by the net number of supporting loci
-on the left parent (x-axis) and the right parent (y-axis).
-The shaded regions highlight potentially artifactual recombination events,
-which have fewer than 4 net supporting loci
-on one side or both sides of the suggested breakpoint.
-Colors indicate the primer scheme used for sequencing.
-The pie charts show breakdowns of the recombination events
-by primer scheme per quadrant (labeled Q1 to Q4).
-Recombination events associated with
-the origins of Pango X and Jackson\cite{Jackson2021} lineages are labeled.
-}
-\label{fig:recombinant_qc}
-\end{figure}
-
-\newcommand{\cprheight}{4.0em}
-
-
-\begin{figure}
-\centering
-% NOTE the size of the second "m" column doesn't matter, but we have to fix the
-% size in order for vertical centering to work :sigh:
-% The layout here isn't ideal, but it's incredibly fiddly to get center
-% alignment veritically with cells to work, so this is good enough.
-\begin{tabularx}{0.85\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
-Q1 & \includegraphics[height=\cprheight]{static/RE_node-QCpass-427863.png}\\
-Q2 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-748991.png}\\
-Q3 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-411345.png}\\
-Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
-\end{tabularx}
-\caption{
-Illustrative copying patterns
-drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}. 
-Each copying pattern shows the 
-the positions
-where the allelic state in a recombinant
-(middle row, labelled by node ID)
-matches that of the left (P0: upper row, coloured green) 
-or right parent (P1: lower row, coloured blue),
-or where the recombination event requires a de-novo mutation
-(gold, with mutational change below).
-Parental states that correspond to the reference but are not 
-inherited by the recombinant are shown with a gray background.
-Genome position (``pos'') and reference allele (``ref'') are
-shown for each column.
-Underneath the copying pattern, adjacent genomic positions are 
-underlined in red, and
-near-adjacent sites (within 3 bases) in orange.
-}
-\label{fig:copying_pattern_examples}
-\end{figure}
-
-
-\renewcommand{\cprheight}{1.5em}
+\newcommand{\cprheight}{1.5em}
 % Add some more space between rows. Note this it would be sligntly nicer if the 
 % label was aligned vertically in the center of the row, but this is good
 % enough for now.
@@ -4827,6 +4728,106 @@ See also Document S3 for exact positions and nucleotide bases.}
 \renewcommand{\arraystretch}{1}
 
 
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_qc}
+\caption{
+Quality control of recombination events.
+Scatterplot of recombination events by the net number of supporting loci
+on the left parent (x-axis) and the right parent (y-axis).
+The shaded regions highlight potentially artifactual recombination events,
+which have fewer than 4 net supporting loci
+on one side or both sides of the suggested breakpoint.
+Colors indicate the primer scheme used for sequencing.
+The pie charts show breakdowns of the recombination events
+by primer scheme per quadrant (labeled Q1 to Q4).
+Recombination events associated with
+the origins of Pango X and Jackson\cite{Jackson2021} lineages are labeled.
+}
+\label{fig:recombinant_qc}
+\end{figure}
+
+\renewcommand{\cprheight}{4.0em}
+
+
+
+
+\begin{figure}
+\centering
+% NOTE the size of the second "m" column doesn't matter, but we have to fix the
+% size in order for vertical centering to work :sigh:
+% The layout here isn't ideal, but it's incredibly fiddly to get center
+% alignment veritically with cells to work, so this is good enough.
+\begin{tabularx}{0.85\textwidth}{>{\centering\arraybackslash}m{1cm}>{\arraybackslash}m{1cm}}
+Q1 & \includegraphics[height=\cprheight]{static/RE_node-QCpass-427863.png}\\
+Q2 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-748991.png}\\
+Q3 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-411345.png}\\
+Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
+\end{tabularx}
+\caption{
+Illustrative copying patterns
+drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}. 
+Each copying pattern shows the 
+the positions
+where the allelic state in a recombinant
+(middle row, labelled by node ID)
+matches that of the left (P0: upper row, coloured green) 
+or right parent (P1: lower row, coloured blue),
+or where the recombination event requires a de-novo mutation
+(gold, with mutational change below).
+Parental states that correspond to the reference but are not 
+inherited by the recombinant are shown with a gray background.
+Genome position (``pos'') and reference allele (``ref'') are
+shown for each column.
+Underneath the copying pattern, adjacent genomic positions are 
+underlined in red, and
+near-adjacent sites (within 3 bases) in orange.
+}
+\label{fig:copying_pattern_examples}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.5\linewidth]{ripples_p4_sc2ts_events.pdf}&
+\includegraphics[width=0.5\linewidth]{ripples_p3_sc2ts_events.pdf}\\
+(A) & (B) \\
+\end{tabular}
+\caption{Intersection of the RIPPLES and sc2ts recombination events at
+different values of the RIPPLES parsimony parameter, p.}
+\label{fig:ripples_sc2ts_events}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_evidence_cov_recomb}
+\caption{Properties of sc2ts recombination events, colored by CovRecomb 
+classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
+\label{fig:recombinant_evidence_cov_recomb}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{recombinant_evidence_rebar}
+\caption{Properties of sc2ts recombination events, colored by rebar
+classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
+\label{fig:recombinant_evidence_rebar}}
+\end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=\linewidth]{recombinant_evidence_ripples_p4}
+% \caption{Things}
+% \label{fig:recombinant_evidence_ripples_p4}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=\linewidth]{recombinant_evidence_ripples_p3}
+% \caption{Things}
+% \label{fig:recombinant_evidence_ripples_p3}
+% \end{figure}
+ 
 \begin{figure} 
 \centering
 \includegraphics[width=0.5\textwidth]{LS_model_schematic}
