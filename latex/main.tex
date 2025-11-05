@@ -1098,10 +1098,10 @@ attempting to detect recombination post-hoc among millions of nodes.
 Like any phylogenetic reconstruction method
 that ignores recombination, UShER must force placement of recombinant
 sequences in places that minimize the discrepancy across the entire sequence,
-which may not be near any of the parent lineages. 
+which may not be near any of the true parents. 
 These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences}
 and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
-may break up the erroneous long branches used to detect recombination.
+may break up the artefactual long branches used to detect recombination.
 
 To compare the performance of sc2ts and UShER+RIPPLES 
 in terms of recombinant detection, we ran RIPPLES on the Viridian UShER phylogeny
@@ -1129,7 +1129,7 @@ associated with the Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows the events detected 
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages. At the RIPPLES ``parsimony improvement'' parameter
-$p=4$ (equivalent to $k=4$ parameter used to build the sc2ts ARG)
+$p=4$ (equivalent to $k=4$ used to build the sc2ts ARG)
 only 9 of the Pango X lineages are present and
 with unequivocal recombinant origin for 6 
 (contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
@@ -1144,32 +1144,22 @@ XB and XAJ are among the lineages detected by UShER+RIPPLES,
 strengthening evidence that these are false negatives 
 for sc2ts (Table~\ref{tab:pango_x_lineages}).
 
-
-that from UShER+RIPPLES,
-largely reflecting differences in model formulation and parameter choice.
-When applied \textit{post hoc} to an UShER phylogeny of
+The choice of the $p$ threshold has a large effect 
+on the number of recombination events detected by RIPPLES, and 
+previous studies have used the more lenient (default) value of 
+$3$\cite{Turakhia2022,Smith2023tracking}.
+For example, when applied to an UShER phylogeny of
 $\sim$1.6 million genomes sampled up to May, 2021,
 RIPPLES reported 589 unique recombination events with 43,104 descendant
 samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
-Using the same time interval, sc2ts \(k=4\) identifies
+Over the same time interval, the sc2ts ARG ($k=4$) identifies
 14 high-confidence recombination events with
-172 descendant samples among 501,235 samples \(0.034\%\),
+172 descendant samples among 501,235 samples (0.034\%),
 a 40- to 80-fold reduction.
-Much of this difference is explained by
-the stricter parsimony penalty used here:
-increasing the penalty from p=3 (as used in the RIPPLES analysis) to
-k=4 greatly reduces false positives
-while retaining nearly all verified recombinant lineages,
-including those missed by RIPPLES at equivalent thresholds.
-These indirect comparisons suggest that
-our estimate represents a conservative lower bound.
-In future studies, dissecting the methodological differences
-between sc2ts and UShER+RIPPLES may
-inspire new ideas to develop or improve ARG building methods
-for SARS-CoV-2 (and potentially other pathogens).
-
-See Document~\ref{sec:detailed_ripples} for more detailed analysis 
-of the UShER+RIPPLES results.
+The sc2ts ARG identifies more of the well-characteristed X-lineages
+at a more stringent threshold, and therefore provides us with a 
+conservative lower bound
+on the prevalance of detectable recombination in SARS-CoV-2.
 
 \section*{DISCUSSION}
 There are two major contributions of this work. The first is an
