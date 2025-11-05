@@ -124,9 +124,9 @@ Estimated genealogies are fundamental to
 understanding this ocean of data, 
 and form the primary input to many downstream analyses.
 A basic assumption of methods to infer genealogies from viral 
-genetic sequence data is that recombination is negligible and 
+genetic data is that recombination is negligible and 
 the genealogy is a tree.
-Recombinant lineages have risen to global prevalence 
+However, recombinant lineages have risen to global prevalence 
 and simple tree representations are therefore 
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies 
@@ -205,7 +205,7 @@ surveillance data collected during the COVID-19 pandemic presents fundamental ch
 in two ways. Firstly, the sheer amount of data 
 overwhelmed even approximate distance-matrix based methods.
 % Accessed GISAID/EpiCov on 08 Oct., 2025
-At the peak in February 2022 about 80 thousand samples
+At the peak in February 2022 about 80,000 samples
 per day  were submitted to GISAID\cite{Shu2017},
 accumulating to a total of over 17.5 million samples
 as of October 2025.
@@ -216,7 +216,7 @@ samples to an existing tree using maximum parsimony,
 with periodic rearrangements to counter the inherent 
 greediness of the approach\cite{DeMaio2023}.
 The benefits of this simple model and the value of
-a comprehensive genealogy updated in real-time~\cite{McBroome2021,Kramer2023}
+a comprehensive genealogy updated in real time~\cite{McBroome2021,Kramer2023}
 were conclusively demonstrated, as the resource
 quickly became an indispensable element
 of the pandemic response\cite{Hinrichs2024}.
@@ -467,7 +467,7 @@ for multiple sibling origination nodes
 The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (STAR Methods).
 We show that the dates agree reasonably well with
-NextStrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
+Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy is comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
 an UShER tree (Figure~\ref{fig:node_time_testing},
@@ -507,7 +507,7 @@ are correctly mapped above the Alpha origin in the ARG
 (Figure~\ref{fig:subgraph_alpha}).
 The ARG captures known recurrent deletions
 in the N-terminal domain of the S1 unit of Spike
-(which is a deletion hot spot~\cite{McCarthy2021}),
+(which is a deletion hotspot~\cite{McCarthy2021}),
 for example,
 the 21765:6 deletion ($\Delta$H69/V70),
 which causes S-Gene Target Failure \cite{Walker2021} and
@@ -800,7 +800,7 @@ a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
 The difference between the numbers of mutations between
 the two solutions---the number of mutations
 ``averted'' by recombination---is a measure of
-the evidence in favor of recombination (similar to the  
+the evidence in favour of recombination (similar to the  
 ``parsimony improvement'' score in RIPPLES~\cite{Turakhia2022}).
 Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
 for each of the 21 recombination events associated with Pango X lineages,
@@ -815,7 +815,7 @@ which have the minimal possible number of averted mutations.
 \caption{
 Properties of recombination events.
 A,B,C show summaries of the 354 sc2ts recombination nodes passing QC filters
-colored by 3SEQ classification (recombinant: purple, non-recombinant: gray).
+colored by 3SEQ classification (recombinant: purple, non-recombinant: grey).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
@@ -824,7 +824,7 @@ those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
 e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Lower: recombination nodes classified by number of mutations averted
-by allowing recombination (i.e. $x-y$).
+by allowing recombination (i.e., $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns
@@ -1051,7 +1051,7 @@ when all 855 recombinants were considered (STAR Methods).
 Recombination events across the pandemic.
 (A) Timing of the recombination events (black curve, right y-axis)
 relative to the global case numbers (\cite{Dong2020}; left y-axis).
-Cases are color-coded by their Scorpio labels,
+Cases are colour-coded by their Scorpio labels,
 with the key showing those groupings
 with $\geq 1,000$ samples in the Viridian dataset.
 Recombinants more commonly occur
@@ -1093,14 +1093,12 @@ and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio20
 may break up the artefactual long branches used to detect recombination.
 
 To compare the performance of sc2ts and UShER+RIPPLES 
-in terms of recombinant detection, we ran RIPPLES on the Viridian UShER phylogeny
+in terms of recombinant detection we ran RIPPLES on the Viridian UShER phylogeny,
 subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-Note that we are interested in the direct output of sc2ts and UShER+RIPPLES
-here, and do not perform QC filtering of either.
-Using the RIPPLES parameter $p=4$ (matching $k=4$ used in the sc2ts ARG) 
-resulted in 1174 reported recombination events.
-We ran 3SEQ on each of the candidate trios (STAR Methods) and 601 
-were classified as recombinant, giving an overall validation rate of 51\%.
+Note that we are concerned with the direct output of sc2ts and UShER+RIPPLES, so QC filtering was not performed for either.
+Setting the ``parsimony improvement'' parameter to $p=4$, equivalent to $k=4$ in sc2ts, 
+RIPPLES reported 1174 recombination events.
+Running 3SEQ on each of the candidate trios (STAR Methods) identified 601 of these as recombinant, giving a concordance rate of 51\%.
 Aligning the events reported by both methods using the sets of descendant
 samples (STAR Methods), 468 of the events are shared by both,
 with the intersection comprising 40\% of the RIPPLES events
@@ -1117,8 +1115,7 @@ However, the set does contain some well characterized events
 associated with the Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows the events detected 
 by UShER+RIPPLES associated with samples assigned to Pango X
-lineages. At the RIPPLES ``parsimony improvement'' parameter
-$p=4$ (equivalent to $k=4$ used to build the sc2ts ARG)
+lineages. 
 only 9 of the Pango X lineages are present and
 with unequivocal recombinant origin for 6 
 (contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
@@ -1159,7 +1156,7 @@ the evolutionary features of genetic inheritance, point mutations,
 deletions and recombination in a single cohesive structure.
 The ARG is freely available and easily accessible using the 
 tskit software ecosystem, a rich and efficient platform for 
-recombination-aware analysis widely used in population genomics.
+recombination-aware analyses widely used in population genomics.
 This combination of a deeply validated ARG with a pre-existing
 and highly capable software platform forms a unique resource.
 Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
@@ -1181,7 +1178,7 @@ Muller2020bayesian,%
 Ignatieva2022,%
 Muller2022bayesian}.
 By capturing recombination in real time at a global scale, our approach extends the established utility of comprehensive genealogies~\cite{Hinrichs2024,McBroome2024}, providing clear insight and enabling timely investigation of recombination-aware pathogen dynamics.
-The novelty of the inferred ARG motivates our detailed analyses of the methodology behind sc2ts, which we use to validate the ARG itself. This ensure that the ARG is a trustworthy basis for future research, deepens our understanding of the inference method, and suggests avenues for improvement (see Limitations of the Study).
+The novelty of the inferred ARG motivates our detailed analyses of the methodology behind sc2ts, which we use to validate the ARG itself. This ensures that the ARG is a trustworthy basis for future research, deepens our understanding of the inference method, and suggests avenues for improvement (see Limitations of the Study).
 
 Study of the sc2ts ARG gives insight into the evolution of SARS-CoV-2, and this work therefore makes several additional contributions to the field. First, we clarify the relationships among
 recombinant Pango X-lineages, suggesting significant 
@@ -1565,7 +1562,7 @@ than parents sampled in geographically distant regions.
 % some references to the literature, closing issue 725.
 
 We have developed and used filters
-to detect time traveling samples in the Viridian dataset and
+to detect time-traveling samples in the Viridian dataset and
 to exclude them from the ARG,
 yielding a set of samples with reliable collection dates.
 Future studies could leverage the ARG
@@ -2599,7 +2596,7 @@ The simplified ARG contains only two recombination nodes, which
 are the two likely artefactual events discussed in 
 Document \ref{sec:spurious-ancestrally-important-recombinants}, 
 both of which have breakpoints near the 5' end of genome.
-We therefore compare the Usher topology against the first tree in the ARG (covering
+We therefore compare the UShER topology against the first tree in the ARG (covering
 positions 1-26858; the majority of the genome). To reduce plot density, we consider
 only those Pango lineages with greater than 10 samples.
 Figure \ref{fig:tanglegram_base} shows the resulting tree compared with 
@@ -2677,7 +2674,7 @@ the Pango X lineages is currently unknown.
 For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
 from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
 One set of results is based on mutational profiles calculated from a global GISAID dataset,
-and the other set from a global NextStrain dataset.
+and the other set from a global Nextstrain dataset.
 The breakpoint intervals identified using RecombinHunt are defined
 as the left and right recombination-informative sites.
 
@@ -2768,7 +2765,7 @@ $\sim2$ x $10^{-6}$ per site per day
 \cite{Duchene2020,Ghafari2022,Markov2023}.
 
 \subsubsection*{Comparison with UShER+RIPPLES}
-We began with the Viridian UShER tree downloaded from FigShare.
+We began with the Viridian UShER tree downloaded from Figshare.
 To simplify the comparison with sc2ts, we subset this 
 file down to the 2,475,418 samples shared with the sc2ts ARG 
 by running \texttt{matUtils extract}.
@@ -3292,7 +3289,7 @@ however, we believe that the ARG, as a resource,
 will enable and facilitate future studies
 to better understand the role of deletions in SARS-CoV-2 evolution
 (alongside recombination and single nucleotide mutations),
-which to-date has been understudied in great part due to
+which to date has been understudied in great part due to
 a lack of suitable data models, methods, and tools.
 
 Detection of deletions and inference of deletion events
@@ -4344,10 +4341,9 @@ See Document~\ref{sec:detailed_ripples} for more detailed analysis.
 
 Firstly, 408 of these RIPPLES identified recombination events
 have one or more parents that are \emph{younger} than the
-recombinant sequence based on metadata. Thus, the parental
-sequences were simply not available to match against for 
-sc2ts (which enforces strict time ordering) when the 
-recombinant sequence was inserted. Secondly, of the 179
+recombinant sequence based on metadata. As sc2ts enforces strict time ordering,
+the parental sequences were simply not available for it to match against
+when the recombinant sequence was inserted. Secondly, of the 179
 remaining events with matching clades and in which the 
 sc2ts node has more than 4 mutations, of the total
 1,167 mutations, 452 of these occurred at sites that were 
