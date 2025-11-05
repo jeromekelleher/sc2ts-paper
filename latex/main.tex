@@ -516,7 +516,6 @@ the 21991:3 deletion
 which is associated with antibody escape~\cite{McCarthy2021}.
 See Document~\ref{sec:supplement_dels} for further analysis.
 
-
 \subsection*{Epidemiologically relevant recombinant lineages}
 
 \begin{figure}[h]
@@ -1154,12 +1153,16 @@ and highly capable software platform forms a unique resource.
 Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
 have helped spur the development of numerous ARG-aware 
 methods in human 
-genomics~\cite{Tagami2024tstrait,Mejia2025using} [NOTE add more refs 
-if we like this].
+genomics~\cite{Mejia2025using,Grundler2025geographic,
+Lehmann2025on,Terhorst2025accelerated}.
 We hope that the ARG provided here will similarly
 enable a range of recombination-aware analyses of SARS-CoV-2, and 
 catalyse a wave of methodological improvements which fully integrate
 recombination into pathogen genomics.
+We envisage the ARG as a long-term stable resource---building on the 
+high-quality, freely available reassemblies of
+the Viridian dataset~\cite{Hunt2024}---to facilitate the study 
+of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
 
 The second major contribution is the method used to 
 infer the ARG, sc2ts. The ability to infer an ARG over millions of whole 
@@ -1169,10 +1172,20 @@ Vaughan2017inferring,%
 Muller2020bayesian,%
 Ignatieva2022,%
 Muller2022bayesian}.
-By capturing recombination in real time at a global scale, our approach extends the established utility of comprehensive genealogies~\cite{Hinrichs2024,McBroome2024}, providing clear insight and enabling timely investigation of recombination-aware pathogen dynamics.
-The novelty of the inferred ARG motivates our detailed analyses of the methodology behind sc2ts, which we use to validate the ARG itself. This ensures that the ARG is a trustworthy basis for future research, deepens our understanding of the inference method, and suggests avenues for improvement (see Limitations of the Study).
+By capturing recombination in real time at a global scale, 
+our approach extends the established utility of comprehensive 
+genealogies~\cite{Hinrichs2024,McBroome2024}, 
+providing clear insight and enabling timely investigation of 
+recombination-aware pathogen dynamics.
+The novelty of the inferred ARG motivates our detailed 
+analyses of the methodology behind sc2ts, which we use to validate the ARG itself. 
+This ensures that the ARG is a trustworthy basis for future research, 
+deepens our understanding of the inference method, and 
+suggests avenues for improvement (see Limitations of the Study).
 
-Study of the sc2ts ARG gives insight into the evolution of SARS-CoV-2, and this work therefore makes several additional contributions to the field. First, we clarify the relationships among
+Study of the sc2ts ARG gives insight into the evolution of SARS-CoV-2, 
+and this work therefore makes several additional contributions to the field. 
+First, we clarify the relationships among
 recombinant Pango X-lineages, suggesting significant 
 clustering of named lineages under shared recombination events.
 Second, we use the ARG to study breakpoint intervals 
@@ -1520,72 +1533,82 @@ several important directions for future research.
 %%% A "limitations" or "limitations of the study" subsection in the discussion is encouraged
 %%% and may be required for some journals and some article formats.
 
-% SHZ: WIP
-We close by emphasizing several current limitations of sc2ts
-and suggest potential directions for improvement
-which we hope will inspire future development of ARG inference
-methods for pathogens beyond SARS-CoV2.
+We have focused on applying sc2ts to the Viridian dataset rather 
+than the larger GISAID resource~\cite{Shu2017} for two reasons.
+Firstly, the Viridian dataset is of higher quality and major efforts
+have been made to remove sources of error. Applying sc2ts to 
+GISAID data is straightforward, but significant additional efforts 
+would be required to deal with the various data quality issues.
+Secondly, the Viridian data is free to download without restrictions,
+enabling us to share the resulting ARG in the same manner.
 
-There are several ways to extend the HMM.
-First, we currently treat multi-base deletions as missing data,
-adding indels to the ARG \textit{post hoc}.
-However, by explicitly modeling deletions as single HMM events, and
-accounting for fact that reversion of deletions is more likely to
-occur through recombination than back-mutation,
-we should be able to recover additional signals of recombination
-and reduce spurious recombinants.
-Second, the current HMM assumes a simplistic model of equiprobable
-mutation between bases with a uniform mutation rate along the genome.
-However, genomic analyses have revealed
-transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024} and
-sequence context-dependent mutation rate variation
-across the SARS-CoV-2 genome~\cite{Haddox2025}.
-Using a more realistic mutation model and
-accounting for mutation rate heterogeneity
-could improve inference of local genetic relationships in the ARG.
-Third, geography can be accounted for in the HMM,
-favoring attachment of samples to geographically close lineages.
-This should also improve precise identification of recombinant parents,
-because parents sampled in the same region or geographically close regions
-are expected to be more plausible
-than parents sampled in geographically distant regions.
+% Need to be careful here to list stuff that sounds interesting and 
+% hard enough to not get asked to do it.
+The sc2ts method may be extended and improved in several directions.
+Firstly, the simplistic parameterisation of the LS HMM used 
+here could be extended to include more realistic
+models with mutation rate variation along the genome~\cite{Haddox2025}
+and transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024}.
+Secondly, the current handling of deletions by post-hoc parsimony
+could be improved either by a more nuanced data-masking strategy
+(in which, e.g., all but the right-most base of known deletions is 
+masked as missing data during HMM matching), or by the more 
+challenging approach of incorporating multi-base events into the HMM directly.
+Sc2ts is currently specialised for SARS-CoV-2 data, but the methods
+may be readily adapted to other pathogens. 
 
-% TODO: Add a short discussion of the node dates and
-% some references to the literature, closing issue 725.
+We have used the tsdate method~\cite{Wohns2022,Pope2025} to date the 
+sc2ts ARG, and initial results are promising. However, dating 
+of phylogenies in itself is a complex task~\cite{Kumar2016advances}
+and methods for incorporating information from metadata of uncertain 
+quality into large trees are in their 
+early stages~\cite{sanderson2021chronumental} and there is certainly
+substantial room for improvement.
+Much of the complexity of sc2ts lies in 
+dealing with ``time traveller'' samples, where sampling dates 
+provided in metadata are substantially incorrect. 
+The present ARG may provide 
+a way of improving this, by iteratively matching samples against
+it to estimate dates for all sequences, and adjusting the dates
+for time-travellers detected in this way. Sc2ts could then
+be run without the complex filters required to remove 
+time-travellers and unconditionally include all but the most divergent
+sequences. Other studies may also benefit from the 
+improved sample dates.
 
-We have developed and used filters
-to detect time-traveling samples in the Viridian dataset and
-to exclude them from the ARG,
-yielding a set of samples with reliable collection dates.
-Future studies could leverage the ARG
-to flag wrongly dated samples or
-to infer the dates of samples
-with missing or incomplete collection dates in the metadata.
+[Final para is prelim. Acknowledge limitations, forward looking 
+for how we might deal with them]
+Finally, it is important to acknowledge that sc2ts performs best
+with dense sampling, and the dataset is heavily geographically biased.
+[cite ~\cite{Lancet2021,Kalia2021,Chen2022}?]
+Long branches, cause particular problems. Future improvements would 
+ideally detect when data is sparse and switch to more sophisticated
+models, as discussed in~\cite{Bisschop2025likelihoods}.
 
-It is challenging to accurately reconstruct global events
-when there are regions with poor sampling and
-jurisdictions with long delays
-before sequences become publicly
-available~\cite{Lancet2021,Kalia2021,Chen2022}.
-For example, revisiting the ARG topology periodically
-(e.g., rewinding the ARG a month and repeating
-with samples that became available later)
-might improve the accuracy of the genealogy.
+% It is challenging to accurately reconstruct global events
+% when there are regions with poor sampling and
+% jurisdictions with long delays
+% before sequences become publicly
+% available~\cite{Lancet2021,Kalia2021,Chen2022}.
+% For example, revisiting the ARG topology periodically
+% (e.g., rewinding the ARG a month and repeating
+% with samples that became available later)
+% might improve the accuracy of the genealogy.
 
-We have developed and used several methods
-to exclude spurious recombination events \textit{post hoc},
-including filtering by supporting loci per parent and
-splitting of suspiciously long branches (e.g., Delta and Omicron BA.2).
-These methods could instead be run during ARG inference,
-immediately after sample matching,
-reducing the number of ARG post-processing steps.
+% We have developed and used several methods
+% to exclude spurious recombination events \textit{post hoc},
+% including filtering by supporting loci per parent and
+% splitting of suspiciously long branches (e.g., Delta and Omicron BA.2).
+% These methods could instead be run during ARG inference,
+% immediately after sample matching,
+% reducing the number of ARG post-processing steps.
 
-Finally, an inherent limitation of detecting recombination from sequence data,
-which applies to all methods,
-is that it is impossible to detect events with few (or no) supporting bases,
-as these cannot be distinguished from mutation events.
-This limitation makes it particularly challenging
-to detect events near the termini of linear viral genomes.
+% Finally, an inherent limitation of detecting recombination from sequence data,
+% which applies to all methods,
+% is that it is impossible to detect events with few (or no) supporting bases,
+% as these cannot be distinguished from mutation events.
+% This limitation makes it particularly challenging
+% to detect events near the termini of linear viral genomes.
 
 
 \newpage
