@@ -3531,207 +3531,93 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_pango\_x\_events.ipynb}
 {tab\_pango\_x\_events.ipynb} for details.
 
-\subsection{Detailed RIPPLES analysis}
-\label{sec:detailed_ripples}
+\subsection{Analysis of the Jackson et al. recombinants}
+\label{sec:jackson_recombs}
 
-At $p=3$, this resulted in a total of 4111 recombination events.
-Most of these subtend $<10$ samples (2616 singletons),
-with 4 events subtending more than 100,000 samples.
-Analysis of the descending samples for each event shows that
-10 of the 44 Pango X lineages present in the dataset
-% NOTE: listing them like this for sorting and manipulation purposes
-(%
-XA, 
-XAC, 
-XAE, 
-XAJ,
-XB, 
-XBB, 
-XBM, 
-XC, 
-XL, 
-XW%
-)
-are associated unequivocally with a single recombination event.
-7 lineages 
-(%
-XAL,
-XAM,
-XBD, 
-XBR, 
-XE,
-XS,
-XY%
-)
-are associated with two events. Finally, 
-one event subtending 1321 samples suggests that 
-XAF,
-XAL, 
-XE, 
-XH, 
-XJ, 
-XM, 
-XY, 
-and 
-82 BA.2 samples share a recombination event [With what breakpoint and parents?].
-We also ran RIPPLES with $p=4$, which reduced the overall number of
-events to 1174 (roughly 4-fold) but also approximately halved the number of
-events involving X lineages, missing well-characterized events,
-such as XBB (Table~\ref{tab:ripples_x_lineages}).
+Jackson et al.\cite{Jackson2021} conducted a detailed analysis of
+early recombinants involving B.1.1.7 (Alpha),
+including the first designated Pango X lineage, XA.
+The authors first performed a targeted search for candidate recombinants by
+scanning sampled sequences for sequence motifs associated with Alpha,
+followed by an analysis to reduce the list of plausible recombinants
+displaying signs of onward transmission.
+Here we compared the sc2ts detection results of these recombinants
+with the detection results reported by Jackson et al.
 
-To compare these results with the sc2ts ARG, we first matched clades
-by finding the most recent common ancestor (MRCA) of the samples
-descending from each RIPPLES event. Overall, clade agreement was
-high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
-where descendants match exactly. Of these nodes, 68\% had no recombinant
-ancestry. Of the remainder, 595 could be matched with
-one of the 855 recombination events in the sc2ts ARG
-(Figure~\ref{fig:ripples_sc2ts_events}).
-Table~\ref{tab:ripples_x_lineages} shows a summary of
-all recombination events associated with Pango X lineages detected by RIPPLES,
-and their relationship with the sc2ts ARG.
-Of the 16 Class I events (Pango X lineages unequivocally associated with
-a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
-8 have corresponding recombination events (4, at $p=4$).
-Of the 5 Type II events
-(recombination nodes with more complex assocation with X lineages),
-two have close matches, with XBM matching exactly
-(including 2 descending BF.3 samples),
-and XE/XH is similar (but without including the 2 XH samples in the clade).
-Two events in the RIPPLES set correspond to likely false negatives
-in sc2ts: XB (Document~\ref{sec:dd_xb})
-and XAJ (Document~\ref{sec:dd_xaj}).
-See Document~\ref{sec:detailed_ripples} for more detailed analysis.
+Jackson et al. described
+four groups of recombinants (named A to D) and four singleton recombinants.
+Of the 16 samples analyzed by Jackson et al., 12 were included in the ARG;
+the remaining 4 were excluded
+because the sequences did not pass the QC filtering criteria or
+because of a high HMM cost.
+Groups A-D are summarized in Table~\ref{tab:jackson} and
+show excellent concordance
+in terms of the parental Pango lineages and breakpoint intervals.
+All four groups are directly associated with
+strongly supported recombination events in the ARG
+in terms of the number of averted mutations (A: 16, B: 6, C: 30, D: 18).
+In the ARG, the singleton CAMC-CBA018 has
+the parents B.1.177+B.1.1.7 and
+the breakpoint interval 16,177--20,133, and
+is strongly supported by 14 averted mutations.
+In the Jackson et al. results, this singleton is
+almost identical with the same parent lineages and
+a breakpoint interval of 11,395–-21,993.
+In the ARG, the singleton MILK-103C712 has
+the parents B.1.177.16+B.1.1.7 and
+a breakpoint interval of 24915--27972,
+again strongly supported by 11 averted mutations.
+In the Jackson et al. results,
+this lineage has the same parents,
+with the breakpoint interval 26,800--27,974.
+In the ARG, the singleton QEUH-1067DEF has
+the parents B.1.1.7+B.1.177.9 and
+a breakpoint interval of 7,729--10,870,
+supported by 11 averted mutations.
+In the Jackson et al.\ results,
+this lineage has the same parents,
+with the breakpoint interval 6,953--10,872.
 
-
-[TODO Discuss  the large effect recombinants inferred by both]
-
-Two further recombinants in the sc2ts ARG that are likely to be 
-spurious are important to discuss.
-[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
-rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
-pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
-
-
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
+{analysis\_jackson\_recombinants.ipynb}
+for details.
 
 
 \begin{table}
-\caption{
-RIPPLES events associated with Pango X lineages.
-Each row is a recombination event identified by RIPPLEs (at p = 3)
-in which Pango X lineages appear,
-along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
-where applicable, grouped by class.
-Events also present at p = 4 are indicated.
-Clades are matched by finding the most recent common ancestor of
-the samples associated with each UShER/RIPPLES event in the sc2ts ARG.
-The clade differences indicates how close this match is.
-}
-\label{tab:ripples_x_lineages}
 \centering
-\begin{scriptsize}
-
-\begin{tabular}{lrrlrl}
+\caption{
+Comparison of recombination breakpoint
+intervals and parent lineages for Groups A-D
+reported by Jackson et al.\ with the corresponding
+recombination events in the sc2ts ARG.
+The second column gives the number of sequences in the group.
+See the text for details of the groups and the sequences included.
+limited to the samples considered by Jackson et al.
+The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
+we subtract one to the left coordinates and add one to the right coordinates 
+to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals right-exclusive.
+}
+\label{tab:jackson}
+\begin{tabular}{lllr@{--}lr@{+}l}
 \toprule
-sc2ts event & in p4 & UShER desc & sc2ts class & clade diff & descendants \\
+Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
 \midrule
-\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLEs recombination events}\\
-XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
-% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
-XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
-XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
-XY &  & 23 & I & 0 & {XY:23} \\
-XW &  & 32 & I & 0 & {XW:32} \\
-XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
-XL &  & 64 & I & 0 & {XL:64} \\
-XBB &  & 6452 & I & 1 & {XBB:2361} \\
-XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
-XE/XH &  & 1113 & II & 3 & {XE:1113} \\
-XQ &  & 1 & III & 0 & {XAM:1} \\
-XQ &  & 21 & III & 0 & {XAM:21} \\
-Xx &  & 9 & III & 0 & {XAE:9} \\
-Xx & $\checkmark$ & 18 & III & 0 & {XAC:18} \\
-XM & $\checkmark$ & 8 & III & 0 & {BA.2:4, XM:4} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
-XB & $\checkmark$ & 411 & IV & 0 & {B.1:219, XB:192} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
-NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
-NA &  & 20 & NA & 1061775 & {BA.1.15:1, XS:17, BA.1:1, BA.1.1:1} \\
-NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
-NA & $\checkmark$ & 36 & NA & 7146 & {XBD:30, XBR:1, BA.2.75:5} \\
-NA &  & 1321 & NA & 340501 & {XE:1113, XH:2, XJ:68, XY:23, BA.2:82, XM:29,
-XAL:3, XAF:1} \\
+A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
+\cmidrule{3-7}
+B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+\cmidrule{3-7}
+C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
+             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+\cmidrule{3-7}
+D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
 \bottomrule
 \end{tabular}
-
-\end{scriptsize}
 \end{table}
-
-[NOTE: this is an earlier draft of main text which explains the table in
-detail]
-
-We ran fast-RIPPLES\cite{Smith2023tracking} on the Viridian UShER tree
-subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-We first ran RIPPLES with parameter $p=4$, as being roughly comparable
-to the recombination penalty used in sc2ts ($k=4$; STAR Methods).
-This resulted in 1,174 recombination events reported, of which 460 could be mapped
-to one of the 855 recombination events in the sc2ts ARG (STAR Methods;
-Figure \ref{fig:ripples_sc2ts_events}A). Analysis of the descendant 
-samples showed that many Pango X lineages were not associated with
-recombination events (including XBB), and we therefore ran
-RIPPLES with the more lenient value of $p=3$ (the default).
-This resulted in a total of 4111 recombination events
-of which 595 have corresponding recombination events in the 
-sc2ts ARG (Figure \ref{fig:ripples_sc2ts_events}B).
-
-Table~\ref{tab:ripples_x_lineages} shows a summary of all
-recombination events associated with Pango X lineages detected by RIPPLES,
-and their relationship with the sc2ts ARG.
-Of the 16 Class I events (Pango X lineages unequivocally associated with
-a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
-8 have corresponding recombination events (4, at $p=4$).
-Of the 5 Type II events
-(recombination nodes with more complex assocation with X lineages),
-two have close matches.
-XBM matches exactly (including 2 descending BF.3 samples),
-and XE/XH is similar (but without including the 2 XH samples in the clade).
-UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
-makes these both descendants of the Xx event,
-RIPPLES creates two independent recombinations.
-Similarly, XAE and ??? have exactly matching clades, but RIPPLES
-infers two independent recombination events while sc2ts groups them both
-under the Xx event. XB is notable as a likely sc2ts false negative that is 
-identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
-associated with X lineages output by RIPPLES cannot be easily mapped 
-to the sc2ts ARG as one or more descendants is distantly placed.
-XAJ is an outlier for sc2ts, being the Pango X lineage identified as a 
-non-recombinant with the largest number of mutations 
-(Table~\ref{tab:pango_x_lineages}), and a likely false negative.
-The remaining 4 events are mixtures of multiple lineages that are 
-difficult to reconcile with either the other events in the table 
-or the sc2ts ARG.
-
-\subsection{Likely spurious recombinants with many descendants}
-\label{sec:spurious-ancestrally-important-recombinants}
-In the sc2ts ARG, there are two recombination events which have a large number of
-descendants but which are not classified as recombinants by Pango. The first of these
-corresponds to recombination event within BA.2 whose breakpoint is at position 27382
-on the far right of the genome (see supplementary document S3, node 1030562). Although
-supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
-meaning that this event does not pass our recombinant quality control measure.
-
-The second of these involves a single breakpoint at position 26858, and is the origin
-of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
-supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
-some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
-sample is added to the ARG, it is possible to construct a more parsimonious
-non-recombinant origin by long branch splitting, 
-although subsequent tree building does not make this a parsimonious
-way to rewire the final ARG. 
 
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
@@ -4419,93 +4305,208 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 % 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
 % 97
 
-\subsection{Analysis of the Jackson et al. recombinants}
-\label{sec:jackson_recombs}
 
-Jackson et al.\cite{Jackson2021} conducted a detailed analysis of
-early recombinants involving B.1.1.7 (Alpha),
-including the first designated Pango X lineage, XA.
-The authors first performed a targeted search for candidate recombinants by
-scanning sampled sequences for sequence motifs associated with Alpha,
-followed by an analysis to reduce the list of plausible recombinants
-displaying signs of onward transmission.
-Here we compared the sc2ts detection results of these recombinants
-with the detection results reported by Jackson et al.
+\subsection{Detailed RIPPLES analysis}
+\label{sec:detailed_ripples}
 
-Jackson et al. described
-four groups of recombinants (named A to D) and four singleton recombinants.
-Of the 16 samples analyzed by Jackson et al., 12 were included in the ARG;
-the remaining 4 were excluded
-because the sequences did not pass the QC filtering criteria or
-because of a high HMM cost.
-Groups A-D are summarized in Table~\ref{tab:jackson} and
-show excellent concordance
-in terms of the parental Pango lineages and breakpoint intervals.
-All four groups are directly associated with
-strongly supported recombination events in the ARG
-in terms of the number of averted mutations (A: 16, B: 6, C: 30, D: 18).
-In the ARG, the singleton CAMC-CBA018 has
-the parents B.1.177+B.1.1.7 and
-the breakpoint interval 16,177--20,133, and
-is strongly supported by 14 averted mutations.
-In the Jackson et al. results, this singleton is
-almost identical with the same parent lineages and
-a breakpoint interval of 11,395–-21,993.
-In the ARG, the singleton MILK-103C712 has
-the parents B.1.177.16+B.1.1.7 and
-a breakpoint interval of 24915--27972,
-again strongly supported by 11 averted mutations.
-In the Jackson et al. results,
-this lineage has the same parents,
-with the breakpoint interval 26,800–-27,974.
-In the ARG, the singleton QEUH-1067DEF has
-the parents B.1.1.7+B.1.177.9 and
-a breakpoint interval of 7,729--10,870,
-supported by 11 averted mutations.
-In the Jackson et al.\ results,
-this lineage has the same parents,
-with the breakpoint interval 6,953--10,872.
+At $p=3$, this resulted in a total of 4111 recombination events.
+Most of these subtend $<10$ samples (2616 singletons),
+with 4 events subtending more than 100,000 samples.
+Analysis of the descending samples for each event shows that
+10 of the 44 Pango X lineages present in the dataset
+% NOTE: listing them like this for sorting and manipulation purposes
+(%
+XA, 
+XAC, 
+XAE, 
+XAJ,
+XB, 
+XBB, 
+XBM, 
+XC, 
+XL, 
+XW%
+)
+are associated unequivocally with a single recombination event.
+7 lineages 
+(%
+XAL,
+XAM,
+XBD, 
+XBR, 
+XE,
+XS,
+XY%
+)
+are associated with two events. Finally, 
+one event subtending 1321 samples suggests that 
+XAF,
+XAL, 
+XE, 
+XH, 
+XJ, 
+XM, 
+XY, 
+and 
+82 BA.2 samples share a recombination event [With what breakpoint and parents?].
+We also ran RIPPLES with $p=4$, which reduced the overall number of
+events to 1174 (roughly 4-fold) but also approximately halved the number of
+events involving X lineages, missing well-characterized events,
+such as XBB (Table~\ref{tab:ripples_x_lineages}).
 
-See notebook
-\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
-{analysis\_jackson\_recombinants.ipynb}
-for details.
+To compare these results with the sc2ts ARG, we first matched clades
+by finding the most recent common ancestor (MRCA) of the samples
+descending from each RIPPLES event. Overall, clade agreement was
+high with [FIXME, get exact numbers] 37XX nodes (90\%) in the sc2ts ARG
+where descendants match exactly. Of these nodes, 68\% had no recombinant
+ancestry. Of the remainder, 595 could be matched with
+one of the 855 recombination events in the sc2ts ARG
+(Figure~\ref{fig:ripples_sc2ts_events}).
+Table~\ref{tab:ripples_x_lineages} shows a summary of
+all recombination events associated with Pango X lineages detected by RIPPLES,
+and their relationship with the sc2ts ARG.
+Of the 16 Class I events (Pango X lineages unequivocally associated with
+a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
+8 have corresponding recombination events (4, at $p=4$).
+Of the 5 Type II events
+(recombination nodes with more complex assocation with X lineages),
+two have close matches, with XBM matching exactly
+(including 2 descending BF.3 samples),
+and XE/XH is similar (but without including the 2 XH samples in the clade).
+Two events in the RIPPLES set correspond to likely false negatives
+in sc2ts: XB (Document~\ref{sec:dd_xb})
+and XAJ (Document~\ref{sec:dd_xaj}).
+See Document~\ref{sec:detailed_ripples} for more detailed analysis.
+
+
+[TODO Discuss  the large effect recombinants inferred by both]
+
+Two further recombinants in the sc2ts ARG that are likely to be 
+spurious are important to discuss.
+[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
+rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
+pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
+
+
 
 
 \begin{table}
-\centering
 \caption{
-Comparison of recombination breakpoint
-intervals and parent lineages for Groups A-D
-reported by Jackson et al.\ with the corresponding
-recombination events in the sc2ts ARG.
-The second column gives the number of sequences in the group.
-See the text for details of the groups and the sequences included.
-limited to the samples considered by Jackson et al.
-The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
-we subtract one to the left coordinates and add one to the right coordinates 
-to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
-and add one to the right coordinate to make the intervals right-exclusive.
+RIPPLES events associated with Pango X lineages.
+Each row is a recombination event identified by RIPPLEs (at p = 3)
+in which Pango X lineages appear,
+along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
+where applicable, grouped by class.
+Events also present at p = 4 are indicated.
+Clades are matched by finding the most recent common ancestor of
+the samples associated with each UShER/RIPPLES event in the sc2ts ARG.
+The clade differences indicates how close this match is.
 }
-\label{tab:jackson}
-\begin{tabular}{lllr@{--}lr@{+}l}
+\label{tab:ripples_x_lineages}
+\centering
+\begin{scriptsize}
+
+\begin{tabular}{lrrlrl}
 \toprule
-Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
+sc2ts event & in p4 & UShER desc & sc2ts class & clade diff & descendants \\
 \midrule
-A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
-\cmidrule{3-7}
-B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
-             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
-\cmidrule{3-7}
-C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
-             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
-\cmidrule{3-7}
-D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLEs recombination events}\\
+XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
+% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
+XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
+XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
+XY &  & 23 & I & 0 & {XY:23} \\
+XW &  & 32 & I & 0 & {XW:32} \\
+XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
+XL &  & 64 & I & 0 & {XL:64} \\
+XBB &  & 6452 & I & 1 & {XBB:2361} \\
+XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
+XE/XH &  & 1113 & II & 3 & {XE:1113} \\
+XQ &  & 1 & III & 0 & {XAM:1} \\
+XQ &  & 21 & III & 0 & {XAM:21} \\
+Xx &  & 9 & III & 0 & {XAE:9} \\
+Xx & $\checkmark$ & 18 & III & 0 & {XAC:18} \\
+XM & $\checkmark$ & 8 & III & 0 & {BA.2:4, XM:4} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
+XB & $\checkmark$ & 411 & IV & 0 & {B.1:219, XB:192} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
+NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
+NA &  & 20 & NA & 1061775 & {BA.1.15:1, XS:17, BA.1:1, BA.1.1:1} \\
+NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
+NA & $\checkmark$ & 36 & NA & 7146 & {XBD:30, XBR:1, BA.2.75:5} \\
+NA &  & 1321 & NA & 340501 & {XE:1113, XH:2, XJ:68, XY:23, BA.2:82, XM:29,
+XAL:3, XAF:1} \\
 \bottomrule
 \end{tabular}
+
+\end{scriptsize}
 \end{table}
+
+[NOTE: this is an earlier draft of main text which explains the table in
+detail]
+
+We ran fast-RIPPLES\cite{Smith2023tracking} on the Viridian UShER tree
+subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
+We first ran RIPPLES with parameter $p=4$, as being roughly comparable
+to the recombination penalty used in sc2ts ($k=4$; STAR Methods).
+This resulted in 1,174 recombination events reported, of which 460 could be mapped
+to one of the 855 recombination events in the sc2ts ARG (STAR Methods;
+Figure \ref{fig:ripples_sc2ts_events}A). Analysis of the descendant 
+samples showed that many Pango X lineages were not associated with
+recombination events (including XBB), and we therefore ran
+RIPPLES with the more lenient value of $p=3$ (the default).
+This resulted in a total of 4111 recombination events
+of which 595 have corresponding recombination events in the 
+sc2ts ARG (Figure \ref{fig:ripples_sc2ts_events}B).
+
+Table~\ref{tab:ripples_x_lineages} shows a summary of all
+recombination events associated with Pango X lineages detected by RIPPLES,
+and their relationship with the sc2ts ARG.
+Of the 16 Class I events (Pango X lineages unequivocally associated with
+a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
+8 have corresponding recombination events (4, at $p=4$).
+Of the 5 Type II events
+(recombination nodes with more complex assocation with X lineages),
+two have close matches.
+XBM matches exactly (including 2 descending BF.3 samples),
+and XE/XH is similar (but without including the 2 XH samples in the clade).
+UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
+makes these both descendants of the Xx event,
+RIPPLES creates two independent recombinations.
+Similarly, XAE and ??? have exactly matching clades, but RIPPLES
+infers two independent recombination events while sc2ts groups them both
+under the Xx event. XB is notable as a likely sc2ts false negative that is 
+identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
+associated with X lineages output by RIPPLES cannot be easily mapped 
+to the sc2ts ARG as one or more descendants is distantly placed.
+XAJ is an outlier for sc2ts, being the Pango X lineage identified as a 
+non-recombinant with the largest number of mutations 
+(Table~\ref{tab:pango_x_lineages}), and a likely false negative.
+The remaining 4 events are mixtures of multiple lineages that are 
+difficult to reconcile with either the other events in the table 
+or the sc2ts ARG.
+
+\subsection{Likely spurious recombinants with many descendants}
+\label{sec:spurious-ancestrally-important-recombinants}
+In the sc2ts ARG, there are two recombination events which have a large number of
+descendants but which are not classified as recombinants by Pango. The first of these
+corresponds to recombination event within BA.2 whose breakpoint is at position 27382
+on the far right of the genome (see supplementary document S3, node 1030562). Although
+supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
+meaning that this event does not pass our recombinant quality control measure.
+
+The second of these involves a single breakpoint at position 26858, and is the origin
+of the BA.5 lineage in the ARG (see supplementary document S3, node 1189192). Although
+supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
+some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
+sample is added to the ARG, it is possible to construct a more parsimonious
+non-recombinant origin by long branch splitting, 
+although subsequent tree building does not make this a parsimonious
+way to rewire the final ARG. 
 
 \FloatBarrier
 
