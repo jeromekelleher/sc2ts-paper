@@ -408,15 +408,16 @@ and is stored in a 32 MB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
 (some events occurred at the same breakpoints).
-% NOTE: if we keep this we should redo on Yan's laptop and quote those numbers
 Using the tskit Python API,
-% TODO: Concrete numbers?
-the ARG can be loaded into memory in less than a second,
+% NOTE: numbers from Yan's laptop are:
+% ts = tszip.load(): user 484 ms, sys: 90.4 ms, total: 575 ms
+% sc2ts.node_data(ts, inheritance_stats=False): user 396 ms, sys: 42.8 ms, total: 439 ms
+the ARG can be loaded into memory in half a second,
 and the vectorized representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
 For example, a tabular summary for the 2.75 million nodes,
 including sample IDs and Pango assignments (stored as metadata in the ARG),
-can be derived as a Pandas data frame~\cite{Mckinney2010data} in 0.6 second.
+can be derived as a Pandas data frame~\cite{Mckinney2010data} in less than half a second.
 The ARG can therefore be easily accessed using familiar tools
 with minimal hardware requirements, enabling diverse bespoke analyses.
 
@@ -448,7 +449,7 @@ and UShER tree in terms of parsimoniousness
 (Document~\ref{sec:supplement_sc2ts_usher_parsimony})
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
-We compared the mutational spectra of major VOCs in the ARG
+We compared the mutational spectra of major Variants of Concern (VOCs) in the ARG
 against the UShER tree and a previous study~\cite{Bloom2023} (STAR Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
@@ -483,7 +484,7 @@ Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
 Deletions are an important part of SARS-CoV-2 evolution~\cite{Jeronimo2023}
 but are not incorporated into UShER trees and
-therefore must be accounted for separately.
+must be accounted for separately.
 Because deletions are difficult to distinguish
 % SHZ: Sequencing errors or misleading alignment.
 from bioinformatic errors
@@ -842,8 +843,8 @@ Also shown is the 3SEQ classification status of these recombinants.
 The 5\% of recombinants that do not pass 3SEQ validation are
 among the most weakly supported, with 4 or 5 averted mutations.
 Figures~\ref{fig:recombinant_evidence}B,C show the 
-distribution of recombination events as a function the 
-divergence between the parents.
+distribution of recombination events as a function of the 
+divergence between their two parents.
 Figures~\ref{fig:recombinant_evidence_cov_recomb} and
 \ref{fig:recombinant_evidence_rebar} 
 plot the same information as Figure~\ref{fig:recombinant_evidence} 
@@ -1307,7 +1308,7 @@ several important directions for future research.
 % % SHZ: Should we mention how the reliability of global case number data
 % % and variation in sampling effort over time and across countries
 % % might affect our interpretation of these findings?
-% [FIXME: This is direct output from ChatGPT.  Review!]
+% [TODO: This is direct output from ChatGPT.  Review!]
 % The dated ARG allows us to place recombination within its epidemiological
 % context, revealing clear temporal structure in when recombinant lineages arise.
 % The frequency of inferred recombination events follows global case numbers
@@ -1334,7 +1335,7 @@ several important directions for future research.
 % % It's about combinations of mutations in, say, ORF1ab, getting selected against
 % % (or just low mutation rates).
 % % Maybe mention epistasis?
-% [FIXME: This is directish output from ChatGPT. Review!]
+% [TODO: This is directish output from ChatGPT. Review!]
 % The genomic distribution of breakpoints in the ARG is highly uneven, with a
 % pronounced enrichment near the $5'$ boundary of the Spike gene and across the
 % S1–S2 junction.  This pattern closely mirrors that observed in the
@@ -1674,7 +1675,7 @@ models, as discussed in~\cite{Bisschop2025likelihoods}.
 %%%  are structured and consist of three bulleted
 %%%  components. Each component must be present.
 
-[TODO fix the typesetting once all resources are compiled]
+[FIXME: fix the typesetting once all resources are compiled]
 
 \begin{itemize}
 \item Snakemake workflow for aligning and converting the Viridian dataset to
@@ -1686,7 +1687,7 @@ VCF Zarr:
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}
 \end{itemize}
 
-TODO add these to the list above with actual URLs
+FIXME: add these to the list above with actual URLs
 \begin{itemize}
     \item The ARG and the sequence alignments have been deposited at Zenodo and are publicly available.
     \item All original code has been deposited in GitHub and is publicly available.
@@ -1994,7 +1995,7 @@ with the option \texttt{--keeplength} to retain the reference coordinate system.
 We then used \texttt{sc2ts import-alignments} and 
 \texttt{sc2ts import-metadata} to convert all alignments and metadata to VCF
 Zarr format, resulting in a single 401 MiB file 
-(around 77X smaller than gzip compressed FASTA\cite{Czech2025}).
+(around 77$\times$ smaller than gzip compressed FASTA\cite{Czech2025}).
 
 A classical tradeoff in bioinformatics is whether to store data 
 in sample-major (FASTA) or variant-major (VCF) format, determining
@@ -2316,7 +2317,7 @@ There's some specific info in the Viridian paper on this, I'm sure.
 We should mention long branch splitting here too.]
 The resulting subgraph can be see in Figure~\ref{fig:subgraph_delta}.
 
-[TODO revise this paragraph to give some background info, and reference
+[FIXME: revise this paragraph to give some background info, and reference
 the Viridian work]
 For Omicron BA.1 and BA.2, we used SRR17041376 and SRR17461792, respectively.
 We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
@@ -2426,7 +2427,7 @@ sites are included in the ARG.
 Using deletions with a minimum frequency of 1\%
 (count of sequences divided by 9,149,680 sequences analyzed)
 from Table S1 of Li et al.\cite{Li2023indels},
-we chose 75 sites to remap.
+we chose 75 sites for deletion-remapping (see Document \ref{sec:supplement_dels} for analysis of the major deletions identified from this process).
 In addition, we remapped data at 88 sites that were excluded
 from primary inference and are defined as Pango lineage 
 defining sites by Freyja\cite{Karthikeyan2022}
@@ -2984,7 +2985,7 @@ for a subset of sites in the sc2ts ARG.
 When we compare the intersection of the base sc2ts ARG
 (pre site-remapping), sc2ts is very slightly more parsimonious
 % TODO: https://github.com/jeromekelleher/sc2ts-paper/issues/684
-with XX mutations over the YYY sites shared between them.
+with [FIXME] XX mutations over the YYY sites shared between them.
 After site remapping, and including all mutations involving
 deletion characters, sc2ts has 143,690 mutations more
 (2,078,370 vs 1,934,680). If we exclude mutations involving
@@ -3772,7 +3773,7 @@ In the subgraph, it can be seen that one of the samples, SRR18775874,
 has been (presumably wrongly) placed
 within the main XM deletion-containing clade.
 As sc2ts does not use deletions for inference,
-deletion remapping (section XXXX) has reverted the deletion in this case,
+deletion remapping (STAR Methods) has reverted the deletion in this case,
 creating many insertions on the branch above the sample (magenta).
 A better use of deletions in sc2ts would likely result
 in placing this sample within one of the two XM clades
@@ -4342,7 +4343,7 @@ XJ,
 XM, 
 XY, 
 and 
-82 BA.2 samples share a recombination event [With what breakpoint and parents?].
+82 BA.2 samples share a recombination event [FIXME: With what breakpoint and parents?].
 We also ran RIPPLES with $p=4$, which reduced the overall number of
 events to 1174 (roughly 4-fold) but also approximately halved the number of
 events involving X lineages, missing well-characterized events,
@@ -4386,13 +4387,13 @@ events are likely attributable to the finer details of the
 differences in tree building approaches between UShER and sc2ts
 
 
-[TODO Discuss  the large effect recombinants inferred by both]
+[FIXME: Discuss  the large effect recombinants inferred by both]
 
 Two further recombinants in the sc2ts ARG that are likely to be 
 spurious are important to discuss.
 [FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
 rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
-pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants}]
+pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants} ]
 
 
 
@@ -4453,7 +4454,7 @@ XAL:3, XAF:1} \\
 \end{scriptsize}
 \end{table}
 
-[NOTE: this is an earlier draft of main text which explains the table in
+[FIXME: this is an earlier draft of main text which explains the table in
 detail]
 
 We ran fast-RIPPLES\cite{Smith2023tracking} on the Viridian UShER tree
