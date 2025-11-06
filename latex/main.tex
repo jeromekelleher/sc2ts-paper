@@ -1087,13 +1087,12 @@ These permanent misplacements distort the phylogeny~\cite{Schierup2000consequenc
 and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
 may break up the artefactual long branches used to detect recombination.
 
-To compare the performance of sc2ts and UShER+RIPPLES 
-in terms of recombinant detection we ran RIPPLES on the Viridian UShER phylogeny,
-subset to the 2,475,418 samples shared with the sc2ts ARG (STAR Methods).
-Note that we are concerned with the direct output of sc2ts and UShER+RIPPLES, so QC filtering was not performed for either.
-Setting the ``parsimony improvement'' parameter to $p=4$, equivalent to $k=4$ in sc2ts, 
-RIPPLES reported 1174 recombination events.
-Running 3SEQ on each of the candidate trios (STAR Methods) identified 601 of these as recombinant, giving a concordance rate of 51\%.
+We compared the performance of sc2ts recombinant detection against RIPPLES run on the Viridian UShER phylogeny,
+subset to the 2,475,418 samples shared with the ARG (STAR Methods).
+To enable exact comparison, we omitted the QC filtering steps from both
+methods, and initially set the RIPPLES ``parsimony improvement'' parameter to $p=4$ (rather than the more lenient default of 3), to match the equivalent $k=4$ setting
+used in sc2ts (STAR Methods). Under this setting,
+RIPPLES reported 1174 recombination events of which 601 were designated as recombinant when running 3SEQ on the candidate trios (STAR Methods), giving a concordance rate of 51\%. This is notably lower than the equivalent concordance rate of 57\% among the 855 recombination events reported by sc2ts.
 Aligning the events reported by both methods using the sets of descendant
 samples (STAR Methods), 468 of the events are shared by both,
 with the intersection comprising 40\% of the RIPPLES events
@@ -1624,7 +1623,7 @@ models, as discussed in~\cite{Bisschop2025likelihoods}.
 %%%  (after any "limitations" or "conclusions" subsection
 %%%  within the discussion).
 
-% \section*{RESOURCE AVAILABILITY}
+\section*{RESOURCE AVAILABILITY}
 
 % %%%  The resource availability section is required
 % %%%  for all research articles. This component
@@ -1678,20 +1677,13 @@ models, as discussed in~\cite{Bisschop2025likelihoods}.
 [FIXME: fix the typesetting once all resources are compiled]
 
 \begin{itemize}
-\item Snakemake workflow for aligning and converting the Viridian dataset to
-VCF Zarr:
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}
-\item Complete configuration for running sc2ts base ARG inference:
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}
-\item Snakemake workflow for ARG post-processing
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}
-\end{itemize}
-
-FIXME: add these to the list above with actual URLs
-\begin{itemize}
-    \item The ARG and the sequence alignments have been deposited at Zenodo and are publicly available.
-    \item All original code has been deposited in GitHub and is publicly available.
-    \item Jupyter notebooks to perform the analyses in this paper are available on GitHub.
+\item The sequences alignments in VCF Zarr format have been deposited at Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
+\item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
+\item The ARG in tskit format has been deposited at Zenodo and is publicly available at \url{https://zenodo.org/records/16313750}.
+\item The complete configuration file for running sc2ts to build the ARG above is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
+\item The Snakemake workflow for ARG post-processing is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
+\item The original source code of sc2ts is publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts/}.
+\item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
 \end{itemize}
 
 
@@ -1701,8 +1693,10 @@ FIXME: add these to the list above with actual URLs
 %%%  from non-authors and list funding sources,
 %%%  including grant numbers.
 
+[FIXME: add all acknowledgments]
+
 SHZ is supported by an NDPH Intermediate Research Fellowship
-(Oxford Population Health, University of Oxford).
+(Oxford Population Health, University of Oxford). JK and YW acknowledge support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation.
 
 
 % \section*{AUTHOR CONTRIBUTIONS}
@@ -2311,13 +2305,13 @@ unconditionally included in the ARG on the specified date.
 
 % We used more seeds, but in practise it doesn't matter and it's just
 % complicating the story.
-For Delta, we used two seeds: one for B.1.617.1 and 1 samples assigned to
-B.1.617.2, [with more details and some references to back up our assertions.
+For Delta, we used two seeds: one for B.1.617.1 and 1 sample assigned to
+B.1.617.2, [FIXME more Delta details and some references to back up our assertions.
 There's some specific info in the Viridian paper on this, I'm sure. 
 We should mention long branch splitting here too.]
 The resulting subgraph can be see in Figure~\ref{fig:subgraph_delta}.
 
-[FIXME: revise this paragraph to give some background info, and reference
+[FIXME: revise this paragraph to give some background info on Omicron, and reference
 the Viridian work]
 For Omicron BA.1 and BA.2, we used SRR17041376 and SRR17461792, respectively.
 We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
@@ -4304,9 +4298,9 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
 
-At $p=3$, this resulted in a total of 4111 recombination events.
+Using the default ``parsimony improvement'' parameter of $p=3$, UShER+RIPPLES detected a total of 4111 recombination events.
 Most of these subtend $<10$ samples (2616 singletons),
-with 4 events subtending more than 100,000 samples.
+although four events subtended more than 100,000 samples.
 Analysis of the descending samples for each event shows that
 10 of the 44 Pango X lineages present in the dataset
 % NOTE: listing them like this for sorting and manipulation purposes
