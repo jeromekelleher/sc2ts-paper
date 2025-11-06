@@ -1061,7 +1061,10 @@ unknown cases and heterozygosity not captured by the Scorpio labels.
 
 The most comprehensive analysis on recombination in SARS-CoV-2 to 
 date has been performed using the combination of UShER and 
-RIPPLES~\cite{Turakhia2022}. RIPPLES works by taking a
+RIPPLES~\cite{Turakhia2022}. 
+% NOTE: not citing RIPPLES here as there is no real analysis
+% in the paper itself, it's just focused on the tool
+RIPPLES works by taking a
 pre-existing UShER phylogeny and systematically breaking up
 sequences subtended by long branches into multiple segments 
 that are placed independently.
@@ -1184,7 +1187,7 @@ deepens our understanding of the inference method, and
 suggests avenues for improvement (see Limitations of the Study).
 
 Study of the sc2ts ARG gives insight into the evolution of SARS-CoV-2, 
-and this work therefore makes several additional contributions to the field. 
+which provides several further contributions to our understanding of the COVID-19 pandemic. 
 First, we clarify the relationships among
 recombinant Pango X-lineages, suggesting significant 
 clustering of named lineages under shared recombination events.
@@ -1196,7 +1199,7 @@ Thirdly, we demonstrate a clear relationship between
 genetic diversity and the rate of detectable recombination,
 with the best predictor of the number of recombination
 events over time being the product of global case numbers
-and lineage heterozygosity.
+and lineage diversity.
 Finally, and perhaps most fundamentally, through our 
 conservative parameter choices and real-time handling of 
 recombination events, we  provide a stringent lower
@@ -1539,8 +1542,8 @@ Firstly, the Viridian dataset is of higher quality and major efforts
 have been made to remove sources of error. Applying sc2ts to 
 GISAID data is straightforward, but significant additional efforts 
 would be required to deal with the various data quality issues.
-Secondly, the Viridian data is free to download without restrictions,
-enabling us to share the resulting ARG in the same manner.
+Secondly, the Viridian data is publicly available and redistributable,
+enabling us to share the resulting ARG without restrictions.
 
 % Need to be careful here to list stuff that sounds interesting and 
 % hard enough to not get asked to do it.
@@ -2054,7 +2057,7 @@ were present in the problematic sites file
 (\url{https://github.com/W-L/ProblematicSites_SARS-CoV2}),
 and most sites in this list were typical
 in terms of the number of mutations.
-We therefore masked our 100 mutation-rich sites
+We therefore masked our 100 most mutation-rich sites
 to remove sequencing errors and
 improve matching performance in the LS HMM.
 
@@ -2066,7 +2069,7 @@ excluding the 100 sites identified as problematic
 (this was set to 10,000 sites for the initial period up to 2020-03-01
 where sampling density is low).
 
-\subsubsection*{Li and Stephens haplotype-copying model}
+\subsubsection*{Li and Stephens model}
 
 The Li and Stephens (LS) model \cite{LiStephens2003} is an approximation of
 the coalescent with recombination
@@ -2591,19 +2594,14 @@ in tszip format (see \nameref{sec:data_and_code_availability}).
 We compare the non-recombinant parts of the ARG with the UShER topology
 by simplifying the phylogenies to a smaller number of
 Pango representative samples.
-We focus on the 1473 Pango lineages that have perfect ``origination events'' 
-(Document \ref{sec:supplement_pango_lineages}). We then omit
-omit X lineages, leaving 1329 lineages.
+We focus on 1286 Pango lineages comprising those which are defined by perfect ``origination events'' 
+(Document \ref{sec:supplement_pango_lineages}). but which are not acknowledged recombinant lineages (i.e. Pango X lineages and their descendants).
 To ensure that each sample is a tip in the simplified topologies,
 a representative sample is then chosen as the oldest sample
 descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
 We then further remove 4 lineages
-which are singleton descendants of a recombination event in the ARG,
-% NOTE: would have been simpler to say we just got rid of XBB and 
-% descendants.
-as well as 43 samples that are descendants of the recombinant XBB
-but which do not start with an ``X''.
+which are singleton descendants of a putative ARG recombination event,
 This results in a simplified ARG of 1282 samples,
 each sample from a different Pango lineage.
 
@@ -2699,6 +2697,8 @@ identified by Li et al.\cite{Li2024CovRecomb} (see Table S4 of the study)
 which correspond to the Pango X lineages (if available).
 When multiple events corresponded to a Pango X lineage,
 we took the results of the event which had the highest number of epidemic recombinants.
+% Note from Shing: 
+% This is not clearly explained in the paper at all. I went to their code to see what it means, but their code is not easy to read. 
 For other Pango X lineages, we downloaded the full list of putative recombinants
 identified in the study
 (\url{https://github.com/wuaipinglab/CovRecomb/blob/main/CovRecomb-Global-Version/putative\_recombinants/putative\%20recombinants.csv}).
