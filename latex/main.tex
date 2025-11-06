@@ -1314,10 +1314,8 @@ when such data sparsity is detected.
 %%%  is accepted for publication. These statements
 %%%  are structured and consist of three bulleted
 %%%  components. Each component must be present.
-
-[FIXME: fix the typesetting once all resources are compiled]
-
 \begin{itemize}
+
 \item The sequences alignments in VCF Zarr format have been deposited at Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
 \item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
 \item The ARG in tskit format has been deposited at Zenodo and is publicly available at \url{https://zenodo.org/records/16313750}.
@@ -1337,7 +1335,10 @@ when such data sparsity is detected.
 [FIXME: add all acknowledgments]
 
 SHZ is supported by an NDPH Intermediate Research Fellowship
-(Oxford Population Health, University of Oxford). JK and YW acknowledge support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation.
+(Oxford Population Health, University of Oxford). 
+% "ackknowledges support" here means "was awarded this grant 
+% and it supported this research"
+JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation.
 
 
 % \section*{AUTHOR CONTRIBUTIONS}
@@ -4038,14 +4039,14 @@ pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-
 \begin{table}
 \caption{
 RIPPLES events associated with Pango X lineages.
-Each row is a recombination event identified by RIPPLEs (at p = 3)
+Each row is a recombination event identified by RIPPLEs (at $p=3$)
 in which Pango X lineages appear,
 along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
 where applicable, grouped by class.
-Events also present at p = 4 are indicated.
+Events also present at $p=4$ are indicated.
 Clades are matched by finding the most recent common ancestor of
 the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
-The clade differences indicates how close this match is.
+The clade differences indicates the closeness of the match.
 }
 \label{tab:ripples_x_lineages}
 \centering
