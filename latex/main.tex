@@ -162,7 +162,7 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of species~\cite{Felsenstein2004}, using small numbers of widely diverged
+of multiple species~\cite{Felsenstein2004}, using small numbers of widely diverged
 genomes. In this context, recombination is a nuisance 
 requiring careful consideration~\cite{Rannala2025recombination}
 as it affects the inference of species trees~\cite{Posada2002effect}
@@ -178,13 +178,13 @@ Cryptic2022data,% TB 12k
 Dyer2025enterobase% 1 million, various things like E-coli
 }.
 In contrast to the sophisticated model-based approaches
-used to perform species-level tree
+used to perform species tree
 inference~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
 comprehensive phylogenies of these datasets are typically built with
-simpler distance methods % citation for this? 
+simpler distance methods % citation for this?
 or approximations~\cite{Price2009fasttree},
 primarily due to computational scaling limitations,
-but also because of the complexity of modeling such datasets.
+but also because of the complexity of modelling such datasets.
 While several methods have been proposed to incorporate
 recombination explicitly into model-based phylogenetic
 inference~\cite{Didelot2010inference,%
@@ -196,20 +196,21 @@ scalability
 is a major issue and practical application has been limited.
 Software support that explicitly \emph{uses}
 recombination-aware inference is mostly limited to
-visualization, for example of small-scale phylogenetic
+visualisation, for example of small-scale phylogenetic
 networks~\cite{Huson2012,Vaughan2017,Solis-Lemus2017}
 or tree changes along the genome~\cite{Rasmussen2023}.
 
 The global
-surveillance data collected during the COVID-19 pandemic presents fundamental challenges to existing approaches
+surveillance data collected during the COVID-19 pandemic
+presents fundamental challenges to existing approaches
 in two ways. Firstly, the sheer amount of data 
-overwhelmed even approximate distance-matrix based methods.
+overwhelmed even approximate distance matrix-based methods.
 % Accessed GISAID/EpiCov on 08 Oct., 2025
-At the peak in February 2022 about 80,000 samples
-per day  were submitted to GISAID\cite{Shu2017},
+At the peak in February, 2022 $\sim$80,000 samples per day
+were submitted to GISAID~\cite{Shu2017},
 accumulating to a total of over 17.5 million samples
 as of October 2025.
-Regularly re-inferring trees de-novo from such rapidly
+Regularly re-inferring trees de novo from such rapidly
 growing datasets is untenable.
 The UShER\cite{Turakhia2021} method is based on adding
 samples to an existing tree using maximum parsimony,
@@ -226,13 +227,11 @@ Gutierrez2022,Ignatieva2022,Tamura2023},
 with multiple deep recombination events now known to be present
 in the genealogy of the global population \cite{Roemer2023,Shiraz2023enhanced}.
 Although several methods have been proposed to \emph{detect}
-recombinant samples~\cite{
-Varabyou2021rapid,% Bolotie
+recombinant samples~\cite{Varabyou2021rapid,%Bolotie
 Turakhia2022,%RIPPLES
-Zhou2023virusrecom,% CovRecomb
+Zhou2023virusrecom,
 Alfonsi2024,%RecombinHunt 
-Li2024CovRecomb%CovRecomb 
-},
+Li2024CovRecomb},
 this information is not incorporated into the phylogenies used 
 in innumerable studies~\cite{McBroome2021,Hadfield2018},
 and recombination continues to be treated as a 
@@ -365,7 +364,7 @@ that is allowed before switching to a different parent via recombination
 % the number of recombinants detected.
 (we use $k=4$ here; see STAR Methods).
 We used the highly efficient LS HMM implementation in tsinfer~\cite{Kelleher2019},
-with some additional optimizations enabled by our simplified model,
+with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
 given the current ARG.
 % TODO note the parsimony is an OK model here, as Sally suggests?
@@ -413,7 +412,7 @@ Using the tskit Python API,
 % ts = tszip.load(): user 484 ms, sys: 90.4 ms, total: 575 ms
 % sc2ts.node_data(ts, inheritance_stats=False): user 396 ms, sys: 42.8 ms, total: 439 ms
 the ARG can be loaded into memory in half a second,
-and the vectorized representation integrates tightly
+and the vectorised representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
 For example, a tabular summary for the 2.75 million nodes,
 including sample IDs and Pango assignments (stored as metadata in the ARG),
@@ -537,7 +536,7 @@ reported by Jackson et al.~\cite{Jackson2021} are shown.
 group of ``nested'' Pango X lineages: we use the 
 label Xx as a shorthand for this related group of recombinants; and
 (C) Subgraph around the MRCA of the closely related non-recombinants XN and XAU.
-For more detailed visualizations of these subgraphs, see Document S2.
+For more detailed visualisations of these subgraphs, see Document S2.
 }
 \label{fig:subgraphs}
 \end{figure}
@@ -675,7 +674,7 @@ a total of 146 distinct Pango X lineages have been designated.
 By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides us with a systematic means of
 discovering and assessing evidence around these events.
-Table~\ref{tab:pango_x_lineages} summarizes
+Table~\ref{tab:pango_x_lineages} summarises
 these results for the 44 Pango X lineages present in the ARG
 % (XAC and XAD have been omitted, and XM partially represented,
 % corresponding to 23 omitted samples in total;
@@ -710,7 +709,7 @@ with two major clusters of particular note. Although XQ is
 directly associated with a recombination event in the ARG, 
 XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
 that they may be more parsimoniously explained as sublineages of XQ
-than de-novo recombinant lineages (Document~\ref{sec:dd_xq}). 
+than de novo recombinant lineages (Document~\ref{sec:dd_xq}). 
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages 
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
@@ -724,11 +723,11 @@ For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
 distant from a BA.2 sample and has little additional evidence
 to suggest recombination (Document~\ref{sec:dd_xn}).
 XB, on the other hand,
-has been thoroughly characterized~\cite{Gutierrez2022} and
+has been thoroughly characterised~\cite{Gutierrez2022} and
 is likely misclassified by sc2ts because the required
 parent lineages were not present (Document \ref{sec:dd_xb}). 
 
-The remaining 10 X lineages (97 samples) present in the dataset are not 
+The remaining 10 Pango X lineages (97 samples) present in the dataset are not
 included in the ARG because the HMM cost exceeds the inclusion threshold
 and there was insufficient support for retrospective inclusion (STAR Methods).
 These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
@@ -739,7 +738,7 @@ See Document~\ref{sec:supplement_indepth_pango_x_lineages}
 for extended analyses on all the Pango X lineages in the ARG;
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages};
-and Document S2 for ARG visualizations of the Pango X lineages.
+and Document S2 for ARG visualisations of the Pango X lineages.
 
 
 \subsection*{Quality control and validation of recombination events}
@@ -771,7 +770,9 @@ the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 We validated the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
 on the putative recombinant sequence trios (STAR Methods).
-Of the 855 recombination events identified by sc2ts, 3SEQ verified 57\% of them, rising to 95\% verification among the 354 recombinants that passed our QC filter. 
+Of the 855 recombination events identified by sc2ts,
+3SEQ verified 57\% of them,
+rising to 95\% verification among the 354 recombinants that passed our QC filter. 
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
@@ -781,7 +782,7 @@ and \ref{fig:recombinant_evidence_rebar}).
 CovRecomb has a substantially lower validation rate
 at 25\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
-to detect interlineage recombinants
+to detect inter-lineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar validation is intermediate, at 57\% among QC-passing recombinants.
@@ -853,7 +854,7 @@ broken down by CovRecomb and rebar validation status.
 Detectable recombination is rare in SARS-CoV-2, and
 ultimately judgments about plausibility require expert analysis.
 To aid such interpretation and help identify QC issues,
-we developed a visualization tool
+we developed a visualisation tool
 inspired by SnpIt~\cite{OToole2024} and 
 the recombinant view of RIVET~\cite{Smith2023tracking},
 showing the recombination-informative sites
@@ -885,9 +886,10 @@ highlighting specific types of QC problems
 
 \subsection*{Precision of recombination event times and positions}
 
-The precise genomic location of a recombination breakpoint is 
-in general impossible to determine, but we can place 
-bounds by inspecting sequences of the recombinant and its parents.
+The genomic location of a recombination breakpoint in general
+cannot be determined exactly at single base resolution,
+but we can place bounds
+by inspecting sequences of the recombinant and its parents.
 The breakpoint interval of a recombinant is defined by
 two positions: a left position where the recombinant
 matches the left parent sequence but not the right, and
@@ -1105,7 +1107,7 @@ by sc2ts (Document~\ref{sec:detailed_ripples}).
 The 387 events detected by sc2ts and not by UShER+RIPPLES
 would require a detailed dissection of the UShER tree
 to explain, which is beyond the scope of this work.
-However, the set does contain some well characterized events 
+However, the set does contain some well characterised events 
 associated with the Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows the events detected 
 by UShER+RIPPLES associated with samples assigned to Pango X
@@ -1136,7 +1138,7 @@ Over the same time interval, the sc2ts ARG ($k=4$) identifies
 14 high-confidence recombination events with
 172 descendant samples among 501,235 samples (0.034\%),
 a 40- to 80-fold reduction.
-The sc2ts ARG identifies more of the well-characterized X-lineages
+The sc2ts ARG identifies more of the well-characterised Pango X lineages
 at a more stringent threshold, and therefore provides us with a 
 conservative lower bound
 on the frequency of detectable recombination events in SARS-CoV-2.
@@ -1154,8 +1156,7 @@ recombination-aware analyses widely used in population genomics.
 This combination of a deeply validated pandemic-scale ARG with 
 a mature and highly capable software platform forms a unique resource.
 Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
-have helped spur the development of ARG-aware 
-methods in human 
+have helped spur the development of ARG-aware methods in human 
 genomics~\cite{Mejia2025using,Grundler2025geographic,
 Lehmann2025on,Terhorst2025accelerated}.
 We hope that the ARG provided here will similarly
@@ -1196,8 +1197,8 @@ future work is to explore ways of incorporating them into the HMM.
 Another methodological innovation is the use of 
 the tsdate method~\cite{Wohns2022,Pope2025} to estimate internal node dates
 in the ARG. While results are encouraging, 
-dating of phylogenies is a complex task~\cite{Kumar2016advances}
-and methods for incorporating information from metadata of uncertain 
+dating of phylogenies is a complex task~\cite{Kumar2016advances},
+methods for incorporating information from metadata of uncertain 
 quality into large genealogies are in their 
 early stages~\cite{sanderson2021chronumental}, and there is certainly
 substantial room for improvement.
@@ -1207,10 +1208,11 @@ sample with incorrect sampling dates, and the ARG may provide
 a means of pre-identifying such ``time travellers''.
 
 The secondary contributions of this work arise from 
-the detailed study of the sc2ts ARG, providing insights into the evolution of SARS-CoV-2
+the detailed study of the sc2ts ARG,
+providing insights into the evolution of SARS-CoV-2
 and the COVID-19 pandemic. 
 First, we clarify the relationships among
-recombinant Pango X-lineages, suggesting significant 
+recombinant Pango X lineages, suggesting significant
 clustering of named lineages under shared recombination events.
 Second, we used the ARG to study breakpoint intervals 
 for recombination events, adding a novel temporal dimension
@@ -1223,10 +1225,10 @@ events over time being the product of global case numbers
 and lineage diversity.
 Finally, and perhaps most fundamentally, through our 
 conservative parameter choices and real-time handling of 
-recombination events, we  provide a stringent lower
+recombination events, we provide a stringent lower
 bound on the amount of recombination that occurred during
 the pandemic phase of SARS-CoV-2.
-Together these results underscore the utility of the ARG itself 
+Together, these results underscore the utility of the ARG itself 
 and suggest important directions for future research.
 
 \subsection*{Limitations of the study}
@@ -1243,12 +1245,12 @@ would be required to address data quality issues.
 Secondly, the Viridian data is publicly available and redistributable,
 enabling us to share the resulting ARG without restrictions.
 
-It is important to acknowledge that sampling is non uniform both
+It is important to acknowledge that sampling is non-uniform both
 geographically and over time~\cite{Lancet2021,Chen2022}. 
 Sc2ts performs best in the data-dense regime, when the underlying
 assumption that genetic diversity is gradually accumulating within
 the structure holds. Large changes (i.e, saltation events) present
-significant challenges and the results of the algorithm should 
+significant challenges, and the results of the algorithm should 
 be regarded more critically in these situations.
 Future methodological improvements may combine the strengths 
 of sophisticated model-based inferences with the power 
@@ -1622,7 +1624,7 @@ dimensions, and is ideally suited to modern cloud-based
 deployments~\cite{Czech2025}. 
 
 We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
-consensus sequences (125GiB over 48 FASTA files) and 30 metadata fields (1.4
+consensus sequences (125 GiB over 48 FASTA files) and 30 metadata fields (1.4
 GiB TSV file) to VCF Zarr using a 
 reproducible Snakemake\cite{Koster2012snakemake} pipeline.
 We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using 
@@ -1633,7 +1635,7 @@ We then used \texttt{sc2ts import-alignments} and
 Zarr format, resulting in a single 401 MiB file 
 (around 77$\times$ smaller than gzip compressed FASTA\cite{Czech2025}).
 
-A classical tradeoff in bioinformatics is whether to store data 
+A classical trade-off in bioinformatics is whether to store data 
 in sample-major (FASTA) or variant-major (VCF) format, determining
 whether the data can be accessed efficiently either by row or column
 of the variant matrix. Because VCF Zarr is chunked in two dimensions,
@@ -1699,7 +1701,7 @@ to remove sequencing errors and
 improve matching performance in the LS HMM.
 
 Alignments read from the VCF Zarr file were first preprocessed
-to mask any non nucleotide characters (A,C,G or T) as missing data.
+to mask any non-nucleotide characters (A, C, G, or T) as missing data.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 Then, we filtered any samples that had missing data at more than 500 sites,
 excluding the 100 sites identified as problematic
@@ -1717,6 +1719,7 @@ is modelled as a
 sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
 (Figure~\ref{fig:ls_diagram}).
+% TODO improve wording, lots of "model" here.
 The LS model is an HMM that models a focal genome
 as a sequence of nucleotides (the observed states),
 which are probabilistically emitted
@@ -1831,7 +1834,7 @@ reflecting their evolutionary relationships.
 We use a standard neighbour-joining algorithm\cite{Saitou1987}
 to infer these within-cluster evolutionary relationships.
 We first compute the Hamming distance between
-all pairs of samples using scipy~\cite{Virtanen2020scipy},
+all pairs of samples using SciPy~\cite{Virtanen2020scipy},
 and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
 to compute the neighbour-joining tree.
 Then, mutations are mapped back onto this daily sample cluster tree using 
@@ -1897,17 +1900,17 @@ and 4 mutations, or 2 recombinations) from immediate inclusion (see next
 section) in the ARG. This approach has the benefit of filtering
 samples enriched for errors as well as time-travellers.
 
-\subsubsection*{Inserting saltation lineages}
+\subsubsection*{Inserting saltational lineages}
 The HMM cost threshold approach outlined in the previous section is 
 effective at removing time-travelling samples, but it also filters out 
 important evolutionary events such as
 ``saltations'' that characterize major VOCs.
-These lineages are characterized by a high number of accumulated mutations,
-and are hypothesized to emerge from chronic infections
+These lineages are characterised by a high number of accumulated mutations,
+and are hypothesised to emerge from chronic infections
 during which the virus is exposed to individual-specific immune selective
 % Other refs here for this Sally?
 pressures\cite{Otto2021origins,Markov2023}.
-To distinguish time travellers from true saltation lineages,
+To distinguish time travellers from true saltational lineages,
 we re-evaluate the evidence for each lineage with a high HMM cost
 as additional samples are added.
 If these samples form a sufficiently plausible group over successive days
@@ -1917,17 +1920,18 @@ sc2ts adds the group to the ARG as a
 as standard daily sample clusters.
 
 Distinguishing a truly emerging outbreak from different forms of
-correlated error is non-trivial, and sc2ts has 5 parameters to fine
-tune the behaviour. Firstly, we require at least 10 samples in the
+correlated error is non-trivial, and
+sc2ts has 5 parameters to fine-tune the behaviour.
+Firstly, we require at least 10 samples in the
 group to ensure there is sufficient support over a time window of 
-7 days. Then, we build a local tree of the samples and consider
+seven days. Then, we build a local tree of the samples and consider
 some tree metrics to evaluate whether the samples within the 
 group are closely related. If we have at least 2 mutations 
 shared by all samples, there are at most 2 recurrent mutations
 within the group and at most 5 mutations unique to each sample, 
 the retrospective group is accepted for inclusion.
 Although this process is highly heuristic, it successfully 
-captured the majority of saltation lineages
+captured the majority of saltational lineages
 such as Alpha (Figure~\ref{fig:subgraph_alpha}), and the 
 vast majority of samples were added following the standard
 daily sample grouping mechanisms. 
@@ -1940,7 +1944,7 @@ The Delta, BA.1, and BA.2 lineages were
 particularly challenging, however, as the initial emergences of 
 these lineages were not densely sampled. In this case,
 there is little information for the retrospective sampling grouping mechanism
-to work with and it is very difficult to distinguish short-term time-travellers
+to work with and it is very difficult to distinguish short-term time travellers
 from true outbreak samples. For these cases, we chose specific
 high-quality samples with confident dates as ``seeds`` which are 
 unconditionally included in the ARG on the specified date.
@@ -1967,31 +1971,25 @@ in the Viridian v04 dataset
 % https://github.com/jeromekelleher/sc2ts-paper/issues/267
 % SHZ: I'd like to recheck this.
 that were used for the designation of these Pango lineages.
-% FIXME more Delta details and some references to back up our assertions
-% There's some specific info in the Viridian paper on this, I'm sure.
-% We should mention long branch splitting here too.]
+%[should we mention long branch splitting here too?]
+% YW: I think we don't need to, actually. That's a subsequent thing, and also discusses in the "further explanation" link
 The resulting subgraph around Delta in the ARG
 can be seen in Figure~\ref{fig:subgraph_delta};
 for further explanation, see Document~\ref{sec:dd_delta}.
 
-% FIXME: revise this paragraph to give some background info on Omicron,
-% and reference the Viridian work]
 For Omicron BA.1 and BA.2
 (first detected in South Africa or Botswana
 in November, 2021 \cite{ECDCVOCUpdates}),
 we used SRR17041376 and SRR17461792, respectively.
-We chose SRR17041376 (dated November 12, 2021 from South Africa)
-as the BA.1 seed
-(\url{https://github.com/jeromekelleher/sc2ts-paper/issues/264}),
-as it could be well explained as a non-recombinant
-given the ARG available on its collection date.
+We chose SRR17041376 (dated November 6, 2021 from South Africa)
+for the BA.1 seed, as it is among the earliest African Viridian samples,
+and its initial placement in the ARG mirrors the initial placement of a subsequent high-quality COG-UK sample (ERR7443564).
 For BA.2,
 we chose SRR17461792 (dated November 27, 2021 from South Africa),
 which is the earliest BA.2 sample present in the Viridian v04 dataset.
-This sample is dated later than SRR17041376 (the BA.1 seed),
+Note that this sample is dated later than SRR17041376 (the BA.1 seed),
 allowing time for the BA.1 lineage
-to accumulate enough sampled descendants and
-to get established in the ARG.
+to become established and accumulate descendant samples in the ARG.
 The resulting subgraph around these Omicron lineages in the ARG
 can be seen in Figure~\ref{fig:subgraph_omicron}.
 For further explanation, see Document~\ref{sec:dd_omicron}.
@@ -2446,7 +2444,7 @@ $\Gamma(x, y)$ is the upper incomplete gamma function):
 \[I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{\Gamma(n) - \Gamma(n, P T \mu)}\]
 
 A similar result holds for the right interval ($I_{right}$),
-but with $P$ replaced with $1–P$.
+but with $P$ replaced with $1-P$.
 Summing the two intervals ($I_{left}+I_{right}$)
 gives the expected interval length.
 As detectable recombination events
@@ -2544,7 +2542,7 @@ notebook for full methodological details of the analysis.
 %%%  used to determine whether the data met
 %%%  assumptions of the statistical approach.
 
-\subsubsection*{Analyzing global case counts}
+\subsubsection*{Analysing global case counts}
 
 To explore the timing of emergence of recombination events,
 global case count data were downloaded from
@@ -2905,7 +2903,7 @@ leading to ambiguity in the start position of these deletions
 there would be a single deletion event before the BA.1/BA.2 split),
 as noted in the Pango designation issue \cite{RambautOmicron2021}.
 
-We selected a BA.1 seed sample that led to the fewest mutations.
+We selected a BA.1 seed sample that led to the fewest mutations (see \url{https://github.com/jeromekelleher/sc2ts-paper/issues/264}).
 This strategy resulted in five recurrent mutations
 highlighted in blue/orange/green/red/purple
 which are absent in the chosen seed
