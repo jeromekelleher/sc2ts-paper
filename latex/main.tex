@@ -1949,22 +1949,24 @@ unconditionally included in the ARG on the specified date.
 % complicating the story.
 For Delta
 (first detected in December, 2020 in India \cite{ECDCVOCUpdates}),
+% https://github.com/jeromekelleher/sc2ts-paper/issues/267
 % More samples were unconditionally added,
 % but the earliest are the seeds.
 we used two seeds:
-one sample (ERR5461562) assigned to B.1.617.1 (Kappa) and
-the other (ERR5676810) assigned to B.1.617.2 (Delta).
-Kappa is closely related to Delta, and
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
+ERR5461562 assigned to B.1.617.1/Kappa
+(dated February 22, 2021 from the UK) and
+ERR5676810 assigned to B.1.617.2/Delta
+(dated March 23, 2021 from the UK).
+Kappa is closely related to Delta \cite{Stern2021}, and
 therefore seeding it helps to reconstruct the origin of Delta.
-% See https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
-Both of these seeds were sampled in the UK,
-the Kappa one in February, 2021 and the Delta one in March, 2021.
-% https://github.com/jeromekelleher/sc2ts-paper/issues/267
-% The reality is a bit more complicated,
-% but this is easy to explain.
+% What we actually did is a bit more complicated,
+% as it was manual, but this is easier to explain.
 These are the earliest Kappa and Delta samples
 in the Viridian v04 dataset
-that were also used for Pango designation.
+% https://github.com/jeromekelleher/sc2ts-paper/issues/267
+% SHZ: I'd like to recheck this.
+that were used for the designation of these Pango lineages.
 % FIXME more Delta details and some references to back up our assertions
 % There's some specific info in the Viridian paper on this, I'm sure.
 % We should mention long branch splitting here too.]
@@ -4052,8 +4054,11 @@ differences in tree building approaches between UShER and sc2ts.
 
 
 [
-FIXME: Discuss  the large effect recombinants inferred by both:
-sc2ts identifies two recombination events with \textgreater 10k descendants (specifically, 166,979 and 166,285 descendant samples), both of which we identify as spurious (see \ref{sec:spurious-ancestrally-important-recombinants}). RIPPLES at $p=4$ also identifies two recombination events with \textgreater 10k descendants (531,224 and 339,523 descendant samples); these do not correspond to the same events as in sc2ts. At $p=3$, RIPPLES identifies six recombination events with \textgreater 10k descendant samples, four of which have \textgreater 100k descendant samples.
+FIXME: Discuss the large effect recombinants inferred by both in more detail. E.g.:
+sc2ts identifies two recombination events with \textgreater 10k descendants (specifically, 166,979 and 166,285 descendant samples),
+both of which we identify as spurious (see \ref{sec:spurious-ancestrally-important-recombinants}).
+RIPPLES at $p=4$ also identifies two recombination events with \textgreater 10k descendants (531,224 and 339,523 descendant samples);
+these do not correspond to the same two spurious large-effect events in sc2ts. At $p=3$, RIPPLES identifies six recombination events with \textgreater 10k descendant samples, four of which have \textgreater 100k descendant samples.
 ]
 
 
