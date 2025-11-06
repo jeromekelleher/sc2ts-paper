@@ -1938,7 +1938,7 @@ added via this retrospective grouping mechanism.
 
 The Delta, BA.1, and BA.2 lineages were 
 particularly challenging, however, as the initial emergences of 
-the saltation lineages were not densely sampled. In this case,
+these lineages were not densely sampled. In this case,
 there is little information for the retrospective sampling grouping mechanism
 to work with and it is very difficult to distinguish short-term time-travellers
 from true outbreak samples. For these cases, we chose specific
@@ -1947,30 +1947,52 @@ unconditionally included in the ARG on the specified date.
 
 % We used more seeds, but in practise it doesn't matter and it's just
 % complicating the story.
-For Delta, we used two seeds:
-one for B.1.617.1 (Kappa, which is sibling to Delta)
-and one sample assigned to B.1.617.2.
-[FIXME more Delta details and some references to back up our assertions.
-There's some specific info in the Viridian paper on this,
-I'm sure. 
-We should mention long branch splitting here too.]
-The resulting subgraph can be seen in Figure~\ref{fig:subgraph_delta}.
+For Delta
+(first detected in December, 2020 in India \cite{ECDCVOCUpdates}),
+% More samples were unconditionally added,
+% but the earliest are the seeds.
+we used two seeds:
+one sample (ERR5461562) assigned to B.1.617.1 (Kappa) and
+the other (ERR5676810) assigned to B.1.617.2 (Delta).
+Kappa is closely related to Delta, and
+therefore seeding it helps to reconstruct the origin of Delta.
+% See https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
+Both of these seeds were sampled in the UK,
+the Kappa one in February, 2021 and the Delta one in March, 2021.
+% https://github.com/jeromekelleher/sc2ts-paper/issues/267
+% The reality is a bit more complicated,
+% but this is easy to explain.
+These are the earliest Kappa and Delta samples
+in the Viridian v04 dataset
+that were also used for Pango designation.
+% FIXME more Delta details and some references to back up our assertions
+% There's some specific info in the Viridian paper on this, I'm sure.
+% We should mention long branch splitting here too.]
+The resulting subgraph around Delta in the ARG
+can be seen in Figure~\ref{fig:subgraph_delta};
+for further explanation, see Document~\ref{sec:dd_delta}.
 
-[FIXME: revise this paragraph to give some background info on Omicron, and reference
-the Viridian work]
-For Omicron BA.1 and BA.2,
+% FIXME: revise this paragraph to give some background info on Omicron,
+% and reference the Viridian work]
+For Omicron BA.1 and BA.2
+(first detected in South Africa or Botswana
+in November, 2021 \cite{ECDCVOCUpdates}),
 we used SRR17041376 and SRR17461792, respectively.
-We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
-as the BA.1 seed (https://github.com/jeromekelleher/sc2ts-paper/issues/264),
-as it could be well explained as as a non-recombinant
+We chose SRR17041376 (dated November 12, 2021 from South Africa)
+as the BA.1 seed
+(\url{https://github.com/jeromekelleher/sc2ts-paper/issues/264}),
+as it could be well explained as a non-recombinant
 given the ARG available on its collection date.
-For BA.2, we chose SRR17461792 (dated 2021-11-27 from South Africa),
+For BA.2,
+we chose SRR17461792 (dated November 27, 2021 from South Africa),
 which is the earliest BA.2 sample present in the Viridian v04 dataset.
-It is dated later than SRR17041376 (the BA.1 seed),
-allowing time for the BA.1 lineage to accumulate enough sampled descendants
-and to get established in the ARG.
-See Figure~\ref{fig:subgraph_omicron} for an overview of the resulting 
-subgraph.
+This sample is dated later than SRR17041376 (the BA.1 seed),
+allowing time for the BA.1 lineage
+to accumulate enough sampled descendants and
+to get established in the ARG.
+The resulting subgraph around these Omicron lineages in the ARG
+can be seen in Figure~\ref{fig:subgraph_omicron}.
+For further explanation, see Document~\ref{sec:dd_omicron}.
 
 With the combination of these mechanisms---gradual accumulation 
 of diversity through daily sample groups, retrospective group
@@ -3956,37 +3978,37 @@ Analysis of the descending samples for each event shows that
 (%
 XA, 
 XB, 
+XC, 
+XL, 
+XW,
 XAC, 
 XAE, 
 XAJ,
 XBB, 
-XBM, 
-XC, 
-XL, 
-XW%
+XBM%
 )
 are associated unequivocally with a single recombination event.
 7 lineages 
 (%
-XAM,
-XBD, 
-XBR, 
 XE,
 XM,
 XS,
-XY%
+XY,
+XAM,
+XBD, 
+XBR%
 )
 are associated with two events. Finally, 
 one event subtending 1321 samples suggests that 
-XAF,
-XAL, 
 XE, 
 XH, 
 XJ, 
 XM, 
 XY, 
+XAF,
+XAL, 
 and 
-82 BA.2 samples share a recombination event [FIXME: With what breakpoint and parents?].
+82 BA.2 samples share a recombination event whose parents are BA.2 and BA.1 [FIXME: With what breakpoint and parents?].
 We also ran RIPPLES with $p=4$, which reduced the overall number of
 events to 1174 (roughly 4-fold) but also approximately halved the number of
 events involving X lineages, missing well-characterized events,
@@ -4005,10 +4027,10 @@ all recombination events associated with Pango X lineages detected by RIPPLES,
 and their relationship with the sc2ts ARG.
 Of the 16 Class I events (Pango X lineages unequivocally associated with
 a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
-8 have corresponding recombination events (4, at $p=4$).
+8 are found by RIPPLES (4, at $p=4$).
 Of the 5 Type II events
 (recombination nodes with more complex assocation with X lineages),
-two have close matches, with XBM matching exactly
+two have close matches in RIPPLES, with XBM matching exactly
 (including 2 descending BF.3 samples),
 and XE/XH is similar (but without including the 2 XH samples in the clade).
 Two events in the RIPPLES set correspond to likely false negatives
@@ -4026,17 +4048,13 @@ sc2ts node has more than 4 mutations, of the total
 1,167 mutations, 452 of these occurred at sites that were 
 remapped during post-hoc parsimony. The remaining ``missing''
 events are likely attributable to the finer details of the 
-differences in tree building approaches between UShER and sc2ts
+differences in tree building approaches between UShER and sc2ts.
 
 
-[FIXME: Discuss  the large effect recombinants inferred by both]
-
-Two further recombinants in the sc2ts ARG that are likely to be 
-spurious are important to discuss.
-[FIXME - discuss BA.5 (kept as a recombination event but only because we can't 
-rewire it post-hoc, owning to subsequent tree building) and the BA.2 event (doesn't
-pass QC.) - note this is discussed in more detail in document \ref{sec:spurious-ancestrally-important-recombinants} ]
-
+[
+FIXME: Discuss  the large effect recombinants inferred by both:
+sc2ts identifies two recombination events with \textgreater 10k descendants (specifically, 166,979 and 166,285 descendant samples), both of which we identify as spurious (see \ref{sec:spurious-ancestrally-important-recombinants}). RIPPLES at $p=4$ also identifies two recombination events with \textgreater 10k descendants (531,224 and 339,523 descendant samples); these do not correspond to the same events as in sc2ts. At $p=3$, RIPPLES identifies six recombination events with \textgreater 10k descendant samples, four of which have \textgreater 100k descendant samples.
+]
 
 
 
@@ -4127,7 +4145,7 @@ and XE/XH is similar (but without including the 2 XH samples in the clade).
 UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
 makes these both descendants of the Xx event,
 RIPPLES creates two independent recombinations.
-Similarly, XAE and ??? have exactly matching clades, but RIPPLES
+Similarly, XAE and [FIXME] ??? have exactly matching clades, but RIPPLES
 infers two independent recombination events while sc2ts groups them both
 under the Xx event. XB is notable as a likely sc2ts false negative that is 
 identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
