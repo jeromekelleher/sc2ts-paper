@@ -2111,36 +2111,55 @@ causing a mismatch is equally probable,
 ignoring transition-transversion biases and
 variation of mutation rate along the genome.
 
-A Viterbi algorithm can be used
-to find the most likely ``copying path'' of a focal sample
-through a reference panel of samples under the LS model.
-Specifically, sc2ts uses a Viterbi algorithm modified to operate on STS,
-which was originally developed to build genome-wide human genealogies and
-is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
-Using this Viterbi algorithm,
-sc2ts deterministically infers the copying path of a sample
-collected on a certain date through the samples
-collected on earlier dates in a given ARG.
+We use the Viterbi algorithm implemented in tsinfer~\cite{Kelleher2019}
+to efficiently find copying paths under this model. We updated this 
+implementation to include a ``likelihood threshold'', which allows 
+all possible paths through the HMM with likelihood less than a given
+value to be considered equally probable. This approach leads to major
+gains in likelihood compression, saving memory and reducing computation
+time. We then use this likelihood thresholding approach to iteratively
+process the samples for a given daily batch, first finding all exact 
+matches, then all with 1 mismatch, etc. By setting the appropriate
+likelihood threshold for the HMM, we are guaranteed that any HMM
+solutions found at this threshold are correct, and can then run the HMM again
+with a lower threshold for the remaining samples. Close matches
+are found very quickly using this approach, and it is only
+samples that are more distant from the current ARG that require
+significant processing time and memory. This is reflected in 
+the computaional resources reported in 
+Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}.
 
-The SARS-CoV-2 sequences were determined
-from samples collected densely in time.
-SARS-CoV-2 phylogenies have low phylogenetic signals
-due to high sampling frequency
-(such that sampling and transmission outpace nucleotide substitution).
-Therefore, most samples can be explained by a small number of mutations.
-Leveraging this property of the dataset,
-we developed a likelihood-thresholding strategy
-to avoid needing to compute the likelihood of
-all possible copying paths through an ARG for every single sample.
-%%% TODO: This needs to be explained.
 
-[TODO explain Fig S1 and S2]
+% A Viterbi algorithm can be used
+% to find the most likely ``copying path'' of a focal sample
+% through a reference panel of samples under the LS model.
+% Specifically, sc2ts uses a Viterbi algorithm modified to operate on STS,
+% which was originally developed to build genome-wide human genealogies and
+% is capable of scaling to biobank-scale datasets \cite{Kelleher2019}.
+% Using this Viterbi algorithm,
+% sc2ts deterministically infers the copying path of a sample
+% collected on a certain date through the samples
+% collected on earlier dates in a given ARG.
 
-Furthermore, to avoid performing redundant HMM matching on identical samples,
-new samples which were exactly matched to a (sample or non-sample) node in the ARG
-were not added immediately.
-Instead, the copying paths of these samples were recorded,
-and the samples were eventually added back to the ARG in a post-processing step.
+% The SARS-CoV-2 sequences were determined
+% from samples collected densely in time.
+% SARS-CoV-2 phylogenies have low phylogenetic signals
+% due to high sampling frequency
+% (such that sampling and transmission outpace nucleotide substitution).
+% Therefore, most samples can be explained by a small number of mutations.
+% Leveraging this property of the dataset,
+% we developed a likelihood-thresholding strategy
+% to avoid needing to compute the likelihood of
+% all possible copying paths through an ARG for every single sample.
+% %%% TODO: This needs to be explained.
+
+% [TODO explain Fig S1 and S2]
+
+% Furthermore, to avoid performing redundant HMM matching on identical samples,
+% new samples which were exactly matched to a (sample or non-sample) node in the ARG
+% were not added immediately.
+% Instead, the copying paths of these samples were recorded,
+% and the samples were eventually added back to the ARG in a post-processing step.
 
 \subsubsection*{Choice of k parameter}
 % This is a key decision that we will be referencing the discussion, so 
