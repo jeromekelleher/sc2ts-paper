@@ -163,10 +163,10 @@ Ancestral recombination graphs, population genetics, recombination, tree sequenc
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
 of species~\cite{Felsenstein2004}, using small numbers of widely diverged
-genomes. In this context, recombination is a nuisance which must be 
-carefully accounted for~\cite{Rannala2025recombination},
-affecting the inference of species trees~\cite{Posada2002effect}
-and biasing downstream
+genomes. In this context, recombination is a nuisance 
+requiring careful consideration~\cite{Rannala2025recombination}
+as it affects the inference of species trees~\cite{Posada2002effect}
+and biases downstream
 analyses~\cite{Schierup2000consequences,Hedge2014bacterial}.
 Modern pathogen datasets are not sparsely sampled from different species,
 but consist of tens to hundreds of thousands of genomes sampled from 
@@ -209,7 +209,7 @@ At the peak in February 2022 about 80,000 samples
 per day  were submitted to GISAID\cite{Shu2017},
 accumulating to a total of over 17.5 million samples
 as of October 2025.
-Regularly reinferring trees de-novo from such rapidly
+Regularly re-inferring trees de-novo from such rapidly
 growing datasets is untenable.
 The UShER\cite{Turakhia2021} method is based on adding
 samples to an existing tree using maximum parsimony,
@@ -261,11 +261,11 @@ from the classical literature is that the ARG
 tightly coupled to the generative
 process\cite{Hudson1983,Griffiths1997ancestral}, substantially 
 broadening the range of potential applications~\cite{Bisschop2025likelihoods}.
-Another important point is that strong software support for ARGs now
+Another significant point is that strong software support for ARGs now
 exists, and the tskit library~\cite{Ralph2020} is the basis of a 
 rapidly growing software ecosystem of
 simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
-visualization~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
+visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
 inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting}
 % More here? I'm sure there's others
 and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
@@ -355,7 +355,7 @@ using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens200
 The LS model is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination
 on genetic inheritance~\cite{Delaneau2019-wl,Browning2018-nk},
-typically parameterized by population-scaled mutation and
+typically parametrised by population-scaled mutation and
 recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
 In the interest of interpretability, we simplified this model
 to use a single parameter $k$
@@ -524,7 +524,7 @@ See Document~\ref{sec:supplement_dels} for further analysis.
 \includegraphics[width=\linewidth]{pango_x_subgraphs}
 \caption{
 Illustrative subgraphs in the ARG.
-Boxes identify specific samples, colored by their Pango X classification;
+Boxes identify specific samples, coloured by their Pango X classification;
 smaller squares list extra samples descending from a node, hidden for brevity,
 with all hidden samples taking the same Pango designation as their parent.
 For the two recombination nodes, a genome bar above shows
@@ -553,10 +553,10 @@ the ``averted'' column shows the number of additional mutations required
 without recombination (see main text).
 Parent lineages shown in boldface are nodes exactly matched by sampled sequences.
 The descendants column shows the descendant samples broken down by Pango lineage.
-For Type III events, the focal pango, event (Type I or II) it is derived 
+For Type III events, the focal Pango, event (Type I or II) it is derived 
 from and the distance (path length and time in days) from that event are shown,
-as well as the number of mutations directly ancestral to the pango origin
-node. For Type IV events, the pango designation of the parent node and number
+as well as the number of mutations directly ancestral to the Pango origin
+node. For Type IV events, the Pango designation of the parent node and number
 of mutations are shown.
 }
 \label{tab:pango_x_lineages}
@@ -815,11 +815,11 @@ which have the minimal possible number of averted mutations.
 \caption{
 Properties of recombination events.
 A,B,C show summaries of the 354 sc2ts recombination nodes passing QC filters
-colored by 3SEQ classification (recombinant: purple, non-recombinant: grey).
+coloured by 3SEQ classification (recombinant: purple, non-recombinant: grey).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
-recombination nodes in Table~\ref{tab:pango_x_lineages} are labeled starting with `X' and
+recombination nodes in Table~\ref{tab:pango_x_lineages} are labelled starting with `X' and
 those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
 e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
@@ -862,8 +862,8 @@ highlighting potentially problematic loci.
 Each copying pattern shows the positions
 where the allelic state
 in a recombinant (middle row) matches that of
-the left (upper row, colored green) 
-or right parent (lower row, colored blue),
+the left (upper row, coloured green) 
+or right parent (lower row, coloured blue),
 or where the recombination event requires
 a de novo mutation (gold, with mutational change below).
 Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
@@ -873,7 +873,7 @@ shown by the large number of supporting loci on the left and right.
 XBB is also strongly supported by many loci on the left and right, 
 but the presence of many de novo mutations
 observed in the copying patterns suggests the existence of
-many genetically distinct, un-sampled ancestors
+many genetically distinct, unsampled ancestors
 and some caution should be exercised when interpreting them
 (see Document~\ref{sec:dd_xbb} for more details).
 See Figures~\ref{fig:recombinant_evidence}D and
@@ -955,7 +955,7 @@ Recombination breakpoint and time intervals.
 (A) Distribution of the breakpoint intervals of
 354 recombination events along the genome
 (annotated with gene labels on top).
-Each line represents a breakpoint interval colored by its length.
+Each line represents a breakpoint interval coloured by its length.
 (B) Number of overlapping breakpoint intervals per site.
 (C) Length distribution of breakpoint intervals.
 (D) Relationship between breakpoint interval length and
@@ -1025,7 +1025,7 @@ While consistent with the hypotheses
 that recombination events occur more often when infection rates are common
 and are detected more often when viral diversity is high,
 we note several sources of uncertainty.
-Global case numbers were underreported,
+Global case numbers were under reported,
 particularly during the Delta and Omicron waves~\cite{Wang2025}.
 Furthermore, there may be substantial uncertainty in the timing of a recombination event,
 particularly if these occur in chronically infected individuals
@@ -1186,7 +1186,7 @@ of the SARS-CoV-2 dataset, but the methods may be readily adapted
 to other pathogens. The LS HMM is the most important element of 
 sc2ts, efficiently finding parsimonious placements for samples 
 among all possible recombinant solutions. The current 
-parameterisation---emphasising interpretability---is simplistic,
+parametrisation---emphasising interpretability---is simplistic,
 and could readily be extended to account
 for mutation rate variation along the genome~\cite{Haddox2025}
 or transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024}.
@@ -1243,7 +1243,7 @@ would be required to address data quality issues.
 Secondly, the Viridian data is publicly available and redistributable,
 enabling us to share the resulting ARG without restrictions.
 
-It is important to acknowledge that sampling is nonuniform both
+It is important to acknowledge that sampling is non uniform both
 geographically and over time~\cite{Lancet2021,Chen2022}. 
 Sc2ts performs best in the data-dense regime, when the underlying
 assumption that genetic diversity is gradually accumulating within
@@ -1336,7 +1336,7 @@ when such data sparsity is detected.
 
 SHZ is supported by an NDPH Intermediate Research Fellowship
 (Oxford Population Health, University of Oxford). 
-% "ackknowledges support" here means "was awarded this grant 
+% "acknowledges support" here means "was awarded this grant 
 % and it supported this research"
 JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation.
 
@@ -1454,10 +1454,10 @@ JK acknowledges support from R01 HG012473 from the National Institutes of Health
 % %%%  Footnotes (superscript lowercase letters) should
 % %%%  be used where necessary to indicate some feature
 % %%%  of the data; please do not use bold, italic,
-% %%%  colored text, or shading for this purpose. Use
+% %%%  coloured text, or shading for this purpose. Use
 % %%%  separate cells, not line breaks or spaces, for
 % %%%  all discrete data elements. Small embedded
-% %%%  graphics with color are OK.
+% %%%  graphics with colour are OK.
 
 % %%%  Like figures, all tables must be cited within
 % %%%  the main text, and our typesetting team will
@@ -1713,7 +1713,7 @@ the coalescent with recombination
 that captures many of the key features of
 the joint processes of mutation and recombination.
 It is a Hidden Markov Model (HMM) in which a focal genome
-is modeled as a
+is modelled as a
 sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
 (Figure~\ref{fig:ls_diagram}).
@@ -1763,7 +1763,7 @@ with a lower threshold for the remaining samples. Close matches
 are found very quickly using this approach, and it is only
 samples that are more distant from the current ARG that require
 significant processing time and memory. This is reflected in 
-the computaional resources reported in 
+the computational resources reported in 
 Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}.
 
 
@@ -1809,7 +1809,7 @@ We would expect that a good value for $k$
 should lead to parsimonious ARGs
 that capture plausible recombination events
 without incurring too many mutations, particularly reversions.
-A value of $k$ too low could result in many artifactual recombination events,
+A value of $k$ too low could result in many artefactual recombination events,
 whereas a value of $k$ too high could miss many genuine recombination events.
 We found that ARGs built with $k$ set to 3
 contained many dubious recombination events,
@@ -1828,12 +1828,12 @@ in the ARG. While some of these samples will require no extra mutations
 (as they are identical to the attachment node),
 in general there will be complex patterns of shared mutations among the samples
 reflecting their evolutionary relationships.
-We use a standard neighbor-joining algorithm\cite{Saitou1987}
+We use a standard neighbour-joining algorithm\cite{Saitou1987}
 to infer these within-cluster evolutionary relationships.
 We first compute the Hamming distance between
 all pairs of samples using scipy~\cite{Virtanen2020scipy},
 and then use biotite\cite{Kunzmann2018biotite,Kunzmann2023biotite}
-to compute the neighbor-joining tree.
+to compute the neighbour-joining tree.
 Then, mutations are mapped back onto this daily sample cluster tree using 
 the Fitch-Hartigan parsimony 
 algorithm\cite{Fitch1971toward,Hartigan1973minimum} implemented in tskit.
@@ -1899,7 +1899,7 @@ samples enriched for errors as well as time-travellers.
 
 \subsubsection*{Inserting saltation lineages}
 The HMM cost threshold approach outlined in the previous section is 
-effective at removing time-traveling samples, but it also filters out 
+effective at removing time-travelling samples, but it also filters out 
 important evolutionary events such as
 ``saltations'' that characterize major VOCs.
 These lineages are characterized by a high number of accumulated mutations,
@@ -1907,7 +1907,7 @@ and are hypothesized to emerge from chronic infections
 during which the virus is exposed to individual-specific immune selective
 % Other refs here for this Sally?
 pressures\cite{Otto2021origins,Markov2023}.
-To distinguish time travelers from true saltation lineages,
+To distinguish time travellers from true saltation lineages,
 we re-evaluate the evidence for each lineage with a high HMM cost
 as additional samples are added.
 If these samples form a sufficiently plausible group over successive days
@@ -1918,7 +1918,7 @@ as standard daily sample clusters.
 
 Distinguishing a truly emerging outbreak from different forms of
 correlated error is non-trivial, and sc2ts has 5 parameters to fine
-tune the behavior. Firstly, we require at least 10 samples in the
+tune the behaviour. Firstly, we require at least 10 samples in the
 group to ensure there is sufficient support over a time window of 
 7 days. Then, we build a local tree of the samples and consider
 some tree metrics to evaluate whether the samples within the 
@@ -1947,18 +1947,23 @@ unconditionally included in the ARG on the specified date.
 
 % We used more seeds, but in practise it doesn't matter and it's just
 % complicating the story.
-For Delta, we used two seeds: one for B.1.617.1 and 1 sample assigned to
-B.1.617.2, [FIXME more Delta details and some references to back up our assertions.
-There's some specific info in the Viridian paper on this, I'm sure. 
+For Delta, we used two seeds:
+one for B.1.617.1 (Kappa, which is sibling to Delta)
+and one sample assigned to B.1.617.2.
+[FIXME more Delta details and some references to back up our assertions.
+There's some specific info in the Viridian paper on this,
+I'm sure. 
 We should mention long branch splitting here too.]
-The resulting subgraph can be see in Figure~\ref{fig:subgraph_delta}.
+The resulting subgraph can be seen in Figure~\ref{fig:subgraph_delta}.
 
 [FIXME: revise this paragraph to give some background info on Omicron, and reference
 the Viridian work]
-For Omicron BA.1 and BA.2, we used SRR17041376 and SRR17461792, respectively.
+For Omicron BA.1 and BA.2,
+we used SRR17041376 and SRR17461792, respectively.
 We chose SRR17041376 (a sample dated 2021-11-12 from South Africa)
 as the BA.1 seed (https://github.com/jeromekelleher/sc2ts-paper/issues/264),
-as it could be well explained as as a non-recombinant given the ARG available on its collection date.
+as it could be well explained as as a non-recombinant
+given the ARG available on its collection date.
 For BA.2, we chose SRR17461792 (dated 2021-11-27 from South Africa),
 which is the earliest BA.2 sample present in the Viridian v04 dataset.
 It is dated later than SRR17041376 (the BA.1 seed),
@@ -2160,7 +2165,7 @@ Inspection of the copying patterns for all the recombination events
 identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
 Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
-(Q1 to Q4 correspond to the labeled quadrants in Figure~\ref{fig:recombinant_qc}).
+(Q1 to Q4 correspond to the labelled quadrants in Figure~\ref{fig:recombinant_qc}).
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
 having a net number of supporting loci of 4 on both sides of the breakpoint.
 Q2 shows an artefactual recombination event
@@ -2170,7 +2175,7 @@ many cases are affected by a known amplicon dropout
 caused by this particular deletion \cite{Sanderson2021}.
 Q3 shows an artefactual recombination event caused by
 a combination of this Delta deletion and a known MNS (see below).
-Finally, Q4 shows an artifactual recombination event
+Finally, Q4 shows an artefactual recombination event
 associated with the A507T-T508C-G509A MNS,
 which has been identified as a sequencing error
 due to incomplete read trimming \cite{DeMaio2024}.
@@ -2307,7 +2312,7 @@ and therefore restricted to mutations above sample nodes only.
 
 Next, we calculated the mutational spectra of the same VOCs
 using the mutational counts from an UShER phylogeny 
-analyzed by Bloom et al.\cite{Bloom2023},
+analysed by Bloom et al.\cite{Bloom2023},
 which was built using a Nextclade pipeline and
 has samples collected worldwide up to November, 2022.
 To obtain the WHO label corresponding to a Nextclade-defined clade, we used the following mapping:
@@ -2689,16 +2694,16 @@ for details.
 \subsection{Pango lineage ``origination'' events}
 \label{sec:supplement_pango_lineages}
 
-To analyze how well the ARG reflects the phylogenetic structure implicit in the
+To analyse how well the ARG reflects the phylogenetic structure implicit in the
 Pango lineage naming system, we considered the Pango assignments generated by
 Pangolin on the alignments for each node in the ARG (STAR Methods). If the ARG
 perfectly reflected the Pango lineage structure, each lineage would form a
 clade descending from a single originating node with that label. We identified
-putative origination nodes among those labeled with a given lineage as the node
+putative origination nodes among those labelled with a given lineage as the node
 with the maximum number of descendant samples and the earliest time (if there
 is a tie).
 
-Of the 2058 distinct pango lineages in the ARG, 1473 of these (comprising
+Of the 2058 distinct Pango lineages in the ARG, 1473 of these (comprising
 717798 samples) match perfectly, with unique origination events in the ARG
 where all samples assigned a given lineage descend from the first node assigned
 that lineage. A further 245 lineages (589197 samples) match perfectly when we
@@ -2764,7 +2769,7 @@ Most of the characteristic Alpha mutations \cite{RambautAlpha2020}
 (20 out of 23) in the ARG
 occur immediately above the Alpha root.
 However, a characteristic three-base correlated mutation
-is instead associated with the parent node (labeled B.1.1) of the Alpha root,
+is instead associated with the parent node (labelled B.1.1) of the Alpha root,
 suggesting that this mutation was acquired prior to the emergence of Alpha.
 This parent node has an additional 5 children
 (leading to 12 samples),
@@ -2812,10 +2817,10 @@ given that no B.1.617.3 samples passed our QC filters and
 no seed B.1.617.3 samples were specified for ARG inference.
 
 In the ARG, all six of the shared Delta-Kappa mutations (red)
-occur above the B.1-labeled common ancestor
+occur above the B.1-labelled common ancestor
 of Kappa (left branch) and Delta (right branch).
 All nine of the Kappa-specific mutations (blue)
-occur above the B.1.617-labeled node leading to Kappa samples.
+occur above the B.1.617-labelled node leading to Kappa samples.
 Seven out of nine Delta-specific mutations (purple)
 occur above the Delta root
 (the other two are above the MRCA of Kappa and Delta).
@@ -2860,7 +2865,7 @@ BA.1 and BA.2 are genetically distinct from each other and
 from their parental B.1.1.529 lineage \cite{RambautOmicron2021}.
 In the subgraph shown in Figure~\ref{fig:subgraph_omicron},
 BA.1 and BA.2 differ from the non-Omicron B.1.1 ancestor
-(above the B.1.1.529-labeled MRCA of BA.1 and BA.2)
+(above the B.1.1.529-labelled MRCA of BA.1 and BA.2)
 by 27 mutations (including two deletions),
 reflecting its saltational origin.
 The ARG captures the split between BA.1 and BA.2
@@ -3150,9 +3155,9 @@ Similarly, XAD has two independent origins descending from the Xx
 event, and we omit it for simplicity.
 See Document~\ref{sec:dd_xx} for more details on the Xx event.
 
-In cases where nested samples not assigned to the focal pango lineage are
-either from different pango X lineages 
-or given a generic BA.2 assignment. Of these 59 generic assignents
+In cases where nested samples not assigned to the focal Pango lineage are
+either from different Pango X lineages 
+or given a generic BA.2 assignment. Of these 59 generic assignments
 6 had conflicts in their UShER placements and could have been
 assigned an X lineage (XJ: 3, XU: 2, XN: 1), and 
 25 were cases in which Scorpio~\cite{Colquhoun2023scorpio}
@@ -3179,7 +3184,7 @@ with the detection results reported by Jackson et al.
 
 Jackson et al. described
 four groups of recombinants (named A to D) and four singleton recombinants.
-Of the 16 samples analyzed by Jackson et al., 12 were included in the ARG;
+Of the 16 samples analysed by Jackson et al., 12 were included in the ARG;
 the remaining 4 were excluded
 because the sequences did not pass the QC filtering criteria or
 because of a high HMM cost.
@@ -3376,7 +3381,7 @@ which is supported by a sample (ERR9124067) that is identical to it.
 All the XJ samples descend from a well supported recombination node.
 There are 14 samples (including e.g. ERR8683190)
 which sc2ts identified as descendants of the same recombination node
-but are labeled BA.2 by pangolin (displayed on the left), and
+but are labelled BA.2 by pangolin (displayed on the left), and
 which do not possess the XJ consensus mutations C22792T and C27945T.
 These BA.2 samples could be worthy of further investigation.
 
@@ -3535,7 +3540,7 @@ descending from the same event
 (clustered due to a shared sequencing error due to AmpliSeq).
 These eight samples would likely attach to the nodes
 descending from the first recombination event.
-We excluded this likely artifactual event from further analysis and
+We excluded this likely artefactual event from further analysis and
 consider XS to have emerged from a single recombinant origin.
 
 \scghdiscussion{782}
@@ -3544,8 +3549,8 @@ consider XS to have emerged from a single recombinant origin.
 \label{sec:dd_xw}
 
 All the XW samples descend from a well supported recombination node.
-Its left parent is a BA.1.1.15-labeled sample (ERR8069658), and
-its right parent is a BA.2-labeled sample (ERR9086669).
+Its left parent is a BA.1.1.15-labelled sample (ERR8069658), and
+its right parent is a BA.2-labelled sample (ERR9086669).
 
 \subsubsection{XY}
 \label{sec:dd_xy}
@@ -3554,7 +3559,7 @@ All the XY samples descend from a well supported recombination node,
 through a shared reconstructed internal node.
 Its left parent is a reconstructed internal node assigned to BA.1.1,
 which is supported by a sample (ERR8627048) identical to it.
-Its right parent is a BA.2-labeled sample (ERR9399983).
+Its right parent is a BA.2-labelled sample (ERR9399983).
 There are a pair of (orange) reversion mutations
 within the XY clade at position 23948:
 these were not used for inference
@@ -3572,7 +3577,7 @@ which we tentatively refer to as ``Xx''.
 Note that all were designated around the same time,
 with their samples collected
 roughly within a three-month period (Mar., 2022 to Jul., 2022).
-Several samples labeled as BA.2 by Pangolin also lie
+Several samples labelled as BA.2 by Pangolin also lie
 within this recombinant clade,
 including two that are identical
 to the proposed originating recombinant (ERR8146303 and ERR8163061).
@@ -3582,7 +3587,7 @@ For example, there are three highly mutable sites (22792, 28877, and 28878)
 which were not used during inference,
 but were remapped onto the ARG during postprocessing.
 The inferred topology places these sites
-as recurrent (colored orange, grey, and faded yellow),
+as recurrent (coloured orange, grey, and faded yellow),
 but a more parsimonious arrangement would,
 for example, group the two XAD samples as siblings
 (removing the need to postulate mutations
@@ -3619,7 +3624,7 @@ only one XAF sample passed our QC filters and was added to the ARG.
 % require a large number of mutations to incorporate into the ARG
 % (i.e. have a high HMM cost).
 However, we find a small recombinant BA1.1/BA.2 clade of 37 samples,
-associated with the BA.2-labeled sample ERR9755541,
+associated with the BA.2-labelled sample ERR9755541,
 within which the single XAF sample is nested.
 The inferred parents and breakpoint at 10,447
 aligns with that proposed for XAF
@@ -3660,7 +3665,7 @@ and with a lower threshold of k=3
 the distribution of mutations on the ARG topology suggests
 that it is is even possible that XAJ is a 2-breakpoint recombinant
 with the region from 21765-23535
-coming from the BA.4 labeled sample SRR18848050.
+coming from the BA.4 labelled sample SRR18848050.
 
 \scghdiscussion{634}
 
@@ -3748,7 +3753,7 @@ in the XBB copying pattern.
 Had BJ.1 samples been present in the ARG,
 the left branch of
 the XBB-associated recombination node
-may have attached to a BJ.1-labeled node, and
+may have attached to a BJ.1-labelled node, and
 the origin of XBB would required fewer mutations.
 
 \scghdiscussion{929}
@@ -3820,7 +3825,7 @@ All the XBF samples descend from a well supported recombination node,
 with three mutations on the left of the breakpoint.
 Its left parent is a sample assigned to BA.5.2.1 (SRR20305553).
 Its right parent is a reconstructed internal node
-that is supported by a CJ.1-labeled sample (SRR21948068),
+that is supported by a CJ.1-labelled sample (SRR21948068),
 which differs by three mutations.
 
 \subsubsection{XBG}
@@ -3854,7 +3859,7 @@ a hypothesis was made that a missing common ancestor could exist
 (\url{https://github.com/cov-lineages/pango-designation/issues/1440\#issuecomment-1355264973}),
 making XBK non-recombinant.
 Exactly such a missing ancestor
-is found as the upper internal node labeled CJ.1 in the ARG,
+is found as the upper internal node labelled CJ.1 in the ARG,
 constructed by sc2ts as part of its tree building steps.
 
 \scghdiscussiontwo{931}{XBQ}
@@ -3867,8 +3872,8 @@ constructed by sc2ts as part of its tree building steps.
 
 All the XBM samples descend from a well supported recombination node.
 Its left parent is a reconstructed internal node
-that is directly supported by a BA.2.76-labeled sample identical to it.
-Its right parent is a BF.3-labeled sample.
+that is directly supported by a BA.2.76-labelled sample identical to it.
+Its right parent is a BF.3-labelled sample.
 
 \subsubsection{XBR}
 \label{sec:dd_xbr}
@@ -3950,10 +3955,10 @@ Analysis of the descending samples for each event shows that
 % NOTE: listing them like this for sorting and manipulation purposes
 (%
 XA, 
+XB, 
 XAC, 
 XAE, 
 XAJ,
-XB, 
 XBB, 
 XBM, 
 XC, 
@@ -3963,11 +3968,11 @@ XW%
 are associated unequivocally with a single recombination event.
 7 lineages 
 (%
-XAL,
 XAM,
 XBD, 
 XBR, 
 XE,
+XM,
 XS,
 XY%
 )
@@ -4009,7 +4014,6 @@ and XE/XH is similar (but without including the 2 XH samples in the clade).
 Two events in the RIPPLES set correspond to likely false negatives
 in sc2ts: XB (Document~\ref{sec:dd_xb})
 and XAJ (Document~\ref{sec:dd_xaj}).
-See Document~\ref{sec:detailed_ripples} for more detailed analysis.
 
 
 Firstly, 408 of these RIPPLES identified recombination events
@@ -4182,7 +4186,7 @@ to better fit into available memory.
 \centering
 \includegraphics[width=\linewidth]{samples-per-day}
 \caption{
-Daily statistics of samples analyzed
+Daily statistics of samples analysed
 during the ARG inference process.
 (A) The number of samples
 processed from the input sequence alignments,
@@ -4302,7 +4306,7 @@ We also outline
 in orange the mutations associated with the lineage containing clades A to D and
 in green those associated with lineage containing clade E.
 Sites associated with multiple mutations in the subgraph
-have their mutations assigned a unique fill color
+have their mutations assigned a unique fill colour
 (orange, blue, green, red, etc);
 reversions are further highlighted with a black outline.
 Sc2ts seed samples (see STAR methods) for
@@ -4325,7 +4329,7 @@ BA.2 samples in light yellow
 B.1.1.529 mutations
 which are neither BA.1 or BA.2 characteristic mutations are
 outlined in green.
-These colors correspond to those used
+These colours correspond to those used
 in the BA.1/BA.2 Pango designation issue \cite{RambautOmicron2021}.
 }
 \label{fig:subgraph_omicron}
@@ -4376,7 +4380,7 @@ See also Document S3 for exact positions and nucleotide bases.}
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{recombinant_evidence_cov_recomb}
-\caption{Properties of sc2ts recombination events, colored by CovRecomb 
+\caption{Properties of sc2ts recombination events, coloured by CovRecomb 
 classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
 \label{fig:recombinant_evidence_cov_recomb}}
 \end{figure}
@@ -4384,7 +4388,7 @@ classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{recombinant_evidence_rebar}
-\caption{Properties of sc2ts recombination events, colored by rebar
+\caption{Properties of sc2ts recombination events, coloured by rebar
 classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
 \label{fig:recombinant_evidence_rebar}}
 \end{figure}
@@ -4411,10 +4415,10 @@ classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
 Quality control of recombination events.
 Scatterplot of recombination events by the net number of supporting loci
 on the left parent (x-axis) and the right parent (y-axis).
-The shaded regions highlight potentially artifactual recombination events,
+The shaded regions highlight potentially artefactual recombination events,
 which have fewer than 4 net supporting loci
 on one side or both sides of the suggested breakpoint.
-Colors indicate the primer scheme used for sequencing.
+colours indicate the primer scheme used for sequencing.
 The pie charts show breakdowns of the recombination events
 by primer scheme per quadrant (labeled Q1 to Q4).
 Recombination events associated with
@@ -4439,7 +4443,7 @@ Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
 Illustrative copying patterns
-drawn from the quadrants labeled in Figure~\ref{fig:recombinant_qc}. 
+drawn from the quadrants labelled in Figure~\ref{fig:recombinant_qc}. 
 Each copying pattern shows the 
 the positions
 where the allelic state in a recombinant
@@ -4485,7 +4489,7 @@ the mutation probability is $\mu_\ell$ and $n$
 denotes the size of the reference panel.
 The Viterbi algorithm can be used to find a
 ``copying path'' through the reference panel for a given focal sequence that
-maximises the likelihood under these parameters. Unseen states in the reference panel are shown as colored lines enclosed by
+maximises the likelihood under these parameters. Unseen states in the reference panel are shown as coloured lines enclosed by
 the grey box. The black arrow describes the true path through the data which leads to the emitted
 focal sequence below. Examples of transition and
 emission probabilities along this trajectory are shown by the red and blue
@@ -4500,7 +4504,7 @@ arrows, respectively.
 \caption{
 Parsimony improving heuristics. (A) Mutation collapsing. Mutation A100G is
 shared by two siblings, and we create a new node to represent the ancestor
-on which this mutation occured. (B) Reversion pushing. Mutation A128C is
+on which this mutation occurred. (B) Reversion pushing. Mutation A128C is
 immediately reverted by C128A, and we create a new node to represent the 
 ancestor that did not carry A128C.
 }
