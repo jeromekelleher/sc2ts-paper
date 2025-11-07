@@ -73,15 +73,15 @@
 % \author[3,*]{First Last, Jr.}
 % \author[3,4,5,**]{F. Middle Last}
 
-\author[1,7,*,\orcidlink{0000-0002-6351-8873}]{Shing~H.~Zhan}
-\author[1,6,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
-\author[2,6,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
-\author[3]{Katherine~Eaton}
+\author[1,2,8,*,\orcidlink{0000-0002-6351-8873}]{Shing~H.~Zhan}
+\author[1,7,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
+\author[3,7,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
+\author[4]{Katherine~Eaton}
 \author[1,\orcidlink{0000-0002-3547-7226}]{Isobel~Guthrie}
 \author[1,\orcidlink{0000-0002-1982-6801}]{Benjamin~Jeffery}
-\author[1,2,4,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
-\author[3,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
-\author[5,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
+\author[1,3,5,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
+\author[4,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
+\author[6,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
 \author[1,**,\orcidlink{0000-0002-7894-5253}]{Jerome~Kelleher}
 
 %%%  Institutional affiliations should contain the
@@ -91,13 +91,14 @@
 
 \affil[1]{Big Data Institute, Li Ka Shing Centre for Health
 Information and Discovery, University of Oxford, United Kingdom}
-\affil[2]{Department of Statistics, University of Oxford, United Kingdom}
-\affil[3]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-\affil[4]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
-\affil[5]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
+\affil[2]{Infectious Disease Epidemiology Unit (IDEU), Nuffield Department of Population Health, University of Oxford, Oxford, United Kingdom}
+\affil[3]{Department of Statistics, University of Oxford, United Kingdom}
+\affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
+\affil[5]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
+\affil[6]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
 
-\affil[6]{Joint second author}
-\affil[7]{Lead contact}
+\affil[7]{Joint second author}
+\affil[8]{Lead contact}
 
 %%%  List only one email address per corresponding author.
 
@@ -1174,9 +1175,6 @@ We envisage the ARG as a long-term stable resource---building on the
 high-quality, freely available reassemblies of
 the Viridian dataset~\cite{Hunt2024}---to facilitate the study 
 of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
-% NOTE: still missing the "What" bit suggested by Jotun, where we 
-% list out some of the stuff that could be done. I'm not convinced
-% this works, though.
 
 The other primary contribution of this work is the method used to 
 infer the ARG, sc2ts. The ability to infer an ARG over millions of whole 
@@ -1203,16 +1201,10 @@ is lost when they are ignored, and an important avenue for
 future work is to explore ways of incorporating them into the HMM.
 Another methodological innovation is the use of 
 the tsdate method~\cite{Wohns2022,Pope2025} to estimate internal node dates
-in the ARG. While results are encouraging, 
-dating of phylogenies is a complex task~\cite{Kumar2016advances},
-methods for incorporating information from metadata of uncertain 
-quality into large genealogies are in their 
-early stages~\cite{sanderson2021chronumental}, and there is certainly
-substantial room for improvement.
-Sc2ts itself may benefit from these node dates, as 
-much of the method's complexity lies in dealing with 
-sample with incorrect sampling dates, and the ARG may provide 
-a means of pre-identifying such ``time travellers''.
+in the ARG, illustrating the reuse of methods initially developed 
+for population genetic applications. While results are encouraging, 
+dating of phylogenies is a complex task~\cite{Kumar2016advances}
+and there is certainly room for improvement.
 
 Further contributions of this work arise from 
 the detailed study of the sc2ts ARG,
@@ -1235,8 +1227,12 @@ conservative parameter choices and real-time handling of
 recombination events, we provide a stringent lower
 bound on the amount of recombination that occurred during
 the pandemic phase of SARS-CoV-2.
-Together, these results underscore the utility of the ARG itself 
-and suggest important directions for future research.
+These results underscore the utility of the ARG 
+and provide a template for future analyses in which 
+% JK: Going out on a limb here, please do change if 
+% we don't like it!!!
+recombination is fully integrated rather than treated
+as a nuisance.
 
 \subsection*{Limitations of the study}
 
@@ -1359,7 +1355,6 @@ SO acknowledges support from the Natural Sciences and Engineering Research Counc
 JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation. For the purpose of Open Access, the authors have applied a CC BY public copyright licence to any Author Accepted Manuscript version arising from this submission.
 
 Computation used the Oxford Biomedical Research Computing (BMRC) facility, a joint development between the Wellcome Centre for Human Genetics and the Big Data Institute supported by Health Data Research UK and the NIHR Oxford Biomedical Research Centre. The views expressed are those of the author(s) and not necessarily those of the NHS, the NIHR or the Department of Health.
-
 
 % \section*{AUTHOR CONTRIBUTIONS}
 
