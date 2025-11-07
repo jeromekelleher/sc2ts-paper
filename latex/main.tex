@@ -77,7 +77,7 @@
 \author[1,6,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
 \author[2,6,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
 \author[3]{Katherine~Eaton}
-\author[1]{Isobel~Guthrie}
+\author[1,\orcidlink{0000-0002-3547-7226}]{Isobel~Guthrie}
 \author[1,\orcidlink{0000-0002-1982-6801}]{Benjamin~Jeffery}
 \author[1,2,4,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
 \author[3,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
@@ -398,7 +398,7 @@ After post-processing, the ARG contains
 2,748,838 edges, and
 2,285,344 mutations
 at 29,893 sites,
-and is stored in a 32 MB file.
+and is stored in a 32 MiB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
 (some events occurred at the same breakpoints).
@@ -1166,9 +1166,10 @@ catalyse a wave of methodological developments integrating
 recombination into pathogen genomics.
 For instance, annotating the ARG with experimentally derived
 fitness estimates for mutations can help elucidate selection
-pressures on different variants;
+pressures on different recombinants;
 analysing the genomic positions of mutations occurring on long
-branches can illuminate the evolution of saltational variants.
+branches (which persist after accounting for recombination) can
+illuminate the evolution of saltational variants.
 We envisage the ARG as a long-term stable resource---building on the 
 high-quality, freely available reassemblies of
 the Viridian dataset~\cite{Hunt2024}---to facilitate the study 
@@ -1348,10 +1349,16 @@ when such data sparsity is detected.
 
 SHZ is supported by an NDPH Intermediate Research Fellowship
 (Oxford Population Health, University of Oxford). 
+% JK: Commenting this out until exact wording is provided. I'm pretty
+% sure that "Wellcome trust" is wrong.
+% IG is supported by the Wellcome trust (DPhil in Genomic Medicine and Statistics).
+DSP acknowledges funding administered by the Danish National Research Foundation in support of the Pioneer Centre for SMARTbiomed. 
 % "acknowledges support" here means "was awarded this grant 
 % and it supported this research"
 SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
-JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation. DSP acknowledges funding administered by the Danish National Research Foundation in support of the Pioneer Centre for SMARTbiomed. For the purpose of Open Access, the authors have applied a CC BY public copyright licence to any Author Accepted Manuscript version arising from this submission.
+JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation. For the purpose of Open Access, the authors have applied a CC BY public copyright licence to any Author Accepted Manuscript version arising from this submission.
+
+Computation used the Oxford Biomedical Research Computing (BMRC) facility, a joint development between the Wellcome Centre for Human Genetics and the Big Data Institute supported by Health Data Research UK and the NIHR Oxford Biomedical Research Centre. The views expressed are those of the author(s) and not necessarily those of the NHS, the NIHR or the Department of Health.
 
 
 % \section*{AUTHOR CONTRIBUTIONS}
