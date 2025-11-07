@@ -157,7 +157,7 @@ Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of multiple species~\cite{Felsenstein2004}, using small numbers of widely diverged
+of multiple species~\cite{Felsenstein2004} using small numbers of widely diverged
 genomes. In this context, recombination is a nuisance 
 requiring careful consideration~\cite{Rannala2025recombination}
 as it affects the inference of species trees~\cite{Posada2002effect}
@@ -277,8 +277,7 @@ from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020
 and that the ARG accurately captures evolutionary features such as mutational 
 spectra~\cite{Bloom2023} and deletions\cite{Li2023indels}.
 We show that sc2ts automatically and accurately detects details about
-known recombinant lineages that were painstakingly collated in a community 
-process, and provides novel insights into the relationships between these
+known recombinant lineages that were painstakingly collated through a community effort, and provides novel insights into the relationships between these
 recombinant lineages. We compare the recombination events detected by 
 sc2ts with the state-of-the-art combination of UShER and 
 RIPPLES~\cite{Turakhia2022}, showing that sc2ts is more sensitive,
@@ -343,7 +342,7 @@ while allowing recombination ($k = 4$) or disallowing it ($k = 1000$).
 Sc2ts is a real-time inference method, updated incrementally 
 with daily batches of sequence data (Figure~\ref{fig:methodology}).
 For each batch, sc2ts first infers likely ``copying paths'' connecting each sample
-to node(s) in the current ARG
+to nodes in the current ARG
 using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens2003}.
 % Important to go into a bit of detail about LS here as it's so fundamental
 % and novel in the area.
@@ -440,7 +439,7 @@ for a set of representative samples from 814 well-sampled lineages
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 Overall, we also found close similarity between the ARG
-and UShER tree in terms of parsimoniousness 
+and UShER tree in terms of parsimony 
 (Document~\ref{sec:supplement_sc2ts_usher_parsimony})
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
@@ -1146,7 +1145,7 @@ on the frequency of detectable recombination events in SARS-CoV-2.
 
 \section*{DISCUSSION}
 There are two primary contributions of this work. The first is an
-Ancestral Recombination Graph (ARG) for 2.48 million SARS-CoV-2 genomes.
+ARG for 2.48 million SARS-CoV-2 genomes.
 Through multiple layers of validation against results from the 
 literature, we have demonstrated that this ARG synthesises
 the evolutionary features of genetic inheritance, point mutations,
@@ -1342,7 +1341,7 @@ SHZ is supported by an NDPH Intermediate Research Fellowship
 % "acknowledges support" here means "was awarded this grant 
 % and it supported this research"
 SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
-JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation. DSP acknowledges funding administered by the Danish National Research Foundation in support of the Pioneer Centre for SMARTbiomed.
+JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation. DSP acknowledges funding administered by the Danish National Research Foundation in support of the Pioneer Centre for SMARTbiomed. For the purpose of Open Access, the authors have applied a CC BY public copyright licence to any Author Accepted Manuscript version arising from this submission.
 
 
 % \section*{AUTHOR CONTRIBUTIONS}
