@@ -78,7 +78,7 @@
 \author[2,6,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
 \author[3]{Katherine~Eaton}
 \author[1]{Isobel~Guthrie}
-\author[1]{Benjamin~Jeffery}
+\author[1,\orcidlink{0000-0002-1982-6801}]{Benjamin~Jeffery}
 \author[1,2,4,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
 \author[3,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
 \author[5,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
@@ -131,7 +131,7 @@ as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
 We infer an ARG for 2.48 million SARS-CoV-2 genomes 
 which leverages the widely used tskit software ecosystem to support further analyses and 
 visualisation.
-This rich and validated ARG resource clarifies
+This rich and validated resource clarifies
 the relationships among recombinant lineages,
 quantifies the rate of recombination over time,
 and provides a 
@@ -251,11 +251,10 @@ genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
 % to ARGs, but it's all in the "coalescent with recombination" sense
 % Rannala2025 dismisses ARG-based methods at a stroke because they're
 % all based on the assumption of a single panmictic population 
-% TODO could phrase this better, Sally didn't like it.
 As the range of applications for ARGs has broadened, the term is no
 longer synonymous with the coalescent with 
 recombination population genetic model \cite{Hudson1983,Griffiths1997ancestral}
-and an ARG is now more usually regarded as a \emph{data structure}
+and an ARG is now more usually regarded as a data structure
 for representing recombinant ancestry\cite{Minichiello2006mapping,Wong2024}.
 Strong software support for ARGs has facilitated these developments,
 and the tskit library~\cite{Ralph2020} is the basis of a 
@@ -268,12 +267,12 @@ and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
 tools.
 
 Here we present sc2ts, a new method to infer ARGs for SARS-CoV-2  
-that incrementally adds samples over time in a similar manner 
+that sequentially adds samples over time in a similar manner 
 to UShER, but also automatically detects and incorporates recombination
 in real-time. Based on the Viridian dataset, a freely available  
 resource purged of various systematic errors and artifacts~\cite{Hunt2024},
 we infer an ARG with 2.48 million whole genome sequences.
-We show that the non-recombinant portions of this ARG are highly congruent with the UShER phylogeny built 
+We show that the non-recombinant portions of this ARG are congruent with the UShER phylogeny built 
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020},
 and that the ARG accurately captures evolutionary features such as mutational 
 spectra~\cite{Bloom2023} and deletions\cite{Li2023indels}.
@@ -1096,10 +1095,10 @@ RIPPLES reported 1174 recombination events of which
 % JK: There's no point in making a meal of the 3SEQ validation rate,
 % This is notably lower than the equivalent 
 % concordance rate of 57\% among the 855 recombination events reported by sc2ts.
-Aligning the events reported by both methods using the sets of descendant
-samples (STAR Methods), 468 of the events are shared by both,
-with the intersection comprising 40\% of the RIPPLES events
-and 55\% of the sc2ts events (Figure~\ref{fig:ripples_sc2ts_events}). 
+We then compared
+the specific events reported by both methods by aligning them
+using sets of descendant samples (STAR Methods),
+giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
 The 706 recombination events output by RIPPLES that do not 
 correspond to a recombination event in the sc2ts ARG can largely
 be explained by a combination of the choice of sites 
@@ -1120,7 +1119,8 @@ We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall,
 and increasing the intersection of events with sc2ts to 595 (70\%;
 Figure~\ref{fig:ripples_sc2ts_events}).
 At this more lenient threshold, 23 of the 44 Pango X lineages
-are present in the dataset, with unequivocal origins for 10 lineages, and
+are identified as descendants of RIPPLES recombinant events,
+with unequivocal origins for 10 lineages, and
 7 lineages associated with two competing events 
 (Document~\ref{sec:detailed_ripples}).
 XB and XAJ are among the lineages detected by UShER+RIPPLES,
@@ -1243,6 +1243,12 @@ Firstly, the Viridian dataset is of higher quality and major efforts
 have been made to remove sources of error. Applying sc2ts to 
 GISAID data is straightforward, but significant additional efforts 
 would be required to address data quality issues.
+% NOTE Sally suggested that we say that we did this (run on GISAID) and cite 
+% the earlier preprint, but after discussion it was concluded that
+% this opens a major can of worms and we risk undermining the 
+% perceived novelty of this manuscript to guard against a very
+% minor technical point. If reviewers ask us to do things with
+% GISAID we can by all means explain we've already done it.
 Secondly, the Viridian data is publicly available and redistributable,
 enabling us to share the resulting ARG without restrictions.
 
@@ -1334,8 +1340,6 @@ when such data sparsity is detected.
 %%%  Use this section to acknowledge contributions
 %%%  from non-authors and list funding sources,
 %%%  including grant numbers.
-
-[FIXME: add all acknowledgments]
 
 SHZ is supported by an NDPH Intermediate Research Fellowship
 (Oxford Population Health, University of Oxford). 
