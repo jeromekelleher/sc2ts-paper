@@ -73,16 +73,16 @@
 % \author[3,*]{First Last, Jr.}
 % \author[3,4,5,**]{F. Middle Last}
 
-\author[1,6]{Shing~H.~Zhan}
-\author[1,5]{Yan~Wong}
-\author[2,5]{Anastasia~Ignatieva}
+\author[1,7,*,\orcidlink{0000-0002-6351-8873}]{Shing~H.~Zhan}
+\author[1,6,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
+\author[2,6,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
 \author[3]{Katherine~Eaton}
 \author[1]{Isobel~Guthrie}
 \author[1]{Benjamin~Jeffery}
-\author[1]{Duncan~S.~Palmer}
-\author[3]{Carmen~Lia~Murall}
-\author[4]{Sarah~P.~Otto}
-\author[1\orcidlink{0000-0002-7894-5253}]{Jerome~Kelleher}
+\author[1,2,4,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
+\author[3,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
+\author[5,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
+\author[1,**,\orcidlink{0000-0002-7894-5253}]{Jerome~Kelleher}
 
 %%%  Institutional affiliations should contain the
 %%%  following information at minimum: department(s)/
@@ -93,14 +93,11 @@
 Information and Discovery, University of Oxford, United Kingdom}
 \affil[2]{Department of Statistics, University of Oxford, United Kingdom}
 \affil[3]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-\affil[4]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Canada}
+\affil[4]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
+\affil[5]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
 
-% \affil[1]{University A, London SW7 2AZ, UK}
-% \affil[2]{Department B, University B, Toronto, ON M5S 3H6, Canada}
-% \affil[3]{Division C, Department C, University C, Cambridge, MA, USA}
-
-\affil[5]{Joint second author}
-\affil[6]{Lead contact}
+\affil[6]{Joint second author}
+\affil[7]{Lead contact}
 
 %%%  List only one email address per corresponding author.
 
@@ -121,24 +118,22 @@ Information and Discovery, University of Oxford, United Kingdom}
 Millions of SARS-CoV-2 genome sequences were collected 
 during the COVID-19 pandemic, forming a dataset of unprecedented richness.
 Estimated genealogies are fundamental to
-understanding this ocean of data, 
+understanding this ocean of data 
 and form the primary input to many downstream analyses.
 A basic assumption of methods to infer genealogies from viral 
 genetic data is that recombination is negligible and 
 the genealogy is a tree.
-However, recombinant lineages have risen to global prevalence 
+However, recombinant lineages have risen to global prevalence, 
 and simple tree representations are therefore 
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies 
 as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
-We infer an ARG for 2.48 million SARS-CoV-2 genomes,
-and show that this deeply validated resource clarifies
-the relationships between recombinant lineages,
-quantifies the rate of recombination over time
-and provides a conservative
+We infer an ARG for 2.48 million SARS-CoV-2 genomes and provide a tskit software ecosystem to support further analyses and visualization.
+This rich and validated ARG resource clarifies
+the relationships among recombinant lineages,
+quantifies the rate of recombination over time,
+and provides a 
 lower bound on detectable recombination.
-This ARG and supporting tskit software ecosystem provide
-a strong platform for future research.
 
 \section*{KEYWORDS}
 
@@ -372,7 +367,7 @@ given the current ARG.
 % Could cite paper showing parsimony works well too.
 Note that this is a form of parsimony, 
 with the recombination penalty $k$
-defining the relative parsimoniousness of
+defining the relative parsimony of
 recombinant versus non-recombinant solutions to the HMM.
 The per-sample copying paths produced by the HMM
 (most of which do not involve recombination)
@@ -396,7 +391,7 @@ Using sc2ts, we built an ARG from 2,482,157 samples
 from the Viridian v04 dataset~\cite{Hunt2024},
 collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a server with
-64 cores (2X AMD EPYC 7502) and 512 GB of RAM
+64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
 ($\sim$5 CPU years;
 Figures~\ref{fig:inference_resources}~\ref{fig:samples_per_day}).
 After post-processing, the ARG contains
@@ -499,8 +494,8 @@ during post-processing (STAR Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known
-high-frequency deletions (Table~\ref{tab:major_dels}) and
-recurrent deletions (Table~\ref{tab:rec_dels}).
+high-frequency (Table~\ref{tab:major_dels}) and
+recurrent (Table~\ref{tab:rec_dels}) deletions.
 For example,
 the three defining deletions of Alpha~\cite{RambautAlpha2020}
 (11288:9, 21765:6, 21991:3)
@@ -657,7 +652,7 @@ XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
 % ‘Pangolin’ nomenclature system. "
 Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
 can be attributed to the clarity of the rules under which new lineages 
-are designated and their explicitly phylogenetic basis.
+are designated and their explicit phylogenetic basis.
 The first recombinant lineage XA was designated in 2021
 based on the analysis of Jackson et al.~\cite{Jackson2021}.
 Although the process of incorporating recombinant lineages
@@ -777,7 +772,7 @@ rising to 95\% verification among the 354 recombinants that passed our QC filter
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
-summarized in Table~\ref{tab:recombinant_validation}
+summarised in Table~\ref{tab:recombinant_validation}
 (see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
 and \ref{fig:recombinant_evidence_rebar}).
 CovRecomb has a substantially lower validation rate
@@ -983,7 +978,7 @@ We explored two hypotheses for the timing of recombination.
 First, we would expect recombination events
 to occur more often when case counts are high,
 which increases the chance of co-infection within an individual,
-allowing recombination.
+allowing recombination to occur.
 Second, we would expect recombination events to be detected
 more often when lineage diversity is high,
 as this increases the chance that
@@ -991,8 +986,7 @@ two sufficiently distinct viruses co-infected an individual,
 increasing our power to detect recombination.
 
 We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
-to relate the timing of recombination events with global case numbers.
-Case numbers ($n$) were binned by week from January, 2020 to March, 2023 and
+to relate the timing of recombination events with global case numbers. We binned case numbers ($n$) by week from January, 2020 to March, 2023 and
 sub-divided by the proportion in each Scorpio label inferred within the ARG
 (shading in Figure~\ref{fig:recombinants_over_time}).
 These lineages correspond loosely to a group
@@ -1135,7 +1129,7 @@ for sc2ts (Table~\ref{tab:pango_x_lineages}).
 
 The choice of the $p$ threshold has a large effect 
 on the number of recombination events detected by RIPPLES, and 
-previous studies have used the more lenient (default) value of 
+previous studies have used the default value of 
 $3$\cite{Turakhia2022,Smith2023tracking}.
 For example, when applied to an UShER phylogeny of
 $\sim$1.6 million genomes sampled up to May, 2021,
@@ -1214,13 +1208,13 @@ much of the method's complexity lies in dealing with
 sample with incorrect sampling dates, and the ARG may provide 
 a means of pre-identifying such ``time travellers''.
 
-The secondary contributions of this work arise from 
+Further contributions of this work arise from 
 the detailed study of the sc2ts ARG,
 providing insights into the evolution of SARS-CoV-2
 and the COVID-19 pandemic. 
 First, we clarify the relationships among
-recombinant Pango X lineages, suggesting significant
-clustering of named lineages under shared recombination events.
+recombinant Pango X lineages, finding examples of
+clustering of named lineages under a single shared recombination event.
 Second, we used the ARG to study breakpoint intervals 
 for recombination events, adding a novel temporal dimension
 and demonstrating a simple relationship with the 
@@ -1347,7 +1341,8 @@ SHZ is supported by an NDPH Intermediate Research Fellowship
 (Oxford Population Health, University of Oxford). 
 % "acknowledges support" here means "was awarded this grant 
 % and it supported this research"
-JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation.
+SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
+JK acknowledges support from R01 HG012473 from the National Institutes of Health NHGRI, EPSRC (research grant EP/X024881/1) and the Robertson Foundation. DSP acknowledges funding administered by the Danish National Research Foundation in support of the Pioneer Centre for SMARTbiomed.
 
 
 % \section*{AUTHOR CONTRIBUTIONS}
@@ -2260,7 +2255,7 @@ At the remaining 39 sites for which the UShER tree
 had mutations there were a significant 
 number of gap characters (deletion calls), suggesting that the mismatches
 could be due to differences in the alignments used as input to UShER.
-See notebook
+See the notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/validate\_usher\_tree.ipynb}{validate\_usher\_tree.ipynb}
 for details.
 
@@ -2658,7 +2653,7 @@ for a subset of sites in the sc2ts ARG.
 % When we compare the intersection of the base sc2ts ARG
 % (pre site-remapping), sc2ts is very slightly more parsimonious
 % % TODO: https://github.com/jeromekelleher/sc2ts-paper/issues/684
-% with [FIXME] XX mutations over the YYY sites shared between them.
+% with XX mutations over the YYY sites shared between them.
 After site remapping, and including all mutations involving
 deletion characters, sc2ts has 143,690 mutations more
 (2,078,370 vs 1,934,680). If we exclude mutations involving
@@ -4124,7 +4119,7 @@ infers two independent recombination events while sc2ts groups them both
 under the Xx event. XB is notable as a likely sc2ts false negative that is 
 identified by RIPPLES at both $p=3$ and $p=4$. The remaining events 
 associated with X lineages output by RIPPLES cannot be easily mapped 
-to the sc2ts ARG as one or more descendants is distantly placed.
+to the sc2ts ARG as one or more descendants are distantly placed.
 XAJ is an outlier for sc2ts, being the Pango X lineage identified as a 
 non-recombinant with the largest number of mutations 
 (Table~\ref{tab:pango_x_lineages}), and a likely false negative.
