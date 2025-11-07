@@ -128,7 +128,9 @@ and simple tree representations are therefore
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies 
 as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
-We infer an ARG for 2.48 million SARS-CoV-2 genomes and provide a tskit software ecosystem to support further analyses and visualization.
+We infer an ARG for 2.48 million SARS-CoV-2 genomes 
+which leverages the widely used tskit software ecosystem to support further analyses and 
+visualisation.
 This rich and validated ARG resource clarifies
 the relationships among recombinant lineages,
 quantifies the rate of recombination over time,
@@ -250,14 +252,13 @@ genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
 % Rannala2025 dismisses ARG-based methods at a stroke because they're
 % all based on the assumption of a single panmictic population 
 % TODO could phrase this better, Sally didn't like it.
-A subtle but important point distinguishing recent work on ARGs
-from the classical literature is that the ARG 
-``data structure''\cite{Minichiello2006mapping,Wong2024} is no longer
-tightly coupled to the generative
-process\cite{Hudson1983,Griffiths1997ancestral}, substantially 
-broadening the range of potential applications~\cite{Bisschop2025likelihoods}.
-Another significant point is that strong software support for ARGs now
-exists, and the tskit library~\cite{Ralph2020} is the basis of a 
+As the range of applications for ARGs has broadened, the term is no
+longer synonymous with the coalescent with 
+recombination population genetic model \cite{Hudson1983,Griffiths1997ancestral}
+and an ARG is now more usually regarded as a \emph{data structure}
+for representing recombinant ancestry\cite{Minichiello2006mapping,Wong2024}.
+Strong software support for ARGs has facilitated these developments,
+and the tskit library~\cite{Ralph2020} is the basis of a 
 rapidly growing software ecosystem of
 simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
 visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
@@ -877,7 +878,7 @@ See Figures~\ref{fig:recombinant_evidence}D and
 for copying patterns of the Pango X lineages, and
 Figure~\ref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
-(and more details on the visualizations).
+(and more details on the visualisations).
 
 \subsection*{Precision of recombination event times and positions}
 
@@ -3323,7 +3324,7 @@ However, these parent lineages were not added to the ARG due to high HMM costs.
 Together with other lineages such as B.1.627
 (sister to B.1.631 \cite{Gutierrez2022}),
 they are likely to attach somewhere along the long branch
-in the subgraph visualization (with $> 30$ mutations).
+in the subgraph visualisation (with $> 30$ mutations).
 If samples from these parental lineages were available for attachment,
 then XB would likely be detected as a recombinant by sc2ts.
 % which also contains the key ``R2'' deletion
