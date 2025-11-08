@@ -23,6 +23,8 @@
 \usepackage[right]{lineno} \linenumbers
 \usepackage[normalem]{ulem}
 
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
 \graphicspath{ {../figures/} }
 
 \makeatletter
@@ -1068,13 +1070,13 @@ batches, RIPPLES operates on a complete phylogeny,
 attempting to detect recombination post-hoc among millions of nodes. 
 Like any phylogenetic reconstruction method
 that ignores recombination, UShER must force placement of recombinant
-sequences in places that minimize the discrepancy across the entire sequence,
+sequences in places that minimise the discrepancy across the entire sequence,
 which may not be near any of the true parents. 
-These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences}
+These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences},
 and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
-may break up the artefactual long branches used to detect recombination.
+may break up the artefactually long branches used to detect recombination.
 
-We compared the performance of sc2ts recombinant detection 
+We compared the performance of sc2ts to detect recombination 
 against RIPPLES run on the Viridian UShER phylogeny,
 subset to the 2,475,418 samples shared with the ARG (STAR Methods).
 To enable exact comparison, we omitted the QC filtering steps from both
@@ -1091,31 +1093,30 @@ We then compared
 the specific events reported by both methods by aligning them
 using sets of descendant samples (STAR Methods),
 giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
-The 706 recombination events output by RIPPLES that do not 
+The 706 recombination events detected by RIPPLES that do not 
 correspond to a recombination event in the sc2ts ARG can largely
-be explained by a combination of the choice of sites 
-used for inference, and the strict time ordering imposed
-by sc2ts (Document~\ref{sec:detailed_ripples}).
+be explained by a combination 
+of the strict time ordering imposed by sc2ts
+and the differing sets of problematic sites masked
+by sc2ts and UShER
+(Document~\ref{sec:detailed_ripples}).
 The 387 events detected by sc2ts and not by UShER+RIPPLES
-would require a detailed dissection of the UShER tree
-to explain, which is beyond the scope of this work.
-However, the set does contain some well characterised events 
-associated with the Pango X lineages.
+ include some of the well characterised Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows the events detected 
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages, showing that at $p=4$
 only 9 of the Pango X lineages are present and
 with unequivocal recombinant origin for 6 
 (contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
-We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall,
-and increasing the intersection of events with sc2ts to 595 (70\%;
-Figure~\ref{fig:ripples_sc2ts_events}).
+We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall
+and increasing the intersection of events with sc2ts to 595 
+(Figure~\ref{fig:ripples_sc2ts_events}).
 At this more lenient threshold, 23 of the 44 Pango X lineages
 are identified as descendants of RIPPLES recombinant events,
 with unequivocal origins for 10 lineages, and
 7 lineages associated with two competing events 
 (Document~\ref{sec:detailed_ripples}).
-XB and XAJ are among the lineages detected by UShER+RIPPLES,
+Thus, a more lenient threshold ($p=3$) was needed for UShER+RIPPLES to detect a similar fraction of Pango X lineages as sct2ts with $k=4$, resulting in more false positives. That said, XB and XAJ are among the lineages detected by UShER+RIPPLES, even at $p=4$,
 strengthening evidence that these are false negatives 
 for sc2ts (Table~\ref{tab:pango_x_lineages}).
 
@@ -1126,7 +1127,7 @@ $3$\cite{Turakhia2022,Smith2023tracking}.
 For example, when applied to an UShER phylogeny of
 $\sim$1.6 million genomes sampled up to May, 2021,
 RIPPLES reported 589 unique recombination events with 43,104 descendant
-samples--corresponding to $\sim$2.7\% of all samples of recombinant origin.
+samples---corresponding to $\sim$2.7\% of all samples of recombinant origin.
 Over the same time interval, the sc2ts ARG ($k=4$) identifies
 14 recombination events passing QC with
 172 descendant samples among 501,235 samples (0.034\%),
@@ -1153,15 +1154,14 @@ have helped spur the development of ARG-aware methods in human
 genomics~\cite{Mejia2025using,Grundler2025geographic,
 Lehmann2025args,Terhorst2025accelerated}.
 We hope that the ARG provided here will similarly
-enable a range of recombination-aware analyses of SARS-CoV-2, and 
+enable a range of recombination-aware analyses of SARS-CoV-2 and 
 catalyse a wave of methodological developments integrating
 recombination into pathogen genomics.
 For instance, annotating the ARG with experimentally derived
 fitness estimates for mutations can help elucidate selection
 pressures on different recombinants;
-analysing the genomic positions of mutations occurring on long
-branches (which persist after accounting for recombination) can
-illuminate the evolution of saltational variants.
+saltational variants can also be detected by analysing the rate and position of mutations along long
+branches (which persist after accounting for recombination).
 We envisage the ARG as a long-term stable resource---building on the 
 high-quality, freely available reassemblies of
 the Viridian dataset~\cite{Hunt2024}---to facilitate the study 
@@ -1183,18 +1183,18 @@ of the SARS-CoV-2 dataset, but the methods may be readily adapted
 to other pathogens. The LS HMM is the most important element of 
 sc2ts, efficiently finding parsimonious placements for samples 
 among all possible recombinant solutions. The current 
-parametrisation---emphasising interpretability---is simplistic,
+parametrisation---emphasising interpretability---is simplistic
 and could readily be extended to account
 for mutation rate variation along the genome~\cite{Haddox2025}
 or transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024}.
 Our analysis of deletions shows that valuable phylogenetic signal
 is lost when they are ignored, and an important avenue for 
-future work is to explore ways of incorporating them into the HMM.
+future work is to explore ways of incorporating them directly into the HMM.
 Another methodological innovation is the use of 
 the tsdate method~\cite{Wohns2022,Pope2025} to estimate internal node dates
 in the ARG, illustrating the reuse of methods initially developed 
 for population genetic applications. While results are encouraging, 
-dating of phylogenies is a complex task~\cite{Kumar2016advances}
+dating of phylogenies is a complex task~\cite{Kumar2016advances},
 and there is certainly room for improvement.
 
 Further contributions of this work arise from 
@@ -1205,9 +1205,8 @@ First, we clarify the relationships among
 recombinant Pango X lineages, finding examples of
 clustering of named lineages under a single shared recombination event.
 Second, we used the ARG to study breakpoint intervals 
-for recombination events, adding a novel temporal dimension
-and demonstrating a simple relationship with the 
-size of the interval in base pairs derived from theory.
+for recombination events, showing that the relationship between the 
+size of the interval in base pairs and the divergence time of the parental lineages matches theoretical expectations.
 Thirdly, we demonstrate a clear relationship between
 genetic diversity and the rate of detectable recombination,
 with the best predictor of the number of recombination
@@ -1218,12 +1217,11 @@ conservative parameter choices and real-time handling of
 recombination events, we provide a stringent lower
 bound on the amount of recombination that occurred during
 the pandemic phase of SARS-CoV-2.
-These results underscore the utility of the ARG 
-and provide a template for future analyses in which 
-% JK: Going out on a limb here, please do change if 
-% we don't like it!!!
-recombination is fully integrated rather than treated
-as a nuisance.
+These results underscore the utility of the ARG, and 
+the efficient and reproducible pipelines throughout this work 
+provide a template for future analyses in which recombination
+is accounted for by default.
+
 
 \subsection*{Limitations of the study}
 
@@ -1676,15 +1674,14 @@ The collection date of a sample
 is an important piece of information for sc2ts.
 We used the Viridian consensus date (``Date\_tree``),
 based on information from COG-UK, GISAID, and ENA/SRA as our source.
-Samples which have missing or incomplete dates (e.g., 2020-01) were omitted,
-as were the $\sim$40,000 samples
-which had a collection date of December 31, 2020.
-As the sample count for this date is a major outlier
-for this period of the pandemic,
-it seems likely that this batch is highly enriched
+Samples that have missing or incomplete dates (e.g., 2020-01) were omitted. 
+Samples with a collection date of December 31, 2020
+were also omitted,
+as the number of sample on this date ($\sim$40,000) was a major outlier
+for this period of the pandemic and is likely enriched
 for incorrect collection dates.
 Manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
-confirmed that some of the samples were not collected in 2020.
+confirmed that some of these samples were not collected in 2020.
 
 A set of problematic sites
 for SARS-CoV-2 that are enriched for systematic sequencing errors or 
@@ -1714,11 +1711,9 @@ improve matching performance in the LS HMM.
 Alignments read from the VCF Zarr file were first preprocessed
 to mask any non-nucleotide characters (A, C, G, or T) as missing data.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
-Then, we filtered any samples that had missing data at more than 500 sites,
-excluding the 100 sites identified as problematic
-(this was set to 10,000 sites for the initial period up to 2020-03-01
-where sampling density is low).
-
+Then, excluding the 100 sites identified as problematic, we filtered any samples that had missing data at more than 500 sites (this was set to 10,000 sites for the initial period up to 2020-03-01
+when sampling density was low).
+% SO: Moved clause about 100 sites to the beginning so that it was clearer that 10,000 is in comparison to 500 not 100.
 \subsubsection*{Li and Stephens model}
 
 The Li and Stephens (LS) model \cite{LiStephens2003} is an approximation of
@@ -1762,11 +1757,13 @@ causing a mismatch is equally probable,
 ignoring transition-transversion biases and
 variation of mutation rate along the genome.
 
-We use the Viterbi algorithm implemented in tsinfer~\cite{Kelleher2019}
-to efficiently find copying paths under this model. We updated this 
+We use the efficient Viterbi algorithm
+(which finds the most likely sequence of hidden states in a HMM) 
+implemented in tsinfer~\cite{Kelleher2019}
+to find copying paths under this model. We updated this 
 implementation to include a ``likelihood threshold'', which allows 
 all possible paths through the HMM with likelihood less than a given
-value to be considered equally probable. This approach leads to major
+value to be considered equally improbable. This approach leads to major
 gains in likelihood compression, saving memory and reducing computation
 time. We then use this likelihood thresholding approach to iteratively
 process the samples for a given daily batch, first finding all exact 
@@ -1884,20 +1881,19 @@ if any of its mutations are ``immediate reversions''; that is,
 are reversions of a mutation that occurred on the new node's
 immediate parent. We increase the overall parsimony of the
 inference by ``pushing in'' a new node which descends from the
-original parent, and carries all its mutations except those
+original parent and carries all its mutations except those
 causing the reversions on the newly added node.
-52,336 nodes were added to the ARG during primary inference by
-reversion pushing.
+Reversion pushing led to the addition of 52,336 nodes during primary inference.
 
 \subsubsection*{Filtering time travellers}
 Time-travelling samples---those in which the recorded collection date differs
 substantially from their true collection date---pose significant problems
-for sc2ts, and are present at a significant frequency. For example, of the 
+for sc2ts and are present at a significant frequency. For example, of the 
 43 Scorpio~\cite{Colquhoun2023scorpio}
 designations present in the Viridian dataset studied, 32 have 
 samples present with sampling dates in 2020, including lineages that do not
 arise until late 2022. Inserting these time-travellers into the ARG 
-at the claimed sampling date causes major issues, and they must therefore be 
+at the claimed sampling date causes major artefacts, and they must therefore be 
 filtered out. We use the simple approach of filtering out samples that 
 exceed a given ``HMM cost'', i.e., requiring too many mutations or
 recombination breakpoints to plausibly represent the steady accumulation
@@ -3422,7 +3418,7 @@ These BA.2 samples could be worthy of further investigation.
 \subsubsection{XL}
 \label{sec:dd_xl}
 All the XL samples descend from a well supported recombination node,
-with three child samples which are identical to it.
+with three child samples, which are identical to it.
 The left parent is a sample (ERR7989424), and
 the right parent is a reconstructed internal node
 assigned to BA.2.5 with a large number of descendant samples.
@@ -3950,7 +3946,7 @@ but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
 Sc2ts detection results for Pango X lineages not added to the ARG.
 The number of samples in Viridian v04 dataset
 assigned to these Pango X lineages,
-the number of samples which passed sequence-level quality control, and
+the number of samples that passed sequence-level quality control, and
 the number of recombination breakpoints
 in the Viterbi solutions of the samples
 are shown.
