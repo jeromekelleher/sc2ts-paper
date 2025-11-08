@@ -8,7 +8,7 @@ This repository contains all analysis for the preprint
 Download the ARG:
 
 ```
-curl -O https://zenodo.org/records/17558489/files/sc2ts_viridian_v1.2.trees.tsz?download=1
+curl -O https://zenodo.org/records/17558489/files/sc2ts_viridian_v1.2.trees.tsz
 ```
 
 **TODO** add some links to quick analyses
