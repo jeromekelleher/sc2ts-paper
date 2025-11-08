@@ -129,7 +129,7 @@ and simple tree representations are therefore
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies 
 as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
-We infer an ARG for 2.48 million SARS-CoV-2 genomes 
+We infer an ARG for 2.48 million SARS-CoV-2 genomes, 
 which leverages the widely used tskit software ecosystem to support further analyses and 
 visualisation.
 This rich and validated resource clarifies
@@ -160,14 +160,13 @@ Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of multiple species~\cite{Felsenstein2004} using small numbers of widely diverged
-genomes. In this context, recombination is a nuisance 
-requiring careful consideration~\cite{Rannala2025recombination}
-as it affects the inference of species trees~\cite{Posada2002effect}
-and biases downstream
-analyses~\cite{Schierup2000consequences,Hedge2014bacterial}.
-Modern pathogen datasets are not sparsely sampled from different species,
+of divergent species~\cite{Felsenstein2004}. Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
+ biases downstream
+analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, and so requires careful consideration~\cite{Rannala2025recombination}.
+Modern pathogen datasets are not sparsely sampled from different species
+% Need to concrete. "large" means 100 to some people.
 but consist of tens to hundreds of thousands of genomes sampled from 
+% JK: deleted point about recomb here as TB, eg, doesn't
 a single species~\cite{
 Shu2017,% GISAID ~270k FLU + others
 Jolley2018open,% PubMLST, 34K genomes for e.g. Staph Auerus
@@ -176,13 +175,11 @@ Cryptic2022data,% TB 12k
 Dyer2025enterobase% 1 million, various things like E-coli
 }.
 In contrast to the sophisticated model-based approaches
-used to perform species tree
-inference~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
-comprehensive phylogenies of these datasets are typically built with
+used to infer species trees~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
+comprehensive phylogenies of pathogen datasets are typically built with
 simpler distance methods % citation for this?
 or approximations~\cite{Price2009fasttree},
-primarily due to computational scaling limitations,
-but also because of the complexity of modelling such datasets.
+primarily due to computational scaling limitations.
 While several methods have been proposed to incorporate
 recombination explicitly into model-based phylogenetic
 inference~\cite{Didelot2010inference,%
@@ -193,18 +190,18 @@ Muller2022bayesian},
 scalability
 is a major issue and practical application has been limited.
 Software support that explicitly \emph{uses}
-recombination-aware inference is mostly limited to
+recombination-aware inference is mostly restricted to
 visualisation, for example of small-scale phylogenetic
 networks~\cite{Huson2012,Vaughan2017,Solis-Lemus2017}
 or tree changes along the genome~\cite{Rasmussen2023}.
 
 The global
 surveillance data collected during the COVID-19 pandemic
-presents fundamental challenges to existing approaches
-in two ways. Firstly, the sheer amount of data 
+presents fundamental challenges to existing approaches. 
+First, the sheer amount of data 
 overwhelmed even approximate distance matrix-based methods.
 % Accessed GISAID/EpiCov on 08 Oct., 2025
-At the peak in February, 2022 $\sim$80,000 samples per day
+At the peak in February 2022, $\sim$80,000 samples per day
 were submitted to GISAID~\cite{Shu2017},
 accumulating to a total of over 17.5 million samples
 as of October 2025.
@@ -219,11 +216,10 @@ a comprehensive genealogy updated in real time~\cite{McBroome2021,Kramer2023}
 were conclusively demonstrated, as the resource
 quickly became an indispensable element
 of the pandemic response\cite{Hinrichs2024}.
-The second challenge posed is that recombination is an important force
-in SARS-CoV-2 evolution \cite{Jackson2021,VanInsberghe2021,Focosi2022,
+Recurrent recombination has posed an additional challenge to reconstructing the evolutionary history of
+SARS-CoV-2 \cite{Jackson2021,VanInsberghe2021,Focosi2022,
 Gutierrez2022,Ignatieva2022,Tamura2023},
-with multiple deep recombination events now known to be present
-in the genealogy of the global population \cite{Roemer2023,Shiraz2023enhanced}.
+with multiple deep recombination events impacting both the genealogy and disease attributes of the virus \cite{Roemer2023,Shiraz2023enhanced}.
 Although several methods have been proposed to \emph{detect}
 recombinant samples~\cite{Varabyou2021rapid,%Bolotie
 Turakhia2022,%RIPPLES
@@ -232,8 +228,7 @@ Alfonsi2024,%RecombinHunt
 Li2024CovRecomb},
 this information is not incorporated into the phylogenies used 
 in innumerable studies~\cite{McBroome2021,Hadfield2018},
-and recombination continues to be treated as a 
-nuisance factor. 
+and recombination continues to be treated in a post hoc manner, after phylogenetic reconstruction. 
 
 Ancestral recombination graphs (ARGs) describe the reticulate 
 genealogies of sampled sequences in a recombining species\cite{Wong2024},
@@ -252,13 +247,9 @@ genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
 % to ARGs, but it's all in the "coalescent with recombination" sense
 % Rannala2025 dismisses ARG-based methods at a stroke because they're
 % all based on the assumption of a single panmictic population 
-As the range of applications for ARGs has broadened, the term is no
-longer synonymous with the coalescent with 
-recombination population genetic model \cite{Hudson1983,Griffiths1997ancestral}
-and an ARG is now more usually regarded as a data structure
-for representing recombinant ancestry\cite{Minichiello2006mapping,Wong2024}.
-Strong software support for ARGs has facilitated these developments,
-and the tskit library~\cite{Ralph2020} is the basis of a 
+As the range of applications for ARGs has broadened, the term has itself evolved from a specific model of coalescence with 
+recombination  \cite{Hudson1983,Griffiths1997ancestral}to a rich data structure representing recombinant ancestry\cite{Minichiello2006mapping,Wong2024}.
+The development of extensive software support has facilitated the broader application of ARGS. In particular, the collaboratively built tskit library~\cite{Ralph2020} underpins a 
 rapidly growing software ecosystem of
 simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
 visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
@@ -269,16 +260,17 @@ tools.
 
 Here we present sc2ts, a new method to infer ARGs for SARS-CoV-2  
 that sequentially adds samples over time in a similar manner 
-to UShER, but also automatically detects and incorporates recombination
-in real-time. Based on the Viridian dataset, a freely available  
-resource purged of various systematic errors and artifacts~\cite{Hunt2024},
+to UShER, while automatically detecting and incorporating recombination
+in real-time. Based on the freely-available Viridian dataset, a curated
+% NOTE: Viridian doesn't provide alignments, we do that with MAFFT
+collection of SARS-CoV-2 genomes purged of various systematic errors and artifacts~\cite{Hunt2024},
 we infer an ARG with 2.48 million whole genome sequences.
 We show that the non-recombinant portions of this ARG are congruent with the UShER phylogeny built 
-from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020},
-and that the ARG accurately captures evolutionary features such as mutational 
+from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
+The ARG also accurately captures evolutionary features such as mutational 
 spectra~\cite{Bloom2023} and deletions\cite{Li2023indels}.
 We show that sc2ts automatically and accurately detects details about
-known recombinant lineages that were painstakingly collated through a community effort, and provides novel insights into the relationships between these
+known recombinant lineages that were painstakingly collated through a community effort and provides novel insights into the relationships between these
 recombinant lineages. We compare the recombination events detected by 
 sc2ts with the state-of-the-art combination of UShER and 
 RIPPLES~\cite{Turakhia2022}, showing that sc2ts is more sensitive,
@@ -293,7 +285,7 @@ in the tskit~\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
 enables pandemic-scale analysis on a laptop. 
 These resources provide a strong platform for future research,
 helping us to learn from the vast troves of data collected during the
-pandemic, and to prepare for the next.
+pandemic and to prepare for the next.
 
 
 \section*{RESULTS}
