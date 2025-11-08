@@ -165,7 +165,9 @@ of divergent species~\cite{Felsenstein2004}. Recombination among lineages, howev
 analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, and so requires careful consideration~\cite{Rannala2025recombination}.
 Modern pathogen datasets are not sparsely sampled from different species
 % Need to concrete. "large" means 100 to some people.
-but consist of tens to hundreds of thousands of genomes sampled from 
+% SO: The phrase tens to hundreds of thousands seems odd though given the millions available for SARS-CoV-2: maybe "thousands to millions" 
+% JK: How's that?
+and may contain millions of genomes sampled from 
 % JK: deleted point about recomb here as TB, eg, doesn't
 a single species~\cite{
 Shu2017,% GISAID ~270k FLU + others
@@ -443,18 +445,19 @@ We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
 by computing Pango assignments for all 2.75 million nodes in the ARG
 using Pangolin~\cite{OToole2021assignment} (STAR Methods).
-All but 21,680 of the exported sample alignments (0.87\%) agreed
+Only a small minority of the exported sample alignments (21,680 ; 0.87\%) disagreed
 with the source consensus sequences in terms of Pango lineage assignment
 (comparable to the 0.27\% disagreement between pangolin-data
 versions 1.21 and 1.29 in the source Viridian metadata).
-A majority of these lineages (1473 of 2058)
+A majority of the Pango lineages (1473 of 2058)
+% SO: Not "these" as that seemed to refer to the conflicting nodes.
 have monophyletic origins in the ARG,
 increasing to 1779 (86\%) when we allow
 for multiple sibling origination nodes
 (Document~\ref{sec:supplement_pango_lineages}).
 The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (STAR Methods).
-We show that the dates agree reasonably well with
+We show that the dates agree well with
 Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy is comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
@@ -531,20 +534,16 @@ For more detailed visualisations of these subgraphs, see Document S2.
 
 \begin{table}
 \caption{
-Events in the ARG associated with Pango X lineages.
-Each row for Type I, III and IV events (see main text for definitions) 
-corresponds to
-the origin node for a given Pango lineage.
-For Type I and II recombination events,
+%SO: I found the legend hard to parse and revised it. OK?
+Events in the ARG associated with Pango X lineages. Each row corresponds to the origin node for a given Pango lineage (Types I, II, and IV, see text) or associated recombination event (Type II).
+For origin nodes that are recombinant (Type I) or near a recombination event (Type II),
 the ``averted'' column shows the number of additional mutations required
-without recombination (see main text).
+without recombination, as well as the position of informative sites to the left and right of the breakpoint.
 Parent lineages shown in boldface are nodes exactly matched by sampled sequences.
-The descendants column shows the descendant samples broken down by Pango lineage.
-For Type III events, the focal Pango, event (Type I or II) it is derived 
-from and the distance (path length and time in days) from that event are shown,
+The descendants column shows the number of descendants by Pango lineage.
+For Pango lineages (Type III) whose origin node was a descendant of a Type I or II recombination node, the distance (path length and time in days) from the recombination event is shown,
 as well as the number of mutations directly ancestral to the Pango origin
-node. For Type IV events, the Pango designation of the parent node and number
-of mutations are shown.
+node. Pango X lineages not associated with a recombination node (Type IV) are shown with the parent node and number of mutations.
 }
 \label{tab:pango_x_lineages}
 % scriptsize is quite small here, and we could probably cram it all 
@@ -686,7 +685,7 @@ Of the Type I events, 13 are monophyletic for the focal Pango lineage
 (i.e., the descendants are entirely from that lineage);
 Figure~\ref{fig:subgraphs}A shows XA as an example.
 
-There are 5 partially concordant events (Type II) 
+There are five partially concordant events (Type II) 
 in Table~\ref{tab:pango_x_lineages}, which 
 are recombination events closely associated with Pango X lineages
 that do not meet the strict origination criteria for Type I.
@@ -887,7 +886,7 @@ Genealogical methods such as sc2ts and UShER+RIPPLES
 use inferred parental sequences and are therefore 
 in principle maximally precise.
 Other methods are limited in precision by the various proxies 
-used to represent distinct parental \emph{lineages}~\cite{%
+used to represent distinct parental lineages~\cite{%
 Varabyou2021rapid,Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}.
 % How well the time and position of a recombination event
 % can be inferred thus depends on the divergence between the
@@ -904,7 +903,7 @@ studies~\cite{Bobay2020recombination,Turakhia2022,
 Smith2023tracking,Li2024CovRecomb}.
 While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
-making recombination events more likely to be detectable, and 
+making recombination events more likely to be detected and 
 allowing breakpoint intervals to be estimated more precisely.
 We found the median breakpoint interval length to be 2,207 bases
 (Figure~\ref{fig:recombinant_intervals}C),
