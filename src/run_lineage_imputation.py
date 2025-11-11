@@ -10,7 +10,7 @@ import sys
 import time
 from collections import defaultdict
 
-import sc2ts
+import sc2ts.debug as sd
 import tszip
 import sklearn.tree
 import numpy as np
@@ -723,7 +723,7 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     ts = tszip.load(args.input_ts)
-    ti = sc2ts.info.TreeInfo(ts)
+    ti = sd.ArgInfo(ts)
 
 
     new_ts = lineage_imputation(
