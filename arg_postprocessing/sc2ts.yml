@@ -196,7 +196,6 @@ dependencies:
   - tomli=2.2.1
   - tornado=6.5.1
   - traitlets=5.14.3
-  - tskit=0.6.4
   - tszip=0.2.5
   - typer=0.16.0
   - typer-slim=0.16.0
@@ -242,8 +241,9 @@ dependencies:
       - scipy==1.15.3
       - sortedcontainers==2.4.0
       - tqdm==4.67.1
+      - tskit==1.0.0b3
       - tsdate==0.2.3
       - -e git+https://github.com/phac-nml/pangonet.git#egg=pangonet
       # FIXME change to released version when it is done
-      - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts
-# This is a counter to force an update: 18
+      - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts[inference,debug]
+# This is a counter to force an update: 19
