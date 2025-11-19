@@ -51,11 +51,16 @@ if __name__ == "__main__":
     argparser.add_argument(
         "--verbose", "-v", action="store_true", help="Print extra info"
     )
+    argparser.add_argument(
+        "--strain_field", "-s", default="strain", help="Name of the strain metadata field"
+    )
+
+
     args = argparser.parse_args()
 
     ts = tszip.load(args.input_ts)
     # check that the initial Wuhan strain is there, and make it a sample if needed
-    assert ts.node(1).metadata["strain"].startswith("Wuhan")
+    assert ts.node(1).metadata[args.strain_field].startswith("Wuhan")
     tables = ts.dump_tables()
     arguments = [args.input_ts]
     if args.output_ts is not None:
@@ -128,12 +133,14 @@ if __name__ == "__main__":
         set_metadata=True if args.add_tsdate_metadata else False,
     )
 
-    if "strain" not in dated_ts.node(1).metadata:
+    if args.strain_field not in dated_ts.node(1).metadata:
         raise ValueError(
-            "You are using a version of tsdate that overwrites node metadata"
+            f"Cannot find strain field {args.strain_field} in "
+            f"node metadata in dated ts: {dated_ts.node(1).metadata}. "
+            "You may need to avoid overwriting metadata fields"
         )
 
-    assert dated_ts.node(1).metadata["strain"].startswith("Wuhan")
+    assert dated_ts.node(1).metadata[args.strain_field].startswith("Wuhan")
     # revert the Wuhan strain to nonsample if needed
 
     tables = dated_ts.dump_tables()
