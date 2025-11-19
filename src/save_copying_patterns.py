@@ -83,17 +83,18 @@ rec = pd.read_csv(data_dir / "recombinants.csv").set_index('recombinant')
 ####
 for u, label in tqdm(pangoX_RE_node_labels().items()):
     row = rec.loc[u]
-    save_copying_table_image(
-        ts,
-        u,
-        label,
-        png_dir,
-        hide_extra_rows=True,
-        show_bases=None,
-        child_label=row.recombinant_pango,
-        parent_labels=[row.parent_left_pango, row.parent_right_pango],
-        child_rgt_label=f"&nbsp;{u}",
-        font_family='Verdana',
+    for suffix, rgt_label in [("", f"&nbsp;{u}"), ("-no_nodeid", None)]:
+        save_copying_table_image(
+            ts,
+            u,
+            label + suffix,
+            png_dir,
+            hide_extra_rows=True,
+            show_bases=None,
+            child_label=row.recombinant_pango,
+            parent_labels=[row.parent_left_pango, row.parent_right_pango],
+            child_rgt_label=rgt_label,
+            font_family='Verdana',
     )
 
 ####
