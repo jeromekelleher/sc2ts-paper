@@ -1,13 +1,12 @@
 # sc2ts-paper
 
 This repository contains all analysis for the preprint
-``A pandemic-scale Ancestral Recombination Graph for SARS-CoV-2''.
+[A pandemic-scale Ancestral Recombination Graph for SARS-CoV-2](https://www.biorxiv.org/content/10.1101/2023.06.08.544212v2.full)
 
 ## Links
 
 - Live [in-browser demo](https://tskit.dev/explore/lab/index.html?path=sc2ts.ipynb)
 - Data processing example [notebook](notebooks/example_data_processing.ipynb)
-- Preprint on [bioRxiv](https://www.biorxiv.org/content/10.1101/2023.06.08.544212v2.full)
 - sc2ts [homepage](https://tskit.dev/sc2ts)
 - sc2ts package on [PyPi](https://pypi.org/project/sc2ts/)
 - sc2ts [documentation](https://tskit.dev/sc2ts/docs/)
