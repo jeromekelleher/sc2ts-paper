@@ -1,7 +1,7 @@
 # sc2ts-paper
 
 This repository contains all analysis for the preprint
-[A pandemic-scale Ancestral Recombination Graph for SARS-CoV-2](https://www.biorxiv.org/content/10.1101/2023.06.08.544212v2.full)
+[A pandemic-scale Ancestral Recombination Graph for SARS-CoV-2](https://www.biorxiv.org/content/10.1101/2023.06.08.544212v3.full)
 
 ## Links
 
