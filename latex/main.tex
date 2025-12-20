@@ -128,16 +128,13 @@ A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2
 % \affil[**]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
 
 \begin{document}
-
 \maketitle
 
-%%% The summary (abstract) should consist of a single paragraph of 150 words or
-%%% fewer.
-
-\section*{SUMMARY}
-
-% NOTE: currently 150 words
-
+% Abstract, in bold
+% There are strict length limits, and not all formats have abstracts.
+% Consult the journal instructions to authors for details.
+% Do not cite any references in the abstract.
+\begin{abstract}\bfseries
 Millions of SARS-CoV-2 genome sequences were collected 
 during the COVID-19 pandemic, forming a dataset of unprecedented richness.
 Estimated genealogies are fundamental to
@@ -159,19 +156,13 @@ the relationships among recombinant lineages,
 quantifies the rate of recombination over time,
 and provides a 
 lower bound on detectable recombination.
+\end{abstract}
 
-\section*{KEYWORDS}
+% \section*{KEYWORDS}
 
-%%%  Include up to 10 keywords, separated by commas.
-%%%  Keywords entered in EM are not carried over; only
-%%%  keywords included in the main text will be used
-%%%  in the final article metadata. Please note that
-%%%  for some journals, keywords are chosen by the editors.
-
-Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
+% Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 
 
-\section*{INTRODUCTION}
 % SHZ: The first paragraph should explain
 % why recombination "can" be important in pathogens.
 % Then, we explain why we need recombination-aware methods for pathogens.
@@ -181,6 +172,10 @@ Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 % Classical phylo methods fundamentally do not apply to SARS-CoV-2 data, both
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
+ 
+% The first paragraph of any Science paper does NOT have a heading
+% Nor is it indented
+\noindent
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
 of divergent species~\cite{Felsenstein2004}. Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
  biases downstream
