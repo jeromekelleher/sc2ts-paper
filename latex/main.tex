@@ -1,109 +1,131 @@
+% Use the basic LaTeX article class, 12pt text
+\documentclass[12pt]{article}
 
-% Notes on format:
-% The total word count of an article must be under 7,000 (including main figure
-% legends but excluding STAR Methods text, supplemental item legends, and
-% references section), and there should be no more than seven figures and/or
-% tables.
+% Science uses Times font. If you don't have this installed (most LaTeX installations will be
+% fine) or prefer the old Computer Modern fonts, comment out the following line
+% \usepackage{newtxtext,newtxmath}
+% Depending on your LaTeX fonts installation, you might get better results with one or both of these:
+%\usepackage{mathptmx}
+%\usepackage{txfonts}
 
-\documentclass[12pt,letterpaper]{article}
-\usepackage[a4paper, total={7in, 10in}]{geometry}
-\renewcommand{\familydefault}{\sfdefault}
+% Allow external graphics files
 \usepackage{graphicx}
-\usepackage{helvet}
-\usepackage{authblk}
-\usepackage[hypertexnames=false]{hyperref}
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{placeins}
-\usepackage{orcidlink}
-\usepackage[super,comma,sort&compress]
-   {natbib}\bibliographystyle{numbered}
-\usepackage[right]{lineno} \linenumbers
-\usepackage[normalem]{ulem}
 
-\graphicspath{ {../figures/} }
+% Use US letter sized paper with 1 inch margins
+\usepackage[letterpaper,margin=1in]{geometry}
 
-\makeatletter
-\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
-\begin{flushleft}
-  \textbf{\@title}
+% Double line spacing, including in captions
+\linespread{1.5} % For some reason double spacing is 1.5, not 2.0!
 
-  \@author
-\end{flushleft}\egroup}
-\makeatother
+% One space after each sentence
+\frenchspacing
 
-%%%  Insert title below; leave date empty.
+% Abstract formatting and spacing - no heading
+\renewenvironment{abstract}
+	{\quotation}
+	{\endquotation}
 
-\title{A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2}
+% No date in the title section
 \date{}
 
-%%%  Author first and last names should be spelled
-%%%  out in their entirety (do not abbreviate "J.H.
-%%%  Watson" unless this is how the author's name
-%%%  always appears). Middle initials are OK. Do
-%%%  not include titles, positions, or degrees.
+% Reference section heading
+\renewcommand\refname{References and Notes}
 
-%%%  Use numbered footnotes to indicate institutional
-%%%  affiliations. Authors may have multiple
-%%%  institutional affiliations, and affiliations
-%%%  may be shared among multiple authors.
+% Figure and Table labels in bold
+\makeatletter
+\renewcommand{\fnum@figure}{\textbf{Figure \thefigure}}
+\renewcommand{\fnum@table}{\textbf{Table \thetable}}
+\makeatother
 
-%%%  After the institutional affiliations, numbered
-%%%  footnotes may be used to indicate an author's
-%%%  present address, equal contribution status,
-%%%  and/or senior author status.
+% Call the accompanying scicite.sty package.
+% This formats citation numbers in Science style.
+\usepackage{scicite}
 
-%%%  The final numbered footnote should indicate
-%%%  which author is the lead contact (required).
-%%%  One author must be designated as the lead contact.
-%%%  There can be no more than one lead contact.
+% Provides the \url command, and fixes a crash if URLs or DOIs contain underscores
+\usepackage{url}
 
-%%%  Corresponding authors should be indicated with
-%%%  asterisks (*). Use 2 asterisks (**) for the
-%%%  second-listed corresponding author, 3 (***) for
-%%%  the third-listed, and so on. The lead contact
-%%%  must be a corresponding author. Additional
-%%%  authors may also serve as corresponding authors.
+%%%%%%%%%%%% CUSTOM COMMANDS AND PACKAGES %%%%%%%%%%%%
 
-% \author[1,\orcidlink{0000-0000-0000-0000}]{First Last}
-% \author[1,2]{First Middle Last}
-% \author[2,3]{First M.M. Last}
-% \author[3,*]{First Last, Jr.}
-% \author[3,4,5,**]{F. Middle Last}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[hypertexnames=false]{hyperref}
 
-\author[1,2,8,*,\orcidlink{0000-0002-6351-8873}]{Shing~H.~Zhan}
-\author[1,7,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
-\author[3,7,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
-\author[4,\orcidlink{0000-0001-6862-7756}]{Katherine~Eaton}
-\author[1,\orcidlink{0000-0002-3547-7226}]{Isobel~Guthrie}
-\author[1,\orcidlink{0000-0002-1982-6801}]{Benjamin~Jeffery}
-\author[1,3,5,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
-\author[4,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
-\author[6,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
-\author[1,**,\orcidlink{0000-0002-7894-5253}]{Jerome~Kelleher}
 
-%%%  Institutional affiliations should contain the
-%%%  following information at minimum: department(s)/
-%%%  subunit(s), institution, city, state/region (if
-%%%  applicable), and country.
+\graphicspath{{../figures}}
 
-\affil[1]{Big Data Institute, Li Ka Shing Centre for Health
-Information and Discovery, University of Oxford, United Kingdom}
-\affil[2]{Infectious Disease Epidemiology Unit (IDEU), Nuffield Department of Population Health, University of Oxford, Oxford, United Kingdom}
-\affil[3]{Department of Statistics, University of Oxford, United Kingdom}
-\affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-\affil[5]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
-\affil[6]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
+% Authors can define simple custom commands e.g. as shortcuts to save on typing
+% Use \newcommand (not \def) to avoid overwriting existing commands.
+% Keep them as simple as possible and note the warning in the text below.
+% Example:
+\newcommand{\pcc}{\,cm$^{-3}$}	% per cm-cubed
 
-\affil[7]{Joint second author}
-\affil[8]{Lead contact}
+% Please DO NOT import additional external packages or .sty files.
+% Those are unlikely to work with our conversion software and will cause problems later.
+% Don't add any more \usepackage{} commands.
 
-%%%  List only one email address per corresponding author.
 
-\affil[*]{Correspondence: shing.zhan@ndph.ox.ac.uk}
-\affil[**]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
+%%%%%%%%%%%%%%%% TITLE AND AUTHORS %%%%%%%%%%%%%%%%
+
+% Title of the paper.
+% Keep it short and understandable by any reader of Science.
+% Avoid acronyms or jargon. Use sentence case.
+\def\scititle{
+A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2
+}
+% Store the title in a variable for reuse in the supplement (otherwise \maketitle deletes it)
+\title{\bfseries \boldmath \scititle}
+
+% Author and institution list.
+% Institution numbers etc. should be hard-coded, do *not* use the \footnote command.
+\author{
+	% You can write out first names or use initials - either way is acceptable, but be consistent
+	First~Author$^{1\ast\dagger}$,
+	A.~Scientist$^{2\dagger}$,
+	Someone~E.~Else$^{2}$\and
+	% Additional lines of authors should be inserted using the \and command (not \\)
+	% Institution list, in a slightly smaller font
+	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
+	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
+	% Identify at least one corresponding author, with contact email address
+	\small$^\ast$Corresponding author. Email: example@mail.com\and
+	% Joint contributions can be indicated like this
+	\small$^\dagger$These authors contributed equally to this work.
+}
+
+\date{}
+
+% \author[1,2,8,*,\orcidlink{0000-0002-6351-8873}]{Shing~H.~Zhan}
+% \author[1,7,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
+% \author[3,7,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
+% \author[4,\orcidlink{0000-0001-6862-7756}]{Katherine~Eaton}
+% \author[1,\orcidlink{0000-0002-3547-7226}]{Isobel~Guthrie}
+% \author[1,\orcidlink{0000-0002-1982-6801}]{Benjamin~Jeffery}
+% \author[1,3,5,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
+% \author[4,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
+% \author[6,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
+% \author[1,**,\orcidlink{0000-0002-7894-5253}]{Jerome~Kelleher}
+
+% %%%  Institutional affiliations should contain the
+% %%%  following information at minimum: department(s)/
+% %%%  subunit(s), institution, city, state/region (if
+% %%%  applicable), and country.
+
+% \affil[1]{Big Data Institute, Li Ka Shing Centre for Health
+% Information and Discovery, University of Oxford, United Kingdom}
+% \affil[2]{Infectious Disease Epidemiology Unit (IDEU), Nuffield Department of Population Health, University of Oxford, Oxford, United Kingdom}
+% \affil[3]{Department of Statistics, University of Oxford, United Kingdom}
+% \affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
+% \affil[5]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
+% \affil[6]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
+
+% \affil[7]{Joint second author}
+% \affil[8]{Lead contact}
+
+% %%%  List only one email address per corresponding author.
+
+% \affil[*]{Correspondence: shing.zhan@ndph.ox.ac.uk}
+% \affil[**]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
 
 \begin{document}
 
@@ -241,7 +263,7 @@ While ARGs have been of theoretical interest in population genetics
 for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
 recent breakthroughs in
 simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019,Gopalan2025bridging}
-and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
+and inference~\cite{Rasmussen2014,Speidel2019,Kelleher2019,
 Wohns2022,Zhang2023,Gunnarsson2024,Deng2025robust} have led to a surge 
 of interest in their application in population and statistical 
 genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
@@ -1311,7 +1333,6 @@ This study did not generate new materials.
 %%%  are structured and consist of three bulleted
 %%%  components. Each component must be present.
 \begin{itemize}
-
 \item The ARG in tskit format has been deposited at Zenodo and is publicly
 available at \url{https://zenodo.org/records/17558489}. The UShER tree
 in tskit format is also available, as well as the intersection files.
@@ -1405,154 +1426,65 @@ and edited the content as needed and
 take(s) full responsibility for the content of the publication.
 
 
-% \section*{SUPPLEMENTAL INFORMATION INDEX}
+%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
 
-% %%%  Supplemental information must be uploaded as
-% %%%  separate files. In the main text, please list the
-% %%%  files to be included in a brief index. For details,
-% %%%  please review the supplemental information guidelines:
+\clearpage % Clear all remaining figures and tables then start a new page
 
-% %%%  Journals with STAR Methods:
-% %%%  https://www.cell.com/STAR-supplemental-information
-
-% \begin{description}
-%   \item Figures S1-SX and their legends in a PDF
-%   \item Table S1. A descriptive title for an Excel file that was too large to appear in the PDF
-% \end{description}
-
-% \newpage
-
-
-% \section*{MAIN FIGURE TITLES AND LEGENDS}
-
-% %%%  At final submission, figure files MUST be
-% %%%  provided separately as high-resolution image
-% %%%  files. All of the panels for a figure should
-% %%%  be in the same file. Figures should have
-% %%%  clear labels/file names (Figure 1, Figure 2,
-% %%%  etc.).
-
-% %%%  Figure titles and legends should be placed
-% %%%  at the end of the main text. You do not
-% %%%  need to place the figures, nor their titles
-% %%%  and legends, within the main text. While
-% %%%  typesetting your article, our team will
-% %%%  place each figure in the best location
-% %%%  based on the final layout and on your
-% %%%  figure citations, e.g., (Figures 1A and 1B).
-
-% %%%  Please review the figure guidelines before
-% %%%  submitting your final materials:
-% %%%  https://www.cell.com/figureguidelines.
-
-% \noindent\includegraphics[width=0.85\linewidth]{Figure1.jpg}
-
-% \subsection*{Figure 1. A brief title that describes the entire figure without citing specific panels}
-
-% The figure legend can be all one paragraph and describe the images (A), graphs (B), and plots (C), etc., together.
-% \newline
-% (A) Or each panel or group of panels can be described separately, as shown here and below.
-% \newline
-% (B) Graph of X, Y, and Z.
-% \newline
-% (C and D) If panels are grouped like this, please explicitly describe each panel, e.g., ``Images showing SEM (C) and TEM (D).''
-% \newline
-% Please define all scale and error bars, and please review the Cell Press figure guidelines before submission: \href{https://www.cell.com/figureguidelines}{https://www.cell.com/figureguidelines}. Example figure created by Cassie Comeau, Cell Press.
-
-% \newpage
-
-% \section*{MAIN TABLES, INCLUDING TITLES AND LEGENDS}
-
-% %%%  Whenever possible, we encourage you to submit
-% %%%  your main-text tables as Microsoft Word documents,
-% %%%  using Word's table function. This will ensure
-% %%%  the best results during conversion. Tables
-% %%%  should be numbered Table 1, Table 2, etc. and
-% %%%  should not include subpanels (do not use Table 1A,
-% %%%  1B, etc.). Give each table a brief descriptive
-% %%%  title. Table legends are optional but encouraged.
-% %%%  Footnotes (superscript lowercase letters) should
-% %%%  be used where necessary to indicate some feature
-% %%%  of the data; please do not use bold, italic,
-% %%%  coloured text, or shading for this purpose. Use
-% %%%  separate cells, not line breaks or spaces, for
-% %%%  all discrete data elements. Small embedded
-% %%%  graphics with colour are OK.
-
-% %%%  Like figures, all tables must be cited within
-% %%%  the main text, and our typesetting team will
-% %%%  place the tables within the typeset paper at
-% %%%  the appropriate locations.
-
-
-% \subsection*{Table 1. A table with clear organization of data}
-
-% \begin{tabular}{|l | l | l | l|}
-%  \hline
-%  \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} & \textbf{Column 4} \\ [1ex]
-%  \hline
-%  Row A\textsuperscript{a} & 6 & 87,837 & 787 \\ [1ex]
-%  \hline
-%  Row B & 7 & 78 & 5,415 \\ [1ex]
-%  \hline
-%  Row C & 545 & 778 & 7507 \\ [1ex]
-%  \hline
-%  Row D & 545 & 18,744 & 7,560 \\ [1ex]
-%  \hline
-%  Row E & 88 & 788 & 6,344 \\ [1ex]
-%  \hline
-% \end{tabular}
-
-% \bigskip
-
-% The table legend (optional) follows the table itself.
-% The legend should be used to provide additional info that relates to the table as a whole.
-
-% \textsuperscript{a}Footnotes can be used to provide additional info on specific content within the table,
-% such as this footnote to the first row (row A). Do not use footnotes in the table title.
-
-% \textsuperscript{b}More footnotes
-
-\newpage
-
-%%%  REFERENCES: As of 2023, all Cell Press journals
-%%%  use Numbered (AMA) style. We recommend placing
-%%%  your references in the included "references.bib"
-%%%  file.
-
-
-\bibliography{references}
-
+% The list of references goes after the main text and before the acknowledgements
+% When preparing an initial submission, we recommend you use BibTeX, like this:
+%
+\bibliography{references} % for a file named science_template.bib
+\bibliographystyle{sciencemag}
 
 
 \bigskip
 
-%%%  In your References, please include only articles
-%%%  that are published (online publication and
-%%%  preprint servers are OK). Unpublished data,
-%%%  submitted and/or accepted manuscripts, abstracts,
-%%%  and personal communications should be cited within
-%%%  the text only ("unpublished data," "data not
-%%%  shown," "Alice Smith, personal communication")
-%%%  and not included in the references list. Personal
-%%%  communication should be documented by a letter
-%%%  of permission. Whenever possible, please make
-%%%  sure your .bib file has the complete author lists
-%%%  for each item (at minimum, the first 11 authors
-%%%  listed).
+%%%%%%%%%%%%%%%% ACKNOWLEDGEMENTS %%%%%%%%%%%%%%%
 
-\newpage
+\section*{Acknowledgments}
+Here you can thank helpful colleagues who did not meet the journal's authorship criteria, or
+provide other acknowledgements that don't fit the (compulsory) subheadings below.
+Formatting requirements for each of these sections differ between the \textit{Science}-family
+journals; consult the instructions to authors on the journal website for full details.
+\paragraph*{Funding:}
+List the grants, fellowships etc. that funded the research;
+use initials to specify which author(s) were supported by each source.
+Include grant numbers when appropriate or required by the funding agency.
+For example: F.~A. was funded by the Generous Science Agency grant~2372.
+\paragraph*{Author contributions:}
+List each author’s contributions to the paper.
+Use initials to abbreviate author names.
+\paragraph*{Competing interests:}
+Disclose any potential conflicts of interest for all authors, such as patent applications,
+additional affiliations, consultancies, financial relationships etc.
+See the journal editorial policies web page for types of competing interest that must be declared.
+If there are no competing interests, state:
+``There are no competing interests to declare.''
+\paragraph*{Data and materials availability:}
+Specify where the data, software, physical samples, simulation outputs or other materials
+underlying the paper are archived.
+They must be publicly accessible when the paper is published (without embargo) and enable
+readers to reproduce all the results in the paper.
+Contact the editor if you’re unsure what needs to be shared.
+
+Our preference is for digital material to be deposited in a suitable non-profit online data or
+software repository that issues the material with a DOI.
+Alternatively, an institutional repository, subject-based archive, commercial repository etc.
+is acceptable, as are (short) supplementary tables or a machine-readable supplementary data file.
+‘Available on request’ or personal web pages are not allowed.
+
+Cite the relevant DOI \cite{dataset}, URL \cite{example_url} or reference \cite{example2}
+in this statement.
+These \textit{do not} count towards the reference limit if they are only cited in the acknowledgements.
+Be specific and state a unique identifier -- such as an accession number, software version number
+or observation ID -- so readers can easily retrieve the exact material used.
+
+Declare any restrictions on sharing or re-use -- such as a Materials Transfer Agreement (MTA) or
+legal restrictions -- which must be approved by your editor.
+Unreasonable restrictions will preclude publication.
+Consult the journal's editorial policies web page for more details.
 
 
-
-
-
-
-%%% All Cell Press \textbf{life and medical science} journals, and the multidisciplinary journal \textbf{iScience},
-%%% use the \textbf{\href{https://www.cell.com/star-authors-guide}{STAR Methods}} format for reporting materials and methods.
-
-%%% If you are publishing in a STAR Methods journal, please refer to the appropriate guide for authors:
-%%% Cell authors should download the guide https://www.cell.com/pb-assets/journals/research/cell/methods/Methods_Guide_Cell-1678470557763.pdf.
 
 
 \section*{STAR METHODS}
@@ -4169,7 +4101,7 @@ non-recombinant origin by long branch splitting,
 although subsequent tree building does not make this a parsimonious 
 way to rewire the final ARG.  It is therefore likely to be spurious.
 
-\FloatBarrier
+% \FloatBarrier
 
 \section*{Supplementary Figures}
 
