@@ -94,31 +94,6 @@ A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2
 % 	\small$^\dagger$These authors contributed equally to this work.
 % }
 
-% \author{
-%     Shing~H.~Zhan$^{1,2,8,*}$,
-% Yan~Wong$^{1,7}$,
-% Anastasia~Ignatieva$^{3,7}$,
-% Katherine~Eaton$^{4}$,
-% Isobel~Guthrie$^{1}$,
-% Benjamin~Jeffery$^{1}$,
-% Duncan~S.~Palmer$^{1,3,5}$,
-% Carmen~Lia~Murall$^{4}$,
-% Sarah~P.~Otto$^{6}$,
-% Jerome~Kelleher$^{1,**}$,
-% % 	First~Author$^{1\ast\dagger}$,
-% % 	A.~Scientist$^{2\dagger}$,
-% 	% Someone~E.~Else$^{2}$\and
-% 	% Additional lines of authors should be inserted using the \and command (not \\)
-% 	% Institution list, in a slightly smaller font
-% 	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
-% 	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
-% 	% Identify at least one corresponding author, with contact email address
-% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
-% 	% Joint contributions can be indicated like this
-% 	\small$^\dagger$These authors contributed equally to this work.
-% }
-
-
 \author[1,2,$\ast$]{Shing~H.~Zhan}
 \author[1,$\dagger$]{Yan~Wong}
 \author[3,$\dagger$]{Anastasia~Ignatieva}
@@ -190,7 +165,6 @@ lower bound on detectable recombination.
 
 % Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 
-
 % SHZ: The first paragraph should explain
 % why recombination "can" be important in pathogens.
 % Then, we explain why we need recombination-aware methods for pathogens.
@@ -205,13 +179,12 @@ lower bound on detectable recombination.
 % Nor is it indented
 \noindent
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of divergent species~\cite{Felsenstein2004}. Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
+of divergent species~\cite{Felsenstein2004}. 
+Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
  biases downstream
-analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, and so requires careful consideration~\cite{Rannala2025recombination}.
+analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, 
+and so requires careful consideration~\cite{Rannala2025recombination}.
 Modern pathogen datasets are not sparsely sampled from different species
-% Need to concrete. "large" means 100 to some people.
-% SO: The phrase tens to hundreds of thousands seems odd though given the millions available for SARS-CoV-2: maybe "thousands to millions" 
-% JK: How's that?
 and may contain millions of genomes sampled from 
 % JK: deleted point about recomb here as TB, eg, doesn't
 a single species~\cite{
@@ -1282,157 +1255,6 @@ of sophisticated model-based inferences with the power
 of non-parametric inference~\cite{Bisschop2025likelihoods}
 when such data sparsity is detected.
 
-\newpage
-
-
-%%%  The following components should appear after the methods.
-%%%  For journals using STAR Methods, these components
-%%%  should appear immediately after the discussion
-%%%  (after any "limitations" or "conclusions" subsection
-%%%  within the discussion).
-
-\section*{RESOURCE AVAILABILITY}
-
-%%%  The resource availability section is required
-%%%  for all research articles. This component
-%%%  has 3 subsections: "lead contact," "materials
-%%%  availability," and "data and code availability."
-%%%  All 3 subsections must be included, even if no
-%%%  unique materials were generated in the study.
-%%%  Do not edit or change the names of the subheadings.
-%%%  No other subheadings or text are allowed in the
-%%%  resource availability section.
-
-\subsection*{Lead contact}
-
-%%%  Authors are required to designate a lead contact,
-%%%  who will be responsible for communication with
-%%%  the journal before and after publication and is
-%%%  the arbiter of disputes, including concerns
-%%%  related to reagents or resource sharing. Only
-%%%  one author can be named the lead contact, and
-%%%  only the lead contact’s information may be
-%%%  provided in this section.
-
-Requests for further information and resources
-should be directed to and will be fulfilled
-by the lead contact, Shing H. Zhan (shing.zhan@ndph.ox.ac.uk).
-
-\subsection*{Materials availability}
-
-%%%  This subsection must include a statement describing
-%%%  the availability of newly generated materials
-%%%  associated with the paper, including any conditions
-%%%  for access. If there are no newly generated materials
-%%%  associated with the paper, the statement should
-%%%  state this, e.g.: This study did not generate new
-%%%  materials.
-
-This study did not generate new materials.
-
-\subsection*{Data and code availability}
-\label{sec:data_and_code_availability}
-
-%%%  All original research papers must include a
-%%%  comprehensive and accurate ``data and code
-%%%  availability'' statement within the ``resource
-%%%  availability'' component of the paper before it
-%%%  is accepted for publication. These statements
-%%%  are structured and consist of three bulleted
-%%%  components. Each component must be present.
-\begin{itemize}
-\item The ARG in tskit format has been deposited at Zenodo and is publicly
-available at \url{https://zenodo.org/records/17558489}. The UShER tree
-in tskit format is also available, as well as the intersection files.
-\item The sequences alignments in VCF Zarr format have been deposited at 
-Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
-\item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
-\item The complete configuration file for running sc2ts to build the ARG above is 
-publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
-\item The Snakemake workflow for ARG post-processing is publicly 
-available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
-\item The original code of sc2ts is publicly available on 
-GitHub at \url{https://github.com/tskit-dev/sc2ts}.
-\item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
-\end{itemize}
-
-
-\section*{ACKNOWLEDGMENTS}
-
-%%%  Use this section to acknowledge contributions
-%%%  from non-authors and list funding sources,
-%%%  including grant numbers.
-We would like to thank Jotun Hein for helpful comments on the manuscript.
-
-SHZ is supported by an NDPH Intermediate Research Fellowship (Oxford Population
-Health, University of Oxford).
-IG is supported by Wellcome (DPhil in Genomic Medicine and Statistics, 228319/Z/23/Z).
-DSP acknowledges funding administered by the Danish National Research Foundation
-in support of the Pioneer Centre for SMARTbiomed.
-SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
-JK acknowledges support from the
-Oxford-Janssen Translational Genomics Fellowship,
-research grant R01 HG012473 from the National Institutes of Health NHGRI, 
-research grant EP/X024881/1 from the Engineering and Physical Sciences Research Council, 
-and the Robertson Foundation. 
-For the purpose of Open Access, the authors have applied a CC BY public copyright licence to any Author Accepted Manuscript version arising from this submission.
-
-Computation used the Oxford Biomedical Research Computing (BMRC) facility, a
-joint development between the Wellcome Centre for Human Genetics and the Big
-Data Institute supported by Health Data Research UK and the NIHR Oxford
-Biomedical Research Centre. The views expressed are those of the author(s) and
-not necessarily those of the NHS, the NIHR or the Department of Health.
-
-
-\section*{AUTHOR CONTRIBUTIONS}
-
-%%%  This component is required for most research papers.
-%%%  Mention each individual author with a statement
-%%%  outlining the contribution of each author to the work.
-
-% Credit system: https://credit.niso.org/
-Conceptualization, SHZ, CLM, SPO, JK;
-% Methodology, software, resources, visualization
-methodology, SHZ, YW, AI, KE, BJ, DSP, SPO, JK;
-% Invesigation, data curation, formal analysis, validation
-investigation, SHZ, YW, AI, KE, IG, SPO, JK;
-writing--original draft, SHZ, JK;
-writing--review \& editing, SHZ, YW, AI, KE, IG, BJ, DSP, CLM, SPO, JK;
-resources, JK;
-supervision, JK;
-funding acquisition, JK.
-
-
-\section*{DECLARATION OF INTERESTS}
-
-%%%  This component is required for all articles, even
-%%%  if the authors have no competing interests; if
-%%%  this is the case, insert "The authors declare no
-%%%  competing interests." Please refer to the
-%%%  declaration of interests policy:
-%%%  https://www.cell.com/declaration-of-interests
-
-% https://github.com/jeromekelleher/sc2ts-paper/issues/922
-The authors declare no competing interests.
-
-
-\section*{DECLARATION OF GENERATIVE AI AND AI-ASSISTED TECHNOLOGIES}
-
-%%%  If generative AI and AI-assisted technologies
-%%%  were used in the writing process, this must
-%%%  be disclosed in the paper. This declaration
-%%%  does not apply to the use of basic tools for
-%%%  checking grammar, spelling, references, etc.
-%%%  If you have nothing to disclose, please do not
-%%%  include this component.
-
-% https://github.com/jeromekelleher/sc2ts-paper/issues/923
-During the preparation of this work, the author(s) used ChatGPT
-in order to obtain editorial input on the text.
-After using this tool or service, the author(s) reviewed
-and edited the content as needed and
-take(s) full responsibility for the content of the publication.
-
 
 %%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
 
@@ -1450,78 +1272,98 @@ take(s) full responsibility for the content of the publication.
 %%%%%%%%%%%%%%%% ACKNOWLEDGEMENTS %%%%%%%%%%%%%%%
 
 \section*{Acknowledgments}
-Here you can thank helpful colleagues who did not meet the journal's authorship criteria, or
-provide other acknowledgements that don't fit the (compulsory) subheadings below.
-Formatting requirements for each of these sections differ between the \textit{Science}-family
-journals; consult the instructions to authors on the journal website for full details.
+We would like to thank Jotun Hein for helpful comments on the manuscript.
+
+For the purpose of Open Access, the authors have applied a CC BY public
+copyright licence to any Author Accepted Manuscript version arising from this
+submission.
+
+Computation used the Oxford Biomedical Research Computing (BMRC) facility, a
+joint development between the Wellcome Centre for Human Genetics and the Big
+Data Institute supported by Health Data Research UK and the NIHR Oxford
+Biomedical Research Centre. The views expressed are those of the author(s) and
+not necessarily those of the NHS, the NIHR or the Department of Health.
+
 \paragraph*{Funding:}
-List the grants, fellowships etc. that funded the research;
-use initials to specify which author(s) were supported by each source.
-Include grant numbers when appropriate or required by the funding agency.
-For example: F.~A. was funded by the Generous Science Agency grant~2372.
+SHZ is supported by an NDPH Intermediate Research Fellowship (Oxford Population
+Health, University of Oxford).
+IG is supported by Wellcome (DPhil in Genomic Medicine and Statistics, 228319/Z/23/Z).
+DSP acknowledges funding administered by the Danish National Research Foundation
+in support of the Pioneer Centre for SMARTbiomed.
+SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
+JK acknowledges support from the
+Oxford-Janssen Translational Genomics Fellowship,
+research grant R01 HG012473 from the National Institutes of Health NHGRI, 
+research grant EP/X024881/1 from the Engineering and Physical Sciences Research Council, 
+and the Robertson Foundation. 
+
 \paragraph*{Author contributions:}
-List each author’s contributions to the paper.
-Use initials to abbreviate author names.
+% Credit system: https://credit.niso.org/
+Conceptualization, SHZ, CLM, SPO, JK;
+% Methodology, software, resources, visualization
+methodology, SHZ, YW, AI, KE, BJ, DSP, SPO, JK;
+% Invesigation, data curation, formal analysis, validation
+investigation, SHZ, YW, AI, KE, IG, SPO, JK;
+writing--original draft, SHZ, JK;
+writing--review \& editing, SHZ, YW, AI, KE, IG, BJ, DSP, CLM, SPO, JK;
+resources, JK;
+supervision, JK;
+funding acquisition, JK.
+
 \paragraph*{Competing interests:}
-Disclose any potential conflicts of interest for all authors, such as patent applications,
-additional affiliations, consultancies, financial relationships etc.
-See the journal editorial policies web page for types of competing interest that must be declared.
-If there are no competing interests, state:
-``There are no competing interests to declare.''
+There are no competing interests to declare.
+
 \paragraph*{Data and materials availability:}
-Specify where the data, software, physical samples, simulation outputs or other materials
-underlying the paper are archived.
-They must be publicly accessible when the paper is published (without embargo) and enable
-readers to reproduce all the results in the paper.
-Contact the editor if you’re unsure what needs to be shared.
+\begin{itemize}
+\item The ARG in tskit format has been deposited at Zenodo and is publicly
+available at \url{https://zenodo.org/records/17558489}. The UShER tree
+in tskit format is also available, as well as the intersection files.
+\item The sequences alignments in VCF Zarr format have been deposited at 
+Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
+\item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
+\item The complete configuration file for running sc2ts to build the ARG above is 
+publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
+\item The Snakemake workflow for ARG post-processing is publicly 
+available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
+\item The original code of sc2ts is publicly available on 
+GitHub at \url{https://github.com/tskit-dev/sc2ts}.
+\item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
+\end{itemize}
 
-Our preference is for digital material to be deposited in a suitable non-profit online data or
-software repository that issues the material with a DOI.
-Alternatively, an institutional repository, subject-based archive, commercial repository etc.
-is acceptable, as are (short) supplementary tables or a machine-readable supplementary data file.
-‘Available on request’ or personal web pages are not allowed.
-
-Cite the relevant DOI \cite{dataset}, URL \cite{example_url} or reference \cite{example2}
-in this statement.
-These \textit{do not} count towards the reference limit if they are only cited in the acknowledgements.
-Be specific and state a unique identifier -- such as an accession number, software version number
-or observation ID -- so readers can easily retrieve the exact material used.
-
-Declare any restrictions on sharing or re-use -- such as a Materials Transfer Agreement (MTA) or
-legal restrictions -- which must be approved by your editor.
-Unreasonable restrictions will preclude publication.
-Consult the journal's editorial policies web page for more details.
-
-
-\begin{center}
-\section*{Supplementary Materials for\\ \scititle}
-
-% Author list for the supplement
-% Indicate the corresponding authors, but do NOT include institutions here
-% It would be nice if the template auto-generated this, but doing so is complicated...
-First~Author$^{\ast\dagger}$,
-A.~Scientist$^\dagger$,
-Someone~E.~Else\\ % we're not in a \author{} environment this time, so use \\ for a new line
-\small$^\ast$Corresponding author. Email: example@mail.com\\
-\small$^\dagger$These authors contributed equally to this work.
-\end{center}
-
-% Fill out the numbers for each type of supplementary material,
-% and delete any lines that aren't applicable.
-% These are just example numbers that don't match the rest of this template.
-\subsubsection*{This PDF file includes:}
-Materials and Methods\\
-Supplementary Text\\
-Figures S1 to S3\\
-Tables S1 to S4\\
-Captions for Movies S1 to S2\\
-Captions for Data S1 to S2
-
-\subsubsection*{Other Supplementary Materials for this manuscript:}
-Movies S1 to S2\\
-Data S1 to S2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Supplementary
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
+
+\section*{Supplementary Materials for\\ \scititle}
+
+% % Author list for the supplement
+% % Indicate the corresponding authors, but do NOT include institutions here
+% % It would be nice if the template auto-generated this, but doing so is complicated...
+% First~Author$^{\ast\dagger}$,
+% A.~Scientist$^\dagger$,
+% Someone~E.~Else\\ % we're not in a \author{} environment this time, so use \\ for a new line
+% \small$^\ast$Corresponding author. Email: example@mail.com\\
+% \small$^\dagger$These authors contributed equally to this work.
+% \end{center}
+
+% % Fill out the numbers for each type of supplementary material,
+% % and delete any lines that aren't applicable.
+% % These are just example numbers that don't match the rest of this template.
+% \subsubsection*{This PDF file includes:}
+% Materials and Methods\\
+% Supplementary Text\\
+% Figures S1 to S3\\
+% Tables S1 to S4\\
+% Captions for Movies S1 to S2\\
+% Captions for Data S1 to S2
+
+% \subsubsection*{Other Supplementary Materials for this manuscript:}
+% Movies S1 to S2\\
+% Data S1 to S2
+
+% \newpage
 
 \subsection*{Materials and Methods}
 
