@@ -357,7 +357,7 @@ that controls the number of recurrent mutations
 that is allowed before switching to a different parent via recombination
 % This is quite a big thing really, and ultimately what determines
 % the number of recombinants detected.
-(we use $k=4$ here; see STAR Methods).
+(we use $k=4$ here; see Methods).
 We used the highly efficient LS HMM implementation in tsinfer~\cite{Kelleher2019},
 with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
@@ -379,7 +379,7 @@ Sc2ts is implemented in Python,
 building on core PyData infrastructure~\cite{Harris2020array,Virtanen2020scipy,
 Mckinney2010data,Lam2015numba} and
 bioinformatics packages~\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
-See STAR Methods for details on all aspects of the method.
+See Methods for details on all aspects of the method.
 
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
@@ -427,12 +427,12 @@ accurately reflecting a range of results from the literature.
 First, we compared the sc2ts ARG
 with the state-of-the-art UShER tree inferred from the same dataset
 by pruning both to their intersection of
-2,475,418 samples and 27,507 sites (STAR Methods).
+2,475,418 samples and 27,507 sites (Methods).
 Eliminating recombination nodes and their descendants (which we expected to differ), 
 we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
 for a set of representative samples from 814 well-sampled lineages
-(STAR Methods; Figures~\ref{fig:tanglegram_base},
+(Methods; Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
@@ -444,12 +444,12 @@ and UShER tree in terms of parsimony
 and imputation of missing and ambiguous bases
 (Document~\ref{sec:supplement_sc2ts_usher_imputation}).
 We compared the mutational spectra of major Variants of Concern (VOCs) in the ARG
-against the UShER tree and a previous study~\cite{Bloom2023} (STAR Methods),
+against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
 by computing Pango assignments for all 2.75 million nodes in the ARG
-using Pangolin~\cite{OToole2021assignment} (STAR Methods).
+using Pangolin~\cite{OToole2021assignment} (Methods).
 Only a small minority of the exported sample alignments (21,680 ; 0.87\%) disagreed
 % NOTE Sally pointed out as potentially needing clarification.
 with the source consensus sequences in terms of Pango lineage assignment
@@ -462,7 +462,7 @@ increasing to 1779 (86\%) when we allow
 for multiple sibling origination nodes
 (Document~\ref{sec:supplement_pango_lineages}).
 The ARG is time-resolved, with internal node dates estimated
-by a non-parametric method~\cite{Pope2025} (STAR Methods).
+by a non-parametric method~\cite{Pope2025} (Methods).
 We show that the dates agree well with
 Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy is comparable to 
@@ -491,7 +491,7 @@ To approximate the effects of the most important deletions into the ARG,
 we remapped data using post hoc parsimony at 75 sites
 involved in deletions with a frequency of
 $\geq 1\%$ reported by Li et al.~\cite{Li2023indels}
-during post-processing (STAR Methods).
+during post-processing (Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known
@@ -578,7 +578,7 @@ parent lineages and breakpoint intervals is excellent,
 with similar performance to
 the RecombinHunt~\cite{Alfonsi2024}
 and CovRecomb~\cite{Li2024CovRecomb} detection methods
-(STAR Methods; Table~\ref{tab:method_concordance}; see also
+(Methods; Table~\ref{tab:method_concordance}; see also
 Document~\ref{sec:jackson_recombs} for analysis of the 
 Jackson et al.\ recombinants).
 Of the Type I events, 13 are monophyletic for the focal Pango lineage
@@ -616,7 +616,7 @@ parent lineages were not present (Document \ref{sec:dd_xb}).
 
 The remaining 10 Pango X lineages (97 samples) present in the dataset are not
 included in the ARG because the HMM cost exceeds the inclusion threshold
-and there was insufficient support for retrospective inclusion (STAR Methods).
+and there was insufficient support for retrospective inclusion (Methods).
 These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
 which are confirmed by sc2ts to have multiple breakpoints; see 
 Document \ref{sec:supplement_rejected_pango_x_lineages} and Table 
@@ -638,7 +638,7 @@ to an alternative genome rather than the true parent.
 Such genomic regions can be mistaken for evidence of recombination.
 We use a simple quality control (QC) measure
 that counts the number of ``loci'' (clusters of closely spaced sites)
-supporting the left and right parents of a recombinant (STAR Methods),
+supporting the left and right parents of a recombinant (Methods),
 and effectively identifies a range of issues.
 Figure~\ref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
@@ -656,7 +656,7 @@ the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
 
 We validated the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
-on the putative recombinant sequence trios (STAR Methods).
+on the putative recombinant sequence trios (Methods).
 Of the 855 recombination events identified by sc2ts,
 3SEQ verified 57\% of them,
 rising to 95\% verification among the 354 recombinants that passed our QC filter. 
@@ -716,7 +716,7 @@ by allowing recombination (i.e., $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
 (C) Distribution of the Pango lineage distance between parents.
 (D) Copying patterns
-(STAR Methods, Figure~\ref{fig:copying_pattern_examples}) for XA, XW and XBB.}
+(Methods, Figure~\ref{fig:copying_pattern_examples}) for XA, XW and XBB.}
 \label{fig:recombinant_evidence}
 \end{figure}
 
@@ -811,7 +811,7 @@ indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
 is considerably larger (up to $\sim$54\% of the genome).
-As expected from theory (STAR Methods), we found a negative relationship between
+As expected from theory (Methods), we found a negative relationship between
 the length of a breakpoint interval and
 divergence between recombinant parents
 (Figure~\ref{fig:recombinant_intervals}D).
@@ -853,7 +853,7 @@ The black curve shows
 the theoretical expected relationship between these quantities,
 which is calculated assuming
 a genome-wide nucleotide substitution rate of
-$\sim$0.06 per day (STAR Methods).
+$\sim$0.06 per day (Methods).
 (E) Length distribution of time intervals around recombination events.
 }
 \label{fig:recombinant_intervals}
@@ -922,7 +922,7 @@ with substantial delays before onward cases are detected.
 Finally, the filters that we applied removed all
 but the most strongly supported recombination events,
 although similar conclusions were obtained
-when all 855 recombinants detected by sc2ts were considered (STAR Methods).
+when all 855 recombinants detected by sc2ts were considered (Methods).
 
 \begin{figure}[h]
 \centering
@@ -976,20 +976,20 @@ may break up the artefactually long branches used to detect recombination.
 
 We compared the performance of sc2ts to detect recombination 
 against RIPPLES run on the Viridian UShER phylogeny,
-subset to the 2,475,418 samples shared with the ARG (STAR Methods).
+subset to the 2,475,418 samples shared with the ARG (Methods).
 To enable exact comparison, we omitted the QC filtering steps from both
 methods, and initially set the RIPPLES ``parsimony improvement'' 
 parameter to $p=4$ (rather than the more lenient default of 3), 
-to match the equivalent $k=4$ setting used in sc2ts (STAR Methods). 
+to match the equivalent $k=4$ setting used in sc2ts (Methods). 
 Under this setting,
 RIPPLES reported 1174 recombination events of which 
-601 were validated by 3SEQ (51\%; STAR Methods).
+601 were validated by 3SEQ (51\%; Methods).
 % JK: There's no point in making a meal of the 3SEQ validation rate,
 % This is notably lower than the equivalent 
 % concordance rate of 57\% among the 855 recombination events reported by sc2ts.
 We then compared
 the specific events reported by both methods by aligning them
-using sets of descendant samples (STAR Methods),
+using sets of descendant samples (Methods),
 giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
 The 706 recombination events detected by RIPPLES that do not 
 correspond to a recombination event in the sc2ts ARG can largely
@@ -2533,7 +2533,7 @@ for details.
 
 To analyse how well the ARG reflects the phylogenetic structure implicit in the
 Pango lineage naming system, we considered the Pango assignments generated by
-Pangolin on the alignments for each node in the ARG (STAR Methods). If the ARG
+Pangolin on the alignments for each node in the ARG (Methods). If the ARG
 perfectly reflected the Pango lineage structure, each lineage would form a
 clade descending from a single originating node with that label. We identified
 putative origination nodes among those labelled with a given lineage as the node
@@ -3253,7 +3253,7 @@ In the subgraph, it can be seen that one of the samples, SRR18775874,
 has been (presumably wrongly) placed
 within the main XM deletion-containing clade.
 As sc2ts does not use deletions for inference,
-deletion remapping (STAR Methods) has reverted the deletion in this case,
+deletion remapping (Methods) has reverted the deletion in this case,
 creating many insertions on the branch above the sample (magenta).
 A better use of deletions in sc2ts would likely result
 in placing this sample within one of the two XM clades
@@ -3783,8 +3783,8 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
-We ran RIPPLES and aligned events with the sc2ts ARG as described in STAR
-Methods. We begin by describing the overall composition of events output 
+We ran RIPPLES and aligned events with the sc2ts ARG as described in 
+the Methods. We begin by describing the overall composition of events output 
 by RIPPLES at the two parameter values used.
 
 At $p=4$, RIPPLES returned a total of 1174 events, and 
@@ -4117,7 +4117,7 @@ Sites associated with multiple mutations in the subgraph
 have their mutations assigned a unique fill colour
 (orange, blue, green, red, etc);
 reversions are further highlighted with a black outline.
-Sc2ts seed samples (see STAR methods) for
+Sc2ts seed samples (see Methods) for
 B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
 }
 \label{fig:subgraph_delta}
