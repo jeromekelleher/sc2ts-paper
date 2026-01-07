@@ -46,10 +46,12 @@
 
 %%%%%%%%%%%% CUSTOM COMMANDS AND PACKAGES %%%%%%%%%%%%
 
+\usepackage{geometry}
 \usepackage{authblk}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{amssymb}
+\usepackage{setspace}
 \usepackage[hypertexnames=false]{hyperref}
 
 
@@ -535,112 +537,6 @@ For more detailed visualisations of these subgraphs, see Document S2.
 }
 \label{fig:subgraphs}
 \end{figure}
-
-\begin{table}
-\caption{
-%SO: I found the legend hard to parse and revised it. OK?
-Events in the ARG associated with Pango X lineages. Each row corresponds to the origin node for a given Pango lineage (Types I, II, and IV, see text) or associated recombination event (Type II).
-For origin nodes that are recombinant (Type I) or near a recombination event (Type II),
-the ``averted'' column shows the number of additional mutations required
-without recombination, as well as the position of informative sites to the left and right of the breakpoint.
-Parent lineages shown in boldface are nodes exactly matched by sampled sequences.
-The descendants column shows the number of descendants by Pango lineage.
-For Pango lineages (Type III) whose origin node was a descendant of a Type I or II recombination node, the distance (path length and time in days) from the recombination event is shown,
-as well as the number of mutations directly ancestral to the Pango origin
-node. Pango X lineages not associated with a recombination node (Type IV) are shown with the parent node and number of mutations.
-}
-\label{tab:pango_x_lineages}
-% scriptsize is quite small here, and we could probably cram it all 
-% in with footnotesize if we worked a bit harder on the intercol
-% spacing
-\begin{scriptsize}
-\begin{tabular}{lrrlrll}
-\toprule
-\multicolumn{7}{l}{\textbf{Type I event: Recombination coinciding with Pango
-origin node}}\\
-&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
-pango & averted & left & right & left & right & descendants \\
-\midrule
-
-XC & 37 & \textbf{AY.29} & \textbf{B.1.1.7} & 26768 & 27390 & {XC:5} \\
-XBR & 22 & \textbf{BN.3.1} & BQ.1.25 & 22034 & 22190 & {XBR:1} \\
-XA & 16 & \textbf{B.1.177.18} & \textbf{B.1.1.7} & 20411 & 21765 & {XA:39} \\
-XS & 11 & AY.103 & \textbf{BA.1.1} & 9054 & 10449 & {XS:17} \\
-XL & 8 & \textbf{BA.1.17.2} & \textbf{BA.2.5} & 5925 & 8393 & {XL:64} \\
-XBG & 8 & \textbf{BA.2.76} & \textbf{BA.5.2} & 22305 & 22917 & {XBG:25} \\
-XQ & 7 & \textbf{BA.1.1.15} & \textbf{BA.2.9} & 4322 & 5386 & {XQ:55, BA.2:37,
-XR:17, XAA:17, XU:1, XAM:21, XAG:6} \\
-XBD & 7 & \textbf{BA.2.75.2} & \textbf{BA.5.2.1} & 23020 & 24620 & {XBD:30} \\
-XM & 6 & \textbf{BA.1.1} & \textbf{BA.2} & 17411 & 21595 & {XM:26, BA.2:16,
-XAL:3} \\
-XBH & 6 & \textbf{BA.2.1} & BA.2.75.2 & 15452 & 22001 & {XBH:6} \\
-XBB & 6 & \textbf{BA.2.10} & BM.1.1.1 & 22332 & 22577 & {XBB:6452, BA.2:1} \\
-XY & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 11538 & 12880 & {XY:23} \\
-XF & 5 & \textbf{AY.4} & \textbf{BA.1} & 5387 & 6402 & {XF:16} \\
-XBF & 5 & \textbf{BA.5.2.1} & CJ.1 & 5184 & 9866 & {XBF:185} \\
-XW & 4 & \textbf{BA.1.1.15} & \textbf{BA.2} & 2833 & 4321 & {XW:32} \\
-XG & 4 & \textbf{BA.1.17} & \textbf{BA.2} & 5925 & 6513 & {XG:3} \\
-
-
-\midrule
-\multicolumn{7}{l}{\textbf{Type II event: Recombination closely associated with
-pango lineage(s)}}\\
-&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
-name & averted & left & right & left & right & descendants \\
-\midrule
-
-Xx & 6 & \textbf{BA.2} & \textbf{BA.1.17.2} & 24504 & 26060 & {BA.2:156, XZ:48,
-XAP:20, XAC:18, XAE:9, XAD:2} \\
-XE/XH & 6 & \textbf{BA.1.17.2} & \textbf{BA.2} & 10448 & 11283 & {XE:1116,
-BA.2:37, XH:2, XAF:1} \\
-XBM & 6 & \textbf{BA.2.76} & \textbf{BF.3} & 22305 & 22917 & {XBM:10, BF.3:2}
-\\
-XJ & 5 & \textbf{BA.1.17.2} & \textbf{BA.2} & 13196 & 17410 & {XJ:68, BA.2:17}
-\\
-XAF & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 10199 & 10447 & {BA.2:35, XAF:1} \\
-
-\midrule
-\multicolumn{7}{l}{\textbf{Type III events: Pango origin nodes derived from 
-Type I and II events}}\\
-pango & event & path len & time & mutations & & descendants\\
-\midrule
-
-XAF & XAF & 5 & 140 & 8   && {XAF:1} \\
-XBM & XBM & 1 & 23 & 1    && {XBM:10} \\
-XE  & XE/XH & 1 & 19 & 2  && {XE:1116} \\
-XH  & XE/XH & 1 & 55 & 7  && {XH:2} \\
-XJ  & XJ & 1 & 5 & 2      && {XJ:68, BA.2:3} \\
-XAL & XM & 3 & 65 & 2     && {XAL:3} \\
-XAA & XQ & 6 & 33 & 3     && {XAA:17} \\
-XAG & XQ & 6 & 53 & 4     && {XAG:6} \\
-XAM & XQ & 6 & 40 & 3     && {XAM:21} \\
-XR  & XQ & 3 & 11 & 4     && {XR:17, BA.2:1} \\
-XU  & XQ & 6 & 103 & 13   && {XU:1} \\
-XAE & Xx & 2 & 47 & 7     && {XAE:9} \\
-XAP & Xx & 4 & 66 & 1     && {XAP:20} \\
-XZ  & Xx & 4 & 48 & 1     && {XZ:48} \\
-
-\midrule
-\multicolumn{7}{l}{\textbf{Type IV events: Non recombinants in the ARG}}\\
-pango & parent &&& mutations && descendants \\
-\midrule
-
-XAS &  BA.4            &&& 1 && {XAS:77} \\
-XAU &  BA.2            &&& 1 && {XAU:8} \\
-XBK &  CJ.1            &&& 1 && {XBK:7} \\
-XBQ &  CJ.1            &&& 1 && {XBQ:14} \\
-XN  &  \textbf{BA.2}   &&& 1 && {XN:120, BA.2:1} \\
-XP  &  \textbf{BA.1.1} &&& 1 && {XP:45} \\
-XB  &  B.1             &&& 2 && {XB:192} \\
-XAV &  BA.5.1.24       &&& 3 && {XAV:13} \\
-XAZ &  \textbf{BA.5}   &&& 3 && {XAZ:133} \\
-XBE &  BA.5.2          &&& 3 && {XBE:65} \\
-XAN &  \textbf{BA.5.1} &&& 5 && {XAN:7} \\
-XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
-\bottomrule
-\end{tabular}
-\end{scriptsize}
-\end{table}
 
 % " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
 % system ... ". It should not be referred to as the ‘Rambaut et al.’ or
@@ -1139,7 +1035,7 @@ at a more stringent threshold, and therefore provides us with a
 conservative lower bound
 on the frequency of detectable recombination events in SARS-CoV-2.
 
-\section*{DISCUSSION}
+\section*{Discussion}
 There are two primary contributions of this work. The first is an
 ARG for 2.48 million SARS-CoV-2 genomes.
 Through multiple layers of validation against results from the 
@@ -1223,11 +1119,7 @@ These results underscore the utility of the ARG
 and provide a template for future analyses.
 
 
-\subsection*{Limitations of the study}
-
-%%% A "limitations" or "limitations of the study" subsection in the discussion is encouraged
-%%% and may be required for some journals and some article formats.
-
+\paragraph{Limitations of the study}
 We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather 
 than the larger GISAID resource~\cite{Shu2017} for two reasons.
 Firstly, the Viridian dataset is of higher quality and major efforts
@@ -1257,6 +1149,125 @@ when such data sparsity is detected.
 
 
 %%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
+
+\clearpage % Make sure this table is on its own page
+
+% Change the geometry so it fits on the page
+\newgeometry{left=2cm, right=2cm, top=1cm, bottom=2cm} 
+
+\begin{table}
+\caption{
+\footnotesize{
+Events in the ARG associated with Pango X lineages. 
+Each row corresponds to the origin node for a given Pango lineage (Types I, II,
+and IV, see text) or associated recombination event (Type II). For origin nodes
+that are recombinant (Type I) or near a recombination event (Type II), the
+``averted'' column shows the number of additional mutations required without
+recombination, as well as the position of informative sites to the left and
+right of the breakpoint. Parent lineages shown in boldface are nodes exactly
+matched by sampled sequences. The descendants column shows the number of
+descendants by Pango lineage. For Pango lineages (Type III) whose origin node
+was a descendant of a Type I or II recombination node, the distance (path
+length and time in days) from the recombination event is shown, as well as the
+number of mutations directly ancestral to the Pango origin node. Pango X
+lineages not associated with a recombination node (Type IV) are shown with the
+parent node and number of mutations.
+}
+}
+\label{tab:pango_x_lineages}
+% scriptsize is quite small here, and we could probably cram it all 
+% in with footnotesize if we worked a bit harder on the intercol
+% spacing
+\begin{scriptsize}
+\singlespacing
+\begin{tabular}{lrrlrll}
+\toprule
+\multicolumn{7}{l}{\textbf{Type I event: Recombination coinciding with Pango
+origin node}}\\
+&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
+pango & averted & left & right & left & right & descendants \\
+\midrule
+
+XC & 37 & \textbf{AY.29} & \textbf{B.1.1.7} & 26768 & 27390 & {XC:5} \\
+XBR & 22 & \textbf{BN.3.1} & BQ.1.25 & 22034 & 22190 & {XBR:1} \\
+XA & 16 & \textbf{B.1.177.18} & \textbf{B.1.1.7} & 20411 & 21765 & {XA:39} \\
+XS & 11 & AY.103 & \textbf{BA.1.1} & 9054 & 10449 & {XS:17} \\
+XL & 8 & \textbf{BA.1.17.2} & \textbf{BA.2.5} & 5925 & 8393 & {XL:64} \\
+XBG & 8 & \textbf{BA.2.76} & \textbf{BA.5.2} & 22305 & 22917 & {XBG:25} \\
+XQ & 7 & \textbf{BA.1.1.15} & \textbf{BA.2.9} & 4322 & 5386 & {XQ:55, BA.2:37,
+XR:17, XAA:17, XU:1, XAM:21, XAG:6} \\
+XBD & 7 & \textbf{BA.2.75.2} & \textbf{BA.5.2.1} & 23020 & 24620 & {XBD:30} \\
+XM & 6 & \textbf{BA.1.1} & \textbf{BA.2} & 17411 & 21595 & {XM:26, BA.2:16,
+XAL:3} \\
+XBH & 6 & \textbf{BA.2.1} & BA.2.75.2 & 15452 & 22001 & {XBH:6} \\
+XBB & 6 & \textbf{BA.2.10} & BM.1.1.1 & 22332 & 22577 & {XBB:6452, BA.2:1} \\
+XY & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 11538 & 12880 & {XY:23} \\
+XF & 5 & \textbf{AY.4} & \textbf{BA.1} & 5387 & 6402 & {XF:16} \\
+XBF & 5 & \textbf{BA.5.2.1} & CJ.1 & 5184 & 9866 & {XBF:185} \\
+XW & 4 & \textbf{BA.1.1.15} & \textbf{BA.2} & 2833 & 4321 & {XW:32} \\
+XG & 4 & \textbf{BA.1.17} & \textbf{BA.2} & 5925 & 6513 & {XG:3} \\
+
+
+\midrule
+\multicolumn{7}{l}{\textbf{Type II event: Recombination closely associated with
+pango lineage(s)}}\\
+&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
+name & averted & left & right & left & right & descendants \\
+\midrule
+
+Xx & 6 & \textbf{BA.2} & \textbf{BA.1.17.2} & 24504 & 26060 & {BA.2:156, XZ:48,
+XAP:20, XAC:18, XAE:9, XAD:2} \\
+XE/XH & 6 & \textbf{BA.1.17.2} & \textbf{BA.2} & 10448 & 11283 & {XE:1116,
+BA.2:37, XH:2, XAF:1} \\
+XBM & 6 & \textbf{BA.2.76} & \textbf{BF.3} & 22305 & 22917 & {XBM:10, BF.3:2}
+\\
+XJ & 5 & \textbf{BA.1.17.2} & \textbf{BA.2} & 13196 & 17410 & {XJ:68, BA.2:17}
+\\
+XAF & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 10199 & 10447 & {BA.2:35, XAF:1} \\
+
+\midrule
+\multicolumn{7}{l}{\textbf{Type III events: Pango origin nodes derived from 
+Type I and II events}}\\
+pango & event & path len & time & mutations & & descendants\\
+\midrule
+
+XAF & XAF & 5 & 140 & 8   && {XAF:1} \\
+XBM & XBM & 1 & 23 & 1    && {XBM:10} \\
+XE  & XE/XH & 1 & 19 & 2  && {XE:1116} \\
+XH  & XE/XH & 1 & 55 & 7  && {XH:2} \\
+XJ  & XJ & 1 & 5 & 2      && {XJ:68, BA.2:3} \\
+XAL & XM & 3 & 65 & 2     && {XAL:3} \\
+XAA & XQ & 6 & 33 & 3     && {XAA:17} \\
+XAG & XQ & 6 & 53 & 4     && {XAG:6} \\
+XAM & XQ & 6 & 40 & 3     && {XAM:21} \\
+XR  & XQ & 3 & 11 & 4     && {XR:17, BA.2:1} \\
+XU  & XQ & 6 & 103 & 13   && {XU:1} \\
+XAE & Xx & 2 & 47 & 7     && {XAE:9} \\
+XAP & Xx & 4 & 66 & 1     && {XAP:20} \\
+XZ  & Xx & 4 & 48 & 1     && {XZ:48} \\
+
+\midrule
+\multicolumn{7}{l}{\textbf{Type IV events: Non recombinants in the ARG}}\\
+pango & parent &&& mutations && descendants \\
+\midrule
+
+XAS &  BA.4            &&& 1 && {XAS:77} \\
+XAU &  BA.2            &&& 1 && {XAU:8} \\
+XBK &  CJ.1            &&& 1 && {XBK:7} \\
+XBQ &  CJ.1            &&& 1 && {XBQ:14} \\
+XN  &  \textbf{BA.2}   &&& 1 && {XN:120, BA.2:1} \\
+XP  &  \textbf{BA.1.1} &&& 1 && {XP:45} \\
+XB  &  B.1             &&& 2 && {XB:192} \\
+XAV &  BA.5.1.24       &&& 3 && {XAV:13} \\
+XAZ &  \textbf{BA.5}   &&& 3 && {XAZ:133} \\
+XBE &  BA.5.2          &&& 3 && {XBE:65} \\
+XAN &  \textbf{BA.5.1} &&& 5 && {XAN:7} \\
+XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
+\bottomrule
+\end{tabular}
+\end{scriptsize}
+\end{table}
+\restoregeometry % Restore original geometry
 
 \clearpage % Clear all remaining figures and tables then start a new page
 
