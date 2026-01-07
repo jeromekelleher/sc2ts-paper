@@ -4107,6 +4107,41 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 \end{table}
 
 \begin{table}
+\centering
+\caption{
+Sc2ts detection results for Pango X lineages not added to the ARG.
+The number of samples in Viridian v04 dataset
+assigned to these Pango X lineages,
+the number of samples that passed sequence-level quality control, and
+the number of recombination breakpoints
+in the Viterbi solutions of the samples
+are shown.
+}
+\label{tab:extra_hmm_results}
+\begin{tabular}{crrr}
+\toprule
+Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
+\midrule
+XBJ & 2 & 1 & 1\\
+XBP & 8 & 2 & 1\\
+XBS & 19 & 15 & 1\\
+XBW & 1 & 1 & 1\\
+XCA & 11 & 4 & 1\\
+XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
+XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
+XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
+XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
+XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
+\bottomrule
+\end{tabular}
+\end{table}
+
+% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
+% 97
+
+
+
+\begin{table}
 \caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
 all 855 recombinants and the 354 passing and 501 failing QC.
 }
@@ -4124,40 +4159,6 @@ rebar       & 213 & 203     & 10 \\
 \end{table}
 
 
-\begin{table}
-\centering
-\caption{
-Comparison of recombination breakpoint
-intervals and parent lineages for Groups A-D
-reported by Jackson et al.\ with the corresponding
-recombination events in the sc2ts ARG.
-The second column gives the number of sequences in the group.
-See the text for details of the groups and the sequences included.
-limited to the samples considered by Jackson et al.
-The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
-we subtract one to the left coordinates and add one to the right coordinates 
-to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
-and add one to the right coordinate to make the intervals right-exclusive.
-}
-\label{tab:jackson}
-\begin{tabular}{lllr@{--}lr@{+}l}
-\toprule
-Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
-\midrule
-A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
-\cmidrule{3-7}
-B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
-             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
-\cmidrule{3-7}
-C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
-             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
-\cmidrule{3-7}
-D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \begin{table}
 \caption{
@@ -4216,6 +4217,42 @@ XAL:3, XAF:1, XH:2} \\
 \end{table}
 
 \begin{table}
+\centering
+\caption{
+Comparison of recombination breakpoint
+intervals and parent lineages for Groups A-D
+reported by Jackson et al.\ with the corresponding
+recombination events in the sc2ts ARG.
+The second column gives the number of sequences in the group.
+See the text for details of the groups and the sequences included.
+limited to the samples considered by Jackson et al.
+The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
+we subtract one to the left coordinates and add one to the right coordinates 
+to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals right-exclusive.
+}
+\label{tab:jackson}
+\begin{tabular}{lllr@{--}lr@{+}l}
+\toprule
+Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
+\midrule
+A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
+\cmidrule{3-7}
+B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+\cmidrule{3-7}
+C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
+             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+\cmidrule{3-7}
+D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
 \caption{
 Distribution of numbers of descendants for UShER+RIPPLES events
 and sc2ts. The first column shows the number of descendants (binned
@@ -4241,38 +4278,6 @@ Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
 \end{tabular}
 \end{table}
 
-\begin{table}
-\centering
-\caption{
-Sc2ts detection results for Pango X lineages not added to the ARG.
-The number of samples in Viridian v04 dataset
-assigned to these Pango X lineages,
-the number of samples that passed sequence-level quality control, and
-the number of recombination breakpoints
-in the Viterbi solutions of the samples
-are shown.
-}
-\label{tab:extra_hmm_results}
-\begin{tabular}{crrr}
-\toprule
-Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
-\midrule
-XBJ & 2 & 1 & 1\\
-XBP & 8 & 2 & 1\\
-XBS & 19 & 15 & 1\\
-XBW & 1 & 1 & 1\\
-XCA & 11 & 4 & 1\\
-XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
-XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
-XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
-XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
-XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
-\bottomrule
-\end{tabular}
-\end{table}
-
-% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
-% 97
 
 
 \end{document}
