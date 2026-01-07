@@ -1818,8 +1818,8 @@ The ``base ARG'' we infer with sc2ts is the starting point for later analyses,
 and this step dominates overall processing time. To summarise, we first 
 initialise the ARG using the Wuhan-Hu-1 reference sample (MN908947.3) as the
 root node, and then ran the algorithm day-by-day using the parameters 
-described in the preceding sections and documented in the configuration file 
-(see \nameref{sec:data_and_code_availability}).
+described in the preceding sections and documented in the configuration file.
+% (see \nameref{sec:data_and_code_availability}).
 As discussed above,
 computational resources are dominated by the LS model
 (Figures~\ref{fig:samples_per_day},\ref{fig:inference_resources}) with all 
@@ -1881,7 +1881,7 @@ origination nodes.
 This section described the various postprocessing steps that 
 we performed after primary inference, 
 which is encoded as a reproducible Snakemake
-workflow (see \nameref{sec:data_and_code_availability}).
+workflow. % (see \nameref{sec:data_and_code_availability}).
 
 The first step is to perform recombinant rematching as described in the previous 
 section, to find any recombinants that can be more parsimoniously explained
@@ -2043,7 +2043,7 @@ rebar version 0.2.1 from bioconda~\cite{Gruning2018bioconda}, and
 rebar dataset version ``2025-01-28''.
 
 These steps are included in the Snakemake postprocessing
-workflow (see \nameref{sec:data_and_code_availability}).
+workflow. % (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
@@ -2087,7 +2087,7 @@ and using tsdate (version 0.2.3) to date internal nodes.
 All conversions were performed as part of the reproducible
 pipeline described in the \nameref{sec:arg_postprocessing} section.
 The full UShER tree and the intersection files are available for download
-in tszip format (see \nameref{sec:data_and_code_availability}).
+in tszip format. % (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
 We compare the non-recombinant parts of the ARG with the UShER topology
@@ -4240,7 +4240,6 @@ Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
 \bottomrule
 \end{tabular}
 \end{table}
-\end{document}
 
 \begin{table}
 \centering
@@ -4276,3 +4275,4 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 % 97
 
 
+\end{document}
