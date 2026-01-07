@@ -392,7 +392,7 @@ collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a server with
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
 ($\sim$5 CPU years;
-Figures~\ref{fig:inference_resources}~\ref{fig:samples_per_day}).
+Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}).
 After post-processing, the ARG contains
 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and
@@ -1329,7 +1329,7 @@ There are no competing interests to declare.
 \item The ARG in tskit format has been deposited at Zenodo and is publicly
 available at \url{https://zenodo.org/records/17558489}. The UShER tree
 in tskit format is also available, as well as the intersection files.
-\item The sequences alignments in VCF Zarr format have been deposited at 
+\item The sequence alignments in VCF Zarr format have been deposited at 
 Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
 \item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
 \item The complete configuration file for running sc2ts to build the ARG above is 
@@ -1480,7 +1480,7 @@ based on information from COG-UK, GISAID, and ENA/SRA as our source.
 Samples that have missing or incomplete dates (e.g., 2020-01) were omitted. 
 Samples with a collection date of December 31, 2020
 were also omitted,
-as the number of sample on this date ($\sim$40,000) was a major outlier
+as the number of samples on this date ($\sim$40,000) was a major outlier
 for this period of the pandemic and is likely enriched
 for incorrect collection dates.
 Manual checking (by cross-referencing the ENA and COG-UK Mutation Explorer)
@@ -3609,7 +3609,7 @@ on the far right of the genome.
 % (see supplementary document S3, node 1030562). 
 Although
 supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
-meaning that this event does not pass our QC filter..
+meaning that this event does not pass our QC filter.
 
 The second of these involves a single breakpoint at position 26858, and is the origin
 of the BA.5 lineage in the ARG.
@@ -3882,7 +3882,7 @@ on the left parent (x-axis) and the right parent (y-axis).
 The shaded regions highlight potentially artefactual recombination events,
 which have fewer than 4 net supporting loci
 on one side or both sides of the suggested breakpoint.
-colours indicate the primer scheme used for sequencing.
+Colours indicate the primer scheme used for sequencing.
 The pie charts show breakdowns of the recombination events
 by primer scheme per quadrant (labeled Q1 to Q4).
 Recombination events associated with
@@ -3908,8 +3908,7 @@ Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \caption{
 Illustrative copying patterns
 drawn from the quadrants labelled in Figure~\ref{fig:recombinant_qc}. 
-Each copying pattern shows the 
-the positions
+Each copying pattern shows the positions
 where the allelic state in a recombinant
 (middle row, labelled by node ID)
 matches that of the left (P0: upper row, coloured green) 
