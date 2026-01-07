@@ -52,7 +52,11 @@
 \usepackage{tabularx}
 \usepackage{amssymb}
 \usepackage{setspace}
+\ifdefined\SPLITBUILD
+\usepackage[draft]{hyperref}
+\else
 \usepackage[hypertexnames=false]{hyperref}
+\fi
 
 
 \graphicspath{{../figures}}
