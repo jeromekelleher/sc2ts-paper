@@ -46,6 +46,7 @@
 
 %%%%%%%%%%%% CUSTOM COMMANDS AND PACKAGES %%%%%%%%%%%%
 
+\usepackage{authblk}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{amssymb}
@@ -78,53 +79,81 @@ A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2
 
 % Author and institution list.
 % Institution numbers etc. should be hard-coded, do *not* use the \footnote command.
-\author{
-	% You can write out first names or use initials - either way is acceptable, but be consistent
-	First~Author$^{1\ast\dagger}$,
-	A.~Scientist$^{2\dagger}$,
-	Someone~E.~Else$^{2}$\and
-	% Additional lines of authors should be inserted using the \and command (not \\)
-	% Institution list, in a slightly smaller font
-	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
-	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
-	% Identify at least one corresponding author, with contact email address
-	\small$^\ast$Corresponding author. Email: example@mail.com\and
-	% Joint contributions can be indicated like this
-	\small$^\dagger$These authors contributed equally to this work.
-}
+% \author{
+% 	% You can write out first names or use initials - either way is acceptable, but be consistent
+% 	First~Author$^{1\ast\dagger}$,
+% 	A.~Scientist$^{2\dagger}$,
+% 	Someone~E.~Else$^{2}$\and
+% 	% Additional lines of authors should be inserted using the \and command (not \\)
+% 	% Institution list, in a slightly smaller font
+% 	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
+% 	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
+% 	% Identify at least one corresponding author, with contact email address
+% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
+% 	% Joint contributions can be indicated like this
+% 	\small$^\dagger$These authors contributed equally to this work.
+% }
+
+% \author{
+%     Shing~H.~Zhan$^{1,2,8,*}$,
+% Yan~Wong$^{1,7}$,
+% Anastasia~Ignatieva$^{3,7}$,
+% Katherine~Eaton$^{4}$,
+% Isobel~Guthrie$^{1}$,
+% Benjamin~Jeffery$^{1}$,
+% Duncan~S.~Palmer$^{1,3,5}$,
+% Carmen~Lia~Murall$^{4}$,
+% Sarah~P.~Otto$^{6}$,
+% Jerome~Kelleher$^{1,**}$,
+% % 	First~Author$^{1\ast\dagger}$,
+% % 	A.~Scientist$^{2\dagger}$,
+% 	% Someone~E.~Else$^{2}$\and
+% 	% Additional lines of authors should be inserted using the \and command (not \\)
+% 	% Institution list, in a slightly smaller font
+% 	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
+% 	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
+% 	% Identify at least one corresponding author, with contact email address
+% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
+% 	% Joint contributions can be indicated like this
+% 	\small$^\dagger$These authors contributed equally to this work.
+% }
 
 
-% \author[1,2,8,*]{Shing~H.~Zhan}
-% \author[1,7]{Yan~Wong}
-% \author[3,7]{Anastasia~Ignatieva}
-% \author[4]{Katherine~Eaton}
-% \author[1]{Isobel~Guthrie}
-% \author[1]{Benjamin~Jeffery}
-% \author[1,3,5]{Duncan~S.~Palmer}
-% \author[4]{Carmen~Lia~Murall}
-% \author[6]{Sarah~P.~Otto}
-% \author[1,**]{Jerome~Kelleher}
+\author[1,2,$\ast$]{Shing~H.~Zhan}
+\author[1,$\dagger$]{Yan~Wong}
+\author[3,$\dagger$]{Anastasia~Ignatieva}
+\author[4]{Katherine~Eaton}
+\author[1]{Isobel~Guthrie}
+\author[1]{Benjamin~Jeffery}
+\author[1,3,5]{Duncan~S.~Palmer}
+\author[4]{Carmen~Lia~Murall}
+\author[6]{Sarah~P.~Otto}
+\author[1]{Jerome~Kelleher}
 
 % %%%  Institutional affiliations should contain the
 % %%%  following information at minimum: department(s)/
 % %%%  subunit(s), institution, city, state/region (if
 % %%%  applicable), and country.
 
-% \affil[1]{Big Data Institute, Li Ka Shing Centre for Health
-% Information and Discovery, University of Oxford, United Kingdom}
-% \affil[2]{Infectious Disease Epidemiology Unit (IDEU), Nuffield Department of Population Health, University of Oxford, Oxford, United Kingdom}
-% \affil[3]{Department of Statistics, University of Oxford, United Kingdom}
-% \affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-% \affil[5]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
-% \affil[6]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
+\affil[1]{\small{Big Data Institute, Li Ka Shing Centre for Health
+Information and Discovery, University of Oxford, United Kingdom}}
+\affil[2]{\small{Infectious Disease Epidemiology Unit (IDEU), Nuffield
+Department of Population Health, University of Oxford, Oxford, United Kingdom}}
+\affil[3]{\small{Department of Statistics, University of Oxford, United
+Kingdom}}
+\affil[4]{\small{National Microbiology Laboratory, Public Health Agency of
+Canada, Canada}}
+\affil[5]{\small{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka
+Shing Centre for Health Information and Discovery, University of Oxford, United
+Kingdom}}
+\affil[6]{\small{Department of Zoology and Biodiversity Research Centre,
+University of British Columbia, Vancouver BC Canada}}
+% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
+% 	% Joint contributions can be indicated like this
+% 	\small$^\dagger$These authors contributed equally to this work.
+\affil[$\ast$]{\small{Corresponding author: shing.zhan@ndph.ox.ac.uk}}
+\affil[$\dagger$]{\small{Joint second author}}
 
-% \affil[7]{Joint second author}
-% \affil[8]{Lead contact}
-
-% %%%  List only one email address per corresponding author.
-
-% \affil[*]{Correspondence: shing.zhan@ndph.ox.ac.uk}
-% \affil[**]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
 \begin{document}
 
 \maketitle
