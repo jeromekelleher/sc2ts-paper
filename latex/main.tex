@@ -1,121 +1,145 @@
+% Use the basic LaTeX article class, 12pt text
+\documentclass[12pt]{article}
 
-% Notes on format:
-% The total word count of an article must be under 7,000 (including main figure
-% legends but excluding STAR Methods text, supplemental item legends, and
-% references section), and there should be no more than seven figures and/or
-% tables.
+% Science uses Times font. If you don't have this installed (most LaTeX installations will be
+% fine) or prefer the old Computer Modern fonts, comment out the following line
+% \usepackage{newtxtext,newtxmath}
+% Depending on your LaTeX fonts installation, you might get better results with one or both of these:
+%\usepackage{mathptmx}
+%\usepackage{txfonts}
 
-\documentclass[12pt,letterpaper]{article}
-\usepackage[a4paper, total={7in, 10in}]{geometry}
-\renewcommand{\familydefault}{\sfdefault}
+% Allow external graphics files
 \usepackage{graphicx}
-\usepackage{helvet}
-\usepackage{authblk}
-\usepackage[hypertexnames=false]{hyperref}
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{placeins}
-\usepackage{orcidlink}
-\usepackage[super,comma,sort&compress]
-   {natbib}\bibliographystyle{numbered}
-\usepackage[right]{lineno} \linenumbers
-\usepackage[normalem]{ulem}
 
-\graphicspath{ {../figures/} }
+% Use US letter sized paper with 1 inch margins
+\usepackage[letterpaper,margin=1in]{geometry}
 
-\makeatletter
-\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
-\begin{flushleft}
-  \textbf{\@title}
+% Double line spacing, including in captions
+\linespread{1.5} % For some reason double spacing is 1.5, not 2.0!
 
-  \@author
-\end{flushleft}\egroup}
-\makeatother
+% One space after each sentence
+\frenchspacing
 
-%%%  Insert title below; leave date empty.
+% Abstract formatting and spacing - no heading
+\renewenvironment{abstract}
+	{\quotation}
+	{\endquotation}
 
-\title{A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2}
+% No date in the title section
 \date{}
 
-%%%  Author first and last names should be spelled
-%%%  out in their entirety (do not abbreviate "J.H.
-%%%  Watson" unless this is how the author's name
-%%%  always appears). Middle initials are OK. Do
-%%%  not include titles, positions, or degrees.
+% Reference section heading
+\renewcommand\refname{References and Notes}
 
-%%%  Use numbered footnotes to indicate institutional
-%%%  affiliations. Authors may have multiple
-%%%  institutional affiliations, and affiliations
-%%%  may be shared among multiple authors.
+% Figure and Table labels in bold
+\makeatletter
+\renewcommand{\fnum@figure}{\textbf{Figure \thefigure}}
+\renewcommand{\fnum@table}{\textbf{Table \thetable}}
+\makeatother
 
-%%%  After the institutional affiliations, numbered
-%%%  footnotes may be used to indicate an author's
-%%%  present address, equal contribution status,
-%%%  and/or senior author status.
+% Call the accompanying scicite.sty package.
+% This formats citation numbers in Science style.
+\usepackage{scicite}
 
-%%%  The final numbered footnote should indicate
-%%%  which author is the lead contact (required).
-%%%  One author must be designated as the lead contact.
-%%%  There can be no more than one lead contact.
+% Provides the \url command, and fixes a crash if URLs or DOIs contain underscores
+\usepackage{url}
 
-%%%  Corresponding authors should be indicated with
-%%%  asterisks (*). Use 2 asterisks (**) for the
-%%%  second-listed corresponding author, 3 (***) for
-%%%  the third-listed, and so on. The lead contact
-%%%  must be a corresponding author. Additional
-%%%  authors may also serve as corresponding authors.
+%%%%%%%%%%%% CUSTOM COMMANDS AND PACKAGES %%%%%%%%%%%%
 
-% \author[1,\orcidlink{0000-0000-0000-0000}]{First Last}
-% \author[1,2]{First Middle Last}
-% \author[2,3]{First M.M. Last}
-% \author[3,*]{First Last, Jr.}
-% \author[3,4,5,**]{F. Middle Last}
+\usepackage{geometry}
+\usepackage{authblk}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage[hypertexnames=false]{hyperref}
 
-\author[1,2,8,*,\orcidlink{0000-0002-6351-8873}]{Shing~H.~Zhan}
-\author[1,7,\orcidlink{0000-0002-3536-6411}]{Yan~Wong}
-\author[3,7,\orcidlink{0000-0001-6402-9396}]{Anastasia~Ignatieva}
-\author[4,\orcidlink{0000-0001-6862-7756}]{Katherine~Eaton}
-\author[1,\orcidlink{0000-0002-3547-7226}]{Isobel~Guthrie}
-\author[1,\orcidlink{0000-0002-1982-6801}]{Benjamin~Jeffery}
-\author[1,3,5,\orcidlink{0000-0002-0824-0047}]{Duncan~S.~Palmer}
-\author[4,\orcidlink{0000-0002-1543-4501}]{Carmen~Lia~Murall}
-\author[6,\orcidlink{0000-0003-3042-0818}]{Sarah~P.~Otto}
-\author[1,**,\orcidlink{0000-0002-7894-5253}]{Jerome~Kelleher}
 
-%%%  Institutional affiliations should contain the
-%%%  following information at minimum: department(s)/
-%%%  subunit(s), institution, city, state/region (if
-%%%  applicable), and country.
+\graphicspath{{../figures}}
 
-\affil[1]{Big Data Institute, Li Ka Shing Centre for Health
-Information and Discovery, University of Oxford, United Kingdom}
-\affil[2]{Infectious Disease Epidemiology Unit (IDEU), Nuffield Department of Population Health, University of Oxford, Oxford, United Kingdom}
-\affil[3]{Department of Statistics, University of Oxford, United Kingdom}
-\affil[4]{National Microbiology Laboratory, Public Health Agency of Canada, Canada}
-\affil[5]{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka Shing Centre for Health Information and Discovery, University of Oxford, United Kingdom}
-\affil[6]{Department of Zoology and Biodiversity Research Centre, University of British Columbia, Vancouver BC Canada}
+% Authors can define simple custom commands e.g. as shortcuts to save on typing
+% Use \newcommand (not \def) to avoid overwriting existing commands.
+% Keep them as simple as possible and note the warning in the text below.
+% Example:
+\newcommand{\pcc}{\,cm$^{-3}$}	% per cm-cubed
 
-\affil[7]{Joint second author}
-\affil[8]{Lead contact}
+% Please DO NOT import additional external packages or .sty files.
+% Those are unlikely to work with our conversion software and will cause problems later.
+% Don't add any more \usepackage{} commands.
 
-%%%  List only one email address per corresponding author.
 
-\affil[*]{Correspondence: shing.zhan@ndph.ox.ac.uk}
-\affil[**]{Correspondence: jerome.kelleher@bdi.ox.ac.uk}
+%%%%%%%%%%%%%%%% TITLE AND AUTHORS %%%%%%%%%%%%%%%%
+
+% Title of the paper.
+% Keep it short and understandable by any reader of Science.
+% Avoid acronyms or jargon. Use sentence case.
+\def\scititle{
+A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2
+}
+% Store the title in a variable for reuse in the supplement (otherwise \maketitle deletes it)
+\title{\bfseries \boldmath \scititle}
+
+% Author and institution list.
+% Institution numbers etc. should be hard-coded, do *not* use the \footnote command.
+% \author{
+% 	% You can write out first names or use initials - either way is acceptable, but be consistent
+% 	First~Author$^{1\ast\dagger}$,
+% 	A.~Scientist$^{2\dagger}$,
+% 	Someone~E.~Else$^{2}$\and
+% 	% Additional lines of authors should be inserted using the \and command (not \\)
+% 	% Institution list, in a slightly smaller font
+% 	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
+% 	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
+% 	% Identify at least one corresponding author, with contact email address
+% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
+% 	% Joint contributions can be indicated like this
+% 	\small$^\dagger$These authors contributed equally to this work.
+% }
+
+\author[1,2,$\ast$]{Shing~H.~Zhan}
+\author[1,$\dagger$]{Yan~Wong}
+\author[3,$\dagger$]{Anastasia~Ignatieva}
+\author[4]{Katherine~Eaton}
+\author[1]{Isobel~Guthrie}
+\author[1]{Benjamin~Jeffery}
+\author[1,3,5]{Duncan~S.~Palmer}
+\author[4]{Carmen~Lia~Murall}
+\author[6]{Sarah~P.~Otto}
+\author[1]{Jerome~Kelleher}
+
+% %%%  Institutional affiliations should contain the
+% %%%  following information at minimum: department(s)/
+% %%%  subunit(s), institution, city, state/region (if
+% %%%  applicable), and country.
+
+\affil[1]{\small{Big Data Institute, Li Ka Shing Centre for Health
+Information and Discovery, University of Oxford, United Kingdom}}
+\affil[2]{\small{Infectious Disease Epidemiology Unit (IDEU), Nuffield
+Department of Population Health, University of Oxford, Oxford, United Kingdom}}
+\affil[3]{\small{Department of Statistics, University of Oxford, United
+Kingdom}}
+\affil[4]{\small{National Microbiology Laboratory, Public Health Agency of
+Canada, Canada}}
+\affil[5]{\small{The Pioneer Centre for SMARTbiomed, Big Data Institute, Li Ka
+Shing Centre for Health Information and Discovery, University of Oxford, United
+Kingdom}}
+\affil[6]{\small{Department of Zoology and Biodiversity Research Centre,
+University of British Columbia, Vancouver BC Canada}}
+% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
+% 	% Joint contributions can be indicated like this
+% 	\small$^\dagger$These authors contributed equally to this work.
+\affil[$\ast$]{\small{Corresponding author: shing.zhan@ndph.ox.ac.uk}}
+\affil[$\dagger$]{\small{Joint second author}}
 
 \begin{document}
 
 \maketitle
 
-%%% The summary (abstract) should consist of a single paragraph of 150 words or
-%%% fewer.
-
-\section*{SUMMARY}
-
-% NOTE: currently 150 words
-
+% Abstract, in bold
+% There are strict length limits, and not all formats have abstracts.
+% Consult the journal instructions to authors for details.
+% Do not cite any references in the abstract.
+\begin{abstract}\bfseries
 Millions of SARS-CoV-2 genome sequences were collected 
 during the COVID-19 pandemic, forming a dataset of unprecedented richness.
 Estimated genealogies are fundamental to
@@ -137,19 +161,12 @@ the relationships among recombinant lineages,
 quantifies the rate of recombination over time,
 and provides a 
 lower bound on detectable recombination.
+\end{abstract}
 
-\section*{KEYWORDS}
+% \section*{KEYWORDS}
 
-%%%  Include up to 10 keywords, separated by commas.
-%%%  Keywords entered in EM are not carried over; only
-%%%  keywords included in the main text will be used
-%%%  in the final article metadata. Please note that
-%%%  for some journals, keywords are chosen by the editors.
+% Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 
-Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
-
-
-\section*{INTRODUCTION}
 % SHZ: The first paragraph should explain
 % why recombination "can" be important in pathogens.
 % Then, we explain why we need recombination-aware methods for pathogens.
@@ -159,14 +176,17 @@ Ancestral recombination graphs, recombination, SARS-CoV-2, ARG, tskit
 % Classical phylo methods fundamentally do not apply to SARS-CoV-2 data, both
 % in terms of the basic goal, assumptions about samples and how recombination
 % can be treated.
+ 
+% The first paragraph of any Science paper does NOT have a heading
+% Nor is it indented
+\noindent
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of divergent species~\cite{Felsenstein2004}. Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
+of divergent species~\cite{Felsenstein2004}. 
+Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
  biases downstream
-analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, and so requires careful consideration~\cite{Rannala2025recombination}.
+analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, 
+and so requires careful consideration~\cite{Rannala2025recombination}.
 Modern pathogen datasets are not sparsely sampled from different species
-% Need to concrete. "large" means 100 to some people.
-% SO: The phrase tens to hundreds of thousands seems odd though given the millions available for SARS-CoV-2: maybe "thousands to millions" 
-% JK: How's that?
 and may contain millions of genomes sampled from 
 % JK: deleted point about recomb here as TB, eg, doesn't
 a single species~\cite{
@@ -241,7 +261,7 @@ While ARGs have been of theoretical interest in population genetics
 for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
 recent breakthroughs in
 simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019,Gopalan2025bridging}
-and inference~\citep{Rasmussen2014,Speidel2019,Kelleher2019,
+and inference~\cite{Rasmussen2014,Speidel2019,Kelleher2019,
 Wohns2022,Zhang2023,Gunnarsson2024,Deng2025robust} have led to a surge 
 of interest in their application in population and statistical 
 genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
@@ -289,22 +309,7 @@ These resources provide a strong platform for future research,
 helping us to learn from the vast troves of data collected during the
 pandemic and to prepare for the next.
 
-
-\section*{RESULTS}
-
-%%% The results may be divided with subheadings.
-%%% In our view, good subheadings convey information about the findings,
-%%% so we encourage you to be specific. For example, "Factor X requires factor Y to function in process Z"
-%%% is better than "Analysis of factors X and Y by approach Q."
-%%% We recommend that you use similar language in your figure titles for clarity and structural harmony.
-%%% Please do not use numbered subheadings. For some formats, ``results and discussion" may be combined under a single heading.
-
-%%% For initial submissions, figures and their titles and legends can be run-in with the text.
-%%% For final submissions, the image files must be uploaded as separate files, one complete file per figure. The figure titles and legends should be placed toward the end of the main text, after the declaration of interests. Our typesetters will place the figures and their titles and legends appropriately based on your in-text citations.
-
-%%% To cite/link to display items (figures and tables) and/or sections of the manuscript,
-%%% simply write, for example, ``(Figure 1)" or ``see discussion."
-%%% Our team will do the rest. Please note that we do not number sections or subsections.
+% Research Articles and Reviews split the text into sections using headings
 
 \subsection*{Overview of sc2ts}
 
@@ -352,7 +357,7 @@ that controls the number of recurrent mutations
 that is allowed before switching to a different parent via recombination
 % This is quite a big thing really, and ultimately what determines
 % the number of recombinants detected.
-(we use $k=4$ here; see STAR Methods).
+(we use $k=4$ here; see Methods).
 We used the highly efficient LS HMM implementation in tsinfer~\cite{Kelleher2019},
 with some additional optimisations enabled by our simplified model,
 to find exact Viterbi solutions of these copying paths for each sample
@@ -374,7 +379,7 @@ Sc2ts is implemented in Python,
 building on core PyData infrastructure~\cite{Harris2020array,Virtanen2020scipy,
 Mckinney2010data,Lam2015numba} and
 bioinformatics packages~\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
-See STAR Methods for details on all aspects of the method.
+See Methods for details on all aspects of the method.
 
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
@@ -422,12 +427,12 @@ accurately reflecting a range of results from the literature.
 First, we compared the sc2ts ARG
 with the state-of-the-art UShER tree inferred from the same dataset
 by pruning both to their intersection of
-2,475,418 samples and 27,507 sites (STAR Methods).
+2,475,418 samples and 27,507 sites (Methods).
 Eliminating recombination nodes and their descendants (which we expected to differ), 
 we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
 for a set of representative samples from 814 well-sampled lineages
-(STAR Methods; Figures~\ref{fig:tanglegram_base},
+(Methods; Figures~\ref{fig:tanglegram_base},
 \ref{fig:tanglegram_delta},
 \ref{fig:tanglegram_ba2},
 \ref{fig:tanglegram_ba5}).
@@ -435,16 +440,16 @@ for a set of representative samples from 814 well-sampled lineages
 % this and I don't want to claim we're more parsimonious.
 Overall, we also found close similarity between the ARG
 and UShER tree in terms of parsimony 
-(Document~\ref{sec:supplement_sc2ts_usher_parsimony})
+(supplementary text~\ref{sec:supplement_sc2ts_usher_parsimony})
 and imputation of missing and ambiguous bases
-(Document~\ref{sec:supplement_sc2ts_usher_imputation}).
+(supplementary text~\ref{sec:supplement_sc2ts_usher_imputation}).
 We compared the mutational spectra of major Variants of Concern (VOCs) in the ARG
-against the UShER tree and a previous study~\cite{Bloom2023} (STAR Methods),
+against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
 by computing Pango assignments for all 2.75 million nodes in the ARG
-using Pangolin~\cite{OToole2021assignment} (STAR Methods).
+using Pangolin~\cite{OToole2021assignment} (Methods).
 Only a small minority of the exported sample alignments (21,680 ; 0.87\%) disagreed
 % NOTE Sally pointed out as potentially needing clarification.
 with the source consensus sequences in terms of Pango lineage assignment
@@ -455,21 +460,21 @@ A majority of the Pango lineages (1473 of 2058)
 have monophyletic origins in the ARG,
 increasing to 1779 (86\%) when we allow
 for multiple sibling origination nodes
-(Document~\ref{sec:supplement_pango_lineages}).
+(supplementary text~\ref{sec:supplement_pango_lineages}).
 The ARG is time-resolved, with internal node dates estimated
-by a non-parametric method~\cite{Pope2025} (STAR Methods).
+by a non-parametric method~\cite{Pope2025} (Methods).
 We show that the dates agree well with
 Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
 and overall accuracy is comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
 an UShER tree (Figure~\ref{fig:node_time_testing},
-Document~\ref{sec:evaluating_node_dates}).
+supplementary text~\ref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the
-Alpha (Figure~\ref{fig:subgraph_alpha}, Document~\ref{sec:dd_alpha}),
-Delta (Figure~\ref{fig:subgraph_delta}, Document~\ref{sec:dd_delta})
+Alpha (Figure~\ref{fig:subgraph_alpha}, supplementary text~\ref{sec:dd_alpha}),
+Delta (Figure~\ref{fig:subgraph_delta}, supplementary text~\ref{sec:dd_delta})
 and
-Omicron (Figure~\ref{fig:subgraph_omicron}, Document~\ref{sec:dd_omicron})
+Omicron (Figure~\ref{fig:subgraph_omicron}, supplementary text~\ref{sec:dd_omicron})
 VOCs reflect expectations from the literature~\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
@@ -486,7 +491,7 @@ To approximate the effects of the most important deletions into the ARG,
 we remapped data using post hoc parsimony at 75 sites
 involved in deletions with a frequency of
 $\geq 1\%$ reported by Li et al.~\cite{Li2023indels}
-during post-processing (STAR Methods).
+during post-processing (Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known
@@ -506,7 +511,7 @@ which causes S-Gene Target Failure \cite{Walker2021} and
 is associated with increased efficiency in cell entry~\cite{Meng2021}, and
 the 21991:3 deletion
 which is associated with antibody escape~\cite{McCarthy2021}.
-See Document~\ref{sec:supplement_dels} for further analysis.
+See supplementary text~\ref{sec:supplement_dels} for further analysis.
 
 \subsection*{Epidemiologically relevant recombinant lineages}
 
@@ -528,29 +533,653 @@ reported by Jackson et al.~\cite{Jackson2021} are shown.
 group of ``nested'' Pango X lineages: we use the 
 label Xx as a shorthand for this related group of recombinants; and
 (C) Subgraph around the MRCA of the closely related non-recombinants XN and XAU.
-For more detailed visualisations of these subgraphs, see Document S2.
+For more detailed visualisations of these subgraphs, see Document S1.
 }
 \label{fig:subgraphs}
 \end{figure}
 
+% " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
+% system ... ". It should not be referred to as the ‘Rambaut et al.’ or
+% ‘Pangolin’ nomenclature system. "
+Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
+can be attributed to the clarity of the rules under which new lineages 
+are designated and their explicit phylogenetic basis.
+The first recombinant lineage XA was designated in 2021
+based on the analysis of Jackson et al.~\cite{Jackson2021}.
+Although the process of incorporating recombinant lineages
+in the Pango nomenclature system is well defined,
+the identification of such events is much more subjective,
+requiring the synthesis of multiple lines of evidence and
+often the manual inspection of phylogenies and sequence alignments
+by volunteers~\cite{Smith2023tracking}.
+% Debatable whether this adds or substracts from narrative
+As of pango-designation version v1.33.1 (2025-03-31),
+a total of 146 distinct Pango X lineages have been designated.
+%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
+% 146
+
+By automatically detecting and incorporating recombination events into the ARG,
+sc2ts provides us with a systematic means of
+discovering and assessing evidence around these events.
+Table~\ref{tab:pango_x_lineages} summarises
+these results for the 44 Pango X lineages present in the ARG
+% (XAC and XAD have been omitted, and XM partially represented,
+% corresponding to 23 omitted samples in total;
+(see supplementary text~\ref{sec:supplement_x_pango_lineages}).
+For 16 Pango X lineages, the oldest node
+that has been assigned to the focal Pango lineage is a recombination node and
+that node is the ancestor of all samples
+assigned to that (or a descendant) Pango lineage.
+We consider these to be fully concordant (Type I) events,
+where the ARG reflects the
+hierarchical structure of Pango designation.
+Among these events, concordance with the community-consensus 
+parent lineages and breakpoint intervals is excellent,
+with similar performance to
+the RecombinHunt~\cite{Alfonsi2024}
+and CovRecomb~\cite{Li2024CovRecomb} detection methods
+(Methods; Table~\ref{tab:method_concordance}; see also
+supplementary text~\ref{sec:jackson_recombs} for analysis of the 
+Jackson et al.\ recombinants).
+Of the Type I events, 13 are monophyletic for the focal Pango lineage
+(i.e., the descendants are entirely from that lineage);
+Figure~\ref{fig:subgraphs}A shows XA as an example.
+
+There are five partially concordant events (Type II) 
+in Table~\ref{tab:pango_x_lineages}, which 
+are recombination events closely associated with Pango X lineages
+that do not meet the strict origination criteria for Type I.
+Type III events are Pango origin nodes in the ARG that are 
+derived from Type I or Type II recombination events. There is significant
+nesting among the Pango X lineage origin nodes within the ARG,
+with two major clusters of particular note. Although XQ is 
+directly associated with a recombination event in the ARG, 
+XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
+that they may be more parsimoniously explained as sublineages of XQ
+than de novo recombinant lineages (supplementary text~\ref{sec:dd_xq}). 
+The second cluster is based around a putative undocumented
+recombinant that is the ancestor of lineages 
+XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
+(Figure~\ref{fig:subgraphs}B, supplementary text~\ref{sec:dd_xx}). 
+
+The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
+corresponds to nodes that are not associated with a recombination event
+in the ARG.
+These vary in their plausibility of being non-recombinant.
+For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
+distant from a BA.2 sample and has little additional evidence
+to suggest recombination (supplementary text~\ref{sec:dd_xn}).
+XB, on the other hand,
+has been thoroughly characterised~\cite{Gutierrez2022} and
+is likely misclassified by sc2ts because the required
+parent lineages were not present (supplementary text \ref{sec:dd_xb}). 
+
+The remaining 10 Pango X lineages (97 samples) present in the dataset are not
+included in the ARG because the HMM cost exceeds the inclusion threshold
+and there was insufficient support for retrospective inclusion (Methods).
+These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
+which are confirmed by sc2ts to have multiple breakpoints; see 
+supplementary text \ref{sec:supplement_rejected_pango_x_lineages} and Table 
+\ref{tab:extra_hmm_results} for details.
+See supplementary text~\ref{sec:supplement_indepth_pango_x_lineages}
+for extended analyses on all the Pango X lineages in the ARG;
+Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
+associated with Table~\ref{tab:pango_x_lineages};
+and Document S2 for ARG visualisations of the Pango X lineages.
+
+
+\subsection*{Quality control and validation of recombination events}
+
+Sequencing errors in genome assemblies~\cite{Turakhia2020},
+incorrect read alignments~\cite{Hunt2024}, and
+multi-nucleotide substitutions~\cite{DeMaio2020issues}
+can cause short regions of a sample genome to match more closely
+to an alternative genome rather than the true parent.
+Such genomic regions can be mistaken for evidence of recombination.
+We use a simple quality control (QC) measure
+that counts the number of ``loci'' (clusters of closely spaced sites)
+supporting the left and right parents of a recombinant (Methods),
+and effectively identifies a range of issues.
+Figure~\ref{fig:recombinant_qc} shows
+the net number of supporting loci for the left and right parents
+for all 855 recombination events.
+The 501 recombinants having fewer than 4 net loci supporting each parent
+are highly enriched for samples sequenced using the AmpliSeq V1 protocol
+% https://github.com/jeromekelleher/sc2ts-paper/issues/808
+(70\% of the recombinants despite making up 2\% of the Viridian dataset), and
+71 (14\%) are associated with 6-base deletion in the Delta lineage,
+known to be affected by amplicon dropout~\cite{Sanderson2021}.
+The 354 remaining recombination events that pass this QC filter
+contain all of the recombinants associated with Pango X lineages
+(Table~\ref{tab:pango_x_lineages}) and
+the Jackson et al.\ recombinants (supplementary text~\ref{sec:jackson_recombs}).
+
+We validated the recombination events in the sc2ts ARG
+by running 3SEQ~\cite{Lam2018improved}
+on the putative recombinant sequence trios (Methods).
+Of the 855 recombination events identified by sc2ts,
+3SEQ verified 57\% of them,
+rising to 95\% verification among the 354 recombinants that passed our QC filter. 
+In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
+and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
+on the putative recombinant sequences,
+summarised in Table~\ref{tab:recombinant_validation}
+(see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
+and \ref{fig:recombinant_evidence_rebar}).
+CovRecomb has a substantially lower validation rate
+at 25\% among the QC-passing recombinants.
+This is expected, as CovRecomb is specifically intended
+to detect inter-lineage recombinants
+and has previously been shown to be
+less sensitive than other methods~\cite{Li2024CovRecomb}.
+Rebar validation is intermediate, at 57\% among QC-passing recombinants.
+% We don't talk about RIPPLES results yet as we haven't discussed it, a
+% and that would be confusing.
+
+
+\subsection*{Assessing evidence for recombination events}
+
+The LS HMM at the heart of sc2ts provides a simple and powerful means
+of quantifying the plausibility of a given recombination event.
+To do this, we force the HMM to find a Viterbi solution
+for the putative recombinant sequence
+with no recombination by specifying
+a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
+The difference between the numbers of mutations between
+the two solutions---the number of mutations
+``averted'' by recombination---is a measure of
+the evidence in favour of recombination (similar to the  
+``parsimony improvement'' score in RIPPLES~\cite{Turakhia2022}).
+Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
+for each of the 21 recombination events associated with Pango X lineages,
+with support ranging from very strong in the case of XC
+(the most parsimonious non-recombinant placement would
+require 37 additional mutations) to marginal for XG and XW,
+which have the minimal possible number of averted mutations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
+\caption{
+Properties of recombination events.
+A,B,C show summaries of the 354 sc2ts recombination nodes passing QC filters
+coloured by 3SEQ classification (recombinant: purple, non-recombinant: grey).
+(A) Upper: jittered scatterplot comparing number of mutations
+when recombination allowed ($y$: right axis)
+versus an alternative copying path disallowing recombination ($x$: top axis);
+recombination nodes in Table~\ref{tab:pango_x_lineages} are labelled starting with `X' and
+those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
+e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
+Point sizes reflect number of descendants.
+Lower: recombination nodes classified by number of mutations averted
+by allowing recombination (i.e., $x-y$).
+(B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
+(C) Distribution of the Pango lineage distance between parents.
+(D) Copying patterns
+(Methods, Figure~\ref{fig:copying_pattern_examples}) for XA, XW and XBB.}
+\label{fig:recombinant_evidence}
+\end{figure}
+
+Figure~\ref{fig:recombinant_evidence}A plots
+the number of mutations required
+in the recombinant versus non-recombinant
+Viterbi solutions (upper scatter plot)
+and the resulting distribution of the number of
+averted mutations (lower histogram)
+over all 354 recombination events that pass QC.
+Also shown is the 3SEQ classification status of these recombinants.
+The 5\% of recombinants that do not pass 3SEQ validation are
+among the most weakly supported, with 4 or 5 averted mutations.
+Figures~\ref{fig:recombinant_evidence}B,C show the 
+distribution of recombination events as a function of the 
+divergence between their two parents.
+Figures~\ref{fig:recombinant_evidence_cov_recomb} and
+\ref{fig:recombinant_evidence_rebar} 
+plot the same information as Figure~\ref{fig:recombinant_evidence} 
+broken down by CovRecomb and rebar validation status.
+
+Detectable recombination is rare in SARS-CoV-2, and
+ultimately judgments about plausibility require expert analysis.
+To aid such interpretation and help identify QC issues,
+we developed a visualisation tool
+inspired by SnpIt~\cite{OToole2024} and 
+the recombinant view of RIVET~\cite{Smith2023tracking},
+showing the recombination-informative sites
+between a recombinant and its parent sequences, and
+highlighting potentially problematic loci.
+Each copying pattern shows the positions
+where the allelic state
+in a recombinant (middle row) matches that of
+the left (upper row, coloured green) 
+or right parent (lower row, coloured blue),
+or where the recombination event requires
+a de novo mutation (gold, with mutational change below).
+Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
+illustrating a spectrum of plausibility.
+XA is an example of a highly plausible recombinant,
+shown by the large number of supporting loci on the left and right.
+XBB is also strongly supported by many loci on the left and right, 
+but the presence of many de novo mutations
+observed in the copying patterns suggests the existence of
+many genetically distinct, unsampled ancestors
+and some caution should be exercised when interpreting them
+(see supplementary text~\ref{sec:dd_xbb} for more details).
+See Figures~\ref{fig:recombinant_evidence}D and
+\ref{fig:pango_x_copying_patterns}
+for copying patterns of the Pango X lineages, and
+Figure~\ref{fig:copying_pattern_examples} for copying patterns
+highlighting specific types of QC problems
+(and more details on the visualisations).
+
+\subsection*{Precision of recombination event times and positions}
+
+The genomic location of a recombination breakpoint in general
+cannot be determined exactly at single base resolution,
+but we can place bounds
+by inspecting sequences of the recombinant and its parents.
+The breakpoint interval of a recombinant is defined by
+two positions: a left position where the recombinant
+matches the left parent sequence but not the right, and
+a right position where the recombinant matches the right
+parent sequence but not the left. 
+Genealogical methods such as sc2ts and UShER+RIPPLES
+use inferred parental sequences and are therefore 
+in principle maximally precise.
+Other methods are limited in precision by the various proxies 
+used to represent distinct parental lineages~\cite{%
+Varabyou2021rapid,Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}.
+% How well the time and position of a recombination event
+% can be inferred thus depends on the divergence between the
+% parent sequences (measured as time to their MRCA). 
+
+The distribution of breakpoint intervals of
+the QC-passing recombination events in the sc2ts ARG
+shows an overall enrichment of breakpoints
+towards the 3’ end of the genome,
+particularly at the left boundary of the Spike gene
+(Figure~\ref{fig:recombinant_intervals}A,B),
+consistent with the patterns seen in previous
+studies~\cite{Bobay2020recombination,Turakhia2022,
+Smith2023tracking,Li2024CovRecomb}.
+While this might result from a higher recombination rate in this region,
+it may also be due to the higher levels of polymorphism in the Spike gene,
+making recombination events more likely to be detected and 
+allowing breakpoint intervals to be estimated more precisely.
+We found the median breakpoint interval length to be 2,207 bases
+(Figure~\ref{fig:recombinant_intervals}C),
+indicating that the breakpoints of half of the events
+could be narrowed to a small region (less than $\sim$7\% of the genome),
+while the uncertainty around the breakpoints of the other events
+is considerably larger (up to $\sim$54\% of the genome).
+As expected from theory (Methods), we found a negative relationship between
+the length of a breakpoint interval and
+divergence between recombinant parents
+(Figure~\ref{fig:recombinant_intervals}D).
+Breakpoint intervals tend to be the smallest
+for events involving recombination between
+the deeply divergent Omicron BA.1 and BA.2 sublineages
+(the red points in Figure~\ref{fig:recombinant_intervals}D).
+
+The time interval of a recombination node in the ARG is bounded by
+the age of the youngest parent and
+the age of the oldest child of the recombination node.
+We found that for $\sim$75\% of the QC-passing recombination events,
+the time interval size is less than $\sim$2 months
+(Figure~\ref{fig:recombinant_intervals}D);
+% Jackson samples in <= 7 day range:
+% Group B ERR5058070 (5 day), singleton ERR5054123 (7 days)
+for example, the time intervals of
+the events associated with the Jackson et al.\ samples
+span 5 to 48 days.
+% Q3: 60 days, max: 259 days
+Longer time intervals imply that a parental or a recombinant lineage
+might have been unsampled for an extended period of time.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{recombinant_intervals}
+\caption{
+Recombination breakpoint and time intervals.
+(A) Distribution of the breakpoint intervals of
+354 recombination events along the genome
+(annotated with gene labels on top).
+Each line represents a breakpoint interval coloured by its length.
+(B) Number of overlapping breakpoint intervals per site.
+(C) Length distribution of breakpoint intervals.
+(D) Relationship between breakpoint interval length and
+time between the recombination event and the parental MRCA.
+The black curve shows
+the theoretical expected relationship between these quantities,
+which is calculated assuming
+a genome-wide nucleotide substitution rate of
+$\sim$0.06 per day (Methods).
+(E) Length distribution of time intervals around recombination events.
+}
+\label{fig:recombinant_intervals}
+\end{figure}
+
+
+\subsection*{Emergence of recombinants over time}
+
+We examined the frequency of emergence of the recombinants
+over the course of the COVID-19 pandemic
+(Figure \ref{fig:recombinants_over_time}).
+We explored two hypotheses for the timing of recombination.
+First, we would expect recombination events
+to occur more often when case counts are high,
+which increases the chance of co-infection within an individual,
+allowing recombination to occur.
+Second, we would expect recombination events to be detected
+more often when lineage diversity is high,
+as this increases the chance that
+two sufficiently distinct viruses co-infected an individual,
+increasing our power to detect recombination.
+
+We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
+to relate the timing of recombination events with global case numbers. We binned case numbers ($n$) by week from January, 2020 to March, 2023 and
+sub-divided by the proportion in each Scorpio label inferred within the ARG
+(shading in Figure~\ref{fig:recombinants_over_time}).
+These lineages correspond loosely to a group
+of related lineages within a major VOC in the Viridian dataset.
+Alongside the case numbers,
+the black curve shows the number of recombinants
+inferred within each week along the ARG,
+focusing on the 354 events passing QC filters.
+Recombination events were inferred more often
+during the Delta and Omicron waves, when case counts were high.
+Overall, the number of recombination events rose with the global case count
+(Figure~\ref{fig:recombinants_over_time}B;
+% JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
+linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
+Recombination events also rose with the diversity of lineages in each week
+(Figure~\ref{fig:recombinants_over_time}C; linear regression: 
+$0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
+measured as the chance that two randomly drawn viruses have different Scorpio designations
+($H$, referred to as the ``expected heterozygosity'').
+
+We then asked which single measure best explains
+the number of recombination events inferred each week,
+considering $n$, $H$, $n H$, $n^2$, $n^2 H$.
+We included the squared number of cases each week
+thinking that it might better predict co-infections.
+The best single predictor of recombination events involved
+the product of cases and expected heterozygosity ($n H$),
+with an adjusted $R^2$ of 23.7\%.
+This measure of case diversity ($n H$)
+explained 49\% more of the variation in recombination events per week
+than the next best predictor ($H$, adjusted $R^2$ of 15.9\%).
+While consistent with the hypotheses
+that recombination events occur more often when infection rates are common
+and are detected more often when viral diversity is high,
+we note several sources of uncertainty.
+Global case numbers were underreported,
+particularly during the Delta and Omicron waves~\cite{Wang2025}.
+Furthermore, there may be substantial uncertainty in the timing of a recombination event,
+particularly if these occur in chronically infected individuals
+(as reported by \cite{Burel2022})
+with substantial delays before onward cases are detected.
+Finally, the filters that we applied removed all
+but the most strongly supported recombination events,
+although similar conclusions were obtained
+when all 855 recombinants detected by sc2ts were considered (Methods).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{recombinants_over_time}
+\caption{
+Recombination events across the pandemic.
+(A) Timing of the recombination events (black curve, right y-axis)
+relative to the global case numbers (\cite{Dong2020}; left y-axis).
+Cases are colour-coded by their Scorpio labels,
+with the key showing those groupings
+with $\geq 1,000$ samples in the Viridian dataset.
+Recombinants more commonly occur
+(B) in weeks with high case numbers and
+(C) in weeks with extensive lineage variation,
+as estimated by high expected heterozygosity;
+solid lines show fits by linear regression,
+allowing for non-zero intercepts to account for
+unknown cases and heterozygosity not captured by the Scorpio labels.
+}
+\label{fig:recombinants_over_time}
+\end{figure}
+
+
+\subsection*{Comparison with UShER+RIPPLES}
+
+The most comprehensive analysis on recombination in SARS-CoV-2 to 
+date has been performed using the combination of UShER and 
+RIPPLES~\cite{Turakhia2022}. 
+% NOTE: not citing RIVET here as there is no real analysis
+% in the paper itself, it's just focused on the tool
+RIPPLES works by taking an UShER phylogeny and systematically breaking up
+sequences subtended by long branches into multiple segments 
+that are placed independently.
+A recombination event at a node is flagged if
+the overall parsimony of these multiple placements
+sufficiently improves over
+the original single-parent origin in the phylogeny.
+This approach has much in common with the LS HMM
+used in sc2ts, but with one important distinction.
+While sc2ts detects and incorporates recombination
+in ``real-time'' as sequences are added to the ARG in daily
+batches, RIPPLES operates on a complete phylogeny,
+attempting to detect recombination post-hoc among millions of nodes. 
+Like any phylogenetic reconstruction method
+that ignores recombination, UShER must force placement of recombinant
+sequences in places that minimise the discrepancy across the entire sequence,
+which may not be near any of the true parents. 
+These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences},
+and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
+may break up the artefactually long branches used to detect recombination.
+
+We compared the performance of sc2ts to detect recombination 
+against RIPPLES run on the Viridian UShER phylogeny,
+subset to the 2,475,418 samples shared with the ARG (Methods).
+To enable exact comparison, we omitted the QC filtering steps from both
+methods, and initially set the RIPPLES ``parsimony improvement'' 
+parameter to $p=4$ (rather than the more lenient default of 3), 
+to match the equivalent $k=4$ setting used in sc2ts (Methods). 
+Under this setting,
+RIPPLES reported 1174 recombination events of which 
+601 were validated by 3SEQ (51\%; Methods).
+% JK: There's no point in making a meal of the 3SEQ validation rate,
+% This is notably lower than the equivalent 
+% concordance rate of 57\% among the 855 recombination events reported by sc2ts.
+We then compared
+the specific events reported by both methods by aligning them
+using sets of descendant samples (Methods),
+giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
+The 706 recombination events detected by RIPPLES that do not 
+correspond to a recombination event in the sc2ts ARG can largely
+be explained by a combination 
+of the strict time ordering imposed by sc2ts
+and the differing sets of problematic sites masked
+by sc2ts and UShER
+(supplementary text~\ref{sec:detailed_ripples}).
+The 387 events detected by sc2ts and not by UShER+RIPPLES
+ include some of the well characterised Pango X lineages.
+Table~\ref{tab:ripples_x_lineages} shows the events detected 
+by UShER+RIPPLES associated with samples assigned to Pango X
+lineages, showing that at $p=4$
+only 9 of the Pango X lineages are present and
+with unequivocal recombinant origin for 6 
+(contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
+We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall
+and increasing the intersection of events with sc2ts to 595 
+(Figure~\ref{fig:ripples_sc2ts_events}).
+At this more lenient threshold, 23 of the 44 Pango X lineages
+are identified as descendants of RIPPLES recombinant events,
+with unequivocal origins for 10 lineages, and
+7 lineages associated with two competing events 
+(supplementary text~\ref{sec:detailed_ripples}).
+Thus, a more lenient threshold ($p=3$) was needed for UShER+RIPPLES to detect a similar fraction of Pango X lineages as sct2ts with $k=4$, resulting in more false positives. That said, XB and XAJ are among the lineages detected by UShER+RIPPLES, even at $p=4$,
+strengthening evidence that these are false negatives 
+for sc2ts (Table~\ref{tab:pango_x_lineages}).
+
+The choice of the $p$ threshold has a large effect 
+on the number of recombination events detected by RIPPLES, and 
+previous studies have used the default value of 
+$3$\cite{Turakhia2022,Smith2023tracking}.
+For example, when applied to an UShER phylogeny of
+$\sim$1.6 million genomes sampled up to May, 2021,
+RIPPLES reported 589 unique recombination events with 43,104 descendant
+samples---corresponding to $\sim$2.7\% of all samples of recombinant origin.
+Over the same time interval, the sc2ts ARG ($k=4$) identifies
+14 recombination events passing QC with
+172 descendant samples among 501,235 samples (0.034\%),
+a 40- to 80-fold reduction.
+The sc2ts ARG identifies more of the well-characterised Pango X lineages
+at a more stringent threshold, and therefore provides us with a 
+conservative lower bound
+on the frequency of detectable recombination events in SARS-CoV-2.
+
+\section*{Discussion}
+There are two primary contributions of this work. The first is an
+ARG for 2.48 million SARS-CoV-2 genomes.
+Through multiple layers of validation against results from the 
+literature, we have demonstrated that this ARG synthesises
+the evolutionary features of genetic inheritance, point mutations,
+deletions and recombination in a single cohesive structure.
+The ARG is freely available and easily accessible using the 
+tskit software ecosystem, a rich and efficient platform for 
+recombination-aware analyses widely used in population genomics.
+This combination of a deeply validated pandemic-scale ARG with 
+a mature and highly capable software platform forms a unique resource.
+Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
+have helped spur the development of ARG-aware methods in human 
+genomics~\cite{Mejia2025using,Grundler2025geographic,
+Lehmann2025args,Terhorst2025accelerated}.
+We hope that the ARG provided here will similarly
+enable a range of recombination-aware analyses of SARS-CoV-2 and 
+catalyse a wave of methodological developments integrating
+recombination into pathogen genomics.
+For instance, annotating the ARG with experimentally derived
+fitness estimates for mutations can help elucidate selection
+pressures on different recombinants;
+saltational variants can also be detected by analysing the rate and position of mutations along long
+branches (which persist after accounting for recombination).
+We envisage the ARG as a long-term stable resource---building on the 
+high-quality, freely available reassemblies of
+the Viridian dataset~\cite{Hunt2024}---to facilitate the study 
+of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
+
+The other primary contribution of this work is the method used to 
+infer the ARG, sc2ts. The ability to infer an ARG over millions of whole 
+genomes is a step change in scale over existing ARG 
+inference methods for pathogen data\cite{Didelot2010inference,%
+Vaughan2017inferring,%
+Muller2020bayesian,%
+Ignatieva2022,%
+Muller2022bayesian}.
+To ensure these innovations are well-founded, we have paid significant 
+attention to methodological detail, carefully validating the ARG
+(and consequently the method) against known results. 
+Sc2ts is currently specialised to take advantage of unique features 
+of the SARS-CoV-2 dataset, but the methods may be readily adapted
+to other pathogens. The LS HMM is the most important element of 
+sc2ts, efficiently finding parsimonious placements for samples 
+among all possible recombinant solutions. The current 
+parametrisation---emphasising interpretability---is simplistic
+and could readily be extended to account
+for mutation rate variation along the genome~\cite{Haddox2025}
+or transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024}.
+Our analysis of deletions shows that valuable phylogenetic signal
+is lost when they are ignored, and an important avenue for 
+future work is to explore ways of incorporating them directly into the HMM.
+Another methodological innovation is the use of 
+the tsdate method~\cite{Wohns2022,Pope2025} to estimate internal node dates
+in the ARG, illustrating the reuse of methods initially developed 
+for population genetic applications. While results are encouraging, 
+dating of phylogenies is a complex task~\cite{Kumar2016advances},
+and there is certainly room for improvement.
+
+Further contributions of this work arise from 
+the detailed study of the sc2ts ARG,
+providing insights into the evolution of SARS-CoV-2
+and the COVID-19 pandemic. 
+First, we clarify the relationships among
+recombinant Pango X lineages, finding examples of
+clustering of named lineages under a single shared recombination event.
+Second, we used the ARG to study breakpoint intervals 
+for recombination events, showing that the relationship between the 
+size of the interval in base pairs and the divergence time of the parental lineages matches theoretical expectations.
+Thirdly, we demonstrate a clear relationship between
+genetic diversity and the rate of detectable recombination,
+with the best predictor of the number of recombination
+events over time being the product of global case numbers
+and lineage diversity.
+Finally, and perhaps most fundamentally, through our 
+conservative parameter choices and real-time handling of 
+recombination events, we provide a stringent lower
+bound on the amount of recombination that occurred during
+the pandemic phase of SARS-CoV-2.
+These results underscore the utility of the ARG 
+and provide a template for future analyses.
+
+
+\paragraph{Limitations of the study}
+We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather 
+than the larger GISAID resource~\cite{Shu2017} for two reasons.
+Firstly, the Viridian dataset is of higher quality and major efforts
+have been made to remove sources of error. Applying sc2ts to 
+GISAID data is straightforward, but significant additional efforts 
+would be required to address data quality issues.
+% NOTE Sally suggested that we say that we did this (run on GISAID) and cite 
+% the earlier preprint, but after discussion it was concluded that
+% this opens a major can of worms and we risk undermining the 
+% perceived novelty of this manuscript to guard against a very
+% minor technical point. If reviewers ask us to do things with
+% GISAID we can by all means explain we've already done it.
+Secondly, the Viridian data is publicly available and redistributable,
+enabling us to share the resulting ARG without restrictions.
+
+It is important to acknowledge that sampling is non-uniform both
+geographically and over time~\cite{Lancet2021,Chen2022}. 
+Sc2ts performs best in the data-dense regime, when the underlying
+assumption that genetic diversity is gradually accumulating within
+the structure holds. Large changes (i.e, saltation events) present
+significant challenges, and the results of the algorithm should 
+be regarded more critically in these situations.
+Future methodological improvements may combine the strengths 
+of sophisticated model-based inferences with the power 
+of non-parametric inference~\cite{Bisschop2025likelihoods}
+when such data sparsity is detected.
+
+
+%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
+
+\clearpage % Make sure this table is on its own page
+
+% Change the geometry so it fits on the page
+\newgeometry{left=2cm, right=2cm, top=1cm, bottom=2cm} 
+
 \begin{table}
 \caption{
-%SO: I found the legend hard to parse and revised it. OK?
-Events in the ARG associated with Pango X lineages. Each row corresponds to the origin node for a given Pango lineage (Types I, II, and IV, see text) or associated recombination event (Type II).
-For origin nodes that are recombinant (Type I) or near a recombination event (Type II),
-the ``averted'' column shows the number of additional mutations required
-without recombination, as well as the position of informative sites to the left and right of the breakpoint.
-Parent lineages shown in boldface are nodes exactly matched by sampled sequences.
-The descendants column shows the number of descendants by Pango lineage.
-For Pango lineages (Type III) whose origin node was a descendant of a Type I or II recombination node, the distance (path length and time in days) from the recombination event is shown,
-as well as the number of mutations directly ancestral to the Pango origin
-node. Pango X lineages not associated with a recombination node (Type IV) are shown with the parent node and number of mutations.
+\footnotesize{
+Events in the ARG associated with Pango X lineages. 
+Each row corresponds to the origin node for a given Pango lineage (Types I, II,
+and IV, see text) or associated recombination event (Type II). For origin nodes
+that are recombinant (Type I) or near a recombination event (Type II), the
+``averted'' column shows the number of additional mutations required without
+recombination, as well as the position of informative sites to the left and
+right of the breakpoint. Parent lineages shown in boldface are nodes exactly
+matched by sampled sequences. The descendants column shows the number of
+descendants by Pango lineage. For Pango lineages (Type III) whose origin node
+was a descendant of a Type I or II recombination node, the distance (path
+length and time in days) from the recombination event is shown, as well as the
+number of mutations directly ancestral to the Pango origin node. Pango X
+lineages not associated with a recombination node (Type IV) are shown with the
+parent node and number of mutations.
+}
 }
 \label{tab:pango_x_lineages}
 % scriptsize is quite small here, and we could probably cram it all 
 % in with footnotesize if we worked a bit harder on the intercol
 % spacing
 \begin{scriptsize}
+\singlespacing
 \begin{tabular}{lrrlrll}
 \toprule
 \multicolumn{7}{l}{\textbf{Type I event: Recombination coinciding with Pango
@@ -638,680 +1267,65 @@ XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
 \end{tabular}
 \end{scriptsize}
 \end{table}
+\restoregeometry % Restore original geometry
 
-% " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
-% system ... ". It should not be referred to as the ‘Rambaut et al.’ or
-% ‘Pangolin’ nomenclature system. "
-Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
-can be attributed to the clarity of the rules under which new lineages 
-are designated and their explicit phylogenetic basis.
-The first recombinant lineage XA was designated in 2021
-based on the analysis of Jackson et al.~\cite{Jackson2021}.
-Although the process of incorporating recombinant lineages
-in the Pango nomenclature system is well defined,
-the identification of such events is much more subjective,
-requiring the synthesis of multiple lines of evidence and
-often the manual inspection of phylogenies and sequence alignments
-by volunteers~\cite{Smith2023tracking}.
-% Debatable whether this adds or substracts from narrative
-As of pango-designation version v1.33.1 (2025-03-31),
-a total of 146 distinct Pango X lineages have been designated.
-%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
-% 146
+\clearpage % Clear all remaining figures and tables then start a new page
 
-By automatically detecting and incorporating recombination events into the ARG,
-sc2ts provides us with a systematic means of
-discovering and assessing evidence around these events.
-Table~\ref{tab:pango_x_lineages} summarises
-these results for the 44 Pango X lineages present in the ARG
-% (XAC and XAD have been omitted, and XM partially represented,
-% corresponding to 23 omitted samples in total;
-(see Document~\ref{sec:supplement_x_pango_lineages}).
-For 16 Pango X lineages, the oldest node
-that has been assigned to the focal Pango lineage is a recombination node and
-that node is the ancestor of all samples
-assigned to that (or a descendant) Pango lineage.
-We consider these to be fully concordant (Type I) events,
-where the ARG reflects the
-hierarchical structure of Pango designation.
-Among these events, concordance with the community-consensus 
-parent lineages and breakpoint intervals is excellent,
-with similar performance to
-the RecombinHunt~\cite{Alfonsi2024}
-and CovRecomb~\cite{Li2024CovRecomb} detection methods
-(STAR Methods; Table~\ref{tab:method_concordance}; see also
-Document~\ref{sec:jackson_recombs} for analysis of the 
-Jackson et al.\ recombinants).
-Of the Type I events, 13 are monophyletic for the focal Pango lineage
-(i.e., the descendants are entirely from that lineage);
-Figure~\ref{fig:subgraphs}A shows XA as an example.
-
-There are five partially concordant events (Type II) 
-in Table~\ref{tab:pango_x_lineages}, which 
-are recombination events closely associated with Pango X lineages
-that do not meet the strict origination criteria for Type I.
-Type III events are Pango origin nodes in the ARG that are 
-derived from Type I or Type II recombination events. There is significant
-nesting among the Pango X lineage origin nodes within the ARG,
-with two major clusters of particular note. Although XQ is 
-directly associated with a recombination event in the ARG, 
-XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
-that they may be more parsimoniously explained as sublineages of XQ
-than de novo recombinant lineages (Document~\ref{sec:dd_xq}). 
-The second cluster is based around a putative undocumented
-recombinant that is the ancestor of lineages 
-XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
-(Figure~\ref{fig:subgraphs}B, Document~\ref{sec:dd_xx}). 
-
-The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
-corresponds to nodes that are not associated with a recombination event
-in the ARG.
-These vary in their plausibility of being non-recombinant.
-For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
-distant from a BA.2 sample and has little additional evidence
-to suggest recombination (Document~\ref{sec:dd_xn}).
-XB, on the other hand,
-has been thoroughly characterised~\cite{Gutierrez2022} and
-is likely misclassified by sc2ts because the required
-parent lineages were not present (Document \ref{sec:dd_xb}). 
-
-The remaining 10 Pango X lineages (97 samples) present in the dataset are not
-included in the ARG because the HMM cost exceeds the inclusion threshold
-and there was insufficient support for retrospective inclusion (STAR Methods).
-These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
-which are confirmed by sc2ts to have multiple breakpoints; see 
-Document \ref{sec:supplement_rejected_pango_x_lineages} and Table 
-\ref{tab:extra_hmm_results} for details.
-See Document~\ref{sec:supplement_indepth_pango_x_lineages}
-for extended analyses on all the Pango X lineages in the ARG;
-Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
-associated with Table~\ref{tab:pango_x_lineages};
-and Document S2 for ARG visualisations of the Pango X lineages.
+% The list of references goes after the main text and before the acknowledgements
+% When preparing an initial submission, we recommend you use BibTeX, like this:
+%
+\bibliography{references} % for a file named science_template.bib
+\bibliographystyle{sciencemag}
 
 
-\subsection*{Quality control and validation of recombination events}
+\bigskip
 
-Sequencing errors in genome assemblies~\cite{Turakhia2020},
-incorrect read alignments~\cite{Hunt2024}, and
-multi-nucleotide substitutions~\cite{DeMaio2020issues}
-can cause short regions of a sample genome to match more closely
-to an alternative genome rather than the true parent.
-Such genomic regions can be mistaken for evidence of recombination.
-We use a simple quality control (QC) measure
-that counts the number of ``loci'' (clusters of closely spaced sites)
-supporting the left and right parents of a recombinant (STAR Methods),
-and effectively identifies a range of issues.
-Figure~\ref{fig:recombinant_qc} shows
-the net number of supporting loci for the left and right parents
-for all 855 recombination events.
-The 501 recombinants having fewer than 4 net loci supporting each parent
-are highly enriched for samples sequenced using the AmpliSeq V1 protocol
-% https://github.com/jeromekelleher/sc2ts-paper/issues/808
-(70\% of the recombinants despite making up 2\% of the Viridian dataset), and
-71 (14\%) are associated with 6-base deletion in the Delta lineage,
-known to be affected by amplicon dropout~\cite{Sanderson2021}.
-The 354 remaining recombination events that pass this QC filter
-contain all of the recombinants associated with Pango X lineages
-(Table~\ref{tab:pango_x_lineages}) and
-the Jackson et al.\ recombinants (Document~\ref{sec:jackson_recombs}).
+%%%%%%%%%%%%%%%% ACKNOWLEDGEMENTS %%%%%%%%%%%%%%%
 
-We validated the recombination events in the sc2ts ARG
-by running 3SEQ~\cite{Lam2018improved}
-on the putative recombinant sequence trios (STAR Methods).
-Of the 855 recombination events identified by sc2ts,
-3SEQ verified 57\% of them,
-rising to 95\% verification among the 354 recombinants that passed our QC filter. 
-In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb} 
-and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
-on the putative recombinant sequences,
-summarised in Table~\ref{tab:recombinant_validation}
-(see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
-and \ref{fig:recombinant_evidence_rebar}).
-CovRecomb has a substantially lower validation rate
-at 25\% among the QC-passing recombinants.
-This is expected, as CovRecomb is specifically intended
-to detect inter-lineage recombinants
-and has previously been shown to be
-less sensitive than other methods~\cite{Li2024CovRecomb}.
-Rebar validation is intermediate, at 57\% among QC-passing recombinants.
-% We don't talk about RIPPLES results yet as we haven't discussed it, a
-% and that would be confusing.
+\section*{Acknowledgments}
+We would like to thank Jotun Hein for helpful comments on the manuscript.
 
+For the purpose of Open Access, the authors have applied a CC BY public
+copyright licence to any Author Accepted Manuscript version arising from this
+submission.
 
-\subsection*{Assessing evidence for recombination events}
+Computation used the Oxford Biomedical Research Computing (BMRC) facility, a
+joint development between the Wellcome Centre for Human Genetics and the Big
+Data Institute supported by Health Data Research UK and the NIHR Oxford
+Biomedical Research Centre. The views expressed are those of the author(s) and
+not necessarily those of the NHS, the NIHR or the Department of Health.
 
-The LS HMM at the heart of sc2ts provides a simple and powerful means
-of quantifying the plausibility of a given recombination event.
-To do this, we force the HMM to find a Viterbi solution
-for the putative recombinant sequence
-with no recombination by specifying
-a large recombination penalty $k$ (Figure~\ref{fig:methodology}).
-The difference between the numbers of mutations between
-the two solutions---the number of mutations
-``averted'' by recombination---is a measure of
-the evidence in favour of recombination (similar to the  
-``parsimony improvement'' score in RIPPLES~\cite{Turakhia2022}).
-Table~\ref{tab:pango_x_lineages} shows the number of averted mutations
-for each of the 21 recombination events associated with Pango X lineages,
-with support ranging from very strong in the case of XC
-(the most parsimonious non-recombinant placement would
-require 37 additional mutations) to marginal for XG and XW,
-which have the minimal possible number of averted mutations.
+\paragraph*{Funding:}
+SHZ is supported by an NDPH Intermediate Research Fellowship (Oxford Population
+Health, University of Oxford).
+IG is supported by Wellcome (DPhil in Genomic Medicine and Statistics, 228319/Z/23/Z).
+DSP acknowledges funding administered by the Danish National Research Foundation
+in support of the Pioneer Centre for SMARTbiomed.
+SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
+JK acknowledges support from the
+Oxford-Janssen Translational Genomics Fellowship,
+research grant R01 HG012473 from the National Institutes of Health NHGRI, 
+research grant EP/X024881/1 from the Engineering and Physical Sciences Research Council, 
+and the Robertson Foundation. 
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
-\caption{
-Properties of recombination events.
-A,B,C show summaries of the 354 sc2ts recombination nodes passing QC filters
-coloured by 3SEQ classification (recombinant: purple, non-recombinant: grey).
-(A) Upper: jittered scatterplot comparing number of mutations
-when recombination allowed ($y$: right axis)
-versus an alternative copying path disallowing recombination ($x$: top axis);
-recombination nodes in Table~\ref{tab:pango_x_lineages} are labelled starting with `X' and
-those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
-e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
-Point sizes reflect number of descendants.
-Lower: recombination nodes classified by number of mutations averted
-by allowing recombination (i.e., $x-y$).
-(B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
-(C) Distribution of the Pango lineage distance between parents.
-(D) Copying patterns
-(STAR Methods, Figure~\ref{fig:copying_pattern_examples}) for XA, XW and XBB.}
-\label{fig:recombinant_evidence}
-\end{figure}
+\paragraph*{Author contributions:}
+% Credit system: https://credit.niso.org/
+Conceptualization, SHZ, CLM, SPO, JK;
+% Methodology, software, resources, visualization
+methodology, SHZ, YW, AI, KE, BJ, DSP, SPO, JK;
+% Invesigation, data curation, formal analysis, validation
+investigation, SHZ, YW, AI, KE, IG, SPO, JK;
+writing--original draft, SHZ, JK;
+writing--review \& editing, SHZ, YW, AI, KE, IG, BJ, DSP, CLM, SPO, JK;
+resources, JK;
+supervision, JK;
+funding acquisition, JK.
 
-Figure~\ref{fig:recombinant_evidence}A plots
-the number of mutations required
-in the recombinant versus non-recombinant
-Viterbi solutions (upper scatter plot)
-and the resulting distribution of the number of
-averted mutations (lower histogram)
-over all 354 recombination events that pass QC.
-Also shown is the 3SEQ classification status of these recombinants.
-The 5\% of recombinants that do not pass 3SEQ validation are
-among the most weakly supported, with 4 or 5 averted mutations.
-Figures~\ref{fig:recombinant_evidence}B,C show the 
-distribution of recombination events as a function of the 
-divergence between their two parents.
-Figures~\ref{fig:recombinant_evidence_cov_recomb} and
-\ref{fig:recombinant_evidence_rebar} 
-plot the same information as Figure~\ref{fig:recombinant_evidence} 
-broken down by CovRecomb and rebar validation status.
+\paragraph*{Competing interests:}
+There are no competing interests to declare.
 
-Detectable recombination is rare in SARS-CoV-2, and
-ultimately judgments about plausibility require expert analysis.
-To aid such interpretation and help identify QC issues,
-we developed a visualisation tool
-inspired by SnpIt~\cite{OToole2024} and 
-the recombinant view of RIVET~\cite{Smith2023tracking},
-showing the recombination-informative sites
-between a recombinant and its parent sequences, and
-highlighting potentially problematic loci.
-Each copying pattern shows the positions
-where the allelic state
-in a recombinant (middle row) matches that of
-the left (upper row, coloured green) 
-or right parent (lower row, coloured blue),
-or where the recombination event requires
-a de novo mutation (gold, with mutational change below).
-Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
-illustrating a spectrum of plausibility.
-XA is an example of a highly plausible recombinant,
-shown by the large number of supporting loci on the left and right.
-XBB is also strongly supported by many loci on the left and right, 
-but the presence of many de novo mutations
-observed in the copying patterns suggests the existence of
-many genetically distinct, unsampled ancestors
-and some caution should be exercised when interpreting them
-(see Document~\ref{sec:dd_xbb} for more details).
-See Figures~\ref{fig:recombinant_evidence}D and
-\ref{fig:pango_x_copying_patterns}
-for copying patterns of the Pango X lineages, and
-Figure~\ref{fig:copying_pattern_examples} for copying patterns
-highlighting specific types of QC problems
-(and more details on the visualisations).
-
-\subsection*{Precision of recombination event times and positions}
-
-The genomic location of a recombination breakpoint in general
-cannot be determined exactly at single base resolution,
-but we can place bounds
-by inspecting sequences of the recombinant and its parents.
-The breakpoint interval of a recombinant is defined by
-two positions: a left position where the recombinant
-matches the left parent sequence but not the right, and
-a right position where the recombinant matches the right
-parent sequence but not the left. 
-Genealogical methods such as sc2ts and UShER+RIPPLES
-use inferred parental sequences and are therefore 
-in principle maximally precise.
-Other methods are limited in precision by the various proxies 
-used to represent distinct parental lineages~\cite{%
-Varabyou2021rapid,Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}.
-% How well the time and position of a recombination event
-% can be inferred thus depends on the divergence between the
-% parent sequences (measured as time to their MRCA). 
-
-The distribution of breakpoint intervals of
-the QC-passing recombination events in the sc2ts ARG
-shows an overall enrichment of breakpoints
-towards the 3’ end of the genome,
-particularly at the left boundary of the Spike gene
-(Figure~\ref{fig:recombinant_intervals}A,B),
-consistent with the patterns seen in previous
-studies~\cite{Bobay2020recombination,Turakhia2022,
-Smith2023tracking,Li2024CovRecomb}.
-While this might result from a higher recombination rate in this region,
-it may also be due to the higher levels of polymorphism in the Spike gene,
-making recombination events more likely to be detected and 
-allowing breakpoint intervals to be estimated more precisely.
-We found the median breakpoint interval length to be 2,207 bases
-(Figure~\ref{fig:recombinant_intervals}C),
-indicating that the breakpoints of half of the events
-could be narrowed to a small region (less than $\sim$7\% of the genome),
-while the uncertainty around the breakpoints of the other events
-is considerably larger (up to $\sim$54\% of the genome).
-As expected from theory (STAR Methods), we found a negative relationship between
-the length of a breakpoint interval and
-divergence between recombinant parents
-(Figure~\ref{fig:recombinant_intervals}D).
-Breakpoint intervals tend to be the smallest
-for events involving recombination between
-the deeply divergent Omicron BA.1 and BA.2 sublineages
-(the red points in Figure~\ref{fig:recombinant_intervals}D).
-
-The time interval of a recombination node in the ARG is bounded by
-the age of the youngest parent and
-the age of the oldest child of the recombination node.
-We found that for $\sim$75\% of the QC-passing recombination events,
-the time interval size is less than $\sim$2 months
-(Figure~\ref{fig:recombinant_intervals}D);
-% Jackson samples in <= 7 day range:
-% Group B ERR5058070 (5 day), singleton ERR5054123 (7 days)
-for example, the time intervals of
-the events associated with the Jackson et al.\ samples
-span 5 to 48 days.
-% Q3: 60 days, max: 259 days
-Longer time intervals imply that a parental or a recombinant lineage
-might have been unsampled for an extended period of time.
-
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\linewidth]{recombinant_intervals}
-\caption{
-Recombination breakpoint and time intervals.
-(A) Distribution of the breakpoint intervals of
-354 recombination events along the genome
-(annotated with gene labels on top).
-Each line represents a breakpoint interval coloured by its length.
-(B) Number of overlapping breakpoint intervals per site.
-(C) Length distribution of breakpoint intervals.
-(D) Relationship between breakpoint interval length and
-time between the recombination event and the parental MRCA.
-The black curve shows
-the theoretical expected relationship between these quantities,
-which is calculated assuming
-a genome-wide nucleotide substitution rate of
-$\sim$0.06 per day (STAR Methods).
-(E) Length distribution of time intervals around recombination events.
-}
-\label{fig:recombinant_intervals}
-\end{figure}
-
-
-\subsection*{Emergence of recombinants over time}
-
-We examined the frequency of emergence of the recombinants
-over the course of the COVID-19 pandemic
-(Figure \ref{fig:recombinants_over_time}).
-We explored two hypotheses for the timing of recombination.
-First, we would expect recombination events
-to occur more often when case counts are high,
-which increases the chance of co-infection within an individual,
-allowing recombination to occur.
-Second, we would expect recombination events to be detected
-more often when lineage diversity is high,
-as this increases the chance that
-two sufficiently distinct viruses co-infected an individual,
-increasing our power to detect recombination.
-
-We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
-to relate the timing of recombination events with global case numbers. We binned case numbers ($n$) by week from January, 2020 to March, 2023 and
-sub-divided by the proportion in each Scorpio label inferred within the ARG
-(shading in Figure~\ref{fig:recombinants_over_time}).
-These lineages correspond loosely to a group
-of related lineages within a major VOC in the Viridian dataset.
-Alongside the case numbers,
-the black curve shows the number of recombinants
-inferred within each week along the ARG,
-focusing on the 354 events passing QC filters.
-Recombination events were inferred more often
-during the Delta and Omicron waves, when case counts were high.
-Overall, the number of recombination events rose with the global case count
-(Figure~\ref{fig:recombinants_over_time}B;
-% JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
-linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
-Recombination events also rose with the diversity of lineages in each week
-(Figure~\ref{fig:recombinants_over_time}C; linear regression: 
-$0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
-measured as the chance that two randomly drawn viruses have different Scorpio designations
-($H$, referred to as the ``expected heterozygosity'').
-
-We then asked which single measure best explains
-the number of recombination events inferred each week,
-considering $n$, $H$, $n H$, $n^2$, $n^2 H$.
-We included the squared number of cases each week
-thinking that it might better predict co-infections.
-The best single predictor of recombination events involved
-the product of cases and expected heterozygosity ($n H$),
-with an adjusted $R^2$ of 23.7\%.
-This measure of case diversity ($n H$)
-explained 49\% more of the variation in recombination events per week
-than the next best predictor ($H$, adjusted $R^2$ of 15.9\%).
-While consistent with the hypotheses
-that recombination events occur more often when infection rates are common
-and are detected more often when viral diversity is high,
-we note several sources of uncertainty.
-Global case numbers were underreported,
-particularly during the Delta and Omicron waves~\cite{Wang2025}.
-Furthermore, there may be substantial uncertainty in the timing of a recombination event,
-particularly if these occur in chronically infected individuals
-(as reported by \cite{Burel2022})
-with substantial delays before onward cases are detected.
-Finally, the filters that we applied removed all
-but the most strongly supported recombination events,
-although similar conclusions were obtained
-when all 855 recombinants detected by sc2ts were considered (STAR Methods).
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.85\linewidth]{recombinants_over_time}
-\caption{
-Recombination events across the pandemic.
-(A) Timing of the recombination events (black curve, right y-axis)
-relative to the global case numbers (\cite{Dong2020}; left y-axis).
-Cases are colour-coded by their Scorpio labels,
-with the key showing those groupings
-with $\geq 1,000$ samples in the Viridian dataset.
-Recombinants more commonly occur
-(B) in weeks with high case numbers and
-(C) in weeks with extensive lineage variation,
-as estimated by high expected heterozygosity;
-solid lines show fits by linear regression,
-allowing for non-zero intercepts to account for
-unknown cases and heterozygosity not captured by the Scorpio labels.
-}
-\label{fig:recombinants_over_time}
-\end{figure}
-
-
-\subsection*{Comparison with UShER+RIPPLES}
-
-The most comprehensive analysis on recombination in SARS-CoV-2 to 
-date has been performed using the combination of UShER and 
-RIPPLES~\cite{Turakhia2022}. 
-% NOTE: not citing RIVET here as there is no real analysis
-% in the paper itself, it's just focused on the tool
-RIPPLES works by taking an UShER phylogeny and systematically breaking up
-sequences subtended by long branches into multiple segments 
-that are placed independently.
-A recombination event at a node is flagged if
-the overall parsimony of these multiple placements
-sufficiently improves over
-the original single-parent origin in the phylogeny.
-This approach has much in common with the LS HMM
-used in sc2ts, but with one important distinction.
-While sc2ts detects and incorporates recombination
-in ``real-time'' as sequences are added to the ARG in daily
-batches, RIPPLES operates on a complete phylogeny,
-attempting to detect recombination post-hoc among millions of nodes. 
-Like any phylogenetic reconstruction method
-that ignores recombination, UShER must force placement of recombinant
-sequences in places that minimise the discrepancy across the entire sequence,
-which may not be near any of the true parents. 
-These permanent misplacements distort the phylogeny~\cite{Schierup2000consequences},
-and subsequent tree reorganisations to maximise overall parsimony~\cite{DeMaio2023} 
-may break up the artefactually long branches used to detect recombination.
-
-We compared the performance of sc2ts to detect recombination 
-against RIPPLES run on the Viridian UShER phylogeny,
-subset to the 2,475,418 samples shared with the ARG (STAR Methods).
-To enable exact comparison, we omitted the QC filtering steps from both
-methods, and initially set the RIPPLES ``parsimony improvement'' 
-parameter to $p=4$ (rather than the more lenient default of 3), 
-to match the equivalent $k=4$ setting used in sc2ts (STAR Methods). 
-Under this setting,
-RIPPLES reported 1174 recombination events of which 
-601 were validated by 3SEQ (51\%; STAR Methods).
-% JK: There's no point in making a meal of the 3SEQ validation rate,
-% This is notably lower than the equivalent 
-% concordance rate of 57\% among the 855 recombination events reported by sc2ts.
-We then compared
-the specific events reported by both methods by aligning them
-using sets of descendant samples (STAR Methods),
-giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
-The 706 recombination events detected by RIPPLES that do not 
-correspond to a recombination event in the sc2ts ARG can largely
-be explained by a combination 
-of the strict time ordering imposed by sc2ts
-and the differing sets of problematic sites masked
-by sc2ts and UShER
-(Document~\ref{sec:detailed_ripples}).
-The 387 events detected by sc2ts and not by UShER+RIPPLES
- include some of the well characterised Pango X lineages.
-Table~\ref{tab:ripples_x_lineages} shows the events detected 
-by UShER+RIPPLES associated with samples assigned to Pango X
-lineages, showing that at $p=4$
-only 9 of the Pango X lineages are present and
-with unequivocal recombinant origin for 6 
-(contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
-We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall
-and increasing the intersection of events with sc2ts to 595 
-(Figure~\ref{fig:ripples_sc2ts_events}).
-At this more lenient threshold, 23 of the 44 Pango X lineages
-are identified as descendants of RIPPLES recombinant events,
-with unequivocal origins for 10 lineages, and
-7 lineages associated with two competing events 
-(Document~\ref{sec:detailed_ripples}).
-Thus, a more lenient threshold ($p=3$) was needed for UShER+RIPPLES to detect a similar fraction of Pango X lineages as sct2ts with $k=4$, resulting in more false positives. That said, XB and XAJ are among the lineages detected by UShER+RIPPLES, even at $p=4$,
-strengthening evidence that these are false negatives 
-for sc2ts (Table~\ref{tab:pango_x_lineages}).
-
-The choice of the $p$ threshold has a large effect 
-on the number of recombination events detected by RIPPLES, and 
-previous studies have used the default value of 
-$3$\cite{Turakhia2022,Smith2023tracking}.
-For example, when applied to an UShER phylogeny of
-$\sim$1.6 million genomes sampled up to May, 2021,
-RIPPLES reported 589 unique recombination events with 43,104 descendant
-samples---corresponding to $\sim$2.7\% of all samples of recombinant origin.
-Over the same time interval, the sc2ts ARG ($k=4$) identifies
-14 recombination events passing QC with
-172 descendant samples among 501,235 samples (0.034\%),
-a 40- to 80-fold reduction.
-The sc2ts ARG identifies more of the well-characterised Pango X lineages
-at a more stringent threshold, and therefore provides us with a 
-conservative lower bound
-on the frequency of detectable recombination events in SARS-CoV-2.
-
-\section*{DISCUSSION}
-There are two primary contributions of this work. The first is an
-ARG for 2.48 million SARS-CoV-2 genomes.
-Through multiple layers of validation against results from the 
-literature, we have demonstrated that this ARG synthesises
-the evolutionary features of genetic inheritance, point mutations,
-deletions and recombination in a single cohesive structure.
-The ARG is freely available and easily accessible using the 
-tskit software ecosystem, a rich and efficient platform for 
-recombination-aware analyses widely used in population genomics.
-This combination of a deeply validated pandemic-scale ARG with 
-a mature and highly capable software platform forms a unique resource.
-Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
-have helped spur the development of ARG-aware methods in human 
-genomics~\cite{Mejia2025using,Grundler2025geographic,
-Lehmann2025args,Terhorst2025accelerated}.
-We hope that the ARG provided here will similarly
-enable a range of recombination-aware analyses of SARS-CoV-2 and 
-catalyse a wave of methodological developments integrating
-recombination into pathogen genomics.
-For instance, annotating the ARG with experimentally derived
-fitness estimates for mutations can help elucidate selection
-pressures on different recombinants;
-saltational variants can also be detected by analysing the rate and position of mutations along long
-branches (which persist after accounting for recombination).
-We envisage the ARG as a long-term stable resource---building on the 
-high-quality, freely available reassemblies of
-the Viridian dataset~\cite{Hunt2024}---to facilitate the study 
-of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
-
-The other primary contribution of this work is the method used to 
-infer the ARG, sc2ts. The ability to infer an ARG over millions of whole 
-genomes is a step change in scale over existing ARG 
-inference methods for pathogen data\cite{Didelot2010inference,%
-Vaughan2017inferring,%
-Muller2020bayesian,%
-Ignatieva2022,%
-Muller2022bayesian}.
-To ensure these innovations are well-founded, we have paid significant 
-attention to methodological detail, carefully validating the ARG
-(and consequently the method) against known results. 
-Sc2ts is currently specialised to take advantage of unique features 
-of the SARS-CoV-2 dataset, but the methods may be readily adapted
-to other pathogens. The LS HMM is the most important element of 
-sc2ts, efficiently finding parsimonious placements for samples 
-among all possible recombinant solutions. The current 
-parametrisation---emphasising interpretability---is simplistic
-and could readily be extended to account
-for mutation rate variation along the genome~\cite{Haddox2025}
-or transition-to-transversion rate bias~\cite{Bloom2023,Simmonds2024}.
-Our analysis of deletions shows that valuable phylogenetic signal
-is lost when they are ignored, and an important avenue for 
-future work is to explore ways of incorporating them directly into the HMM.
-Another methodological innovation is the use of 
-the tsdate method~\cite{Wohns2022,Pope2025} to estimate internal node dates
-in the ARG, illustrating the reuse of methods initially developed 
-for population genetic applications. While results are encouraging, 
-dating of phylogenies is a complex task~\cite{Kumar2016advances},
-and there is certainly room for improvement.
-
-Further contributions of this work arise from 
-the detailed study of the sc2ts ARG,
-providing insights into the evolution of SARS-CoV-2
-and the COVID-19 pandemic. 
-First, we clarify the relationships among
-recombinant Pango X lineages, finding examples of
-clustering of named lineages under a single shared recombination event.
-Second, we used the ARG to study breakpoint intervals 
-for recombination events, showing that the relationship between the 
-size of the interval in base pairs and the divergence time of the parental lineages matches theoretical expectations.
-Thirdly, we demonstrate a clear relationship between
-genetic diversity and the rate of detectable recombination,
-with the best predictor of the number of recombination
-events over time being the product of global case numbers
-and lineage diversity.
-Finally, and perhaps most fundamentally, through our 
-conservative parameter choices and real-time handling of 
-recombination events, we provide a stringent lower
-bound on the amount of recombination that occurred during
-the pandemic phase of SARS-CoV-2.
-These results underscore the utility of the ARG 
-and provide a template for future analyses.
-
-
-\subsection*{Limitations of the study}
-
-%%% A "limitations" or "limitations of the study" subsection in the discussion is encouraged
-%%% and may be required for some journals and some article formats.
-
-We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather 
-than the larger GISAID resource~\cite{Shu2017} for two reasons.
-Firstly, the Viridian dataset is of higher quality and major efforts
-have been made to remove sources of error. Applying sc2ts to 
-GISAID data is straightforward, but significant additional efforts 
-would be required to address data quality issues.
-% NOTE Sally suggested that we say that we did this (run on GISAID) and cite 
-% the earlier preprint, but after discussion it was concluded that
-% this opens a major can of worms and we risk undermining the 
-% perceived novelty of this manuscript to guard against a very
-% minor technical point. If reviewers ask us to do things with
-% GISAID we can by all means explain we've already done it.
-Secondly, the Viridian data is publicly available and redistributable,
-enabling us to share the resulting ARG without restrictions.
-
-It is important to acknowledge that sampling is non-uniform both
-geographically and over time~\cite{Lancet2021,Chen2022}. 
-Sc2ts performs best in the data-dense regime, when the underlying
-assumption that genetic diversity is gradually accumulating within
-the structure holds. Large changes (i.e, saltation events) present
-significant challenges, and the results of the algorithm should 
-be regarded more critically in these situations.
-Future methodological improvements may combine the strengths 
-of sophisticated model-based inferences with the power 
-of non-parametric inference~\cite{Bisschop2025likelihoods}
-when such data sparsity is detected.
-
-\newpage
-
-
-%%%  The following components should appear after the methods.
-%%%  For journals using STAR Methods, these components
-%%%  should appear immediately after the discussion
-%%%  (after any "limitations" or "conclusions" subsection
-%%%  within the discussion).
-
-\section*{RESOURCE AVAILABILITY}
-
-%%%  The resource availability section is required
-%%%  for all research articles. This component
-%%%  has 3 subsections: "lead contact," "materials
-%%%  availability," and "data and code availability."
-%%%  All 3 subsections must be included, even if no
-%%%  unique materials were generated in the study.
-%%%  Do not edit or change the names of the subheadings.
-%%%  No other subheadings or text are allowed in the
-%%%  resource availability section.
-
-\subsection*{Lead contact}
-
-%%%  Authors are required to designate a lead contact,
-%%%  who will be responsible for communication with
-%%%  the journal before and after publication and is
-%%%  the arbiter of disputes, including concerns
-%%%  related to reagents or resource sharing. Only
-%%%  one author can be named the lead contact, and
-%%%  only the lead contact’s information may be
-%%%  provided in this section.
-
-Requests for further information and resources
-should be directed to and will be fulfilled
-by the lead contact, Shing H. Zhan (shing.zhan@ndph.ox.ac.uk).
-
-\subsection*{Materials availability}
-
-%%%  This subsection must include a statement describing
-%%%  the availability of newly generated materials
-%%%  associated with the paper, including any conditions
-%%%  for access. If there are no newly generated materials
-%%%  associated with the paper, the statement should
-%%%  state this, e.g.: This study did not generate new
-%%%  materials.
-
-This study did not generate new materials.
-
-\subsection*{Data and code availability}
-\label{sec:data_and_code_availability}
-
-%%%  All original research papers must include a
-%%%  comprehensive and accurate ``data and code
-%%%  availability'' statement within the ``resource
-%%%  availability'' component of the paper before it
-%%%  is accepted for publication. These statements
-%%%  are structured and consist of three bulleted
-%%%  components. Each component must be present.
+\paragraph*{Data, code, and materials availability:}
 \begin{itemize}
-
 \item The ARG in tskit format has been deposited at Zenodo and is publicly
 available at \url{https://zenodo.org/records/17558489}. The UShER tree
 in tskit format is also available, as well as the intersection files.
@@ -1327,259 +1341,39 @@ GitHub at \url{https://github.com/tskit-dev/sc2ts}.
 \item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
 \end{itemize}
 
-
-\section*{ACKNOWLEDGMENTS}
-
-%%%  Use this section to acknowledge contributions
-%%%  from non-authors and list funding sources,
-%%%  including grant numbers.
-We would like to thank Jotun Hein for helpful comments on the manuscript.
-
-SHZ is supported by an NDPH Intermediate Research Fellowship (Oxford Population
-Health, University of Oxford).
-IG is supported by Wellcome (DPhil in Genomic Medicine and Statistics, 228319/Z/23/Z).
-DSP acknowledges funding administered by the Danish National Research Foundation
-in support of the Pioneer Centre for SMARTbiomed.
-SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
-JK acknowledges support from the
-Oxford-Janssen Translational Genomics Fellowship,
-research grant R01 HG012473 from the National Institutes of Health NHGRI, 
-research grant EP/X024881/1 from the Engineering and Physical Sciences Research Council, 
-and the Robertson Foundation. 
-For the purpose of Open Access, the authors have applied a CC BY public copyright licence to any Author Accepted Manuscript version arising from this submission.
-
-Computation used the Oxford Biomedical Research Computing (BMRC) facility, a
-joint development between the Wellcome Centre for Human Genetics and the Big
-Data Institute supported by Health Data Research UK and the NIHR Oxford
-Biomedical Research Centre. The views expressed are those of the author(s) and
-not necessarily those of the NHS, the NIHR or the Department of Health.
-
-
-\section*{AUTHOR CONTRIBUTIONS}
-
-%%%  This component is required for most research papers.
-%%%  Mention each individual author with a statement
-%%%  outlining the contribution of each author to the work.
-
-% Credit system: https://credit.niso.org/
-Conceptualization, SHZ, CLM, SPO, JK;
-% Methodology, software, resources, visualization
-methodology, SHZ, YW, AI, KE, BJ, DSP, SPO, JK;
-% Invesigation, data curation, formal analysis, validation
-investigation, SHZ, YW, AI, KE, IG, SPO, JK;
-writing--original draft, SHZ, JK;
-writing--review \& editing, SHZ, YW, AI, KE, IG, BJ, DSP, CLM, SPO, JK;
-resources, JK;
-supervision, JK;
-funding acquisition, JK.
-
-
-\section*{DECLARATION OF INTERESTS}
-
-%%%  This component is required for all articles, even
-%%%  if the authors have no competing interests; if
-%%%  this is the case, insert "The authors declare no
-%%%  competing interests." Please refer to the
-%%%  declaration of interests policy:
-%%%  https://www.cell.com/declaration-of-interests
-
-% https://github.com/jeromekelleher/sc2ts-paper/issues/922
-The authors declare no competing interests.
-
-
-\section*{DECLARATION OF GENERATIVE AI AND AI-ASSISTED TECHNOLOGIES}
-
-%%%  If generative AI and AI-assisted technologies
-%%%  were used in the writing process, this must
-%%%  be disclosed in the paper. This declaration
-%%%  does not apply to the use of basic tools for
-%%%  checking grammar, spelling, references, etc.
-%%%  If you have nothing to disclose, please do not
-%%%  include this component.
-
-% https://github.com/jeromekelleher/sc2ts-paper/issues/923
-During the preparation of this work, the author(s) used ChatGPT
-in order to obtain editorial input on the text.
-After using this tool or service, the author(s) reviewed
-and edited the content as needed and
-take(s) full responsibility for the content of the publication.
-
-
-% \section*{SUPPLEMENTAL INFORMATION INDEX}
-
-% %%%  Supplemental information must be uploaded as
-% %%%  separate files. In the main text, please list the
-% %%%  files to be included in a brief index. For details,
-% %%%  please review the supplemental information guidelines:
-
-% %%%  Journals with STAR Methods:
-% %%%  https://www.cell.com/STAR-supplemental-information
-
-% \begin{description}
-%   \item Figures S1-SX and their legends in a PDF
-%   \item Table S1. A descriptive title for an Excel file that was too large to appear in the PDF
-% \end{description}
-
-% \newpage
-
-
-% \section*{MAIN FIGURE TITLES AND LEGENDS}
-
-% %%%  At final submission, figure files MUST be
-% %%%  provided separately as high-resolution image
-% %%%  files. All of the panels for a figure should
-% %%%  be in the same file. Figures should have
-% %%%  clear labels/file names (Figure 1, Figure 2,
-% %%%  etc.).
-
-% %%%  Figure titles and legends should be placed
-% %%%  at the end of the main text. You do not
-% %%%  need to place the figures, nor their titles
-% %%%  and legends, within the main text. While
-% %%%  typesetting your article, our team will
-% %%%  place each figure in the best location
-% %%%  based on the final layout and on your
-% %%%  figure citations, e.g., (Figures 1A and 1B).
-
-% %%%  Please review the figure guidelines before
-% %%%  submitting your final materials:
-% %%%  https://www.cell.com/figureguidelines.
-
-% \noindent\includegraphics[width=0.85\linewidth]{Figure1.jpg}
-
-% \subsection*{Figure 1. A brief title that describes the entire figure without citing specific panels}
-
-% The figure legend can be all one paragraph and describe the images (A), graphs (B), and plots (C), etc., together.
-% \newline
-% (A) Or each panel or group of panels can be described separately, as shown here and below.
-% \newline
-% (B) Graph of X, Y, and Z.
-% \newline
-% (C and D) If panels are grouped like this, please explicitly describe each panel, e.g., ``Images showing SEM (C) and TEM (D).''
-% \newline
-% Please define all scale and error bars, and please review the Cell Press figure guidelines before submission: \href{https://www.cell.com/figureguidelines}{https://www.cell.com/figureguidelines}. Example figure created by Cassie Comeau, Cell Press.
-
-% \newpage
-
-% \section*{MAIN TABLES, INCLUDING TITLES AND LEGENDS}
-
-% %%%  Whenever possible, we encourage you to submit
-% %%%  your main-text tables as Microsoft Word documents,
-% %%%  using Word's table function. This will ensure
-% %%%  the best results during conversion. Tables
-% %%%  should be numbered Table 1, Table 2, etc. and
-% %%%  should not include subpanels (do not use Table 1A,
-% %%%  1B, etc.). Give each table a brief descriptive
-% %%%  title. Table legends are optional but encouraged.
-% %%%  Footnotes (superscript lowercase letters) should
-% %%%  be used where necessary to indicate some feature
-% %%%  of the data; please do not use bold, italic,
-% %%%  coloured text, or shading for this purpose. Use
-% %%%  separate cells, not line breaks or spaces, for
-% %%%  all discrete data elements. Small embedded
-% %%%  graphics with colour are OK.
-
-% %%%  Like figures, all tables must be cited within
-% %%%  the main text, and our typesetting team will
-% %%%  place the tables within the typeset paper at
-% %%%  the appropriate locations.
-
-
-% \subsection*{Table 1. A table with clear organization of data}
-
-% \begin{tabular}{|l | l | l | l|}
-%  \hline
-%  \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} & \textbf{Column 4} \\ [1ex]
-%  \hline
-%  Row A\textsuperscript{a} & 6 & 87,837 & 787 \\ [1ex]
-%  \hline
-%  Row B & 7 & 78 & 5,415 \\ [1ex]
-%  \hline
-%  Row C & 545 & 778 & 7507 \\ [1ex]
-%  \hline
-%  Row D & 545 & 18,744 & 7,560 \\ [1ex]
-%  \hline
-%  Row E & 88 & 788 & 6,344 \\ [1ex]
-%  \hline
-% \end{tabular}
-
-% \bigskip
-
-% The table legend (optional) follows the table itself.
-% The legend should be used to provide additional info that relates to the table as a whole.
-
-% \textsuperscript{a}Footnotes can be used to provide additional info on specific content within the table,
-% such as this footnote to the first row (row A). Do not use footnotes in the table title.
-
-% \textsuperscript{b}More footnotes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Supplementary
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
 
-%%%  REFERENCES: As of 2023, all Cell Press journals
-%%%  use Numbered (AMA) style. We recommend placing
-%%%  your references in the included "references.bib"
-%%%  file.
+\section*{Supplementary Materials for\\ \scititle}
 
+% % Author list for the supplement
+% % Indicate the corresponding authors, but do NOT include institutions here
+% % It would be nice if the template auto-generated this, but doing so is complicated...
+% First~Author$^{\ast\dagger}$,
+% A.~Scientist$^\dagger$,
+% Someone~E.~Else\\ % we're not in a \author{} environment this time, so use \\ for a new line
+% \small$^\ast$Corresponding author. Email: example@mail.com\\
+% \small$^\dagger$These authors contributed equally to this work.
+% \end{center}
 
-\bibliography{references}
+% % Fill out the numbers for each type of supplementary material,
+% % and delete any lines that aren't applicable.
+% % These are just example numbers that don't match the rest of this template.
+\subsubsection*{This includes:}
+Materials and Methods\\
+Supplementary Text\\
+Figures S1 to S20\\
+Tables S1 to S8\\
 
-
-
-\bigskip
-
-%%%  In your References, please include only articles
-%%%  that are published (online publication and
-%%%  preprint servers are OK). Unpublished data,
-%%%  submitted and/or accepted manuscripts, abstracts,
-%%%  and personal communications should be cited within
-%%%  the text only ("unpublished data," "data not
-%%%  shown," "Alice Smith, personal communication")
-%%%  and not included in the references list. Personal
-%%%  communication should be documented by a letter
-%%%  of permission. Whenever possible, please make
-%%%  sure your .bib file has the complete author lists
-%%%  for each item (at minimum, the first 11 authors
-%%%  listed).
+\subsubsection*{Other Supplementary Materials for this manuscript:}
+Documents S1 to S2\\
 
 \newpage
 
-
-
-
-
-
-%%% All Cell Press \textbf{life and medical science} journals, and the multidisciplinary journal \textbf{iScience},
-%%% use the \textbf{\href{https://www.cell.com/star-authors-guide}{STAR Methods}} format for reporting materials and methods.
-
-%%% If you are publishing in a STAR Methods journal, please refer to the appropriate guide for authors:
-%%% Cell authors should download the guide https://www.cell.com/pb-assets/journals/research/cell/methods/Methods_Guide_Cell-1678470557763.pdf.
-
-
-\section*{STAR METHODS}
-
-%%%  The STAR Methods should appear in your main
-%%%  manuscript file after the figure legends, main
-%%%  table(s) and table legend(s).
-
-% \subsection*{Key resources table}
-
-% \textit{To create the KRT, please use the \href{https://star-methods.com}{KRT webform} or the \href{http://www.cell.com/pb-assets/journals/research/cell/methods/table-template1.docx}{Word template} and upload this file separately.}
-
-\subsection*{Method details}
-
-%%%  Please provide precise details of all the
-%%%  procedures in the paper (behavioral task,
-%%%  generation of reagents, biological assays,
-%%%  modeling, etc.) such that it is clear how,
-%%%  when, where, and why procedures were
-%%%  performed. We encourage authors to provide
-%%%  information related to the experimental
-%%%  design as suggested by NIH and ARRIVE
-%%%  guidelines (e.g., information about
-%%%  replicates, randomization, blinding, sample
-%%%  size estimation, and the criteria for
-%%%  inclusion and exclusion of any data or
-%%%  subjects).
+\subsection*{Materials and Methods}
 
 \subsubsection*{Ancestral Recombination Graphs}
 \label{sec:args}
@@ -1667,7 +1461,7 @@ The \texttt{sc2ts.Dataset}
 class provides efficient access to alignments for samples and 
 variant data for sites along the genome, as well as methods to export
 subsets of the data to FASTA if required.
-Document~\ref{sec:supplement_sc2ts_usher_imputation} gives an example
+Supplementary text~\ref{sec:supplement_sc2ts_usher_imputation} gives an example
 of using this interface, where we retrieve alignment data for millions 
 of samples in a few minutes on a standard desktop computer with minimal
 memory overhead. See Czech et al.\cite{Czech2025} for more details 
@@ -1992,7 +1786,7 @@ that were used for the designation of these Pango lineages.
 % YW: I think we don't need to, actually. That's a subsequent thing, and also discusses in the "further explanation" link
 The resulting subgraph around Delta in the ARG
 can be seen in Figure~\ref{fig:subgraph_delta};
-for further explanation, see Document~\ref{sec:dd_delta}.
+for further explanation, see supplementary text~\ref{sec:dd_delta}.
 
 For Omicron BA.1 and BA.2
 (first detected in South Africa or Botswana
@@ -2009,7 +1803,7 @@ allowing time for the BA.1 lineage
 to become established and accumulate descendant samples in the ARG.
 The resulting subgraph around these Omicron lineages in the ARG
 can be seen in Figure~\ref{fig:subgraph_omicron}.
-For further explanation, see Document~\ref{sec:dd_omicron}.
+For further explanation, see supplementary text~\ref{sec:dd_omicron}.
 
 With the combination of these mechanisms---gradual accumulation 
 of diversity through daily sample groups, retrospective group
@@ -2021,8 +1815,8 @@ The ``base ARG'' we infer with sc2ts is the starting point for later analyses,
 and this step dominates overall processing time. To summarise, we first 
 initialise the ARG using the Wuhan-Hu-1 reference sample (MN908947.3) as the
 root node, and then ran the algorithm day-by-day using the parameters 
-described in the preceding sections and documented in the configuration file 
-(see \nameref{sec:data_and_code_availability}).
+described in the preceding sections and documented in the configuration file.
+% (see \nameref{sec:data_and_code_availability}).
 As discussed above,
 computational resources are dominated by the LS model
 (Figures~\ref{fig:samples_per_day},\ref{fig:inference_resources}) with all 
@@ -2084,7 +1878,7 @@ origination nodes.
 This section described the various postprocessing steps that 
 we performed after primary inference, 
 which is encoded as a reproducible Snakemake
-workflow (see \nameref{sec:data_and_code_availability}).
+workflow. % (see \nameref{sec:data_and_code_availability}).
 
 The first step is to perform recombinant rematching as described in the previous 
 section, to find any recombinants that can be more parsimoniously explained
@@ -2107,7 +1901,7 @@ sites are included in the ARG.
 Using deletions with a minimum frequency of 1\%
 (count of sequences divided by 9,149,680 sequences analyzed)
 from Table S1 of Li et al.\cite{Li2023indels},
-we chose 75 sites for deletion-remapping (see Document \ref{sec:supplement_dels} for analysis of the major deletions identified from this process).
+we chose 75 sites for deletion-remapping (see supplementary text \ref{sec:supplement_dels} for analysis of the major deletions identified from this process).
 In addition, we remapped data at 88 sites that were excluded
 from primary inference and are defined as Pango lineage 
 defining sites by Freyja\cite{Karthikeyan2022}
@@ -2131,7 +1925,7 @@ metadata associated with each node in the ARG.
 
 When then estimated non-sample node dates using 
 the ``variational-gamma'' algorithm in tsdate\cite{Wohns2022,Pope2025}
-version 0.2.3. See Document \ref{sec:evaluating_node_dates} for 
+version 0.2.3. See supplementary text \ref{sec:evaluating_node_dates} for 
 more details and analysis of these dates.
 
 Finally, we reduced the metadata stored in the ARG to a minimal
@@ -2246,7 +2040,7 @@ rebar version 0.2.1 from bioconda~\cite{Gruning2018bioconda}, and
 rebar dataset version ``2025-01-28''.
 
 These steps are included in the Snakemake postprocessing
-workflow (see \nameref{sec:data_and_code_availability}).
+workflow. % (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian 
@@ -2290,14 +2084,15 @@ and using tsdate (version 0.2.3) to date internal nodes.
 All conversions were performed as part of the reproducible
 pipeline described in the \nameref{sec:arg_postprocessing} section.
 The full UShER tree and the intersection files are available for download
-in tszip format (see \nameref{sec:data_and_code_availability}).
+in tszip format. % (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
 We compare the non-recombinant parts of the ARG with the UShER topology
 by simplifying the phylogenies to a smaller number of
 Pango representative samples.
 We focus on 1286 Pango lineages comprising those which are defined by perfect ``origination events'' 
-(Document \ref{sec:supplement_pango_lineages}). but which are not acknowledged recombinant lineages (i.e. Pango X lineages and their descendants).
+(supplementary text \ref{sec:supplement_pango_lineages})
+but which are not acknowledged recombinant lineages (i.e. Pango X lineages and their descendants).
 To ensure that each sample is a tip in the simplified topologies,
 a representative sample is then chosen as the oldest sample
 descending from the origination node
@@ -2309,7 +2104,7 @@ each sample from a different Pango lineage.
 
 The simplified ARG contains only two recombination nodes, which
 are the two likely artefactual events discussed in 
-Document \ref{sec:spurious-ancestrally-important-recombinants}, 
+supplementary text \ref{sec:spurious-ancestrally-important-recombinants}, 
 both of which have breakpoints near the 5' end of genome.
 We therefore compare the UShER topology against the first tree in the ARG (covering
 positions 1-26858; the majority of the genome). To reduce plot density, we consider
@@ -2372,7 +2167,7 @@ We use these two methods because detection
 results on the Pango X lineages were reported and made available 
 in the original publications. We do not compare here with 
 UShER+RIPPLES+RIVET because curated data on the X lineages is 
-not available for this pipeline (see Document \ref{sec:detailed_ripples}
+not available for this pipeline (see supplementary text \ref{sec:detailed_ripples}
 and Table~\ref{tab:ripples_x_lineages}, however).
 We use the data from the Pango designation community 
 (\url{https://github.com/cov-lineages/pango-designation/})
@@ -2531,36 +2326,13 @@ to perform the required traversals on the UShER tree.
 
 The full workflow is encoded in the Snakemake postprocessing 
 pipeline.
-See Document~\ref{sec:detailed_ripples} for detailed analysis
+See supplementary text~\ref{sec:detailed_ripples} for detailed analysis
 of the RIPPLES events, 
 and the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_ripples.ipynb}{analysis\_ripples.ipynb}
 notebook for full methodological details of the analysis.
 
-
-\subsection*{Quantification and statistical analysis}
-
-%%%  Please describe here all statistical analysis
-%%%  and software used. We ask authors to indicate
-%%%  in this component where all of the statistical
-%%%  details of experiments can be found (e.g., in
-%%%  the figure legends, figures, results, etc.),
-%%%  including the statistical tests used, exact
-%%%  value of n, what n represents (e.g., number
-%%%  of animals, number of cells, etc.), definition
-%%%  of center, and dispersion and precision
-%%%  measures (e.g., mean, median, SD, SEM, confidence
-%%%  intervals). Also, please summarize in this
-%%%  component how significance was defined, the
-%%%  statistical methods used to determine strategies
-%%%  for randomization and/or stratification, sample
-%%%  size estimation, and inclusion and exclusion
-%%%  of any data or subjects, as well as any methods
-%%%  used to determine whether the data met
-%%%  assumptions of the statistical approach.
-
 \subsubsection*{Analysing global case counts}
-
 To explore the timing of emergence of recombination events,
 global case count data were downloaded from
 the COVID-19 Data Repository by the Center
@@ -2609,40 +2381,10 @@ although filtering the recombination events to the 354
 with better support revealed a stronger relationship with case numbers.
 
 
-% \subsection*{Additional resources}
-
-%%%  Please provide links to websites that provide
-%%%  further information relevant to the study
-%%%  (e.g., protocol download, troubleshooting
-%%%  forum, etc.). Clinical trial registry numbers
-%%%  and links should also be placed here. Please
-%%%  briefly describe the resource and its
-%%%  relevance for the paper. Please report this
-%%%  information as: ``Description: URL.''
-
-% Cell.com homepage: https://www.cell.com
-% \newline Templates for Cell Press authors: https://www.cell.com/article-templates
-
-%%%  ADDITIONAL MANUSCRIPT COMPONENTS:
-
-%%%  Depending on the journal and the article
-%%%  type, you may be asked to upload the
-%%%  following as separate files: graphical
-%%%  abstract, highlights, eTOC blurb (In
-%%%  Brief), and/or other article components
-%%%  such as a "bigger picture" statement.
-%%%  These items are typically not required for
-%%%  initial submissions. Please refer to the
-%%%  journal's website, your acceptance
-%%%  letter, and/or the Final Files
-%%%  Requirements checklist to see if any of
-%%%  these items are required (at any stage).
-
-
 \newpage
 \setcounter{secnumdepth}{3} % Print out appendix section numbers
 
-\section*{Supplementary Material}
+\section*{Supplementary Text}
 \appendix
 
 \setcounter{table}{0}
@@ -2736,7 +2478,7 @@ for details.
 
 To analyse how well the ARG reflects the phylogenetic structure implicit in the
 Pango lineage naming system, we considered the Pango assignments generated by
-Pangolin on the alignments for each node in the ARG (STAR Methods). If the ARG
+Pangolin on the alignments for each node in the ARG (Methods). If the ARG
 perfectly reflected the Pango lineage structure, each lineage would form a
 clade descending from a single originating node with that label. We identified
 putative origination nodes among those labelled with a given lineage as the node
@@ -2914,7 +2656,7 @@ The 5-base deletion highlighted in green above the BA.2 root
 is an artefact of our naive deletion remapping procedure,
 which splits two 9-base deletions in BA.1 and BA.2 into three deletions
 (one in green at 11288, one in blue at 11283, and one in orange 11292;
-see Document~\ref{sec:supplement_dels}).
+see supplementary text~\ref{sec:supplement_dels}).
 Also, there is uncertainty in the sequence alignments
 leading to ambiguity in the start position of these deletions
 (if these deletions occur at 11283,
@@ -3036,145 +2778,6 @@ Future improvements in deletion remapping
 should remove such artefactual deletions.
 
 
-\begin{table}
-\centering
-\caption{
-Major deletion events in the ARG.
-The deletions caused by these events
-are inherited by at least 10,000 samples.
-The deletions are characterized by
-a site position in the genome (start) and
-the number of sites involved (length);
-they are annotated by the gene in which they occur
-(non-coding otherwise).
-The IDs of the nodes in the ARG
-above which the deletions occur and
-the Pango lineages assigned to these nodes are shown.
-Frequency is the percentage of samples inheriting a deletion.
-If a deletion has been identified
-as a characteristic mutation of a VOC
-by a study (or an analysis),
-a reference to the study (or the analysis) is provided.
-Abbreviations: NSP, non-structural protein;
-ORF, open reading frame;
-S, Spike;
-S1-NTD, N-terminal domain in Spike S1 subunit.
-}
-\label{tab:major_dels}
-\begin{tabular}{rccrcrrc}
-\toprule
-Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
-\midrule
-28271 & 1 & non-coding & 1436808 & B.1 & 45.06 &  \\
-28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 44.91 & \cite{Stern2021} \\
-22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 44.82 & \cite{Stern2021} \\
-11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 35.12 &  \\
-28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 35.12 & \cite{RambautOmicron2021} \\
-21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 21.44 & \cite{RambautOmicron2021} \\
-11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 21.43 &  \\
-6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 13.73 & \cite{RambautOmicron2021} \\
-11283 & 5 & ORF1ab / NSP6 & 851246 & BA.1 (Omicron) & 13.69 &  \\
-21765 & 6 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
-21987 & 9 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
-22194 & 3 & S / S1-NTD & 851246 & BA.1 (Omicron) & 12.60 & \cite{RambautOmicron2021} \\
-28271 & 1 & non-coding & 86456 & B.1.1.7 (Alpha) & 11.70 &  \\
-11288 & 9 & ORF1ab / NSP6 & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
-21991 & 3 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.64 & \cite{RambautAlpha2020} \\
-21765 & 6 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
-21765 & 6 & S / S1-NTD & 1265302 & BA.4 (Omicron) & 7.67 & \cite{Tegally2022} \\
-686 & 9 & ORF1ab / NSP1 & 2698748 & BA.4 (Omicron) & 0.94 &  \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\begin{table}
-\centering
-\caption{
-Recurrent deletions in the ARG.
-These deletions occur on at least two branches in the ARG and
-are found in the alignments of at least 10,000 (0.4\%) samples
-in the Viridian v04 dataset.
-For each deletion, the number of occurrences in the ARG and
-the number of samples where it is observed are shown.
-For further explanation,
-see the caption of Table~\ref{tab:major_dels}.
-Abbreviations:
-NSP, non-structural protein;
-ORF, open reading frame;
-S, Spike;
-S1-NTD, N-terminal domain in Spike S1 subunit.
-}
-\label{tab:rec_dels}
-\begin{tabular}{rrcrr}
-\toprule
-Start & Length & Region & Occurrences & Samples\\
-\midrule
-686 & 9 & ORF1ab / NSP1 & 6436 & 43354\\
-21991 & 3 & S / S1-NTD & 2088 & 309629\\
-21765 & 6 & S / S1-NTD & 482 & 820194\\
-22029 & 6 & S / S1-NTD & 275 & 1107941\\
-22194 & 3 & S / S1-NTD & 200 & 310349\\
-6513 & 3 & ORF1ab / NSP3 & 181 & 341380\\
-21987 & 9 & S / S1-NTD & 70 & 338633\\
-28248 & 6 & ORF8 & 28 & 1113392\\
-28271 & 1 & non-coding & 24 & 1331409\\
-11288 & 9 & ORF1ab / NSP6 & 19 & 843291\\
-11283 & 9 & ORF1ab / NSP6 & 13 & 339810\\
-28362 & 9 & N & 7 & 850483\\
-21633 & 9 & S / S1-NTD & 7 & 531973\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\begin{table}
-\caption{
-Concordance among methods in characterizing Pango X lineages.
-These comparisons focus on the Pango X lineages associated with
-the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
-For each method, we calculated the number of Pango X lineages
-which have inferred parent Pango lineages and breakpoint intervals
-concordant with those proposed by the community.
-The denominators indicate the number of Pango X lineages
-for which detection results are available from the original
-studies\cite{Alfonsi2024,Li2024CovRecomb}.
-For the Pango X lineages with non-overlapping breakpoint intervals,
-the distances between the inferred breakpoint intervals and
-those proposed by the community are shown (median and range).
-}
-\label{tab:method_concordance}
-\centering
-\begin{tabular}{lccl}
-\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
-\cmidrule(lr){2-2} \cmidrule(lr){3-4}
-Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
-\midrule
-Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
-RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
-RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
-CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}
-\caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
-all 855 recombinants and the 354 passing and 501 failing QC.
-}
-\label{tab:recombinant_validation}
-\centering
-\begin{tabular}{llll}
-\toprule
-Method & Total    & QC Pass & QC Fail \\
-\midrule
-3SEQ        & 484 & 338     & 146 \\
-CovRecomb   & 92  & 90      & 2\\
-rebar       & 213 & 203     & 10 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
 Most of the Pango X lineages had straightforward origination events 
@@ -3186,14 +2789,14 @@ corresponding to 23 omitted samples in total.
 XM has 4 separate origins, 3 singletons and one dominant node
 with 26 descendants. We include the dominant node in 
 Table~\ref{tab:pango_x_lineages} and omit the singletons. See
-Document~\ref{sec:dd_xm} for further details.
+supplementary text~\ref{sec:dd_xm} for further details.
 XAC has 4 separate origins, and has been omitted from 
 Table~\ref{tab:pango_x_lineages}. However, as Figure~\ref{fig:subgraphs}B
 shows, these are all descending from a single BA.2 classified node 
 descending from the putative Xx event. 
 Similarly, XAD has two independent origins descending from the Xx
 event, and we omit it for simplicity.
-See Document~\ref{sec:dd_xx} for more details on the Xx event.
+See supplementary text~\ref{sec:dd_xx} for more details on the Xx event.
 
 In cases where nested samples not assigned to the focal Pango lineage are
 either from different Pango X lineages 
@@ -3262,46 +2865,11 @@ See notebook
 for details.
 
 
-\begin{table}
-\centering
-\caption{
-Comparison of recombination breakpoint
-intervals and parent lineages for Groups A-D
-reported by Jackson et al.\ with the corresponding
-recombination events in the sc2ts ARG.
-The second column gives the number of sequences in the group.
-See the text for details of the groups and the sequences included.
-limited to the samples considered by Jackson et al.
-The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
-we subtract one to the left coordinates and add one to the right coordinates 
-to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
-and add one to the right coordinate to make the intervals right-exclusive.
-}
-\label{tab:jackson}
-\begin{tabular}{lllr@{--}lr@{+}l}
-\toprule
-Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
-\midrule
-A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
-\cmidrule{3-7}
-B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
-             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
-\cmidrule{3-7}
-C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
-             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
-\cmidrule{3-7}
-D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
 In this section we provide some additional analysis on Pango X lineages
 in the ARG. These analyses are intended to be read in conjunction with
-the subgraph illustrations in Document S2.
+the subgraph illustrations in Document S1.
 
 \newcommand{\scghdiscussion}[1]{%
 See \href{https://github.com/jeromekelleher/sc2ts-paper/discussions/#1}%
@@ -3456,7 +3024,7 @@ In the subgraph, it can be seen that one of the samples, SRR18775874,
 has been (presumably wrongly) placed
 within the main XM deletion-containing clade.
 As sc2ts does not use deletions for inference,
-deletion remapping (STAR Methods) has reverted the deletion in this case,
+deletion remapping (Methods) has reverted the deletion in this case,
 creating many insertions on the branch above the sample (magenta).
 A better use of deletions in sc2ts would likely result
 in placing this sample within one of the two XM clades
@@ -3949,45 +3517,10 @@ with the Pango lineages of the parents and the breakpoint intervals
 concordant with those suggested in the Pango designation issues,
 but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
 
-
-\begin{table}
-\centering
-\caption{
-Sc2ts detection results for Pango X lineages not added to the ARG.
-The number of samples in Viridian v04 dataset
-assigned to these Pango X lineages,
-the number of samples that passed sequence-level quality control, and
-the number of recombination breakpoints
-in the Viterbi solutions of the samples
-are shown.
-}
-\label{tab:extra_hmm_results}
-\begin{tabular}{crrr}
-\toprule
-Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
-\midrule
-XBJ & 2 & 1 & 1\\
-XBP & 8 & 2 & 1\\
-XBS & 19 & 15 & 1\\
-XBW & 1 & 1 & 1\\
-XCA & 11 & 4 & 1\\
-XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
-XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
-XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
-XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
-XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
-\bottomrule
-\end{tabular}
-\end{table}
-
-% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
-% 97
-
-
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
-We ran RIPPLES and aligned events with the sc2ts ARG as described in STAR
-Methods. We begin by describing the overall composition of events output 
+We ran RIPPLES and aligned events with the sc2ts ARG as described in 
+the Methods. We begin by describing the overall composition of events output 
 by RIPPLES at the two parameter values used.
 
 At $p=4$, RIPPLES returned a total of 1174 events, and 
@@ -4022,32 +3555,6 @@ We did not investigate the $p=3$ events any further as the additional
 events detected at the lower threshold are not expected to be detected
 by sc2ts at the parameter value used ($k=4$).
 
-\begin{table}
-\caption{
-Distribution of numbers of descendants for UShER+RIPPLES events
-and sc2ts. The first column shows the number of descendants (binned
-for larger values) and the others show the corresponding number of events.
-}
-\label{tab:ripples_sc2ts_event_descendants}
-\centering
-\begin{tabular}{lrrr}
-\toprule
-Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
-\midrule
-1 & 2616 & 757 & 525 \\
-2 & 575 & 178 & 124 \\
-3 & 232 & 65 & 47 \\
-4 & 124 & 38 & 32 \\
-5 & 74 & 14 & 17 \\
-5-100 & 437 & 108 & 96 \\
-100-1000 & 32 & 6 & 8 \\
-1000-10k & 15 & 6 & 4 \\
-10k-100k & 2 & 0 & 0 \\
-100k-1m & 4 & 2 & 2 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 Next we considered the overall distribution of the numbers of descendants
 of the events returned by sc2ts and RIPPLES 
 (Table~\ref{tab:ripples_sc2ts_event_descendants}).
@@ -4055,64 +3562,9 @@ Overall, the distributions were similar, with the majority having
 very few descendants and being dominated by singletons.
 The events subtending $>$ 100,000 samples
 in all three cases are noteworthy (see
-Document~\ref{sec:spurious-ancestrally-important-recombinants} 
+supplementary text~\ref{sec:spurious-ancestrally-important-recombinants} 
 for analysis of the two sc2ts events).
 
-\begin{table}
-\caption{
-RIPPLES events associated with Pango X lineages.
-Each row is a recombination event identified by RIPPLEs (at $p=3$)
-in which Pango X lineages appear,
-along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
-where applicable, grouped by class.
-Events also present at $p=4$ are indicated.
-Clades are matched by finding the most recent common ancestor of
-the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
-The clade differences indicates the closeness of the match.
-}
-\label{tab:ripples_x_lineages}
-\centering
-\begin{scriptsize}
-
-\begin{tabular}{lrrlrl}
-\toprule
-sc2ts event & in $p=4$ & UShER desc & sc2ts class & clade diff & descendants \\
-\midrule
-\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLES recombination events}\\
-XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
-XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
-% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
-XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
-XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
-XY &  & 23 & I & 0 & {XY:23} \\
-XW &  & 32 & I & 0 & {XW:32} \\
-XL &  & 64 & I & 0 & {XL:64} \\
-XBB &  & 6452 & I & 1 & {XBB:6452} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
-XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
-XM & $\checkmark$ & 8 & II & 0 & {XM:4, BA.2:4} \\
-Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
-Xx &  & 9 & II & 0 & {XAE:9} \\
-XQ &  & 1 & II & 0 & {XAM:1} \\
-XQ &  & 21 & II & 0 & {XAM:21} \\
-XE/XH &  & 1113 & II & 3 & {XE:1113} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
-XB & $\checkmark$ & 411 & IV & 0 & {XB:192, B.1:219} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
-NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
-NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
-NA & $\checkmark$ & 36 & NA & 7146 & {XBR:1, XBD:30, BA.2.75:5} \\
-NA &  & 20 & NA & 1061775 & {XS:17, BA.1:1, BA.1.1:1, BA.1.15:1} \\
-NA &  & 1321 & NA & 340501 & {XE:1113, XJ:68, BA.2:82, XM:29, XY:23,
-XAL:3, XAF:1, XH:2} \\
-\bottomrule
-\end{tabular}
-
-\end{scriptsize}
-\end{table}
 
 We next examined the RIPPLES events referencing Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows a summary of all
@@ -4169,11 +3621,12 @@ non-recombinant origin by long branch splitting,
 although subsequent tree building does not make this a parsimonious 
 way to rewire the final ARG.  It is therefore likely to be spurious.
 
-\FloatBarrier
+% \FloatBarrier
 
+\clearpage
 \section*{Supplementary Figures}
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{inference-resources}
 \caption{
@@ -4320,7 +3773,7 @@ Sites associated with multiple mutations in the subgraph
 have their mutations assigned a unique fill colour
 (orange, blue, green, red, etc);
 reversions are further highlighted with a black outline.
-Sc2ts seed samples (see STAR methods) for
+Sc2ts seed samples (see Methods) for
 B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
 }
 \label{fig:subgraph_delta}
@@ -4381,7 +3834,7 @@ XAF & \includegraphics[height=\cprheight]{static/XAF.png}\\
 \caption{Copying patterns for the 21 recombination events associated with Pango 
 X lineages listed in Table~\ref{tab:pango_x_lineages} (in the same order). 
 The horizontal line separates Type I and Type II events.
-See also Document S3 for exact positions and nucleotide bases.}
+See also Document S2 for exact positions and nucleotide bases.}
 \label{fig:pango_x_copying_patterns}
 \end{figure}
 
@@ -4521,6 +3974,308 @@ ancestor that did not carry A128C.
 }
 \label{fig:parsimony_ops}
 \end{figure}
+
+%%%%%%%%%%%%%%%%
+% Tables
+%%%%%%%%%%%%%%%%
+
+\clearpage
+\section*{Supplementary Tables}
+
+\begin{table}[h]
+\centering
+\caption{
+Major deletion events in the ARG.
+The deletions caused by these events
+are inherited by at least 10,000 samples.
+The deletions are characterized by
+a site position in the genome (start) and
+the number of sites involved (length);
+they are annotated by the gene in which they occur
+(non-coding otherwise).
+The IDs of the nodes in the ARG
+above which the deletions occur and
+the Pango lineages assigned to these nodes are shown.
+Frequency is the percentage of samples inheriting a deletion.
+If a deletion has been identified
+as a characteristic mutation of a VOC
+by a study (or an analysis),
+a reference to the study (or the analysis) is provided.
+Abbreviations: NSP, non-structural protein;
+ORF, open reading frame;
+S, Spike;
+S1-NTD, N-terminal domain in Spike S1 subunit.
+}
+\label{tab:major_dels}
+\begin{tabular}{rccrcrrc}
+\toprule
+Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
+\midrule
+28271 & 1 & non-coding & 1436808 & B.1 & 45.06 &  \\
+28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 44.91 & \cite{Stern2021} \\
+22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 44.82 & \cite{Stern2021} \\
+11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 35.12 &  \\
+28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 35.12 & \cite{RambautOmicron2021} \\
+21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 21.44 & \cite{RambautOmicron2021} \\
+11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 21.43 &  \\
+6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 13.73 & \cite{RambautOmicron2021} \\
+11283 & 5 & ORF1ab / NSP6 & 851246 & BA.1 (Omicron) & 13.69 &  \\
+21765 & 6 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
+21987 & 9 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
+22194 & 3 & S / S1-NTD & 851246 & BA.1 (Omicron) & 12.60 & \cite{RambautOmicron2021} \\
+28271 & 1 & non-coding & 86456 & B.1.1.7 (Alpha) & 11.70 &  \\
+11288 & 9 & ORF1ab / NSP6 & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
+21991 & 3 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.64 & \cite{RambautAlpha2020} \\
+21765 & 6 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
+21765 & 6 & S / S1-NTD & 1265302 & BA.4 (Omicron) & 7.67 & \cite{Tegally2022} \\
+686 & 9 & ORF1ab / NSP1 & 2698748 & BA.4 (Omicron) & 0.94 &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\centering
+\caption{
+Recurrent deletions in the ARG.
+These deletions occur on at least two branches in the ARG and
+are found in the alignments of at least 10,000 (0.4\%) samples
+in the Viridian v04 dataset.
+For each deletion, the number of occurrences in the ARG and
+the number of samples where it is observed are shown.
+For further explanation,
+see the caption of Table~\ref{tab:major_dels}.
+Abbreviations:
+NSP, non-structural protein;
+ORF, open reading frame;
+S, Spike;
+S1-NTD, N-terminal domain in Spike S1 subunit.
+}
+\label{tab:rec_dels}
+\begin{tabular}{rrcrr}
+\toprule
+Start & Length & Region & Occurrences & Samples\\
+\midrule
+686 & 9 & ORF1ab / NSP1 & 6436 & 43354\\
+21991 & 3 & S / S1-NTD & 2088 & 309629\\
+21765 & 6 & S / S1-NTD & 482 & 820194\\
+22029 & 6 & S / S1-NTD & 275 & 1107941\\
+22194 & 3 & S / S1-NTD & 200 & 310349\\
+6513 & 3 & ORF1ab / NSP3 & 181 & 341380\\
+21987 & 9 & S / S1-NTD & 70 & 338633\\
+28248 & 6 & ORF8 & 28 & 1113392\\
+28271 & 1 & non-coding & 24 & 1331409\\
+11288 & 9 & ORF1ab / NSP6 & 19 & 843291\\
+11283 & 9 & ORF1ab / NSP6 & 13 & 339810\\
+28362 & 9 & N & 7 & 850483\\
+21633 & 9 & S / S1-NTD & 7 & 531973\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{
+Concordance among methods in characterizing Pango X lineages.
+These comparisons focus on the Pango X lineages associated with
+the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
+For each method, we calculated the number of Pango X lineages
+which have inferred parent Pango lineages and breakpoint intervals
+concordant with those proposed by the community.
+The denominators indicate the number of Pango X lineages
+for which detection results are available from the original
+studies\cite{Alfonsi2024,Li2024CovRecomb}.
+For the Pango X lineages with non-overlapping breakpoint intervals,
+the distances between the inferred breakpoint intervals and
+those proposed by the community are shown (median and range).
+}
+\label{tab:method_concordance}
+\centering
+\begin{tabular}{lccl}
+\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-4}
+Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
+\midrule
+Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
+RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
+RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
+CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{
+Sc2ts detection results for Pango X lineages not added to the ARG.
+The number of samples in Viridian v04 dataset
+assigned to these Pango X lineages,
+the number of samples that passed sequence-level quality control, and
+the number of recombination breakpoints
+in the Viterbi solutions of the samples
+are shown.
+}
+\label{tab:extra_hmm_results}
+\begin{tabular}{crrr}
+\toprule
+Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
+\midrule
+XBJ & 2 & 1 & 1\\
+XBP & 8 & 2 & 1\\
+XBS & 19 & 15 & 1\\
+XBW & 1 & 1 & 1\\
+XCA & 11 & 4 & 1\\
+XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
+XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
+XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
+XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
+XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
+\bottomrule
+\end{tabular}
+\end{table}
+
+% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
+% 97
+
+
+
+\begin{table}
+\caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
+all 855 recombinants and the 354 passing and 501 failing QC.
+}
+\label{tab:recombinant_validation}
+\centering
+\begin{tabular}{llll}
+\toprule
+Method & Total    & QC Pass & QC Fail \\
+\midrule
+3SEQ        & 484 & 338     & 146 \\
+CovRecomb   & 92  & 90      & 2\\
+rebar       & 213 & 203     & 10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}
+\caption{
+RIPPLES events associated with Pango X lineages.
+Each row is a recombination event identified by RIPPLEs (at $p=3$)
+in which Pango X lineages appear,
+along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
+where applicable, grouped by class.
+Events also present at $p=4$ are indicated.
+Clades are matched by finding the most recent common ancestor of
+the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
+The clade differences indicates the closeness of the match.
+}
+\label{tab:ripples_x_lineages}
+\centering
+\begin{scriptsize}
+
+\begin{tabular}{lrrlrl}
+\toprule
+sc2ts event & in $p=4$ & UShER desc & sc2ts class & clade diff & descendants \\
+\midrule
+\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLES recombination events}\\
+XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
+XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
+% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
+XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
+XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
+XY &  & 23 & I & 0 & {XY:23} \\
+XW &  & 32 & I & 0 & {XW:32} \\
+XL &  & 64 & I & 0 & {XL:64} \\
+XBB &  & 6452 & I & 1 & {XBB:6452} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
+XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
+XM & $\checkmark$ & 8 & II & 0 & {XM:4, BA.2:4} \\
+Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
+Xx &  & 9 & II & 0 & {XAE:9} \\
+XQ &  & 1 & II & 0 & {XAM:1} \\
+XQ &  & 21 & II & 0 & {XAM:21} \\
+XE/XH &  & 1113 & II & 3 & {XE:1113} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
+XB & $\checkmark$ & 411 & IV & 0 & {XB:192, B.1:219} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
+NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
+NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
+NA & $\checkmark$ & 36 & NA & 7146 & {XBR:1, XBD:30, BA.2.75:5} \\
+NA &  & 20 & NA & 1061775 & {XS:17, BA.1:1, BA.1.1:1, BA.1.15:1} \\
+NA &  & 1321 & NA & 340501 & {XE:1113, XJ:68, BA.2:82, XM:29, XY:23,
+XAL:3, XAF:1, XH:2} \\
+\bottomrule
+\end{tabular}
+
+\end{scriptsize}
+\end{table}
+
+\begin{table}
+\centering
+\caption{
+Comparison of recombination breakpoint
+intervals and parent lineages for Groups A-D
+reported by Jackson et al.\ with the corresponding
+recombination events in the sc2ts ARG.
+The second column gives the number of sequences in the group.
+See the text for details of the groups and the sequences included.
+limited to the samples considered by Jackson et al.
+The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
+we subtract one to the left coordinates and add one to the right coordinates 
+to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals right-exclusive.
+}
+\label{tab:jackson}
+\begin{tabular}{lllr@{--}lr@{+}l}
+\toprule
+Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
+\midrule
+A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
+\cmidrule{3-7}
+B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+\cmidrule{3-7}
+C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
+             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+\cmidrule{3-7}
+D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{
+Distribution of numbers of descendants for UShER+RIPPLES events
+and sc2ts. The first column shows the number of descendants (binned
+for larger values) and the others show the corresponding number of events.
+}
+\label{tab:ripples_sc2ts_event_descendants}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
+\midrule
+1 & 2616 & 757 & 525 \\
+2 & 575 & 178 & 124 \\
+3 & 232 & 65 & 47 \\
+4 & 124 & 38 & 32 \\
+5 & 74 & 14 & 17 \\
+5-100 & 437 & 108 & 96 \\
+100-1000 & 32 & 6 & 8 \\
+1000-10k & 15 & 6 & 4 \\
+10k-100k & 2 & 0 & 0 \\
+100k-1m & 4 & 2 & 2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 
 \end{document}
