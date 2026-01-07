@@ -1324,7 +1324,7 @@ funding acquisition, JK.
 \paragraph*{Competing interests:}
 There are no competing interests to declare.
 
-\paragraph*{Data and materials availability:}
+\paragraph*{Data, code, and materials availability:}
 \begin{itemize}
 \item The ARG in tskit format has been deposited at Zenodo and is publicly
 available at \url{https://zenodo.org/records/17558489}. The UShER tree
@@ -2334,30 +2334,7 @@ and the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_ripples.ipynb}{analysis\_ripples.ipynb}
 notebook for full methodological details of the analysis.
 
-
-\subsection*{Quantification and statistical analysis}
-
-%%%  Please describe here all statistical analysis
-%%%  and software used. We ask authors to indicate
-%%%  in this component where all of the statistical
-%%%  details of experiments can be found (e.g., in
-%%%  the figure legends, figures, results, etc.),
-%%%  including the statistical tests used, exact
-%%%  value of n, what n represents (e.g., number
-%%%  of animals, number of cells, etc.), definition
-%%%  of center, and dispersion and precision
-%%%  measures (e.g., mean, median, SD, SEM, confidence
-%%%  intervals). Also, please summarize in this
-%%%  component how significance was defined, the
-%%%  statistical methods used to determine strategies
-%%%  for randomization and/or stratification, sample
-%%%  size estimation, and inclusion and exclusion
-%%%  of any data or subjects, as well as any methods
-%%%  used to determine whether the data met
-%%%  assumptions of the statistical approach.
-
 \subsubsection*{Analysing global case counts}
-
 To explore the timing of emergence of recombination events,
 global case count data were downloaded from
 the COVID-19 Data Repository by the Center
@@ -2406,40 +2383,10 @@ although filtering the recombination events to the 354
 with better support revealed a stronger relationship with case numbers.
 
 
-% \subsection*{Additional resources}
-
-%%%  Please provide links to websites that provide
-%%%  further information relevant to the study
-%%%  (e.g., protocol download, troubleshooting
-%%%  forum, etc.). Clinical trial registry numbers
-%%%  and links should also be placed here. Please
-%%%  briefly describe the resource and its
-%%%  relevance for the paper. Please report this
-%%%  information as: ``Description: URL.''
-
-% Cell.com homepage: https://www.cell.com
-% \newline Templates for Cell Press authors: https://www.cell.com/article-templates
-
-%%%  ADDITIONAL MANUSCRIPT COMPONENTS:
-
-%%%  Depending on the journal and the article
-%%%  type, you may be asked to upload the
-%%%  following as separate files: graphical
-%%%  abstract, highlights, eTOC blurb (In
-%%%  Brief), and/or other article components
-%%%  such as a "bigger picture" statement.
-%%%  These items are typically not required for
-%%%  initial submissions. Please refer to the
-%%%  journal's website, your acceptance
-%%%  letter, and/or the Final Files
-%%%  Requirements checklist to see if any of
-%%%  these items are required (at any stage).
-
-
 \newpage
 \setcounter{secnumdepth}{3} % Print out appendix section numbers
 
-\section*{Supplementary Material}
+\section*{Supplementary Text}
 \appendix
 
 \setcounter{table}{0}
@@ -2833,145 +2780,6 @@ Future improvements in deletion remapping
 should remove such artefactual deletions.
 
 
-\begin{table}
-\centering
-\caption{
-Major deletion events in the ARG.
-The deletions caused by these events
-are inherited by at least 10,000 samples.
-The deletions are characterized by
-a site position in the genome (start) and
-the number of sites involved (length);
-they are annotated by the gene in which they occur
-(non-coding otherwise).
-The IDs of the nodes in the ARG
-above which the deletions occur and
-the Pango lineages assigned to these nodes are shown.
-Frequency is the percentage of samples inheriting a deletion.
-If a deletion has been identified
-as a characteristic mutation of a VOC
-by a study (or an analysis),
-a reference to the study (or the analysis) is provided.
-Abbreviations: NSP, non-structural protein;
-ORF, open reading frame;
-S, Spike;
-S1-NTD, N-terminal domain in Spike S1 subunit.
-}
-\label{tab:major_dels}
-\begin{tabular}{rccrcrrc}
-\toprule
-Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
-\midrule
-28271 & 1 & non-coding & 1436808 & B.1 & 45.06 &  \\
-28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 44.91 & \cite{Stern2021} \\
-22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 44.82 & \cite{Stern2021} \\
-11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 35.12 &  \\
-28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 35.12 & \cite{RambautOmicron2021} \\
-21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 21.44 & \cite{RambautOmicron2021} \\
-11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 21.43 &  \\
-6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 13.73 & \cite{RambautOmicron2021} \\
-11283 & 5 & ORF1ab / NSP6 & 851246 & BA.1 (Omicron) & 13.69 &  \\
-21765 & 6 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
-21987 & 9 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
-22194 & 3 & S / S1-NTD & 851246 & BA.1 (Omicron) & 12.60 & \cite{RambautOmicron2021} \\
-28271 & 1 & non-coding & 86456 & B.1.1.7 (Alpha) & 11.70 &  \\
-11288 & 9 & ORF1ab / NSP6 & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
-21991 & 3 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.64 & \cite{RambautAlpha2020} \\
-21765 & 6 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
-21765 & 6 & S / S1-NTD & 1265302 & BA.4 (Omicron) & 7.67 & \cite{Tegally2022} \\
-686 & 9 & ORF1ab / NSP1 & 2698748 & BA.4 (Omicron) & 0.94 &  \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\begin{table}
-\centering
-\caption{
-Recurrent deletions in the ARG.
-These deletions occur on at least two branches in the ARG and
-are found in the alignments of at least 10,000 (0.4\%) samples
-in the Viridian v04 dataset.
-For each deletion, the number of occurrences in the ARG and
-the number of samples where it is observed are shown.
-For further explanation,
-see the caption of Table~\ref{tab:major_dels}.
-Abbreviations:
-NSP, non-structural protein;
-ORF, open reading frame;
-S, Spike;
-S1-NTD, N-terminal domain in Spike S1 subunit.
-}
-\label{tab:rec_dels}
-\begin{tabular}{rrcrr}
-\toprule
-Start & Length & Region & Occurrences & Samples\\
-\midrule
-686 & 9 & ORF1ab / NSP1 & 6436 & 43354\\
-21991 & 3 & S / S1-NTD & 2088 & 309629\\
-21765 & 6 & S / S1-NTD & 482 & 820194\\
-22029 & 6 & S / S1-NTD & 275 & 1107941\\
-22194 & 3 & S / S1-NTD & 200 & 310349\\
-6513 & 3 & ORF1ab / NSP3 & 181 & 341380\\
-21987 & 9 & S / S1-NTD & 70 & 338633\\
-28248 & 6 & ORF8 & 28 & 1113392\\
-28271 & 1 & non-coding & 24 & 1331409\\
-11288 & 9 & ORF1ab / NSP6 & 19 & 843291\\
-11283 & 9 & ORF1ab / NSP6 & 13 & 339810\\
-28362 & 9 & N & 7 & 850483\\
-21633 & 9 & S / S1-NTD & 7 & 531973\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\begin{table}
-\caption{
-Concordance among methods in characterizing Pango X lineages.
-These comparisons focus on the Pango X lineages associated with
-the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
-For each method, we calculated the number of Pango X lineages
-which have inferred parent Pango lineages and breakpoint intervals
-concordant with those proposed by the community.
-The denominators indicate the number of Pango X lineages
-for which detection results are available from the original
-studies\cite{Alfonsi2024,Li2024CovRecomb}.
-For the Pango X lineages with non-overlapping breakpoint intervals,
-the distances between the inferred breakpoint intervals and
-those proposed by the community are shown (median and range).
-}
-\label{tab:method_concordance}
-\centering
-\begin{tabular}{lccl}
-\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
-\cmidrule(lr){2-2} \cmidrule(lr){3-4}
-Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
-\midrule
-Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
-RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
-RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
-CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}
-\caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
-all 855 recombinants and the 354 passing and 501 failing QC.
-}
-\label{tab:recombinant_validation}
-\centering
-\begin{tabular}{llll}
-\toprule
-Method & Total    & QC Pass & QC Fail \\
-\midrule
-3SEQ        & 484 & 338     & 146 \\
-CovRecomb   & 92  & 90      & 2\\
-rebar       & 213 & 203     & 10 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
 Most of the Pango X lineages had straightforward origination events 
@@ -3058,41 +2866,6 @@ See notebook
 {analysis\_jackson\_recombinants.ipynb}
 for details.
 
-
-\begin{table}
-\centering
-\caption{
-Comparison of recombination breakpoint
-intervals and parent lineages for Groups A-D
-reported by Jackson et al.\ with the corresponding
-recombination events in the sc2ts ARG.
-The second column gives the number of sequences in the group.
-See the text for details of the groups and the sequences included.
-limited to the samples considered by Jackson et al.
-The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
-we subtract one to the left coordinates and add one to the right coordinates 
-to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
-and add one to the right coordinate to make the intervals right-exclusive.
-}
-\label{tab:jackson}
-\begin{tabular}{lllr@{--}lr@{+}l}
-\toprule
-Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
-\midrule
-A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
-\cmidrule{3-7}
-B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
-             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
-\cmidrule{3-7}
-C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
-             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
-\cmidrule{3-7}
-D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Additional analyses of the Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
@@ -3746,41 +3519,6 @@ with the Pango lineages of the parents and the breakpoint intervals
 concordant with those suggested in the Pango designation issues,
 but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
 
-
-\begin{table}
-\centering
-\caption{
-Sc2ts detection results for Pango X lineages not added to the ARG.
-The number of samples in Viridian v04 dataset
-assigned to these Pango X lineages,
-the number of samples that passed sequence-level quality control, and
-the number of recombination breakpoints
-in the Viterbi solutions of the samples
-are shown.
-}
-\label{tab:extra_hmm_results}
-\begin{tabular}{crrr}
-\toprule
-Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
-\midrule
-XBJ & 2 & 1 & 1\\
-XBP & 8 & 2 & 1\\
-XBS & 19 & 15 & 1\\
-XBW & 1 & 1 & 1\\
-XCA & 11 & 4 & 1\\
-XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
-XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
-XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
-XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
-XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
-\bottomrule
-\end{tabular}
-\end{table}
-
-% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
-% 97
-
-
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
 We ran RIPPLES and aligned events with the sc2ts ARG as described in 
@@ -3819,32 +3557,6 @@ We did not investigate the $p=3$ events any further as the additional
 events detected at the lower threshold are not expected to be detected
 by sc2ts at the parameter value used ($k=4$).
 
-\begin{table}
-\caption{
-Distribution of numbers of descendants for UShER+RIPPLES events
-and sc2ts. The first column shows the number of descendants (binned
-for larger values) and the others show the corresponding number of events.
-}
-\label{tab:ripples_sc2ts_event_descendants}
-\centering
-\begin{tabular}{lrrr}
-\toprule
-Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
-\midrule
-1 & 2616 & 757 & 525 \\
-2 & 575 & 178 & 124 \\
-3 & 232 & 65 & 47 \\
-4 & 124 & 38 & 32 \\
-5 & 74 & 14 & 17 \\
-5-100 & 437 & 108 & 96 \\
-100-1000 & 32 & 6 & 8 \\
-1000-10k & 15 & 6 & 4 \\
-10k-100k & 2 & 0 & 0 \\
-100k-1m & 4 & 2 & 2 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 Next we considered the overall distribution of the numbers of descendants
 of the events returned by sc2ts and RIPPLES 
 (Table~\ref{tab:ripples_sc2ts_event_descendants}).
@@ -3855,61 +3567,6 @@ in all three cases are noteworthy (see
 Document~\ref{sec:spurious-ancestrally-important-recombinants} 
 for analysis of the two sc2ts events).
 
-\begin{table}
-\caption{
-RIPPLES events associated with Pango X lineages.
-Each row is a recombination event identified by RIPPLEs (at $p=3$)
-in which Pango X lineages appear,
-along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
-where applicable, grouped by class.
-Events also present at $p=4$ are indicated.
-Clades are matched by finding the most recent common ancestor of
-the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
-The clade differences indicates the closeness of the match.
-}
-\label{tab:ripples_x_lineages}
-\centering
-\begin{scriptsize}
-
-\begin{tabular}{lrrlrl}
-\toprule
-sc2ts event & in $p=4$ & UShER desc & sc2ts class & clade diff & descendants \\
-\midrule
-\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLES recombination events}\\
-XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
-XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
-% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
-XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
-XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
-XY &  & 23 & I & 0 & {XY:23} \\
-XW &  & 32 & I & 0 & {XW:32} \\
-XL &  & 64 & I & 0 & {XL:64} \\
-XBB &  & 6452 & I & 1 & {XBB:6452} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
-XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
-XM & $\checkmark$ & 8 & II & 0 & {XM:4, BA.2:4} \\
-Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
-Xx &  & 9 & II & 0 & {XAE:9} \\
-XQ &  & 1 & II & 0 & {XAM:1} \\
-XQ &  & 21 & II & 0 & {XAM:21} \\
-XE/XH &  & 1113 & II & 3 & {XE:1113} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
-XB & $\checkmark$ & 411 & IV & 0 & {XB:192, B.1:219} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
-NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
-NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
-NA & $\checkmark$ & 36 & NA & 7146 & {XBR:1, XBD:30, BA.2.75:5} \\
-NA &  & 20 & NA & 1061775 & {XS:17, BA.1:1, BA.1.1:1, BA.1.15:1} \\
-NA &  & 1321 & NA & 340501 & {XE:1113, XJ:68, BA.2:82, XM:29, XY:23,
-XAL:3, XAF:1, XH:2} \\
-\bottomrule
-\end{tabular}
-
-\end{scriptsize}
-\end{table}
 
 We next examined the RIPPLES events referencing Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows a summary of all
@@ -4319,5 +3976,301 @@ ancestor that did not carry A128C.
 \label{fig:parsimony_ops}
 \end{figure}
 
+%%%%%%%%%%%%%%%%
+% Tables
+%%%%%%%%%%%%%%%%
 
+
+\begin{table}
+\centering
+\caption{
+Major deletion events in the ARG.
+The deletions caused by these events
+are inherited by at least 10,000 samples.
+The deletions are characterized by
+a site position in the genome (start) and
+the number of sites involved (length);
+they are annotated by the gene in which they occur
+(non-coding otherwise).
+The IDs of the nodes in the ARG
+above which the deletions occur and
+the Pango lineages assigned to these nodes are shown.
+Frequency is the percentage of samples inheriting a deletion.
+If a deletion has been identified
+as a characteristic mutation of a VOC
+by a study (or an analysis),
+a reference to the study (or the analysis) is provided.
+Abbreviations: NSP, non-structural protein;
+ORF, open reading frame;
+S, Spike;
+S1-NTD, N-terminal domain in Spike S1 subunit.
+}
+\label{tab:major_dels}
+\begin{tabular}{rccrcrrc}
+\toprule
+Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
+\midrule
+28271 & 1 & non-coding & 1436808 & B.1 & 45.06 &  \\
+28248 & 6 & ORF8 & 220186 & B.1.617.2 (Delta) & 44.91 & \cite{Stern2021} \\
+22029 & 6 & S / S1-NTD & 200039 & B.1.617.2 (Delta) & 44.82 & \cite{Stern2021} \\
+11288 & 4 & ORF1ab / NSP6 & 1436802 & B.1.1.529 (Omicron) & 35.12 &  \\
+28362 & 9 & N & 1436802 & B.1.1.529 (Omicron) & 35.12 & \cite{RambautOmicron2021} \\
+21633 & 9 & S / S1-NTD & 822854 & BA.2 (Omicron) & 21.44 & \cite{RambautOmicron2021} \\
+11292 & 5 & ORF1ab / NSP6 & 822854 & BA.2 (Omicron) & 21.43 &  \\
+6513 & 3 & ORF1ab / NSP3 & 851246 & BA.1 (Omicron) & 13.73 & \cite{RambautOmicron2021} \\
+11283 & 5 & ORF1ab / NSP6 & 851246 & BA.1 (Omicron) & 13.69 &  \\
+21765 & 6 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
+21987 & 9 & S / S1-NTD & 851246 & BA.1 (Omicron) & 13.68 & \cite{RambautOmicron2021} \\
+22194 & 3 & S / S1-NTD & 851246 & BA.1 (Omicron) & 12.60 & \cite{RambautOmicron2021} \\
+28271 & 1 & non-coding & 86456 & B.1.1.7 (Alpha) & 11.70 &  \\
+11288 & 9 & ORF1ab / NSP6 & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
+21991 & 3 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.64 & \cite{RambautAlpha2020} \\
+21765 & 6 & S / S1-NTD & 86456 & B.1.1.7 (Alpha) & 11.70 & \cite{RambautAlpha2020} \\
+21765 & 6 & S / S1-NTD & 1265302 & BA.4 (Omicron) & 7.67 & \cite{Tegally2022} \\
+686 & 9 & ORF1ab / NSP1 & 2698748 & BA.4 (Omicron) & 0.94 &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\centering
+\caption{
+Recurrent deletions in the ARG.
+These deletions occur on at least two branches in the ARG and
+are found in the alignments of at least 10,000 (0.4\%) samples
+in the Viridian v04 dataset.
+For each deletion, the number of occurrences in the ARG and
+the number of samples where it is observed are shown.
+For further explanation,
+see the caption of Table~\ref{tab:major_dels}.
+Abbreviations:
+NSP, non-structural protein;
+ORF, open reading frame;
+S, Spike;
+S1-NTD, N-terminal domain in Spike S1 subunit.
+}
+\label{tab:rec_dels}
+\begin{tabular}{rrcrr}
+\toprule
+Start & Length & Region & Occurrences & Samples\\
+\midrule
+686 & 9 & ORF1ab / NSP1 & 6436 & 43354\\
+21991 & 3 & S / S1-NTD & 2088 & 309629\\
+21765 & 6 & S / S1-NTD & 482 & 820194\\
+22029 & 6 & S / S1-NTD & 275 & 1107941\\
+22194 & 3 & S / S1-NTD & 200 & 310349\\
+6513 & 3 & ORF1ab / NSP3 & 181 & 341380\\
+21987 & 9 & S / S1-NTD & 70 & 338633\\
+28248 & 6 & ORF8 & 28 & 1113392\\
+28271 & 1 & non-coding & 24 & 1331409\\
+11288 & 9 & ORF1ab / NSP6 & 19 & 843291\\
+11283 & 9 & ORF1ab / NSP6 & 13 & 339810\\
+28362 & 9 & N & 7 & 850483\\
+21633 & 9 & S / S1-NTD & 7 & 531973\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\caption{
+Concordance among methods in characterizing Pango X lineages.
+These comparisons focus on the Pango X lineages associated with
+the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
+For each method, we calculated the number of Pango X lineages
+which have inferred parent Pango lineages and breakpoint intervals
+concordant with those proposed by the community.
+The denominators indicate the number of Pango X lineages
+for which detection results are available from the original
+studies\cite{Alfonsi2024,Li2024CovRecomb}.
+For the Pango X lineages with non-overlapping breakpoint intervals,
+the distances between the inferred breakpoint intervals and
+those proposed by the community are shown (median and range).
+}
+\label{tab:method_concordance}
+\centering
+\begin{tabular}{lccl}
+\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-4}
+Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
+\midrule
+Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
+RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
+RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
+CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over 
+all 855 recombinants and the 354 passing and 501 failing QC.
+}
+\label{tab:recombinant_validation}
+\centering
+\begin{tabular}{llll}
+\toprule
+Method & Total    & QC Pass & QC Fail \\
+\midrule
+3SEQ        & 484 & 338     & 146 \\
+CovRecomb   & 92  & 90      & 2\\
+rebar       & 213 & 203     & 10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\centering
+\caption{
+Comparison of recombination breakpoint
+intervals and parent lineages for Groups A-D
+reported by Jackson et al.\ with the corresponding
+recombination events in the sc2ts ARG.
+The second column gives the number of sequences in the group.
+See the text for details of the groups and the sequences included.
+limited to the samples considered by Jackson et al.
+The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
+we subtract one to the left coordinates and add one to the right coordinates 
+to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals right-exclusive.
+}
+\label{tab:jackson}
+\begin{tabular}{lllr@{--}lr@{+}l}
+\toprule
+Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
+\midrule
+A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
+\cmidrule{3-7}
+B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+\cmidrule{3-7}
+C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
+             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+\cmidrule{3-7}
+D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{
+RIPPLES events associated with Pango X lineages.
+Each row is a recombination event identified by RIPPLEs (at $p=3$)
+in which Pango X lineages appear,
+along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
+where applicable, grouped by class.
+Events also present at $p=4$ are indicated.
+Clades are matched by finding the most recent common ancestor of
+the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
+The clade differences indicates the closeness of the match.
+}
+\label{tab:ripples_x_lineages}
+\centering
+\begin{scriptsize}
+
+\begin{tabular}{lrrlrl}
+\toprule
+sc2ts event & in $p=4$ & UShER desc & sc2ts class & clade diff & descendants \\
+\midrule
+\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLES recombination events}\\
+XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
+XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
+% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
+XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
+XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
+XY &  & 23 & I & 0 & {XY:23} \\
+XW &  & 32 & I & 0 & {XW:32} \\
+XL &  & 64 & I & 0 & {XL:64} \\
+XBB &  & 6452 & I & 1 & {XBB:6452} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
+XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
+XM & $\checkmark$ & 8 & II & 0 & {XM:4, BA.2:4} \\
+Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
+Xx &  & 9 & II & 0 & {XAE:9} \\
+XQ &  & 1 & II & 0 & {XAM:1} \\
+XQ &  & 21 & II & 0 & {XAM:21} \\
+XE/XH &  & 1113 & II & 3 & {XE:1113} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
+XB & $\checkmark$ & 411 & IV & 0 & {XB:192, B.1:219} \\
+\midrule
+\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
+NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
+NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
+NA & $\checkmark$ & 36 & NA & 7146 & {XBR:1, XBD:30, BA.2.75:5} \\
+NA &  & 20 & NA & 1061775 & {XS:17, BA.1:1, BA.1.1:1, BA.1.15:1} \\
+NA &  & 1321 & NA & 340501 & {XE:1113, XJ:68, BA.2:82, XM:29, XY:23,
+XAL:3, XAF:1, XH:2} \\
+\bottomrule
+\end{tabular}
+
+\end{scriptsize}
+\end{table}
+
+
+\begin{table}
+\caption{
+Distribution of numbers of descendants for UShER+RIPPLES events
+and sc2ts. The first column shows the number of descendants (binned
+for larger values) and the others show the corresponding number of events.
+}
+\label{tab:ripples_sc2ts_event_descendants}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
+\midrule
+1 & 2616 & 757 & 525 \\
+2 & 575 & 178 & 124 \\
+3 & 232 & 65 & 47 \\
+4 & 124 & 38 & 32 \\
+5 & 74 & 14 & 17 \\
+5-100 & 437 & 108 & 96 \\
+100-1000 & 32 & 6 & 8 \\
+1000-10k & 15 & 6 & 4 \\
+10k-100k & 2 & 0 & 0 \\
+100k-1m & 4 & 2 & 2 \\
+\bottomrule
+\end{tabular}
+\end{table}
 \end{document}
+
+\begin{table}
+\centering
+\caption{
+Sc2ts detection results for Pango X lineages not added to the ARG.
+The number of samples in Viridian v04 dataset
+assigned to these Pango X lineages,
+the number of samples that passed sequence-level quality control, and
+the number of recombination breakpoints
+in the Viterbi solutions of the samples
+are shown.
+}
+\label{tab:extra_hmm_results}
+\begin{tabular}{crrr}
+\toprule
+Pango & Samples in Viridian & Samples passing QC & Breakpoints \\
+\midrule
+XBJ & 2 & 1 & 1\\
+XBP & 8 & 2 & 1\\
+XBS & 19 & 15 & 1\\
+XBW & 1 & 1 & 1\\
+XCA & 11 & 4 & 1\\
+XAK & 2 & 2 & 1\\   % Multiple breakpoint Pango X
+XAY & 15 & 11 & 6\\ % Multiple breakpoint Pango X
+XBC & 36 & 21 & 3\\ % Multiple breakpoint Pango X
+XBL & 2 & 2 & 0\\   % Multiple breakpoint Pango X
+XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
+\bottomrule
+\end{tabular}
+\end{table}
+
+% 2 + 8 + 19+ 1 + 11+ 2 + 15+ 36+ 2 + 1
+% 97
+
+
