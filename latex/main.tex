@@ -185,77 +185,109 @@ lower bound on detectable recombination.
 % Nor is it indented
 
 \noindent
-Classical phylogenetics is largely concerned with inferring the evolutionary history 
-of divergent species~\cite{Felsenstein2004}. 
-Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
- biases downstream
-analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, 
-and so requires careful consideration~\cite{Rannala2025recombination}.
-Modern pathogen datasets are not sparsely sampled from different species
-and may contain millions of genomes sampled from 
-% JK: deleted point about recomb here as TB, eg, doesn't
-a single species~\cite{
-Shu2017,% GISAID ~270k FLU + others
-Jolley2018open,% PubMLST, 34K genomes for e.g. Staph Auerus
-Apetrei2021hiv,% HIV 1,026,217 sequences
-Cryptic2022data,% TB 12k
-Dyer2025enterobase% 1 million, various things like E-coli
-}.
-In contrast to the sophisticated model-based approaches
-used to infer species trees~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
-comprehensive phylogenies of pathogen datasets are typically built with
-simpler distance methods % citation for this?
-or approximations~\cite{Price2009fasttree},
-primarily due to computational scaling limitations.
-While several methods have been proposed to incorporate
-recombination explicitly into model-based phylogenetic
-inference~\cite{Didelot2010inference,%
-Vaughan2017inferring,%
-Muller2020bayesian,%
-Guo2022recombination,
-Muller2022bayesian},
-scalability
-is a major issue and practical application has been limited.
-Software support that explicitly \emph{uses}
-recombination-aware inference is mostly restricted to
-visualisation, for example of small-scale phylogenetic
-networks~\cite{Huson2012,Vaughan2017,Solis-Lemus2017}
-or tree changes along the genome~\cite{Rasmussen2023}.
+Millions of SARS-CoV-2 genome sequences were generated during the COVID-19
+pandemic, producing a pathogen genomic dataset of unprecedented scale.
+Genealogical reconstructions provide the primary framework for interpreting
+such data and underpin many downstream analyses, including lineage designation,
+phylodynamics, and molecular epidemiology. Most approaches to inferring
+genealogies from viral sequence data, however, assume that recombination is
+negligible and that ancestry can be represented as a single tree. While this
+assumption is often reasonable for short timescales, recombinant SARS-CoV-2
+lineages have risen to global prevalence\cite{Roemer2023,Shiraz2023enhanced},
+rendering purely tree-based representations incomplete and potentially misleading.
 
-The global
-surveillance data collected during the COVID-19 pandemic
-presents fundamental challenges to existing approaches. 
-First, the sheer amount of data 
-overwhelmed even approximate distance matrix-based methods.
-% Accessed GISAID/EpiCov on 08 Oct., 2025
-At the peak in February 2022, $\sim$80,000 samples per day
-were submitted to GISAID~\cite{Shu2017},
-accumulating to a total of over 17.5 million samples
-as of October 2025.
-Regularly re-inferring trees de novo from such rapidly
-growing datasets is untenable.
-The UShER\cite{Turakhia2021} method is based on adding
-samples to an existing tree using maximum parsimony,
-with periodic rearrangements to counter the inherent 
-greediness of the approach\cite{DeMaio2023}.
-The benefits of this simple model and the value of
-a comprehensive genealogy updated in real time~\cite{McBroome2021,Kramer2023}
-were conclusively demonstrated, as the resource
-quickly became an indispensable element
-of the pandemic response\cite{Hinrichs2024}.
-Recurrent recombination has posed an additional challenge to reconstructing the evolutionary history of
-SARS-CoV-2 \cite{Jackson2021,VanInsberghe2021,Focosi2022,
-Gutierrez2022,Ignatieva2022,Tamura2023},
-with multiple deep recombination events impacting both the genealogy and disease attributes of the virus \cite{Roemer2023,Shiraz2023enhanced}.
-Although several methods have been proposed to \emph{detect}
-recombinant samples~\cite{Varabyou2021rapid,%Bolotie
+% Classical phylogenetics is largely concerned with inferring the evolutionary history 
+% of divergent species~\cite{Felsenstein2004}. 
+% Recombination among lineages, however, distorts the inference of species trees~\cite{Posada2002effect},
+%  biases downstream
+% analyses~\cite{Schierup2000consequences,Hedge2014bacterial}, 
+% and so requires careful consideration~\cite{Rannala2025recombination}.
+% Modern pathogen datasets are not sparsely sampled from different species
+% and may contain millions of genomes sampled from 
+% % JK: deleted point about recomb here as TB, eg, doesn't
+% a single species~\cite{
+% Shu2017,% GISAID ~270k FLU + others
+% Jolley2018open,% PubMLST, 34K genomes for e.g. Staph Auerus
+% Apetrei2021hiv,% HIV 1,026,217 sequences
+% Cryptic2022data,% TB 12k
+% Dyer2025enterobase% 1 million, various things like E-coli
+% }.
+% In contrast to the sophisticated model-based approaches
+% used to infer species trees~\cite{Suchard2018bayesian,Bouckaert2019beast,Minh2020iq},
+% comprehensive phylogenies of pathogen datasets are typically built with
+% simpler distance methods % citation for this?
+% or approximations~\cite{Price2009fasttree},
+% primarily due to computational scaling limitations.
+% While several methods have been proposed to incorporate
+% recombination explicitly into model-based phylogenetic
+% inference~\cite{Didelot2010inference,%
+% Vaughan2017inferring,%
+% Muller2020bayesian,%
+% Guo2022recombination,
+% Muller2022bayesian},
+% scalability
+% is a major issue and practical application has been limited.
+% Software support that explicitly \emph{uses}
+% recombination-aware inference is mostly restricted to
+% visualisation, for example of small-scale phylogenetic
+% networks~\cite{Huson2012,Vaughan2017,Solis-Lemus2017}
+% or tree changes along the genome~\cite{Rasmussen2023}.
+
+The scale and tempo of SARS-CoV-2 genomic surveillance posed fundamental
+challenges to existing phylogenetic approaches. At the peak of the pandemic,
+tens of thousands of genomes were generated daily, precluding repeated de novo
+phylogenetic inference. The UShER method~\cite{Turakhia2021} enabled real-time
+reconstruction of a comprehensive genealogy by rapidly placing new samples into
+an existing tree and proved indispensable for genomic surveillance and lineage
+tracking\cite{Hinrichs2024}.
+However, as with other tree-based methods, UShER must force
+recombinant genomes into a single parental position, distorting genealogical
+relationships and requiring recombination to be identified and interpreted post
+hoc. Although numerous methods have been developed to detect recombinant
+genomes~\cite{Varabyou2021rapid,%Bolotie
 Turakhia2022,%RIPPLES
 Zhou2023virusrecom,
 Alfonsi2024,%RecombinHunt 
 Li2024CovRecomb},
-this information is not incorporated into the phylogenies used 
-in innumerable studies~\cite{McBroome2021,Hadfield2018},
-and recombination continues to be treated in a post hoc manner, after phylogenetic reconstruction. 
+this information is rarely incorporated directly into the phylogenies
+used for downstream analyses~\cite{McBroome2021,Hadfield2018},
+leaving a disconnect between recombination
+detection and genealogical inference.
+
+% The global
+% surveillance data collected during the COVID-19 pandemic
+% presents fundamental challenges to existing approaches. 
+% First, the sheer amount of data 
+% overwhelmed even approximate distance matrix-based methods.
+% % Accessed GISAID/EpiCov on 08 Oct., 2025
+% At the peak in February 2022, $\sim$80,000 samples per day
+% were submitted to GISAID~\cite{Shu2017},
+% accumulating to a total of over 17.5 million samples
+% as of October 2025.
+% Regularly re-inferring trees de novo from such rapidly
+% growing datasets is untenable.
+% The UShER\cite{Turakhia2021} method is based on adding
+% samples to an existing tree using maximum parsimony,
+% with periodic rearrangements to counter the inherent 
+% greediness of the approach\cite{DeMaio2023}.
+% The benefits of this simple model and the value of
+% a comprehensive genealogy updated in real time~\cite{McBroome2021,Kramer2023}
+% were conclusively demonstrated, as the resource
+% quickly became an indispensable element
+% of the pandemic response\cite{Hinrichs2024}.
+% Recurrent recombination has posed an additional challenge to reconstructing the evolutionary history of
+% SARS-CoV-2 \cite{Jackson2021,VanInsberghe2021,Focosi2022,
+% Gutierrez2022,Ignatieva2022,Tamura2023},
+% with multiple deep recombination events impacting both the genealogy and disease attributes of the virus \cite{Roemer2023,Shiraz2023enhanced}.
+% Although several methods have been proposed to \emph{detect}
+% recombinant samples~\cite{Varabyou2021rapid,%Bolotie
+% Turakhia2022,%RIPPLES
+% Zhou2023virusrecom,
+% Alfonsi2024,%RecombinHunt 
+% Li2024CovRecomb},
+% this information is not incorporated into the phylogenies used 
+% in innumerable studies~\cite{McBroome2021,Hadfield2018},
+% and recombination continues to be treated in a post hoc manner, after phylogenetic reconstruction. 
 
 Ancestral recombination graphs (ARGs) describe the reticulate 
 genealogies of sampled sequences in a recombining species\cite{Wong2024},
@@ -265,9 +297,10 @@ into the study of SARS-CoV-2.
 While ARGs have been of theoretical interest in population genetics 
 for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
 recent breakthroughs in
-simulation\cite{Kelleher2016,Kelleher2018efficient,Haller2019,Gopalan2025bridging}
-and inference~\cite{Rasmussen2014,Speidel2019,Kelleher2019,
-Wohns2022,Zhang2023,Gunnarsson2024,Deng2025robust} have led to a surge 
+simulation
+and inference
+\cite{Kelleher2016,Kelleher2018efficient,Rasmussen2014,Speidel2019,Kelleher2019}
+have led to a surge 
 of interest in their application in population and statistical 
 genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
 % This is necessary because a bunch of the phylo literature refers
@@ -284,14 +317,17 @@ that sequentially adds samples over time in a similar manner
 to UShER, while automatically detecting and incorporating recombination
 in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
-collection of SARS-CoV-2 genomes purged of various systematic errors and artifacts~\cite{Hunt2024},
+collection of SARS-CoV-2 genomes purged of various systematic errors 
+and artifacts~\cite{Hunt2024},
 we infer an ARG with 2.48 million whole genome sequences.
-We show that the non-recombinant portions of this ARG are congruent with the UShER phylogeny built 
+We show that the non-recombinant portions of this ARG are 
+congruent with the UShER phylogeny built 
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
 The ARG also accurately captures evolutionary features such as mutational 
 spectra~\cite{Bloom2023} and deletions\cite{Li2023indels}.
 We show that sc2ts automatically and accurately detects details about
-known recombinant lineages that were painstakingly collated through a community effort and provides novel insights into the relationships between these
+known recombinant lineages that were painstakingly collated through 
+a community effort and provides novel insights into the relationships between these
 recombinant lineages. We compare the recombination events detected by 
 sc2ts with the state-of-the-art combination of UShER and 
 RIPPLES~\cite{Turakhia2022}, showing that sc2ts is more sensitive,
@@ -1202,7 +1238,7 @@ Grundler2025geographic,Lehmann2025args}.
 The mature and feature-rich tskit library has interfaces in Python, C and Rust,
 extensive documentation, 
 and underpins a rapidly growing software ecosystem of
-simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
+simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait,Gopalan2025bridging},
 visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
 inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting,
 Pope2025}
