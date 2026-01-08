@@ -542,95 +542,49 @@ For more detailed visualisations of these subgraphs, see Document S1.
 \label{fig:subgraphs}
 \end{figure}
 
-% " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
-% system ... ". It should not be referred to as the ‘Rambaut et al.’ or
-% ‘Pangolin’ nomenclature system. "
-Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
-can be attributed to the clarity of the rules under which new lineages 
-are designated and their explicit phylogenetic basis.
-The first recombinant lineage XA was designated in 2021
-based on the analysis of Jackson et al.~\cite{Jackson2021}.
-Although the process of incorporating recombinant lineages
-in the Pango nomenclature system is well defined,
-the identification of such events is much more subjective,
-requiring the synthesis of multiple lines of evidence and
-often the manual inspection of phylogenies and sequence alignments
-by volunteers~\cite{Smith2023tracking}.
-% Debatable whether this adds or substracts from narrative
-As of pango-designation version v1.33.1 (2025-03-31),
-a total of 146 distinct Pango X lineages have been designated.
-%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
-% 146
-
+Although the Pango nomenclature system\cite{Rambaut2020} provides clear
+rules for designating new lineages, the identification of 
+recombinant (``X'') lineages requires the manual synthesis 
+of multiple lines of evidence\cite{Smith2023tracking}.
 By automatically detecting and incorporating recombination events into the ARG,
-sc2ts provides us with a systematic means of
-discovering and assessing evidence around these events.
-Table~\ref{tab:pango_x_lineages} summarises
-these results for the 44 Pango X lineages present in the ARG
-% (XAC and XAD have been omitted, and XM partially represented,
-% corresponding to 23 omitted samples in total;
-(see supplementary text~\ref{sec:supplement_x_pango_lineages}).
-For 16 Pango X lineages, the oldest node
-that has been assigned to the focal Pango lineage is a recombination node and
-that node is the ancestor of all samples
-assigned to that (or a descendant) Pango lineage.
-We consider these to be fully concordant (Type I) events,
-where the ARG reflects the
-hierarchical structure of Pango designation.
-Among these events, concordance with the community-consensus 
-parent lineages and breakpoint intervals is excellent,
-with similar performance to
-the RecombinHunt~\cite{Alfonsi2024}
-and CovRecomb~\cite{Li2024CovRecomb} detection methods
-(Methods; Table~\ref{tab:method_concordance}; see also
-supplementary text~\ref{sec:jackson_recombs} for analysis of the 
-Jackson et al.\ recombinants).
-Of the Type I events, 13 are monophyletic for the focal Pango lineage
-(i.e., the descendants are entirely from that lineage);
-Figure~\ref{fig:subgraphs}A shows XA as an example.
+sc2ts provides a systematic framework for evaluating these origins.
+Of the 44 Pango X lineages present in the dataset
+(supplementary text \ref{sec:supplement_x_pango_lineages};
+Table~\ref{tab:pango_x_lineages}),
+16 map precisely to
+recombination nodes in the ARG that are ancestral to all samples assigned to
+the lineage, indicating fully concordant recombinant origins. 
+For these
+lineages, the inferred parental lineages and breakpoint intervals show strong
+agreement with community consensus and with results from specialised
+recombination detection methods
+(Methods, Table~\ref{tab:method_concordance}).
+Early well-characterised recombinants\cite{Jackson2021} are also captured 
+with high fidelity in the ARG
+(supplementary text~\ref{sec:jackson_recombs})
+and XA provides a representative example (Figure~\ref{fig:subgraphs}A).
+In addition, several complex recombinants with multiple
+breakpoints were excluded from the ARG under the conservative thresholds used
+here, but were nonetheless detected by the HMM 
+(supplementary text~\ref{sec:supplement_rejected_pango_x_lineages};
+Table~\ref{tab:extra_hmm_results}).
 
-There are five partially concordant events (Type II) 
-in Table~\ref{tab:pango_x_lineages}, which 
-are recombination events closely associated with Pango X lineages
-that do not meet the strict origination criteria for Type I.
-Type III events are Pango origin nodes in the ARG that are 
-derived from Type I or Type II recombination events. There is significant
-nesting among the Pango X lineage origin nodes within the ARG,
-with two major clusters of particular note. Although XQ is 
-directly associated with a recombination event in the ARG, 
-XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
-that they may be more parsimoniously explained as sublineages of XQ
-than de novo recombinant lineages (supplementary text~\ref{sec:dd_xq}). 
-The second cluster is based around a putative undocumented
-recombinant that is the ancestor of lineages 
-XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
-(Figure~\ref{fig:subgraphs}B, supplementary text~\ref{sec:dd_xx}). 
-
-The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
-corresponds to nodes that are not associated with a recombination event
-in the ARG.
-These vary in their plausibility of being non-recombinant.
-For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
-distant from a BA.2 sample and has little additional evidence
-to suggest recombination (supplementary text~\ref{sec:dd_xn}).
-XB, on the other hand,
-has been thoroughly characterised~\cite{Gutierrez2022} and
-is likely misclassified by sc2ts because the required
-parent lineages were not present (supplementary text \ref{sec:dd_xb}). 
-
-The remaining 10 Pango X lineages (97 samples) present in the dataset are not
-included in the ARG because the HMM cost exceeds the inclusion threshold
-and there was insufficient support for retrospective inclusion (Methods).
-These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
-which are confirmed by sc2ts to have multiple breakpoints; see 
-supplementary text \ref{sec:supplement_rejected_pango_x_lineages} and Table 
-\ref{tab:extra_hmm_results} for details.
-See supplementary text~\ref{sec:supplement_indepth_pango_x_lineages}
-for extended analyses on all the Pango X lineages in the ARG;
-Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
-associated with Table~\ref{tab:pango_x_lineages};
-and Document S2 for ARG visualisations of the Pango X lineages.
-
+In contrast, the ARG indicates that multiple named recombinant lineages descend
+from shared ancestral recombination events rather than representing independent
+origins. 
+Specifically, 14 Pango X lineages are close descendants of 7 distinct
+recombination events, with up to 5 lineages descending from a 
+single recombination event (Figure~\ref{fig:subgraphs}B). 
+The remaining designated recombinant lineages show limited or ambiguous support for
+recombination in the ARG. In some cases, the lineage origin nodes differ from the 
+parent by a small number of mutations (Figure~\ref{fig:subgraphs}C),
+while in others
+the reconstruction is constrained by the absence of sufficient parental
+diversity in the dataset. Extended analyses of all Pango X lineages, including
+supporting evidence and alternative interpretations, are provided in 
+supplementary text~\ref{sec:supplement_indepth_pango_x_lineages},
+along with copying patterns (Figure~\ref{fig:pango_x_copying_patterns})
+and detailed ARG visualisations (Document S2).
 
 \subsection*{Quality control and validation of recombination events}
 
@@ -1154,124 +1108,6 @@ when such data sparsity is detected.
 
 %%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
 
-\clearpage % Make sure this table is on its own page
-
-% Change the geometry so it fits on the page
-\newgeometry{left=2cm, right=2cm, top=1cm, bottom=2cm} 
-
-\begin{table}
-\caption{
-\footnotesize{
-Events in the ARG associated with Pango X lineages. 
-Each row corresponds to the origin node for a given Pango lineage (Types I, II,
-and IV, see text) or associated recombination event (Type II). For origin nodes
-that are recombinant (Type I) or near a recombination event (Type II), the
-``averted'' column shows the number of additional mutations required without
-recombination, as well as the position of informative sites to the left and
-right of the breakpoint. Parent lineages shown in boldface are nodes exactly
-matched by sampled sequences. The descendants column shows the number of
-descendants by Pango lineage. For Pango lineages (Type III) whose origin node
-was a descendant of a Type I or II recombination node, the distance (path
-length and time in days) from the recombination event is shown, as well as the
-number of mutations directly ancestral to the Pango origin node. Pango X
-lineages not associated with a recombination node (Type IV) are shown with the
-parent node and number of mutations.
-}
-}
-\label{tab:pango_x_lineages}
-% scriptsize is quite small here, and we could probably cram it all 
-% in with footnotesize if we worked a bit harder on the intercol
-% spacing
-\begin{scriptsize}
-\singlespacing
-\begin{tabular}{lrrlrll}
-\toprule
-\multicolumn{7}{l}{\textbf{Type I event: Recombination coinciding with Pango
-origin node}}\\
-&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
-pango & averted & left & right & left & right & descendants \\
-\midrule
-
-XC & 37 & \textbf{AY.29} & \textbf{B.1.1.7} & 26768 & 27390 & {XC:5} \\
-XBR & 22 & \textbf{BN.3.1} & BQ.1.25 & 22034 & 22190 & {XBR:1} \\
-XA & 16 & \textbf{B.1.177.18} & \textbf{B.1.1.7} & 20411 & 21765 & {XA:39} \\
-XS & 11 & AY.103 & \textbf{BA.1.1} & 9054 & 10449 & {XS:17} \\
-XL & 8 & \textbf{BA.1.17.2} & \textbf{BA.2.5} & 5925 & 8393 & {XL:64} \\
-XBG & 8 & \textbf{BA.2.76} & \textbf{BA.5.2} & 22305 & 22917 & {XBG:25} \\
-XQ & 7 & \textbf{BA.1.1.15} & \textbf{BA.2.9} & 4322 & 5386 & {XQ:55, BA.2:37,
-XR:17, XAA:17, XU:1, XAM:21, XAG:6} \\
-XBD & 7 & \textbf{BA.2.75.2} & \textbf{BA.5.2.1} & 23020 & 24620 & {XBD:30} \\
-XM & 6 & \textbf{BA.1.1} & \textbf{BA.2} & 17411 & 21595 & {XM:26, BA.2:16,
-XAL:3} \\
-XBH & 6 & \textbf{BA.2.1} & BA.2.75.2 & 15452 & 22001 & {XBH:6} \\
-XBB & 6 & \textbf{BA.2.10} & BM.1.1.1 & 22332 & 22577 & {XBB:6452, BA.2:1} \\
-XY & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 11538 & 12880 & {XY:23} \\
-XF & 5 & \textbf{AY.4} & \textbf{BA.1} & 5387 & 6402 & {XF:16} \\
-XBF & 5 & \textbf{BA.5.2.1} & CJ.1 & 5184 & 9866 & {XBF:185} \\
-XW & 4 & \textbf{BA.1.1.15} & \textbf{BA.2} & 2833 & 4321 & {XW:32} \\
-XG & 4 & \textbf{BA.1.17} & \textbf{BA.2} & 5925 & 6513 & {XG:3} \\
-
-
-\midrule
-\multicolumn{7}{l}{\textbf{Type II event: Recombination closely associated with
-pango lineage(s)}}\\
-&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
-name & averted & left & right & left & right & descendants \\
-\midrule
-
-Xx & 6 & \textbf{BA.2} & \textbf{BA.1.17.2} & 24504 & 26060 & {BA.2:156, XZ:48,
-XAP:20, XAC:18, XAE:9, XAD:2} \\
-XE/XH & 6 & \textbf{BA.1.17.2} & \textbf{BA.2} & 10448 & 11283 & {XE:1116,
-BA.2:37, XH:2, XAF:1} \\
-XBM & 6 & \textbf{BA.2.76} & \textbf{BF.3} & 22305 & 22917 & {XBM:10, BF.3:2}
-\\
-XJ & 5 & \textbf{BA.1.17.2} & \textbf{BA.2} & 13196 & 17410 & {XJ:68, BA.2:17}
-\\
-XAF & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 10199 & 10447 & {BA.2:35, XAF:1} \\
-
-\midrule
-\multicolumn{7}{l}{\textbf{Type III events: Pango origin nodes derived from 
-Type I and II events}}\\
-pango & event & path len & time & mutations & & descendants\\
-\midrule
-
-XAF & XAF & 5 & 140 & 8   && {XAF:1} \\
-XBM & XBM & 1 & 23 & 1    && {XBM:10} \\
-XE  & XE/XH & 1 & 19 & 2  && {XE:1116} \\
-XH  & XE/XH & 1 & 55 & 7  && {XH:2} \\
-XJ  & XJ & 1 & 5 & 2      && {XJ:68, BA.2:3} \\
-XAL & XM & 3 & 65 & 2     && {XAL:3} \\
-XAA & XQ & 6 & 33 & 3     && {XAA:17} \\
-XAG & XQ & 6 & 53 & 4     && {XAG:6} \\
-XAM & XQ & 6 & 40 & 3     && {XAM:21} \\
-XR  & XQ & 3 & 11 & 4     && {XR:17, BA.2:1} \\
-XU  & XQ & 6 & 103 & 13   && {XU:1} \\
-XAE & Xx & 2 & 47 & 7     && {XAE:9} \\
-XAP & Xx & 4 & 66 & 1     && {XAP:20} \\
-XZ  & Xx & 4 & 48 & 1     && {XZ:48} \\
-
-\midrule
-\multicolumn{7}{l}{\textbf{Type IV events: Non recombinants in the ARG}}\\
-pango & parent &&& mutations && descendants \\
-\midrule
-
-XAS &  BA.4            &&& 1 && {XAS:77} \\
-XAU &  BA.2            &&& 1 && {XAU:8} \\
-XBK &  CJ.1            &&& 1 && {XBK:7} \\
-XBQ &  CJ.1            &&& 1 && {XBQ:14} \\
-XN  &  \textbf{BA.2}   &&& 1 && {XN:120, BA.2:1} \\
-XP  &  \textbf{BA.1.1} &&& 1 && {XP:45} \\
-XB  &  B.1             &&& 2 && {XB:192} \\
-XAV &  BA.5.1.24       &&& 3 && {XAV:13} \\
-XAZ &  \textbf{BA.5}   &&& 3 && {XAZ:133} \\
-XBE &  BA.5.2          &&& 3 && {XBE:65} \\
-XAN &  \textbf{BA.5.1} &&& 5 && {XAN:7} \\
-XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
-\bottomrule
-\end{tabular}
-\end{scriptsize}
-\end{table}
-\restoregeometry % Restore original geometry
 
 \clearpage % Clear all remaining figures and tables then start a new page
 
@@ -2784,6 +2620,7 @@ should remove such artefactual deletions.
 
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
+
 Most of the Pango X lineages had straightforward origination events 
 as defined in Section~\ref{sec:supplement_pango_lineages} 
 and are represented in Table~\ref{tab:pango_x_lineages}.
@@ -2811,6 +2648,58 @@ assigned an X lineage (XJ: 3, XU: 2, XN: 1), and
 failed to find a specific lineage (accounting for 7\%
 of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 2,747,985 alignments).
+
+Table~\ref{tab:pango_x_lineages} summarises
+the 44 Pango X lineages present in the ARG.
+For 16 Pango X lineages, the oldest node
+that has been assigned to the focal Pango lineage is a recombination node and
+that node is the ancestor of all samples
+assigned to that (or a descendant) Pango lineage.
+We consider these to be fully concordant (Type I) events,
+where the ARG reflects the
+hierarchical structure of Pango designation.
+
+There are five partially concordant events (Type II) 
+in Table~\ref{tab:pango_x_lineages}, which 
+are recombination events closely associated with Pango X lineages
+that do not meet the strict origination criteria for Type I.
+Type III events are Pango origin nodes in the ARG that are 
+derived from Type I or Type II recombination events. There is significant
+nesting among the Pango X lineage origin nodes within the ARG,
+with two major clusters of particular note. Although XQ is 
+directly associated with a recombination event in the ARG, 
+XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
+that they may be more parsimoniously explained as sublineages of XQ
+than de novo recombinant lineages (supplementary text~\ref{sec:dd_xq}). 
+The second cluster is based around a putative undocumented
+recombinant that is the ancestor of lineages 
+XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
+(Figure~\ref{fig:subgraphs}B, supplementary text~\ref{sec:dd_xx}). 
+
+The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
+corresponds to nodes that are not associated with a recombination event
+in the ARG.
+These vary in their plausibility of being non-recombinant.
+For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
+distant from a BA.2 sample and has little additional evidence
+to suggest recombination (supplementary text~\ref{sec:dd_xn}).
+XB, on the other hand,
+has been thoroughly characterised~\cite{Gutierrez2022} and
+is likely misclassified by sc2ts because the required
+parent lineages were not present (supplementary text \ref{sec:dd_xb}). 
+
+The remaining 10 Pango X lineages (97 samples) present in the dataset are not
+included in the ARG because the HMM cost exceeds the inclusion threshold
+and there was insufficient support for retrospective inclusion (Methods).
+These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
+which are confirmed by sc2ts to have multiple breakpoints; see 
+supplementary text \ref{sec:supplement_rejected_pango_x_lineages} and Table 
+\ref{tab:extra_hmm_results} for details.
+See supplementary text~\ref{sec:supplement_indepth_pango_x_lineages}
+for extended analyses on all the Pango X lineages in the ARG;
+Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
+associated with Table~\ref{tab:pango_x_lineages};
+and Document S2 for ARG visualisations of the Pango X lineages.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_pango\_x\_events.ipynb}
@@ -3985,6 +3874,8 @@ ancestor that did not carry A128C.
 \clearpage
 \section*{Supplementary Tables}
 
+
+
 \begin{table}[h]
 \centering
 \caption{
@@ -4076,6 +3967,124 @@ Start & Length & Region & Occurrences & Samples\\
 \end{tabular}
 \end{table}
 
+\clearpage % Make sure this table is on its own page
+
+% Change the geometry so it fits on the page
+\newgeometry{left=2cm, right=2cm, top=1cm, bottom=2cm} 
+
+\begin{table}
+\caption{
+\footnotesize{
+Events in the ARG associated with Pango X lineages. 
+Each row corresponds to the origin node for a given Pango lineage (Types I, II,
+and IV, see text) or associated recombination event (Type II). For origin nodes
+that are recombinant (Type I) or near a recombination event (Type II), the
+``averted'' column shows the number of additional mutations required without
+recombination, as well as the position of informative sites to the left and
+right of the breakpoint. Parent lineages shown in boldface are nodes exactly
+matched by sampled sequences. The descendants column shows the number of
+descendants by Pango lineage. For Pango lineages (Type III) whose origin node
+was a descendant of a Type I or II recombination node, the distance (path
+length and time in days) from the recombination event is shown, as well as the
+number of mutations directly ancestral to the Pango origin node. Pango X
+lineages not associated with a recombination node (Type IV) are shown with the
+parent node and number of mutations.
+}
+}
+\label{tab:pango_x_lineages}
+% scriptsize is quite small here, and we could probably cram it all 
+% in with footnotesize if we worked a bit harder on the intercol
+% spacing
+\begin{scriptsize}
+\singlespacing
+\begin{tabular}{lrrlrll}
+\toprule
+\multicolumn{7}{l}{\textbf{Type I event: Recombination coinciding with Pango
+origin node}}\\
+&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
+pango & averted & left & right & left & right & descendants \\
+\midrule
+
+XC & 37 & \textbf{AY.29} & \textbf{B.1.1.7} & 26768 & 27390 & {XC:5} \\
+XBR & 22 & \textbf{BN.3.1} & BQ.1.25 & 22034 & 22190 & {XBR:1} \\
+XA & 16 & \textbf{B.1.177.18} & \textbf{B.1.1.7} & 20411 & 21765 & {XA:39} \\
+XS & 11 & AY.103 & \textbf{BA.1.1} & 9054 & 10449 & {XS:17} \\
+XL & 8 & \textbf{BA.1.17.2} & \textbf{BA.2.5} & 5925 & 8393 & {XL:64} \\
+XBG & 8 & \textbf{BA.2.76} & \textbf{BA.5.2} & 22305 & 22917 & {XBG:25} \\
+XQ & 7 & \textbf{BA.1.1.15} & \textbf{BA.2.9} & 4322 & 5386 & {XQ:55, BA.2:37,
+XR:17, XAA:17, XU:1, XAM:21, XAG:6} \\
+XBD & 7 & \textbf{BA.2.75.2} & \textbf{BA.5.2.1} & 23020 & 24620 & {XBD:30} \\
+XM & 6 & \textbf{BA.1.1} & \textbf{BA.2} & 17411 & 21595 & {XM:26, BA.2:16,
+XAL:3} \\
+XBH & 6 & \textbf{BA.2.1} & BA.2.75.2 & 15452 & 22001 & {XBH:6} \\
+XBB & 6 & \textbf{BA.2.10} & BM.1.1.1 & 22332 & 22577 & {XBB:6452, BA.2:1} \\
+XY & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 11538 & 12880 & {XY:23} \\
+XF & 5 & \textbf{AY.4} & \textbf{BA.1} & 5387 & 6402 & {XF:16} \\
+XBF & 5 & \textbf{BA.5.2.1} & CJ.1 & 5184 & 9866 & {XBF:185} \\
+XW & 4 & \textbf{BA.1.1.15} & \textbf{BA.2} & 2833 & 4321 & {XW:32} \\
+XG & 4 & \textbf{BA.1.17} & \textbf{BA.2} & 5925 & 6513 & {XG:3} \\
+
+
+\midrule
+\multicolumn{7}{l}{\textbf{Type II event: Recombination closely associated with
+pango lineage(s)}}\\
+&&\multicolumn{2}{c}{Parent lineage} & \multicolumn{2}{c}{Interval}\\
+name & averted & left & right & left & right & descendants \\
+\midrule
+
+Xx & 6 & \textbf{BA.2} & \textbf{BA.1.17.2} & 24504 & 26060 & {BA.2:156, XZ:48,
+XAP:20, XAC:18, XAE:9, XAD:2} \\
+XE/XH & 6 & \textbf{BA.1.17.2} & \textbf{BA.2} & 10448 & 11283 & {XE:1116,
+BA.2:37, XH:2, XAF:1} \\
+XBM & 6 & \textbf{BA.2.76} & \textbf{BF.3} & 22305 & 22917 & {XBM:10, BF.3:2}
+\\
+XJ & 5 & \textbf{BA.1.17.2} & \textbf{BA.2} & 13196 & 17410 & {XJ:68, BA.2:17}
+\\
+XAF & 5 & \textbf{BA.1.1} & \textbf{BA.2} & 10199 & 10447 & {BA.2:35, XAF:1} \\
+
+\midrule
+\multicolumn{7}{l}{\textbf{Type III events: Pango origin nodes derived from 
+Type I and II events}}\\
+pango & event & path len & time & mutations & & descendants\\
+\midrule
+
+XAF & XAF & 5 & 140 & 8   && {XAF:1} \\
+XBM & XBM & 1 & 23 & 1    && {XBM:10} \\
+XE  & XE/XH & 1 & 19 & 2  && {XE:1116} \\
+XH  & XE/XH & 1 & 55 & 7  && {XH:2} \\
+XJ  & XJ & 1 & 5 & 2      && {XJ:68, BA.2:3} \\
+XAL & XM & 3 & 65 & 2     && {XAL:3} \\
+XAA & XQ & 6 & 33 & 3     && {XAA:17} \\
+XAG & XQ & 6 & 53 & 4     && {XAG:6} \\
+XAM & XQ & 6 & 40 & 3     && {XAM:21} \\
+XR  & XQ & 3 & 11 & 4     && {XR:17, BA.2:1} \\
+XU  & XQ & 6 & 103 & 13   && {XU:1} \\
+XAE & Xx & 2 & 47 & 7     && {XAE:9} \\
+XAP & Xx & 4 & 66 & 1     && {XAP:20} \\
+XZ  & Xx & 4 & 48 & 1     && {XZ:48} \\
+
+\midrule
+\multicolumn{7}{l}{\textbf{Type IV events: Non recombinants in the ARG}}\\
+pango & parent &&& mutations && descendants \\
+\midrule
+
+XAS &  BA.4            &&& 1 && {XAS:77} \\
+XAU &  BA.2            &&& 1 && {XAU:8} \\
+XBK &  CJ.1            &&& 1 && {XBK:7} \\
+XBQ &  CJ.1            &&& 1 && {XBQ:14} \\
+XN  &  \textbf{BA.2}   &&& 1 && {XN:120, BA.2:1} \\
+XP  &  \textbf{BA.1.1} &&& 1 && {XP:45} \\
+XB  &  B.1             &&& 2 && {XB:192} \\
+XAV &  BA.5.1.24       &&& 3 && {XAV:13} \\
+XAZ &  \textbf{BA.5}   &&& 3 && {XAZ:133} \\
+XBE &  BA.5.2          &&& 3 && {XBE:65} \\
+XAN &  \textbf{BA.5.1} &&& 5 && {XAN:7} \\
+XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
+\bottomrule
+\end{tabular}
+\end{scriptsize}
+\end{table}
+\restoregeometry % Restore original geometry
 
 \begin{table}
 \caption{

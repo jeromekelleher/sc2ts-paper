@@ -16,7 +16,8 @@ main_text.pdf: main.tex
 	bibtex split_tmp
 	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
 	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
-	qpdf split_tmp.pdf --pages . 1-39 -- main_text.pdf
+	qpdf split_tmp.pdf --pages . 1-38 -- main_text.pdf
+	qpdf split_tmp.pdf --pages . 39-z -- supplementary.pdf
 
 
 .PHONY: spellcheck
