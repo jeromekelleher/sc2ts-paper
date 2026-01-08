@@ -139,10 +139,20 @@ University of British Columbia, Vancouver BC Canada}}
 
 \maketitle
 
+% Abstracts of Research Articles should explain to the general reader why the
+% research was done, what was found and why the results are important. They
+% should start with some brief BACKGROUND information: a sentence giving a broad
+% introduction to the field comprehensible to the general reader, and then a
+% sentence of more detailed background specific to your study. This should be
+% followed by an explanation of the OBJECTIVES/METHODS and then the RESULTS. The
+% final sentence should outline the main CONCLUSIONS of the study, in terms that
+% will be comprehensible to all readers. The Abstract is distinct from the main
+% body of the text and thus should not be the only source of background
+% information critical to understanding the manuscript. Please do not include
+% citations or abbreviations in the Abstract. The abstract should be 125 words or
+% less.
+
 % Abstract, in bold
-% There are strict length limits, and not all formats have abstracts.
-% Consult the journal instructions to authors for details.
-% Do not cite any references in the abstract.
 \begin{abstract}\bfseries
 Millions of SARS-CoV-2 genome sequences were collected 
 during the COVID-19 pandemic, forming a dataset of unprecedented richness.
@@ -183,10 +193,11 @@ lower bound on detectable recombination.
  
 % The first paragraph of any Science paper does NOT have a heading
 % Nor is it indented
+% \section*{Introduction}
 
 \noindent
-Millions of SARS-CoV-2 genome sequences were generated during the COVID-19
-pandemic, producing a pathogen genomic dataset of unprecedented scale.
+The COVID-19 pandemic generated an unprecedented volume of viral genomic data,
+enabling real-time tracking of pathogen evolution at global scale.
 Genealogical reconstructions provide the primary framework for interpreting
 such data and underpin many downstream analyses, including lineage designation,
 phylodynamics, and molecular epidemiology. Most approaches to inferring
@@ -195,6 +206,27 @@ negligible and that ancestry can be represented as a single tree. While this
 assumption is often reasonable for short timescales, recombinant SARS-CoV-2
 lineages have risen to global prevalence\cite{Roemer2023,Shiraz2023enhanced},
 rendering purely tree-based representations incomplete and potentially misleading.
+
+The scale and tempo of SARS-CoV-2 genomic surveillance posed fundamental
+challenges to existing phylogenetic approaches. At the peak of the pandemic,
+tens of thousands of genomes were generated daily, precluding repeated de novo
+phylogenetic inference. The UShER method~\cite{Turakhia2021} enabled real-time
+reconstruction of a comprehensive genealogy by rapidly placing new samples into
+an existing tree and proved indispensable for genomic surveillance and lineage
+tracking\cite{Hinrichs2024}.
+However, as with other tree-based methods, UShER must force
+recombinant genomes into a single parental position, distorting genealogical
+relationships and requiring recombination to be identified and interpreted post
+hoc. Although numerous methods have been developed to detect recombinant
+genomes~\cite{Varabyou2021rapid,%Bolotie
+Turakhia2022,%RIPPLES
+Zhou2023virusrecom,
+Alfonsi2024,%RecombinHunt 
+Li2024CovRecomb},
+this information is rarely incorporated directly into the phylogenies
+used for downstream analyses~\cite{McBroome2021,Hadfield2018},
+leaving a disconnect between recombination
+detection and genealogical inference.
 
 % Classical phylogenetics is largely concerned with inferring the evolutionary history 
 % of divergent species~\cite{Felsenstein2004}. 
@@ -232,27 +264,6 @@ rendering purely tree-based representations incomplete and potentially misleadin
 % visualisation, for example of small-scale phylogenetic
 % networks~\cite{Huson2012,Vaughan2017,Solis-Lemus2017}
 % or tree changes along the genome~\cite{Rasmussen2023}.
-
-The scale and tempo of SARS-CoV-2 genomic surveillance posed fundamental
-challenges to existing phylogenetic approaches. At the peak of the pandemic,
-tens of thousands of genomes were generated daily, precluding repeated de novo
-phylogenetic inference. The UShER method~\cite{Turakhia2021} enabled real-time
-reconstruction of a comprehensive genealogy by rapidly placing new samples into
-an existing tree and proved indispensable for genomic surveillance and lineage
-tracking\cite{Hinrichs2024}.
-However, as with other tree-based methods, UShER must force
-recombinant genomes into a single parental position, distorting genealogical
-relationships and requiring recombination to be identified and interpreted post
-hoc. Although numerous methods have been developed to detect recombinant
-genomes~\cite{Varabyou2021rapid,%Bolotie
-Turakhia2022,%RIPPLES
-Zhou2023virusrecom,
-Alfonsi2024,%RecombinHunt 
-Li2024CovRecomb},
-this information is rarely incorporated directly into the phylogenies
-used for downstream analyses~\cite{McBroome2021,Hadfield2018},
-leaving a disconnect between recombination
-detection and genealogical inference.
 
 % The global
 % surveillance data collected during the COVID-19 pandemic
@@ -1079,8 +1090,7 @@ the pandemic phase of SARS-CoV-2.
 These results underscore the utility of the ARG 
 and provide a template for future analyses.
 
-
-\paragraph{Limitations of the study}
+% \paragraph{Limitations of the study}
 We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather 
 than the larger GISAID resource~\cite{Shu2017} for two reasons.
 Firstly, the Viridian dataset is of higher quality and major efforts
@@ -1095,7 +1105,6 @@ would be required to address data quality issues.
 % GISAID we can by all means explain we've already done it.
 Secondly, the Viridian data is publicly available and redistributable,
 enabling us to share the resulting ARG without restrictions.
-
 It is important to acknowledge that sampling is non-uniform both
 geographically and over time~\cite{Lancet2021,Chen2022}. 
 Sc2ts performs best in the data-dense regime, when the underlying
