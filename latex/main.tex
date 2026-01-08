@@ -2666,6 +2666,7 @@ should remove such artefactual deletions.
 
 \subsection{Pango X lineage events}
 \label{sec:supplement_x_pango_lineages}
+
 Most of the Pango X lineages had straightforward origination events 
 as defined in Section~\ref{sec:supplement_pango_lineages} 
 and are represented in Table~\ref{tab:pango_x_lineages}.
@@ -2693,6 +2694,58 @@ assigned an X lineage (XJ: 3, XU: 2, XN: 1), and
 failed to find a specific lineage (accounting for 7\%
 of the 357 ``Omicron (Unassigned)`` Scorpio calls across
 2,747,985 alignments).
+
+Table~\ref{tab:pango_x_lineages} summarises
+the 44 Pango X lineages present in the ARG.
+For 16 Pango X lineages, the oldest node
+that has been assigned to the focal Pango lineage is a recombination node and
+that node is the ancestor of all samples
+assigned to that (or a descendant) Pango lineage.
+We consider these to be fully concordant (Type I) events,
+where the ARG reflects the
+hierarchical structure of Pango designation.
+
+There are five partially concordant events (Type II) 
+in Table~\ref{tab:pango_x_lineages}, which 
+are recombination events closely associated with Pango X lineages
+that do not meet the strict origination criteria for Type I.
+Type III events are Pango origin nodes in the ARG that are 
+derived from Type I or Type II recombination events. There is significant
+nesting among the Pango X lineage origin nodes within the ARG,
+with two major clusters of particular note. Although XQ is 
+directly associated with a recombination event in the ARG, 
+XAA, XAG, XAM, XR and XU are all closely derived, suggesting 
+that they may be more parsimoniously explained as sublineages of XQ
+than de novo recombinant lineages (supplementary text~\ref{sec:dd_xq}). 
+The second cluster is based around a putative undocumented
+recombinant that is the ancestor of lineages 
+XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
+(Figure~\ref{fig:subgraphs}B, supplementary text~\ref{sec:dd_xx}). 
+
+The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
+corresponds to nodes that are not associated with a recombination event
+in the ARG.
+These vary in their plausibility of being non-recombinant.
+For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
+distant from a BA.2 sample and has little additional evidence
+to suggest recombination (supplementary text~\ref{sec:dd_xn}).
+XB, on the other hand,
+has been thoroughly characterised~\cite{Gutierrez2022} and
+is likely misclassified by sc2ts because the required
+parent lineages were not present (supplementary text \ref{sec:dd_xb}). 
+
+The remaining 10 Pango X lineages (97 samples) present in the dataset are not
+included in the ARG because the HMM cost exceeds the inclusion threshold
+and there was insufficient support for retrospective inclusion (Methods).
+These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
+which are confirmed by sc2ts to have multiple breakpoints; see 
+supplementary text \ref{sec:supplement_rejected_pango_x_lineages} and Table 
+\ref{tab:extra_hmm_results} for details.
+See supplementary text~\ref{sec:supplement_indepth_pango_x_lineages}
+for extended analyses on all the Pango X lineages in the ARG;
+Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
+associated with Table~\ref{tab:pango_x_lineages};
+and Document S2 for ARG visualisations of the Pango X lineages.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_pango\_x\_events.ipynb}
