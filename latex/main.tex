@@ -183,6 +183,7 @@ lower bound on detectable recombination.
  
 % The first paragraph of any Science paper does NOT have a heading
 % Nor is it indented
+
 \noindent
 Classical phylogenetics is largely concerned with inferring the evolutionary history 
 of divergent species~\cite{Felsenstein2004}. 
@@ -274,15 +275,9 @@ genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
 % Rannala2025 dismisses ARG-based methods at a stroke because they're
 % all based on the assumption of a single panmictic population 
 As the range of applications for ARGs has broadened, the term has itself evolved from a specific model of coalescence with 
-recombination  \cite{Hudson1983,Griffiths1997ancestral}to a rich data structure representing recombinant ancestry\cite{Minichiello2006mapping,Wong2024}.
-The development of extensive software support has facilitated the broader application of ARGS. In particular, the collaboratively built tskit library~\cite{Ralph2020} underpins a 
-rapidly growing software ecosystem of
-simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
-visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
-inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting}
-% More here? I'm sure there's others
-and data analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest}
-tools.
+recombination \cite{Hudson1983,Griffiths1997ancestral} to a 
+rich data structure representing recombinant 
+ancestry\cite{Minichiello2006mapping,Wong2024}.
 
 Here we present sc2ts, a new method to infer ARGs for SARS-CoV-2  
 that sequentially adds samples over time in a similar manner 
@@ -1202,13 +1197,19 @@ these relationships in a simple and concise tabular format,
 sufficient to represent arbitrarily complex patterns of
 recombination~\cite{Wong2024} and providing the basis for a range of highly
 efficient 
-algorithms~\cite{Kelleher2016,Ralph2020,Kelleher2020coalescent,Grundler2025geographic,Lehmann2025args}.
+algorithms~\cite{Kelleher2016,Ralph2020,Kelleher2020coalescent,
+Grundler2025geographic,Lehmann2025args}.
 The mature and feature-rich tskit library has interfaces in Python, C and Rust,
-extensive documentation, and is used in numerous downstream 
-applications~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,
-Tagami2024tstrait,Karthikeyan2025tsbrowse,Kitchens2025tskit,Kelleher2019,
-Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting,
-Fan2022,Nowbandegani2023extremely,Fritze2024forest}.
+extensive documentation, 
+and underpins a rapidly growing software ecosystem of
+simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait},
+visualisation~\cite{Karthikeyan2025tsbrowse,Kitchens2025tskit,Talbot2025argscape},
+inference~\cite{Kelleher2019,Wohns2022,Mahmoudi2022,Martin2025model,Pieszko2025detecting,
+Pope2025}
+% More here? I'm sure there's others
+and data
+analysis~\cite{Fan2022,Nowbandegani2023extremely,Fritze2024forest,Lee2025genetic}
+tools.
 
 Similarly to the Mutation Annotated Tree (MAT)~\cite{McBroome2021} format 
 (used by
