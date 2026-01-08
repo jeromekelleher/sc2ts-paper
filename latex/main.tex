@@ -696,38 +696,6 @@ Figures~\ref{fig:recombinant_evidence_cov_recomb} and
 plot the same information as Figure~\ref{fig:recombinant_evidence} 
 broken down by CovRecomb and rebar validation status.
 
-Detectable recombination is rare in SARS-CoV-2, and
-ultimately judgments about plausibility require expert analysis.
-To aid such interpretation and help identify QC issues,
-we developed a visualisation tool
-inspired by SnpIt~\cite{OToole2024} and 
-the recombinant view of RIVET~\cite{Smith2023tracking},
-showing the recombination-informative sites
-between a recombinant and its parent sequences, and
-highlighting potentially problematic loci.
-Each copying pattern shows the positions
-where the allelic state
-in a recombinant (middle row) matches that of
-the left (upper row, coloured green) 
-or right parent (lower row, coloured blue),
-or where the recombination event requires
-a de novo mutation (gold, with mutational change below).
-Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
-illustrating a spectrum of plausibility.
-XA is an example of a highly plausible recombinant,
-shown by the large number of supporting loci on the left and right.
-XBB is also strongly supported by many loci on the left and right, 
-but the presence of many de novo mutations
-observed in the copying patterns suggests the existence of
-many genetically distinct, unsampled ancestors
-and some caution should be exercised when interpreting them
-(see supplementary text~\ref{sec:dd_xbb} for more details).
-See Figures~\ref{fig:recombinant_evidence}D and
-\ref{fig:pango_x_copying_patterns}
-for copying patterns of the Pango X lineages, and
-Figure~\ref{fig:copying_pattern_examples} for copying patterns
-highlighting specific types of QC problems
-(and more details on the visualisations).
 
 \subsection*{Precision of recombination event times and positions}
 
@@ -1800,6 +1768,41 @@ file requires 32MiB of storage.
 % of real data. Further work is needed to clarify the processes 
 % and frequency of recombination in SARS-CoV-2 in order to 
 % create simulations models that would inform this.
+
+\subsubsection*{Visualising recombinant copying patterns}
+
+Detectable recombination is rare in SARS-CoV-2, and
+ultimately judgments about plausibility require expert analysis.
+To aid such interpretation and help identify QC issues,
+we developed a visualisation tool
+inspired by SnpIt~\cite{OToole2024} and 
+the recombinant view of RIVET~\cite{Smith2023tracking},
+showing the recombination-informative sites
+between a recombinant and its parent sequences, and
+highlighting potentially problematic loci.
+Each copying pattern shows the positions
+where the allelic state
+in a recombinant (middle row) matches that of
+the left (upper row, coloured green) 
+or right parent (lower row, coloured blue),
+or where the recombination event requires
+a de novo mutation (gold, with mutational change below).
+Figure~\ref{fig:recombinant_evidence}D shows some example copying patterns,
+illustrating a spectrum of plausibility.
+XA is an example of a highly plausible recombinant,
+shown by the large number of supporting loci on the left and right.
+XBB is also strongly supported by many loci on the left and right, 
+but the presence of many de novo mutations
+observed in the copying patterns suggests the existence of
+many genetically distinct, unsampled ancestors
+and some caution should be exercised when interpreting them
+(see supplementary text~\ref{sec:dd_xbb} for more details).
+See Figures~\ref{fig:recombinant_evidence}D and
+\ref{fig:pango_x_copying_patterns}
+for copying patterns of the Pango X lineages, and
+Figure~\ref{fig:copying_pattern_examples} for copying patterns
+highlighting specific types of QC problems
+(and more details on the visualisations).
 
 \subsubsection*{Quality control of recombination events}
 
