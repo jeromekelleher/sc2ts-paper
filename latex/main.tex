@@ -542,52 +542,25 @@ For more detailed visualisations of these subgraphs, see Document S1.
 \label{fig:subgraphs}
 \end{figure}
 
-% " Our nomenclature system should be referred to as the ‘Pango’ nomenclature
-% system ... ". It should not be referred to as the ‘Rambaut et al.’ or
-% ‘Pangolin’ nomenclature system. "
-Part of the success of the Pango nomenclature system~\cite{Rambaut2020} 
-can be attributed to the clarity of the rules under which new lineages 
-are designated and their explicit phylogenetic basis.
-The first recombinant lineage XA was designated in 2021
-based on the analysis of Jackson et al.~\cite{Jackson2021}.
-Although the process of incorporating recombinant lineages
-in the Pango nomenclature system is well defined,
-the identification of such events is much more subjective,
-requiring the synthesis of multiple lines of evidence and
-often the manual inspection of phylogenies and sequence alignments
-by volunteers~\cite{Smith2023tracking}.
-% Debatable whether this adds or substracts from narrative
-As of pango-designation version v1.33.1 (2025-03-31),
-a total of 146 distinct Pango X lineages have been designated.
-%$ cut -f1 ../arg_postprocessing/pangonet_data/lineage_notes.txt | grep '^X' | grep -v '\.' | wc -l 
-% 146
-
+Although the Pango nomenclature system\cite{Rambaut2020} provides clear
+rules for designating new lineages, the identification of 
+recombinant (``X'') lineages requires the manual synthesis 
+of multiple lines of evidence\cite{Smith2023tracking}.
 By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides us with a systematic means of
 discovering and assessing evidence around these events.
-Table~\ref{tab:pango_x_lineages} summarises
-these results for the 44 Pango X lineages present in the ARG
-% (XAC and XAD have been omitted, and XM partially represented,
-% corresponding to 23 omitted samples in total;
-(see supplementary text~\ref{sec:supplement_x_pango_lineages}).
-For 16 Pango X lineages, the oldest node
-that has been assigned to the focal Pango lineage is a recombination node and
-that node is the ancestor of all samples
-assigned to that (or a descendant) Pango lineage.
-We consider these to be fully concordant (Type I) events,
-where the ARG reflects the
-hierarchical structure of Pango designation.
-Among these events, concordance with the community-consensus 
-parent lineages and breakpoint intervals is excellent,
-with similar performance to
-the RecombinHunt~\cite{Alfonsi2024}
-and CovRecomb~\cite{Li2024CovRecomb} detection methods
-(Methods; Table~\ref{tab:method_concordance}; see also
-supplementary text~\ref{sec:jackson_recombs} for analysis of the 
-Jackson et al.\ recombinants).
-Of the Type I events, 13 are monophyletic for the focal Pango lineage
-(i.e., the descendants are entirely from that lineage);
-Figure~\ref{fig:subgraphs}A shows XA as an example.
+Among the 44 Pango X lineages present in the ARG,
+16 are fully concordant with the expected hierarchical structure 
+and have strong agreement
+with the community-consensus parent lineages and breakpoint intervals
+(similar to specialised detection methods; 
+see Methods, Table~\ref{tab:method_concordance}).
+The early recombinants identified by Jackson et al.\cite{Jackson2021}
+(including XA; Figure~\ref{fig:subgraphs}A)
+are also captured with high fidelity in the ARG 
+(supplementary text~\ref{sec:jackson_recombs}).
+
+
 
 There are five partially concordant events (Type II) 
 in Table~\ref{tab:pango_x_lineages}, which 
@@ -631,6 +604,34 @@ Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages};
 and Document S2 for ARG visualisations of the Pango X lineages.
 
+\subsection*{New}
+
+Using the inferred ancestral recombination graph (ARG), we examined the origins
+and relationships of epidemiologically relevant SARS-CoV-2 recombinant lineages
+designated in the Pango nomenclature. Among the Pango X lineages present in the
+dataset, we identified a set whose oldest assigned node corresponds to a
+recombination event in the ARG and is ancestral to all samples assigned to that
+lineage. These lineages therefore have fully concordant recombinant origins in
+the ARG, with inferred parental lineages and breakpoint intervals closely
+matching previous reports. XA provides a representative example of this pattern
+(Fig. 2A).
+
+We also identified several cases in which multiple named recombinant lineages
+descend from a shared ancestral recombination event. In these instances, the
+ARG shows that the origins of the lineages are nested within a single
+recombinant ancestry, rather than corresponding to independent recombination
+events (Fig. 2B). This structure is captured directly by the
+recombination-aware genealogy and is not apparent from tree-based phylogenies
+inferred without modelling recombination.
+
+A smaller number of designated recombinant lineages show limited or ambiguous
+support for recombination in the ARG. Some of these lineages differ from a
+single parental lineage by only a small number of mutations, while others are
+consistent with recombination but lack sufficient representation of parental
+diversity to reconstruct the event confidently. In addition, several complex
+recombinants with multiple breakpoints were excluded under the conservative
+inclusion thresholds used here. Detailed results for all evaluated Pango X
+lineages are summarised in the Supplement.
 
 \subsection*{Quality control and validation of recombination events}
 
