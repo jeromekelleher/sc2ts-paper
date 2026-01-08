@@ -11,11 +11,12 @@ combined.pdf: main.tex references.bib ${DATA} ${FIGURES}
 	cp main.pdf combined.pdf
 
 main_text.pdf: main.tex
-	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{main.tex}"
-	bibtex main
-	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{main.tex}"
-	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{main.tex}"
-	qpdf main.pdf --pages . 1-39 -- main_text.pdf
+	cp main.tex split_tmp.tex
+	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
+	bibtex split_tmp
+	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
+	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
+	qpdf split_tmp.pdf --pages . 1-39 -- main_text.pdf
 
 
 .PHONY: spellcheck
@@ -28,6 +29,7 @@ clean:
 	rm -f illustrations/*.svg
 	rm -f *.log *.dvi *.aux
 	rm -f *.blg *.bbl
+	rm split_tmp*
 
 mrproper: clean
 	rm -f *.ps *.pdf
