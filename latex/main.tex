@@ -132,7 +132,7 @@ University of British Columbia, Vancouver BC Canada}}
 % 	\small$^\ast$Corresponding author. Email: example@mail.com\and
 % 	% Joint contributions can be indicated like this
 % 	\small$^\dagger$These authors contributed equally to this work.
-\affil[$\ast$]{\small{Corresponding author. Email: shing.zhan@ndph.ox.ac.uk (S.H.Z.); jerome.kelleher@bdi.ox.ac.uk (J.K.)}}
+\affil[$\ast$]{\small{Corresponding author: shing.zhan@ndph.ox.ac.uk (S.H.Z.); jerome.kelleher@bdi.ox.ac.uk (J.K.)}}
 \affil[$\dagger$]{\small{Joint second author}}
 
 \begin{document}
@@ -301,7 +301,7 @@ detection and genealogical inference.
 % and recombination continues to be treated in a post hoc manner, after phylogenetic reconstruction. 
 
 Ancestral recombination graphs (ARGs) describe the reticulate 
-genealogies of sampled sequences in a recombining species\cite{Wong2024},
+genealogies of sampled sequences in a recombining species\cite{Wong2024}
 and provide a natural and efficient means of 
 systematically incorporating recombination 
 into the study of SARS-CoV-2.
@@ -330,7 +330,7 @@ in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors 
 and artifacts~\cite{Hunt2024},
-we present an ARG with 2.48 million high-quality genome sequences.
+we present an ARG with 2.48 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are 
 congruent with the UShER phylogeny built 
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
@@ -443,7 +443,7 @@ After post-processing, the ARG contains
 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and
 2,285,344 mutations
-at 29,893 sites,
+at 29,893 sites
 and is stored in a 32 MiB file.
 Of the nodes, 855 represent recombination events,
 resulting in 316 distinct trees along the genome
@@ -455,9 +455,9 @@ Using the tskit Python API,
 the ARG can be loaded into memory in half a second,
 and the vectorised representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
-For example, a tabular summary for the 2.75 million nodes,
-including sample IDs and Pango assignments (stored as metadata in the ARG),
-can be derived as a Pandas data frame~\cite{Mckinney2010data} in less than half a second.
+For example, a tabular summary of the 2.75 million nodes
+including sample IDs and Pango assignments
+can be derived in less than half a second.
 The ARG can therefore be easily accessed using familiar tools
 with minimal hardware requirements, enabling diverse bespoke analyses.
 
@@ -510,7 +510,7 @@ for multiple sibling origination nodes
 The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (Methods).
 We show that the dates agree well with
-Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times})
+Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times}),
 and overall accuracy is comparable to 
 Chronumental~\cite{sanderson2021chronumental} applied to 
 an UShER tree (Figure~\ref{fig:node_time_testing},
@@ -603,11 +603,11 @@ recombination detection methods
 (Methods, Table~\ref{tab:method_concordance}).
 Early well-characterised recombinants\cite{Jackson2021} are also captured 
 with high fidelity in the ARG
-(supplementary text~\ref{sec:jackson_recombs})
+(supplementary text~\ref{sec:jackson_recombs}),
 and XA provides a representative example (Figure~\ref{fig:subgraphs}A).
 In addition, several complex recombinants with multiple
 breakpoints were excluded from the ARG under the conservative thresholds used
-here, but were nonetheless detected by the HMM 
+here but were nonetheless detected by the HMM 
 (supplementary text~\ref{sec:supplement_rejected_pango_x_lineages};
 Table~\ref{tab:extra_hmm_results}).
 
@@ -639,7 +639,7 @@ Such genomic regions can be mistaken for evidence of recombination.
 We use a simple quality control (QC) measure
 that counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (Methods),
-and effectively identifies a range of issues.
+which effectively identifies a range of issues.
 Figure~\ref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
 for all 855 recombination events.
@@ -652,7 +652,7 @@ known to be affected by amplicon dropout~\cite{Sanderson2021}.
 The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}) and
-the Jackson et al.\ recombinants (supplementary text~\ref{sec:jackson_recombs}).
+those identified by Jackson et al.\ (supplementary text~\ref{sec:jackson_recombs}).
 
 We validated the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
@@ -698,7 +698,7 @@ Strongly supported events show high concordance with independent validation by
 3SEQ, whereas the 5\% of events that fail 3SEQ validation are
 concentrated among the weakest-supported cases ($\leq 5$ averted mutations)
 and associated with recently diverged parents
-(Figure~\ref{fig:recombinant_evidence}B,C); 
+(Figure~\ref{fig:recombinant_evidence}B,C).
 
 \begin{figure}[h]
 \centering
@@ -801,7 +801,7 @@ the time interval size is less than $\sim$2 months
 % Jackson samples in <= 7 day range:
 % Group B ERR5058070 (5 day), singleton ERR5054123 (7 days)
 for example, the time intervals of
-the events associated with the Jackson et al.\ samples
+the events associated with the Jackson et al.\ recombinants
 span 5 to 48 days.
 % Q3: 60 days, max: 259 days
 Longer time intervals imply that a parental or a recombinant lineage
@@ -967,6 +967,7 @@ The 706 recombination events detected by RIPPLES that do not
 correspond to a recombination event in the sc2ts ARG can largely
 be explained by a combination 
 of the strict time ordering imposed by sc2ts
+(parents must precede recombinant offspring)
 and the differing sets of problematic sites masked
 by sc2ts and UShER
 (supplementary text~\ref{sec:detailed_ripples}).
@@ -986,9 +987,11 @@ are identified as descendants of RIPPLES recombinant events,
 with unequivocal origins for 10 lineages, and
 7 lineages associated with two competing events 
 (supplementary text~\ref{sec:detailed_ripples}).
-Thus, a more lenient threshold ($p=3$) was needed for UShER+RIPPLES to detect a similar fraction of Pango X lineages as sct2ts with $k=4$, resulting in more false positives. That said, XB and XAJ are among the lineages detected by UShER+RIPPLES, even at $p=4$,
-strengthening evidence that these are false negatives 
-for sc2ts (Table~\ref{tab:pango_x_lineages}).
+Thus, a more lenient threshold ($p=3$) was needed for UShER+RIPPLES to detect a
+similar fraction of Pango X lineages as sct2ts with $k=4$, resulting in more
+false positives. That said, XB and XAJ are among the lineages detected by
+UShER+RIPPLES, even at $p=4$, strengthening evidence that these are false
+negatives for sc2ts (supplementary text~\ref{sec:dd_xb}, \ref{sec:dd_xaj}).
 
 The choice of the $p$ threshold has a large effect 
 on the number of recombination events detected by RIPPLES, and 
@@ -1017,8 +1020,6 @@ deletions and recombination in a single cohesive structure.
 The ARG is freely available and easily accessible using the 
 tskit software ecosystem, a rich and efficient platform for 
 recombination-aware analyses widely used in population genomics.
-This combination of a deeply validated pandemic-scale ARG with 
-a mature and highly capable software platform forms a unique resource.
 Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
 have helped spur the development of ARG-aware methods in human 
 genomics~\cite{Mejia2025using,Grundler2025geographic,
@@ -1038,7 +1039,8 @@ the Viridian dataset~\cite{Hunt2024}---to facilitate the study
 of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
 
 The other primary contribution of this work is the method used to 
-infer the ARG, sc2ts. The ability to infer an ARG over millions of whole 
+infer the ARG, sc2ts. 
+The ability to build an ARG in real time from millions of whole 
 genomes is a step change in scale over existing ARG 
 inference methods for pathogen data\cite{Didelot2010inference,%
 Vaughan2017inferring,%
@@ -1048,9 +1050,10 @@ Muller2022bayesian}.
 To ensure these innovations are well-founded, we have paid significant 
 attention to methodological detail, carefully validating the ARG
 (and consequently the method) against known results. 
-Sc2ts is currently specialised to take advantage of unique features 
-of the SARS-CoV-2 dataset, but the methods may be readily adapted
-to other pathogens. The LS HMM is the most important element of 
+% Sc2ts is currently specialised to take advantage of unique features 
+% of the SARS-CoV-2 dataset, but the methods may be readily adapted
+% to other pathogens. 
+The LS HMM is the most important element of 
 sc2ts, efficiently finding parsimonious placements for samples 
 among all possible recombinant solutions. The current 
 parametrisation---emphasising interpretability---is simplistic
@@ -1114,9 +1117,7 @@ significant challenges, and the results of the algorithm should
 be regarded more critically in these situations.
 Future methodological improvements may combine the strengths 
 of sophisticated model-based inferences with the power 
-of non-parametric inference~\cite{Bisschop2025likelihoods}
-when such data sparsity is detected.
-
+of non-parametric inference~\cite{Bisschop2025likelihoods}.
 
 %%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
 
