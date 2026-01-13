@@ -2518,8 +2518,6 @@ which would allow the placement of two recurrent red mutations
 rather than one C25276T mutation followed by two reversions.
 The other recurrent mutations can only be made more parsimonious
 by topological rearrangements that would cause recurrence at other sites.
-We therefore believe that the inferred Delta origins
-in the sc2ts ARG are largely correct.
 
 
 \subsubsection{Omicron BA.1 and BA.2}
@@ -2629,17 +2627,9 @@ In addition, we found recurrent deletions in ORF8 and NSP3,
 which have been suggested to be indel hotspots\cite{Akaishi2022}.
 Together, these findings demonstrate that
 the ARG captures genuine deletion events in SARS-CoV-2 evolution.
-A comprehensive evolutionary analysis of the deletion events in the ARG
-is beyond the scope of the current study;
-however, we believe that the ARG, as a resource,
-will enable and facilitate future studies
-to better understand the role of deletions in SARS-CoV-2 evolution
-(alongside recombination and single nucleotide mutations),
-which to date has been understudied in great part due to
-a lack of suitable data models, methods, and tools.
 
 Detection of deletions and inference of deletion events
-remain challenging, especially when the dataset is enormous.
+remain challenging.
 Here we took a naive approach to map deletions onto the ARG,
 treating each site involved in a deletion
 as independent of the other sites.
@@ -2685,14 +2675,15 @@ Similarly, XAD has two independent origins descending from the Xx
 event, and we omit it for simplicity.
 See supplementary text~\ref{sec:dd_xx} for more details on the Xx event.
 
-In cases where nested samples not assigned to the focal Pango lineage are
+In cases where nested samples not assigned to the focal Pango lineage,
+these are
 either from different Pango X lineages 
 or given a generic BA.2 assignment. Of these 59 generic assignments
 6 had conflicts in their UShER placements and could have been
 assigned an X lineage (XJ: 3, XU: 2, XN: 1), and 
 25 were cases in which Scorpio~\cite{Colquhoun2023scorpio}
 failed to find a specific lineage (accounting for 7\%
-of the 357 ``Omicron (Unassigned)`` Scorpio calls across
+of the 357 ``Omicron (Unassigned)'' Scorpio calls across
 2,747,985 alignments).
 
 Table~\ref{tab:pango_x_lineages} summarises
@@ -3034,8 +3025,7 @@ on the basis of the same three sites, plus C2470T
 (\url{https://github.com/cov-lineages/pango-designation/issues/894}).
 However, C2470T is not BA.1-specific
 (\url{https://github.com/cov-lineages/pango-designation/issues/361}).
-Moreover, some BA.2-designated samples such as ERR9823912 also have C2470T,
-so we do not believe this to be a recombinant-supporting mutation either.
+Moreover, some BA.2-designated samples such as ERR9823912 also have C2470T.
 
 \scghdiscussiontwo{781}{XN}
 
