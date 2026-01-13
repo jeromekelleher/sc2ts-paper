@@ -1294,7 +1294,6 @@ consensus sequences (125 GiB over 48 FASTA files) and 30 metadata fields (1.4
 GiB TSV file) to VCF Zarr using 
 pyfaidx~\cite{Shirley2015efficient} and Pandas~\cite{Mckinney2010data} in a 
 reproducible Snakemake\cite{Koster2012snakemake} pipeline.
-
 We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using 
 MAFFT v7.475 \cite{Katoh2013},
 with the option \texttt{--keeplength} to retain the reference coordinate system.
@@ -1370,7 +1369,6 @@ improve matching performance in the LS HMM.
 Alignments read from the VCF Zarr file were first preprocessed
 to mask any non-nucleotide characters (A, C, G, or T) as missing data
 using Numba accelerated \cite{Lam2015numba} Python code.
-
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 Then, excluding the 100 sites identified as problematic, we filtered any samples that had missing data at more than 500 sites (this was set to 10,000 sites for the initial period up to 2020-03-01
 when sampling density was low).
@@ -1389,11 +1387,6 @@ sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
 (Figure~\ref{fig:ls_diagram}).
 % TODO improve wording, lots of "model" here.
-The LS model is an HMM that models a focal genome
-as a sequence of nucleotides (the observed states),
-which are probabilistically emitted
-as an imperfect mosaic of a set of genomes
-in a reference panel (the hidden states).
 The process of switching between the genomes in the reference panel
 is governed by a transition matrix,
 and mismatches between a focal genome and a genome of the reference panel
@@ -1574,7 +1567,7 @@ samples enriched for errors as well as time-travellers.
 The HMM cost threshold approach outlined in the previous section is 
 effective at removing time-travelling samples, but it also filters out 
 important evolutionary events such as
-``saltations'' that characterize major VOCs.
+``saltations'' associated with major VOCs.
 These lineages are characterised by a high number of accumulated mutations,
 and are hypothesised to emerge from chronic infections
 during which the virus is exposed to individual-specific immune selective
@@ -1586,7 +1579,7 @@ as additional samples are added.
 If these samples form a sufficiently plausible group over successive days
 (under criteria described in the next paragraph)
 sc2ts adds the group to the ARG as a 
-``retrospective sample group'' using same mechanisms
+``retrospective sample group'' using the same mechanisms
 as standard daily sample clusters.
 
 Distinguishing a truly emerging outbreak from different forms of
@@ -1679,7 +1672,7 @@ described in the preceding sections and documented in the configuration file.
 % (see \nameref{sec:data_and_code_availability}).
 As discussed above,
 computational resources are dominated by the LS model
-(Figures~\ref{fig:samples_per_day},\ref{fig:inference_resources}) with all 
+(Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}) with all 
 other aspects contributing negligibly.
 
 \subsubsection*{Recombinant rematching}
@@ -1850,17 +1843,16 @@ observed in the copying patterns suggests the existence of
 many genetically distinct, unsampled ancestors
 and some caution should be exercised when interpreting them
 (see supplementary text~\ref{sec:dd_xbb} for more details).
-
 See also Figure~\ref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
-(and more details on the visualisations).
+and more details on the visualisations.
 
 \subsubsection*{Quality control of recombination events}
 
 We examined the genomic positions
 at which the suggested parents differed in allelic state.
 Where such sites clustered closely (3 or fewer bases apart),
-we treated the entire cluster of sites as a single \emph{locus}.
+we treated the entire cluster of sites as a single ``locus''.
 For each genomic region identified by the HMM as having a single parent,
 we calculated the ``net number of supporting loci''
 by counting the number of loci in the region
@@ -1949,7 +1941,7 @@ these mutations into tskit site and mutation tables.
 The resulting file 
  contains 5,345,019 nodes, 3,364,841
 mutations and requires 29MB of storage space in tszip format (usher\_viridian\_v1.0.trees.tsz).
-We validated that the data encoding by comparing the 
+We validated the conversion by comparing the 
 variant data for the UShER tskit tree sequence against our MAFFT alignments.
 There was an exact match between the non-ambiguous nucleotide calls 
 at 27,469 sites. 
@@ -2142,13 +2134,13 @@ to occur $P L / (k + 1)$ bases to the left.
 If we require $n$ mutations on both sides of the breakpoint,
 we can calculate the expected value of the interval to the left
 by summing across a Poisson-distributed number of mutations,
-conditioned on having at least $n$ mutations,
-using the following equation
-(where $\Gamma(x)$ is the gamma function, and
-$\Gamma(x, y)$ is the upper incomplete gamma function):
-
-\[I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{\Gamma(n) - \Gamma(n, P T \mu)}\]
-
+conditioned on having at least $n$ mutations:
+\[
+I_{left} = \frac{L}{n T \mu} \frac{\Gamma(1+n) - \Gamma(1+n, P T \mu)}{
+\Gamma(n) - \Gamma(n, P T \mu)},
+\]
+where $\Gamma(x)$ is the gamma function, and
+$\Gamma(x, y)$ is the upper incomplete gamma function.
 A similar result holds for the right interval ($I_{right}$),
 but with $P$ replaced with $1-P$.
 Summing the two intervals ($I_{left}+I_{right}$)
@@ -2185,7 +2177,7 @@ The output of RIPPLES is two text files, ``recombination.tsv''
 and ``descendants.tsv``. We use the ``descendants.tsv'' file,
 which lists the descendant samples of all recombination events
 keyed by the recombinant node ID, to match events with sc2ts.
-Specifically, for each RIPPLES event identified a list of 
+Specifically, for each RIPPLES event identified by a list of 
 descendant samples, we find the MRCA of 
 that set of samples in the first tree of the sc2ts ARG. 
 The clades are then said to agree if the number of additional 
