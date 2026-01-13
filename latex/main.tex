@@ -109,7 +109,7 @@ A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2
 \author[1,3,5]{Duncan~S.~Palmer}
 \author[4]{Carmen~Lia~Murall}
 \author[6]{Sarah~P.~Otto}
-\author[1]{Jerome~Kelleher}
+\author[1,$\ast$]{Jerome~Kelleher}
 
 % %%%  Institutional affiliations should contain the
 % %%%  following information at minimum: department(s)/
@@ -132,7 +132,7 @@ University of British Columbia, Vancouver BC Canada}}
 % 	\small$^\ast$Corresponding author. Email: example@mail.com\and
 % 	% Joint contributions can be indicated like this
 % 	\small$^\dagger$These authors contributed equally to this work.
-\affil[$\ast$]{\small{Corresponding author: shing.zhan@ndph.ox.ac.uk}}
+\affil[$\ast$]{\small{Corresponding author. Email: shing.zhan@ndph.ox.ac.uk (S.H.Z.); jerome.kelleher@bdi.ox.ac.uk (J.K.)}}
 \affil[$\dagger$]{\small{Joint second author}}
 
 \begin{document}
@@ -160,7 +160,7 @@ Estimated genealogies are fundamental to
 understanding this ocean of data 
 and form the primary input to many downstream analyses.
 A basic assumption of methods to infer genealogies from viral 
-genetic data is that recombination is negligible and 
+genetic data is that recombination is negligible, and 
 the genealogy is a tree.
 However, recombinant lineages have risen to global prevalence, 
 and simple tree representations are therefore 
@@ -323,14 +323,14 @@ recombination \cite{Hudson1983,Griffiths1997ancestral} to a
 rich data structure representing recombinant 
 ancestry\cite{Minichiello2006mapping,Wong2024}.
 
-Here we present sc2ts, a new method to infer ARGs for SARS-CoV-2  
+Here we present sc2ts, a new method to infer ARGs for pathogens like SARS-CoV-2  
 that sequentially adds samples over time in a similar manner 
 to UShER, while automatically detecting and incorporating recombination
 in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors 
 and artifacts~\cite{Hunt2024},
-we infer an ARG with 2.48 million whole genome sequences.
+we present an ARG with 2.48 million high-quality genome sequences.
 We show that the non-recombinant portions of this ARG are 
 congruent with the UShER phylogeny built 
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
@@ -425,7 +425,7 @@ Sc2ts is implemented in Python,
 building on core PyData infrastructure~\cite{Harris2020array,Virtanen2020scipy,
 Mckinney2010data,Lam2015numba} and
 bioinformatics packages~\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
-See Methods for details on all aspects of the method.
+See Methods for details.
 
 
 \subsection*{A comprehensive representation of SARS-CoV-2 evolution}
@@ -469,7 +469,7 @@ with minimal hardware requirements, enabling diverse bespoke analyses.
 % we're not trying to cover *all* history.
 The ARG is a comprehensive and deeply validated record of
 the pandemic phase of SARS-CoV-2 evolutionary history,
-accurately reflecting a range of results from the literature.
+accurately depicting a range of results from the literature.
 First, we compared the sc2ts ARG
 with the state-of-the-art UShER tree inferred from the same dataset
 by pruning both to their intersection of
