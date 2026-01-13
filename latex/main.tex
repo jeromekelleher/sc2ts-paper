@@ -306,11 +306,11 @@ and provide a natural and efficient means of
 systematically incorporating recombination 
 into the study of SARS-CoV-2.
 While ARGs have been of theoretical interest in population genetics 
-for several decades\cite{Hudson1983,Griffiths1991two,Griffiths1997ancestral},
+for several decades\cite{Hudson1983,Griffiths1997ancestral},
 recent breakthroughs in
 simulation
 and inference
-\cite{Kelleher2016,Kelleher2018efficient,Rasmussen2014,Speidel2019,Kelleher2019}
+\cite{Rasmussen2014,Kelleher2016,Kelleher2018efficient,Kelleher2019,Speidel2019}
 have led to a surge 
 of interest in their application in population and statistical 
 genetics\cite{Brandt2024,Lewanski2024,Nielsen2025}.
@@ -395,9 +395,9 @@ using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens200
 % and novel in the area.
 The LS model is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination
-on genetic inheritance~\cite{Delaneau2019-wl,Browning2018-nk},
+on genetic inheritance 
 typically parametrised by population-scaled mutation and
-recombination rates varying along the genome~\cite{Donnelly2010-coalescent}.
+recombination rates varying along the genome (Methods).
 In the interest of interpretability, we simplified this model
 to use a single parameter $k$
 that controls the number of recurrent mutations
@@ -422,10 +422,6 @@ which are then resolved using standard phylogenetic techniques.
 Finally, sc2ts attaches the phylogenies of the clusters to the current ARG, and
 applies parsimony-improving heuristics to address issues introduced
 by the inherent greediness of this strategy.
-Sc2ts is implemented in Python,
-building on core PyData infrastructure~\cite{Harris2020array,Virtanen2020scipy,
-Mckinney2010data,Lam2015numba} and
-bioinformatics packages~\cite{Shirley2015efficient,Kunzmann2018biotite,Kunzmann2023biotite}.
 See Methods for details.
 
 
@@ -630,13 +626,10 @@ along with copying patterns (Figure~\ref{fig:pango_x_copying_patterns})
 and detailed ARG visualisations (Document S2).
 
 \subsection*{Quality control and validation of recombination events}
-
-Sequencing errors in genome assemblies~\cite{Turakhia2020},
-incorrect read alignments~\cite{Hunt2024}, and
-multi-nucleotide substitutions~\cite{DeMaio2020issues}
-can cause short regions of a sample genome to match more closely
-to an alternative genome rather than the true parent.
-Such genomic regions can be mistaken for evidence of recombination.
+Several different error modalities can cause short regions
+a sample genome to match more closely
+to an alternative genome rather than the true parent,
+which can be mistaken for evidence of recombination.
 We use a simple quality control (QC) measure
 that counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (Methods),
@@ -1297,8 +1290,10 @@ deployments~\cite{Czech2025}.
 
 We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
 consensus sequences (125 GiB over 48 FASTA files) and 30 metadata fields (1.4
-GiB TSV file) to VCF Zarr using a 
+GiB TSV file) to VCF Zarr using 
+pyfaidx~\cite{Shirley2015efficient} and Pandas~\cite{Mckinney2010data} in a 
 reproducible Snakemake\cite{Koster2012snakemake} pipeline.
+
 We aligned each sequence to the Wuhan-Hu-1 reference sequence (MN908947.3) using 
 MAFFT v7.475 \cite{Katoh2013},
 with the option \texttt{--keeplength} to retain the reference coordinate system.
@@ -1372,7 +1367,9 @@ to remove sequencing errors and
 improve matching performance in the LS HMM.
 
 Alignments read from the VCF Zarr file were first preprocessed
-to mask any non-nucleotide characters (A, C, G, or T) as missing data.
+to mask any non-nucleotide characters (A, C, G, or T) as missing data
+using Numba accelerated \cite{Lam2015numba} Python code.
+
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 Then, excluding the 100 sites identified as problematic, we filtered any samples that had missing data at more than 500 sites (this was set to 10,000 sites for the initial period up to 2020-03-01
 when sampling density was low).
@@ -1383,7 +1380,8 @@ when sampling density was low).
 The Li and Stephens (LS) model \cite{LiStephens2003} is an approximation of
 the coalescent with recombination
 that captures many of the key features of
-the joint processes of mutation and recombination.
+the joint processes of mutation and recombination,
+and is widely used in human genomics~\cite{Delaneau2019-wl,Browning2018-nk}.
 It is a Hidden Markov Model (HMM) in which a focal genome
 is modelled as a
 sequence of nucleotides that are probabilistically emitted as
@@ -1669,6 +1667,7 @@ With the combination of these mechanisms---gradual accumulation
 of diversity through daily sample groups, retrospective group
 inclusion and manual seeding---we successfully incorporated all major
 lineages in the dataset into the ARG (Figure~\ref{fig:samples_per_day}).
+
 
 \subsubsection*{Primary ARG inference}
 The ``base ARG'' we infer with sc2ts is the starting point for later analyses, 
