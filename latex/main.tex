@@ -396,7 +396,7 @@ using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens200
 % and novel in the area.
 The LS model is a Hidden Markov Model (HMM) widely used in human genomics
 to approximate the effects of mutation and recombination
-on genetic inheritance 
+on genetic inheritance,
 typically parametrised by population-scaled mutation and
 recombination rates varying along the genome (Methods).
 In the interest of interpretability, we simplified this model
@@ -494,7 +494,7 @@ We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
 by computing Pango assignments for all 2.75 million nodes in the ARG
 using Pangolin~\cite{OToole2021assignment} (Methods).
-Only a small minority of the exported sample alignments (21,680 ; 0.87\%) disagreed
+Only a small minority of the exported sample alignments (21,680; 0.87\%) disagreed
 % NOTE Sally pointed out as potentially needing clarification.
 with the source consensus sequences in terms of Pango lineage assignment
 (comparable to the 0.27\% disagreement between pangolin-data
@@ -601,7 +601,7 @@ recombination detection methods
 (Methods, Table~\ref{tab:method_concordance}).
 Early well-characterised recombinants\cite{Jackson2021} are also captured 
 with high fidelity in the ARG
-(supplementary text~\ref{sec:jackson_recombs}),
+(supplementary text~\ref{sec:jackson_recombs}; Table~\ref{tab:jackson}),
 and XA provides a representative example (Figure~\ref{fig:subgraphs}A).
 In addition, several complex recombinants with multiple
 breakpoints were excluded from the ARG under the conservative thresholds used
@@ -624,7 +624,7 @@ diversity in the dataset. Extended analyses of all Pango X lineages, including
 supporting evidence and alternative interpretations, are provided in 
 supplementary text~\ref{sec:supplement_indepth_pango_x_lineages},
 along with copying patterns (Figure~\ref{fig:pango_x_copying_patterns})
-and detailed ARG visualisations (Document S2).
+and detailed ARG visualisations (Document S1).
 
 \subsection*{Quality control and validation of recombination events}
 Several different error modalities can cause short regions
@@ -897,7 +897,7 @@ when all 855 recombinants detected by sc2ts were considered (Methods).
 \caption{
 Recombination events across the pandemic.
 (A) Timing of the recombination events (black curve, right y-axis)
-relative to the global case numbers (\cite{Dong2020}; left y-axis).
+relative to the global case numbers (left y-axis).
 Cases are colour-coded by their Scorpio labels,
 with the key showing those groupings
 with $\geq 1,000$ samples in the Viridian dataset.
@@ -1213,8 +1213,8 @@ GitHub at \url{https://github.com/tskit-dev/sc2ts}.
 \subsubsection*{This includes:}
 Materials and Methods\\
 Supplementary Text\\
-Figures S1 to S20\\
-Tables S1 to S8\\
+Figures S1 to S18\\
+Tables S1 to S9\\
 
 \subsubsection*{Other Supplementary Materials for this manuscript:}
 Documents S1 to S2\\
@@ -1347,7 +1347,7 @@ for SARS-CoV-2 that are enriched for systematic sequencing errors or
 high levels of homoplasy was compiled and updated during 
 the pandemic~\cite{DeMaio2020issues,Turakhia2020stability}. 
 Although these sites are recommended to be masked for UShER
-inference~\cite{Turakhia2020},
+inference~\cite{Turakhia2020stability},
 the list has not been updated to take into account
 the systematic improvements made by the Viridian dataset, and
 we therefore assembled a custom set of sites to mask. 
@@ -2753,7 +2753,7 @@ See supplementary text~\ref{sec:supplement_indepth_pango_x_lineages}
 for extended analyses on all the Pango X lineages in the ARG;
 Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
 associated with Table~\ref{tab:pango_x_lineages};
-and Document S2 for ARG visualisations of the Pango X lineages.
+and Document S1 for ARG visualisations of the Pango X lineages.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_pango\_x\_events.ipynb}
@@ -2810,6 +2810,32 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
 {analysis\_jackson\_recombinants.ipynb}
 for details.
+
+\subsection{Pango X lineages not added to the ARG}
+\label{sec:supplement_rejected_pango_x_lineages}
+
+Ten Pango X lineages which are present in the Viridian v04 dataset
+were not integrated into the ARG
+due to high HMM costs and/or insufficient sample support,
+but their samples were matched against the ARG during inference.
+% https://github.com/jeromekelleher/sc2ts-paper/issues/366
+Table~\ref{tab:extra_hmm_results} summarizes
+the HMM matching results of these Pango X lineages.
+All were identified as recombinants by sc2ts, except XBL.
+(For XBL, the evidence for recombination
+proposed in the Pango designation issue \cite{PangoIssueXBL}
+involves only three informative sites
+supporting the suggested rightmost parent, and
+therefore this likely fell below our threshold of detection.)
+% https://github.com/jeromekelleher/sc2ts-paper/issues/379
+Importantly, these results demonstrate that sc2ts can detect
+recombinants with multiple breakpoints (XAY, XBC, and XBT).
+% https://github.com/jeromekelleher/sc2ts-paper/discussions/776
+% https://github.com/jeromekelleher/sc2ts-paper/discussions/788
+XBC and XBT are relatively clean examples of multiple-breakpoint recombinants,
+with the Pango lineages of the parents and the breakpoint intervals
+concordant with those suggested in the Pango designation issues,
+but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
 
 
 \subsection{Additional analyses of the Pango X lineages}
@@ -3437,32 +3463,6 @@ Its left parent is a BN.3.1-labeled sample, and
 its right parent is a reconstructed internal node
 that is directly supported by a BQ.1.25-labeled sample identical to it.
 
-
-\subsection{Pango X lineages not added to the ARG}
-\label{sec:supplement_rejected_pango_x_lineages}
-
-Ten Pango X lineages which are present in the Viridian v04 dataset
-were not integrated into the ARG
-due to high HMM costs and/or insufficient sample support,
-but their samples were matched against the ARG during inference.
-% https://github.com/jeromekelleher/sc2ts-paper/issues/366
-Table~\ref{tab:extra_hmm_results} summarizes
-the HMM matching results of these Pango X lineages.
-All were identified as recombinants by sc2ts, except XBL.
-(For XBL, the evidence for recombination
-proposed in the Pango designation issue \cite{PangoIssueXBL}
-involves only three informative sites
-supporting the suggested rightmost parent, and
-therefore this likely fell below our threshold of detection.)
-% https://github.com/jeromekelleher/sc2ts-paper/issues/379
-Importantly, these results demonstrate that sc2ts can detect
-recombinants with multiple breakpoints (XAY, XBC, and XBT).
-% https://github.com/jeromekelleher/sc2ts-paper/discussions/776
-% https://github.com/jeromekelleher/sc2ts-paper/discussions/788
-XBC and XBT are relatively clean examples of multiple-breakpoint recombinants,
-with the Pango lineages of the parents and the breakpoint intervals
-concordant with those suggested in the Pango designation issues,
-but XAY is more complex, possibly involving up to six breakpoints as per sc2ts.
 
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
@@ -4173,6 +4173,41 @@ CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
 \begin{table}
 \centering
 \caption{
+Comparison of recombination breakpoint
+intervals and parent lineages for Groups A-D
+reported by Jackson et al.\ with the corresponding
+recombination events in the sc2ts ARG.
+The second column gives the number of sequences in the group.
+See the text for details of the groups and the sequences included.
+limited to the samples considered by Jackson et al.
+The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
+we subtract one to the left coordinates and add one to the right coordinates 
+to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
+and add one to the right coordinate to make the intervals right-exclusive.
+}
+\label{tab:jackson}
+\begin{tabular}{lllr@{--}lr@{+}l}
+\toprule
+Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
+\midrule
+A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
+\cmidrule{3-7}
+B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+\cmidrule{3-7}
+C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
+             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+\cmidrule{3-7}
+D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{
 Sc2ts detection results for Pango X lineages not added to the ARG.
 The number of samples in Viridian v04 dataset
 assigned to these Pango X lineages,
@@ -4278,41 +4313,6 @@ XAL:3, XAF:1, XH:2} \\
 \end{tabular}
 
 \end{scriptsize}
-\end{table}
-
-\begin{table}
-\centering
-\caption{
-Comparison of recombination breakpoint
-intervals and parent lineages for Groups A-D
-reported by Jackson et al.\ with the corresponding
-recombination events in the sc2ts ARG.
-The second column gives the number of sequences in the group.
-See the text for details of the groups and the sequences included.
-limited to the samples considered by Jackson et al.
-The breakpoint coordinates in Table 1 of Jackson et al.\ have been altered as follows: 
-we subtract one to the left coordinates and add one to the right coordinates 
-to correspond to the \texttt{tskit} definition of inheritance on either side of a breakpoint,
-and add one to the right coordinate to make the intervals right-exclusive.
-}
-\label{tab:jackson}
-\begin{tabular}{lllr@{--}lr@{+}l}
-\toprule
-Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{r}{Parent lineages} \\
-\midrule
-A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  20,411&21,765 & B.1.177.18&B.1.1.7 \\
-\cmidrule{3-7}
-B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
-             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
-\cmidrule{3-7}
-C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221 \\
-             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
-\cmidrule{3-7}
-D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
-\bottomrule
-\end{tabular}
 \end{table}
 
 
