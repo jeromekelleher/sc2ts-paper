@@ -10,17 +10,14 @@
 
 % Allow external graphics files
 \usepackage{graphicx}
-
 \usepackage[margin=1in]{geometry}
 
 % Double line spacing, including in captions
-\linespread{1.5} % For some reason double spacing is 1.5, not 2.0!
+% \linespread{1.5} % For some reason double spacing is 1.5, not 2.0!
 
 % No date in the title section
 \date{}
 
-% Reference section heading
-\renewcommand\refname{References and Notes}
 
 % Using line numbers for initial submission
 \usepackage{lineno}
@@ -69,23 +66,6 @@
 % Store the title in a variable for reuse in the supplement (otherwise \maketitle deletes it)
 \title{A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2}
 
-% Author and institution list.
-% Institution numbers etc. should be hard-coded, do *not* use the \footnote command.
-% \author{
-% 	% You can write out first names or use initials - either way is acceptable, but be consistent
-% 	First~Author$^{1\ast\dagger}$,
-% 	A.~Scientist$^{2\dagger}$,
-% 	Someone~E.~Else$^{2}$\and
-% 	% Additional lines of authors should be inserted using the \and command (not \\)
-% 	% Institution list, in a slightly smaller font
-% 	\small$^{1}$Department, Institution, City \& Postal Code, Country.\and
-% 	\small$^{2}$Another Department, Different Institution, City \& Postal Code, Country.\and
-% 	% Identify at least one corresponding author, with contact email address
-% 	\small$^\ast$Corresponding author. Email: example@mail.com\and
-% 	% Joint contributions can be indicated like this
-% 	\small$^\dagger$These authors contributed equally to this work.
-% }
-
 \author[1,2,$\ast$]{Shing~H.~Zhan}
 \author[1,$\dagger$]{Yan~Wong}
 \author[3,$\dagger$]{Anastasia~Ignatieva}
@@ -96,11 +76,6 @@
 \author[4]{Carmen~Lia~Murall}
 \author[6]{Sarah~P.~Otto}
 \author[1,$\ast$]{Jerome~Kelleher}
-
-% %%%  Institutional affiliations should contain the
-% %%%  following information at minimum: department(s)/
-% %%%  subunit(s), institution, city, state/region (if
-% %%%  applicable), and country.
 
 \affil[1]{\small{Big Data Institute, Li Ka Shing Centre for Health
 Information and Discovery, University of Oxford, United Kingdom}}
@@ -125,6 +100,7 @@ University of British Columbia, Vancouver BC Canada}}
 
 \maketitle
 
+\linenumbers
 \begin{abstract}
 Millions of SARS-CoV-2 genome sequences were collected
 during the COVID-19 pandemic, forming a dataset of unprecedented richness.
