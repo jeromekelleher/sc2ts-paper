@@ -1045,80 +1045,7 @@ Future methodological improvements may combine the strengths
 of sophisticated model-based inferences with the power
 of non-parametric inference~\cite{Bisschop2025likelihoods}.
 
-%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
-
-
 \clearpage % Clear all remaining figures and tables then start a new page
-
-% The list of references goes after the main text and before the acknowledgements
-% When preparing an initial submission, we recommend you use BibTeX, like this:
-%
-\bibliography{references}
-
-
-\bigskip
-
-%%%%%%%%%%%%%%%% ACKNOWLEDGEMENTS %%%%%%%%%%%%%%%
-
-\section*{Acknowledgments}
-We would like to thank Jotun Hein for helpful comments on the manuscript.
-
-For the purpose of Open Access, the authors have applied a CC BY public
-copyright licence to any Author Accepted Manuscript version arising from this
-submission.
-
-Computation used the Oxford Biomedical Research Computing (BMRC) facility, a
-joint development between the Wellcome Centre for Human Genetics and the Big
-Data Institute supported by Health Data Research UK and the NIHR Oxford
-Biomedical Research Centre. The views expressed are those of the author(s) and
-not necessarily those of the NHS, the NIHR or the Department of Health.
-
-\paragraph*{Funding:}
-SHZ is supported by an NDPH Intermediate Research Fellowship (Oxford Population
-Health, University of Oxford).
-IG is supported by Wellcome (DPhil in Genomic Medicine and Statistics, 228319/Z/23/Z).
-DSP acknowledges funding administered by the Danish National Research Foundation
-in support of the Pioneer Centre for SMARTbiomed.
-SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
-JK acknowledges support from the
-Oxford-Janssen Translational Genomics Fellowship,
-research grant R01 HG012473 from the National Institutes of Health NHGRI,
-research grant EP/X024881/1 from the Engineering and Physical Sciences Research Council,
-and the Robertson Foundation.
-
-\paragraph*{Author contributions:}
-% Credit system: https://credit.niso.org/
-Conceptualization, SHZ, CLM, SPO, JK;
-% Methodology, software, resources, visualization
-methodology, SHZ, YW, AI, KE, BJ, DSP, SPO, JK;
-% Invesigation, data curation, formal analysis, validation
-investigation, SHZ, YW, AI, KE, IG, SPO, JK;
-writing--original draft, SHZ, JK;
-writing--review \& editing, SHZ, YW, AI, KE, IG, BJ, DSP, CLM, SPO, JK;
-resources, JK;
-supervision, JK;
-funding acquisition, JK.
-
-\paragraph*{Competing interests:}
-There are no competing interests to declare.
-
-\paragraph*{Data, code, and materials availability:}
-\begin{itemize}
-\item The ARG in tskit format has been deposited at Zenodo and is publicly
-available at \url{https://zenodo.org/records/17558489}. The UShER tree
-in tskit format is also available, as well as the intersection files.
-\item The sequence alignments in VCF Zarr format have been deposited at
-Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
-\item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
-\item The complete configuration file for running sc2ts to build the ARG above is
-publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
-\item The Snakemake workflow for ARG post-processing is publicly
-available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
-\item The original code of sc2ts is publicly available on
-GitHub at \url{https://github.com/tskit-dev/sc2ts}.
-\item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
-\end{itemize}
-
 
 \section*{Online Methods}
 
@@ -2164,6 +2091,80 @@ with an adjusted $R^2$ of 26.5\%.
 Thus, similar conclusions are reached with either dataset,
 although filtering the recombination events to the 354
 with better support revealed a stronger relationship with case numbers.
+
+
+\bigskip
+
+%%%%%%%%%%%%%%%% ACKNOWLEDGEMENTS %%%%%%%%%%%%%%%
+
+\section*{Acknowledgments}
+We would like to thank Jotun Hein for helpful comments on the manuscript.
+
+For the purpose of Open Access, the authors have applied a CC BY public
+copyright licence to any Author Accepted Manuscript version arising from this
+submission.
+
+Computation used the Oxford Biomedical Research Computing (BMRC) facility, a
+joint development between the Wellcome Centre for Human Genetics and the Big
+Data Institute supported by Health Data Research UK and the NIHR Oxford
+Biomedical Research Centre. The views expressed are those of the author(s) and
+not necessarily those of the NHS, the NIHR or the Department of Health.
+
+\paragraph*{Funding:}
+SHZ is supported by an NDPH Intermediate Research Fellowship (Oxford Population
+Health, University of Oxford).
+IG is supported by Wellcome (DPhil in Genomic Medicine and Statistics, 228319/Z/23/Z).
+DSP acknowledges funding administered by the Danish National Research Foundation
+in support of the Pioneer Centre for SMARTbiomed.
+SO acknowledges support from the Natural Sciences and Engineering Research Council of Canada (RGPIN-2022-03726).
+JK acknowledges support from the
+Oxford-Janssen Translational Genomics Fellowship,
+research grant R01 HG012473 from the National Institutes of Health NHGRI,
+research grant EP/X024881/1 from the Engineering and Physical Sciences Research Council,
+and the Robertson Foundation.
+
+\paragraph*{Author contributions:}
+% Credit system: https://credit.niso.org/
+Conceptualization, SHZ, CLM, SPO, JK;
+% Methodology, software, resources, visualization
+methodology, SHZ, YW, AI, KE, BJ, DSP, SPO, JK;
+% Invesigation, data curation, formal analysis, validation
+investigation, SHZ, YW, AI, KE, IG, SPO, JK;
+writing--original draft, SHZ, JK;
+writing--review \& editing, SHZ, YW, AI, KE, IG, BJ, DSP, CLM, SPO, JK;
+resources, JK;
+supervision, JK;
+funding acquisition, JK.
+
+\paragraph*{Competing interests:}
+There are no competing interests to declare.
+
+\paragraph*{Data, code, and materials availability:}
+\begin{itemize}
+\item The ARG in tskit format has been deposited at Zenodo and is publicly
+available at \url{https://zenodo.org/records/17558489}. The UShER tree
+in tskit format is also available, as well as the intersection files.
+\item The sequence alignments in VCF Zarr format have been deposited at
+Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
+\item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
+\item The complete configuration file for running sc2ts to build the ARG above is
+publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
+\item The Snakemake workflow for ARG post-processing is publicly
+available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
+\item The original code of sc2ts is publicly available on
+GitHub at \url{https://github.com/tskit-dev/sc2ts}.
+\item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%
+
+
+
+% The list of references goes after the main text and before the acknowledgements
+% When preparing an initial submission, we recommend you use BibTeX, like this:
+%
+\bibliography{references}
 
 
 \newpage
