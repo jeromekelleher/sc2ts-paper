@@ -1,7 +1,7 @@
 # dataset="data/viridian_2024-04-29.alpha1.zarr.zip"
 dataset="/tmp/jk/viridian_2024-04-29.alpha1.zarr.zip"
 
-run_id="v1-beta1"
+run_id="v2"
 results_dir = "results"
 log_dir = "logs"
 matches_dir= "/tmp/jk/matches"
