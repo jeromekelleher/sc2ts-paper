@@ -60,6 +60,9 @@ include_samples=[
 
     # BA.2 https://github.com/jeromekelleher/sc2ts-paper/issues/265
     "SRR17461792", # 2021-11-27, South Africa   Gauteng
+
+    # BA.3 https://github.com/jeromekelleher/sc2ts-paper/issues/1002
+    "SRR17258788", # 2021-11-30, South Africa   Kwazulu-Natal
 ]
 
 
