@@ -50,6 +50,12 @@ include_samples=[
 
     # BA.5 https://github.com/jeromekelleher/sc2ts-paper/issues/1003
     "SRR23625005", # 2022-02-06, South Africa
+
+    # XB parents https://github.com/jeromekelleher/sc2ts-paper/issues/1013
+    # B.1.634
+    "SRR14037887", # 2021-03-03, USA   Texus
+    # B.1.631
+    "SRR16176783", # 2020-12-16, USA   California
 ]
 
 
