@@ -63,6 +63,9 @@ include_samples=[
 
     # BA.3 https://github.com/jeromekelleher/sc2ts-paper/issues/1002
     "SRR17258788", # 2021-11-30, South Africa   Kwazulu-Natal
+
+    # BA.5 https://github.com/jeromekelleher/sc2ts-paper/issues/1003
+    "SRR23625005", # 2022-02-06, South Africa
 ]
 
 
