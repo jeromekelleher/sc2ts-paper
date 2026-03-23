@@ -32,28 +32,12 @@ num_threads=80
 memory_limit=250
 
 include_samples=[
-    # First ten designated sequence for 617.1
-    # "ERR5461550", #2021-02-22 # removing this for now as it's colliding with 617 sequence
+    # B.1.617.1 https://github.com/jeromekelleher/sc2ts-paper/issues/1006
     "ERR5461562", #2021-02-22
     "ERR5469699", #2021-03-02
-    "ERR5469807", #2021-03-04
-    "ERR5486121", #2021-03-04
-    "ERR5521603", #2021-03-06
-    "ERR5531143", #2021-03-07
-    "ERR5532096", #2021-03-07
-    "ERR5532118", #2021-03-07
-    "ERR5537492", #2021-03-09
-    # First ten designated sequences for 617.2
-    # "ERR5653377", # 2021-03-18 # Removing these two as they seem to come after next one
-    # "ERR5656218", # 2021-03-18 # resulting in double recombination and reversions
+
+    # B.1.617.2 https://github.com/jeromekelleher/sc2ts-paper/issues/1006
     "ERR5676810", # 2021-03-23
-    "ERR5690893", # 2021-03-28
-    "ERR5690055", # 2021-03-30
-    "ERR5690921", # 2021-03-30
-    "ERR5695631", # 2021-03-30
-    "ERR5701881", # 2021-03-30
-    "ERR5690052", # 2021-03-31
-    "ERR5690920", # 2021-03-31
 
     # BA.1 https://github.com/jeromekelleher/sc2ts-paper/issues/264
     "SRR17041376", # 2021-11-12  South Africa   Gauteng
