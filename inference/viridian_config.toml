@@ -13,8 +13,9 @@ exclude_sites = [
     106, 635, 8835, 11074, 11083, 15521, 16887, 21575, 21987, 27577, 28253, 29733
 ]
 
-[extend_parameters]
 date_field="Date_tree"
+
+[extend_parameters]
 num_mismatches=4
 hmm_cost_threshold=7
 max_missing_sites=500
