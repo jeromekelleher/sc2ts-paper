@@ -1,5 +1,5 @@
-# dataset="data/viridian_2024-04-29.alpha1.zarr.zip"
-dataset="/tmp/jk/viridian_2024-04-29.alpha1.zarr.zip"
+# From https://zenodo.org/records/16314739/files/viridian_mafft_2024-10-14_v1.vcz.zip
+dataset="../data/viridian_mafft_2024-10-14_v1.vcz.zip"
 
 run_id="v2"
 results_dir = "results"
