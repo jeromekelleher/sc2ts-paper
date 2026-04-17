@@ -1,10 +1,10 @@
 # From https://zenodo.org/records/16314739/files/viridian_mafft_2024-10-14_v1.vcz.zip
-dataset="../data/viridian_mafft_2024-10-14_v1.vcz.zip"
+dataset="/well/kelleher/users/nrn539/sc2ts_revision/data/viridian_mafft_2024-10-14_v1.vcz.zip"
 
-run_id="v2"
+run_id="v2_2026-04-17"
 results_dir = "results"
 log_dir = "logs"
-matches_dir= "/tmp/jk/matches"
+matches_dir= "/tmp/sc2ts/matches"
 log_level = 2
 
 exclude_dates = ["2020-12-31"]
@@ -29,8 +29,8 @@ max_recurrent_mutations=2
 max_mutations_per_sample=5
 retrospective_window=7
 
-num_threads=80
-memory_limit=250
+num_threads=192
+memory_limit=800
 
 include_samples=[
     # B.1.617.1 https://github.com/jeromekelleher/sc2ts-paper/issues/1006
