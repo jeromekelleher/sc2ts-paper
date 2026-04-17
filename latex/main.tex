@@ -1171,26 +1171,31 @@ A set of problematic sites
 for SARS-CoV-2 that are enriched for systematic sequencing errors or
 high levels of homoplasy was compiled and updated during
 the pandemic~\cite{DeMaio2020issues,Turakhia2020stability}.
-Although these sites are recommended to be masked for UShER
+Although these sites are recommended to be masked for phylogenetic
 inference~\cite{Turakhia2020stability},
 the list has not been updated to take into account
 the systematic improvements made by the Viridian dataset, and
 we therefore assembled a custom set of sites to mask.
+# https://github.com/jeromekelleher/sc2ts-paper/issues/1004
 To do so, we first built a preliminary ARG
 from the samples collected up to June 30, 2021,
 without any site masking.
-Then, we identified the top 100 sites
-in terms of mutation counts in the ARG.
-Only 11 of these sites
-(635, 8835, 11074, 11083, 15521, 16887,
-21304, 21305, 21575, 21987 and 28253)
-were present in the problematic sites file
-(\url{https://github.com/W-L/ProblematicSites_SARS-CoV2}),
-and most sites in this list were typical
-in terms of the number of mutations.
-We therefore masked our 100 most mutation-rich sites
-to remove sequencing errors and
-improve matching performance in the LS HMM.
+Then, we identified the sites with at least 200 mutations in the ARG.
+Among these 120 highly mutated sites,
+we excluded those having lineage-defining mutations
+(as taken from a global UShER phylogeny built using GISAID data;
+\url{https://github.com/andersen-lab/Freyja/blob/main/freyja/data/lineage_mutations.json},
+commit edda27c),
+leaving a set of 11 sites.
+# https://github.com/jeromekelleher/sc2ts-paper/issues/1004#issuecomment-4262825159
+Six of these sites were present in the problematic sites file
+(\url{https://github.com/W-L/ProblematicSites_SARS-CoV2}).
+In addition, we masked two more problematic sites
+where sequencing errors frequently occur with the ARTIC V4 primers~\cite{Sanderson2021issues}.
+We therefore masked 13 sites
+to reduce the effect of sequencing errors and homoplasy
+on the matching performance of the LS HMM,
+without impacting Pango lineage assignment later on.
 
 Alignments read from the VCF Zarr file were first preprocessed
 to mask any non-nucleotide characters (A, C, G, or T) as missing data
