@@ -8,7 +8,7 @@
 # needs a lot of cores, so in practise you need to do something like this
 # first to get the bit needing parallelism (and lots of memory) done
 #
-# snakemake sc2ts_viridian_v1.2.trees.tsz --cores=40
+# snakemake sc2ts_viridian_v2.0.trees.tsz --cores=40
 # 
 # Then, the rest should just run like
 #
@@ -17,36 +17,37 @@
 
 # Notes on saved files in the data directory
 #
-# recombinants.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
-# pango_x_events.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
-# deletion_events.csv -> sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
+# recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
+# pango_x_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
+# deletion_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
 rule all:
     input:
         # Base debug report
-        "logs/sc2ts_v1_2023-02-21_debug-report.ipynb",
+        "logs/sc2ts_v2_2024-06-06_debug-report.ipynb",
         # Rewiring recombinants report
-        "logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb",
+        "logs/sc2ts_v2_2024-06-06_rewire-recombinants-report.ipynb",
         # Comparison between sc2ts and usher ARGs
         "logs/usher_sc2ts_comparison.ipynb",
         # Deletion events.
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv",
         # Recombinant data. Suffixes after _recombinants denote the operations
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
         # CovRecomb output is left in its own file
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_CovRecomb_output.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_CovRecomb_output.csv",
         # 3SEQ output
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_3seq.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_3seq.csv",
         # Events corresponding to Pango X lineages. This is the pango_x_events.csv file
         # in the top-level data directory
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
         "logs/final_arg_report.ipynb",
         # Intersection file needed for ripples analyses
-        "usher_intersection_2023-02-21.pb",
+        "usher_intersection_2024-06-06.pb",
         # These will run ripples and do the data processing
-        "sc2ts_viridian_v1.2_ripples_p4.csv",
-        "sc2ts_viridian_v1.2_ripples_p3.csv",
+        "sc2ts_viridian_v2.0_ripples_p4.csv",
+        "sc2ts_viridian_v2.0_ripples_p3.csv",
+
 rule final_args:
     conda: 
         "sc2ts.yml"
@@ -61,30 +62,29 @@ rule final_args:
         # 6) Compute pango assignment (must be after parsimony mapping and heuristics)
         # 7) Dating (_dated)
         # 8) Minimise metadata (must be last step)
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
         "usher_v1_2024-06-06_mm.trees.tsz",
-        "sc2ts_2023-02-21_intersection.trees.tsz",
-        "usher_2023-02-21_intersection_ds_di.trees.tsz",
+        "sc2ts_2024-06-06_intersection.trees.tsz",
+        "usher_2024-06-06_intersection_ds_di.trees.tsz",
     output: 
         # Version numbers - mainly driven by the sc2ts_viridian_v1 version
         # as the others except usher_viridian are derived from this. These 
         # are major.minor, with major versions meaning significant changes,
-        # minor being relatively minor tweaks to the ARG
-        "sc2ts_viridian_v1.2.trees.tsz",
+        # minor being relatively minor tweaks to the ARG.
+        "sc2ts_viridian_v2.0.trees.tsz",
         "usher_viridian_v1.0.trees.tsz",
-        "sc2ts_viridian_inter_v1.2.trees.tsz",
-        "usher_viridian_inter_v1.2.trees.tsz",
+        "sc2ts_viridian_inter_v2.0.trees.tsz",
+        "usher_viridian_inter_v2.0.trees.tsz",
     log:
         notebook="logs/final_arg_report.ipynb"
     notebook:
         "notebooks/final_arg_report.py.ipynb"
-        
 
 rule initialise:
     input:
-        "../inference/results/v1-beta1/v1-beta1_{DATE}.ts",
+        "../inference/results/v2_2026_04_17/v2_2026_04_17_{DATE}.ts",
     output:
-        "sc2ts_v1_{DATE}.trees",
+        "sc2ts_v2_{DATE}.trees",
     shell:
         """
         cp {input} {output}
@@ -102,7 +102,6 @@ rule debug_report:
         notebook="logs/{DR_PREFIX}_debug-report.ipynb"
     notebook:
         "notebooks/debug_report.py.ipynb"
-
 
 rule rematch_recombinants_lbs:
     conda:
@@ -141,7 +140,6 @@ rule rewire_recombinants_report:
     notebook:
         "notebooks/rewire-recombinants-report.py.ipynb"
 
-
 rule rematch_recombinants:
     conda:
         "sc2ts.yml"
@@ -152,7 +150,7 @@ rule rematch_recombinants:
     shell:
         """
         python scripts/rematch_recombinants.py {input} \
-            --pattern=../inference/results/v1-beta1/v1-beta1_{{date}}.ts \
+            --pattern=../inference/results/v2_2026-04-17/v2_2026-04-17_{{date}}.ts \
             {output}
         """
 
@@ -169,7 +167,7 @@ rule postprocess:
     shell:
         """
         python -m sc2ts postprocess {input} {output} \
-            --match-db=../inference/results/v1-beta1.matches.db
+            --match-db=../inference/results/v2_2026-04-17.matches.db
         """
 
 rule map_parsimony:
@@ -203,7 +201,6 @@ rule apply_parsimony_heuristics:
             --report={output[1]} --no-progress -vv
         """
 
-
 rule deletion_report:
     conda:
         "sc2ts.yml"
@@ -216,7 +213,6 @@ rule deletion_report:
     notebook:
         "notebooks/deletion_report.py.ipynb"
 
-
 rule recombinants_report:
     conda:
         "sc2ts.yml"
@@ -228,7 +224,6 @@ rule recombinants_report:
         notebook="logs/{RECR_PREFIX}_recombinants_report.ipynb"
     notebook:
         "notebooks/recombinants_report.py.ipynb"
-
 
 rule pango_x_events:
     conda:
@@ -253,7 +248,6 @@ rule add_pangonet_to_csv:
         """
         python scripts/add_pangonet_distance_to_csv.py {input} {output}
         """
-
 
 rule add_net_supporting_loci_to_csv:
     conda:
@@ -295,7 +289,6 @@ rule shift_breakpoints:
         python scripts/run_breakpoint_shift_for_deletions.py -v {input} {output} > {log} 2>&1
         """
 
-
 rule date:
     conda:
         "sc2ts.yml"
@@ -308,7 +301,6 @@ rule date:
         python scripts/run_nonsample_dating.py {input} {output} --add-tsdate-metadata
         """
 
-
 rule tszip:
     conda:
         "sc2ts.yml"
@@ -320,7 +312,6 @@ rule tszip:
         """
         python -m tszip -k {input} 
         """
-
 
 rule write_fasta:
     conda:
@@ -350,7 +341,6 @@ rule run_pangolin:
         pangolin -t {workflow.cores} {input} --tempdir=pangolin_tmp --outfile={output}
         """
 
-
 rule add_pangolin_metadata:
     input:
         "{APM_PREFIX}.trees",
@@ -378,7 +368,6 @@ rule add_pangolin_metadata:
 
         tables.dump(f"{output}")
 
-
 rule minimise_metadata_pango_scorpio:
     conda:
         "sc2ts.yml"
@@ -395,7 +384,6 @@ rule minimise_metadata_pango_scorpio:
             --drop-vestigial-root
         """
 
-
 rule minimise_metadata_date:
     conda:
         "sc2ts.yml"
@@ -409,7 +397,6 @@ rule minimise_metadata_date:
         python -m sc2ts minimise-metadata {input} {output} \
             -m strain sample_id -m Date_tree Date_tree
         """
-
 
 rule minimise_metadata:
     conda:
@@ -428,7 +415,6 @@ rule minimise_metadata:
 ########################
 # Usher tree conversion
 ########################
-
 rule download_json:
     output:
         "tree.all_viridian.202409.jsonl.gz"
@@ -472,9 +458,9 @@ rule subset_mat:
         "pangolin.yml"
     input:
         "tree.all_viridian.202409.pb.gz",
-        "sc2ts_2023-02-21_intersection_sample_ids.txt",
+        "sc2ts_2024-06-06_intersection_sample_ids.txt",
     output:
-        "usher_intersection_2023-02-21.pb",
+        "usher_intersection_2024-06-06.pb",
     shell:
         """
         matUtils extract -i {input[0]} -s {input[1]} -o {output}
@@ -484,7 +470,7 @@ rule run_ripples:
     conda:
         "pangolin.yml"
     input:
-        "usher_intersection_2023-02-21.pb",
+        "usher_intersection_2024-06-06.pb",
     output:
         directory("ripples_p{PARSIMONY}")
     shell:
@@ -499,13 +485,12 @@ rule process_ripples:
         "sc2ts.yml"
     input:
         "ripples_p{PARSIMONY}",
-        "usher_intersection_2023-02-21.pb",
+        "usher_intersection_2024-06-06.pb",
         "{SC2TS_ARG_VERSION}.trees.tsz",
     output:
         "{SC2TS_ARG_VERSION}_ripples_p{PARSIMONY}.csv"
     shell:
         "python scripts/process_ripples.py {input} {output}"
-
 
 rule convert_topology:
     conda:
@@ -563,10 +548,10 @@ rule sc2ts_usher_intersection:
     input:
         "usher_v1_2024-06-06_mmd.trees",
         # We use the final trees after post-processing and applying parsimony mapping
-        "sc2ts_v1_2023-02-21_pr_pp_mp_aph_mm.trees"
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_mm.trees"
     output:
-        "usher_2023-02-21_intersection.trees",
-        "sc2ts_2023-02-21_intersection.trees",
+        "usher_2024-06-06_intersection.trees",
+        "sc2ts_2024-06-06_intersection.trees",
     shell:
         """
         python scripts/mat2tsk.py intersect --intersect-sites {input} {output}
@@ -576,9 +561,9 @@ rule intersection_sample_ids:
     conda:
         "sc2ts.yml"
     input:
-        "sc2ts_2023-02-21_intersection.trees",
+        "sc2ts_2024-06-06_intersection.trees",
     output:
-        "sc2ts_2023-02-21_intersection_sample_ids.txt",
+        "sc2ts_2024-06-06_intersection_sample_ids.txt",
     shell:
         """
         python scripts/mat2tsk.py export-samples {input} {output}
@@ -587,7 +572,6 @@ rule intersection_sample_ids:
 rule generate_all_sites:
     output: "all_sites.txt"
     shell: "seq 1 29903 > {output}"
-
 
 rule all_sites_parsimony:
     conda:
@@ -606,30 +590,26 @@ rule all_sites_parsimony:
             --sites={input[2]}
         """
 
-
-
-
-
 rule usher_sc2ts_comparison:
     conda:
         "sc2ts.yml"
     input:
-        "usher_2023-02-21_intersection.trees",
-        "usher_2023-02-21_intersection_asp.trees",
-        "usher_2023-02-21_intersection_asp.csv",
-        "sc2ts_2023-02-21_intersection.trees",
-        "sc2ts_2023-02-21_intersection_asp.trees",
-        "sc2ts_2023-02-21_intersection_asp.csv",
+        "usher_2024-06-06_intersection.trees",
+        "usher_2024-06-06_intersection_asp.trees",
+        "usher_2024-06-06_intersection_asp.csv",
+        "sc2ts_2024-06-06_intersection.trees",
+        "sc2ts_2024-06-06_intersection_asp.trees",
+        "sc2ts_2024-06-06_intersection_asp.csv",
     log:
         notebook="logs/usher_sc2ts_comparison.ipynb"
 
     notebook:
         "notebooks/usher_sc2ts_comparison.py.ipynb"
 
-# ################
-# # 3SEQ
-# ################
 
+################
+# 3SEQ
+################
 rule gitlab_3seq:
     output: 
         directory("3seq")
@@ -673,7 +653,7 @@ rule run3seq:
 rule generate_sample_list:
     conda: "sc2ts.yml"
     input: 
-        "sc2ts_viridian_v1.2_ripples_p{PARSIMONY}.csv",
+        "sc2ts_viridian_v2.0_ripples_p{PARSIMONY}.csv",
     output:
         "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     shell:
@@ -683,12 +663,12 @@ rule generate_sample_list:
 
 rule generate_usher_vcfs:
     conda: "pangolin.yml"
-    input: 
+    input:
         "tree.all_viridian.202409.pb.gz",
         "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     output:
         "ripples_3seq_p{PARSIMONY}_tmp/vcfs_generated"
-    shell:  
+    shell:
         # NOTE we're forced to do this annoying splitting and combining
         # because of an apparaent bug in matUtils, where it doesn't output
         # all the samples in the VCF for larger sample sizes.
@@ -710,7 +690,7 @@ rule generate_usher_fastas:
     output:
         "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated"
     shell:
-        """     
+        """
         cd ripples_3seq_p{wildcards.PARSIMONY}_tmp
         for f in `ls fixed_*.vcf`; do
             echo $f
@@ -721,7 +701,7 @@ rule generate_usher_fastas:
 
 rule run_ripples_3seq:
     input: 
-        "sc2ts_viridian_v1.2_ripples_p{PARSIMONY}.csv",
+        "sc2ts_viridian_v2.0_ripples_p{PARSIMONY}.csv",
         "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated",
         "3seq/3seq",
     output:
@@ -732,6 +712,7 @@ rule run_ripples_3seq:
             {input[0]} \
             ripples_3seq_p{wildcards.PARSIMONY}_tmp/ {output}
         """
+
 
 ################
 # Rebar stuff
@@ -749,7 +730,6 @@ rule rebar_dataset:
         --output-dir rebar
       """
 
-
 rule run_rebar:
     conda: "rebar.yml"
     input: 
@@ -766,7 +746,7 @@ rule run_rebar:
           --output-dir rebar_output
       cp rebar_output/linelist.tsv {output}
       """
-        
+
 rule extract_recombinant_alignments:
     conda: "sc2ts.yml"
     input:
@@ -778,7 +758,6 @@ rule extract_recombinant_alignments:
         """
         python scripts/get_sample_fasta.py {input} {output}
         """
-
 
 rule add_rebar_to_csv:
     conda: "sc2ts.yml"
@@ -792,6 +771,7 @@ rule add_rebar_to_csv:
         python scripts/add_rebar_to_csv.py {input} {output}
         """
 
+
 ################
 # CovRecomb stuff
 #################
@@ -801,7 +781,7 @@ rule CovRecomb_github:
         directory("CovRecomb")
     shell: 
         "git clone https://github.com/wuaipinglab/CovRecomb.git"
-        
+
 rule append_reference_to_alignments:
     input:
         "{ARTA_PREFIX}_recombinants.fasta",
@@ -826,7 +806,6 @@ rule run_covrecomb:
             -r 'MN908947 (Wuhan-Hu-1/2019)' \\
             -o ../../{output} 
       """
-        
 
 
 #######
@@ -840,7 +819,6 @@ rule lineage_mutations:
         """
         curl -o {output} https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage_mutations.json
         """
-
 
 rule deletion_site_data:
     output:
