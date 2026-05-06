@@ -82,7 +82,7 @@ rule final_args:
 
 rule initialise:
     input:
-        "../inference/results/v2_2026_04_17/v2_2026_04_17_{DATE}.ts",
+        "../inference/results/v2_2026-04-17/v2_2026-04-17_{DATE}.ts",
     output:
         "sc2ts_v2_{DATE}.trees",
     shell:
