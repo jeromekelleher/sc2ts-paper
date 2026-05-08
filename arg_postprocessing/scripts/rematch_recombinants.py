@@ -53,6 +53,9 @@ def run(ts, output, pattern):
 
     all_work = []
     for u in recombinants:
+        # Skip multi-parent recombinants.
+        if np.sum(ts.edges_child == u) > 2:
+            continue
         md = ts.node(u).metadata
         date = md["sc2ts"]["date_added"]
         all_work.append(Work(pattern, u, date, ts_path))
