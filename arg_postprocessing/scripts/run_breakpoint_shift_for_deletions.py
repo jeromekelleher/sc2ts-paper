@@ -32,10 +32,14 @@ if __name__ == "__main__":
     ts = tszip.load(args.input_ts)
 
     re_nodes = np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT)[0]
-    recombinant_edges = [np.where(ts.edges_child == c)[0] for c in re_nodes]
-    assert all(
-        [len(e) == 2 for e in recombinant_edges]
-    )  # all recombinants have only 2 edges
+    recombinant_edges = []
+    for c in re_nodes:
+        re_edges = np.where(ts.edges_child == c)[0]
+        if len(re_edges) > 2:
+            # Skip multi-parent recombinants.
+            continue
+        assert len(re_edges) == 2
+        recombinant_edges.append(re_edges)
     recombinant_edges = np.array(recombinant_edges)
     # Sort the edges for each child so the left one is first
     srt = np.argsort(ts.edges_left[recombinant_edges], axis=1)
