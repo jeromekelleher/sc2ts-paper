@@ -817,7 +817,7 @@ rule lineage_mutations:
         "lineage_mutations.json"
     shell:
         """
-        curl -o {output} https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage_mutations.json
+        curl -L -o {output} https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage_mutations.json
         """
 
 rule deletion_site_data:
@@ -825,7 +825,7 @@ rule deletion_site_data:
         "Li_et_al_TableS1.xlsx"
     shell:
         """
-        curl -o {output} https://figshare.com/ndownloader/files/40119535
+        curl -L -o {output} https://figshare.com/ndownloader/files/40119535
         """
 
 rule generate_sites_for_remapping:
