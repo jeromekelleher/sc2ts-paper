@@ -1,0 +1,263 @@
+"""
+Workflow to evaluate how accurately sc2ts detects recombinants
+using SANTA-SIM generated datasets.
+
+Run from the simulations/ directory, e.g.:
+    snakemake --cores 8
+"""
+
+configfile: "config.yaml"
+
+
+def sim_id(mut_rate, rec_rate, at_freq):
+    return f"seq_m{mut_rate}_r{rec_rate}_f{at_freq}"
+
+
+def run_id(sim, rep, k):
+    return f"{sim}_rep{rep}_k{k}"
+
+
+# SANTA-SIM
+MUT_RATES = config["mutation_rates"]
+REC_RATES = config["recombination_rates"]
+AT_FREQ = config["at_frequency"]
+NUM_REPS = config["num_replicates"]
+REPLICATES = range(1, NUM_REPS + 1)
+# Sc2ts
+K_VALUES = config["k_values"]
+
+SIM_COMBOS = [
+    sim_id(mut, rec, frq)
+    for mut in MUT_RATES
+    for rec in REC_RATES
+    for frq in AT_FREQ
+]
+
+wildcard_constraints:
+    sim=r"seq_m[^/_]+_r[^/_]+_f[^/_]+",
+    rep=r"[0-9]+",
+    k=r"[0-9]+",
+
+
+rule all:
+    input:
+        "results_summary/recomb_detection_results.pdf",
+
+
+################
+# SANTA-SIM
+################
+
+rule git_clone_santasim:
+    """
+    Note that we are using a modified version of SANTA-SIM
+    which prints breakpoint locations in output FastA files.
+    See https://academic.oup.com/ve/article/9/2/vead066/7444193#432212043.
+    """
+    output:
+        touch("santa-sim/.cloned"),
+    shell:
+        """
+        git clone https://github.com/koadman/santa-sim.git;
+        cd santa-sim;
+        git checkout 854a40d6907e04ffe7477a3b3e86891d8c8d178f
+        """
+
+
+rule build_santasim:
+    input:
+        "santa-sim/.cloned",
+    output:
+        "santa-sim/dist/santa.jar",
+    shell:
+        "cd santa-sim && ant"
+
+
+rule generate_santasim_config:
+    output:
+        xml="config_santasim/{sim}.xml",
+    run:
+        import re
+        import subprocess
+        import sys
+
+        m = re.fullmatch(r"seq_m(.+)_r(.+)_f(.+)", wildcards.sim)
+        if m is None:
+            raise ValueError(f"Cannot parse rates from sim id {wildcards.sim}")
+        mut, rec, frq = m.group(1), m.group(2), m.group(3)
+
+        subprocess.check_call(
+            [
+                sys.executable,
+                "scripts/generate_santasim_config.py",
+                output.xml,
+                "--mutation-rate",
+                mut,
+                "--recombination-rate",
+                rec,
+                "--reference-fasta",
+                config["reference_fasta"],
+                "--num-replicates",
+                str(NUM_REPS),
+                "--generation-count",
+                str(config["generation_count"]),
+                "--at-frequency",
+                frq,
+                "--population-size",
+                str(config["population_size"]),
+                "--sample-size",
+                str(config["sample_size"]),
+            ]
+        )
+
+
+rule run_santa_sim:
+    input:
+        xml="config_santasim/{sim}.xml",
+        jar="santa-sim/dist/santa.jar",
+    output:
+        expand(
+            "results_santasim/{{sim}}_rep{rep}.fasta",
+            rep=REPLICATES,
+        ),
+    shell:
+        "java -jar {input.jar} {input.xml}"
+
+
+rule parse_santasim:
+    input:
+        fasta="results_santasim/{sim}_rep{rep}.fasta",
+    output:
+        fasta="results_santasim/{sim}_rep{rep}.sim.fasta",
+        metadata="results_santasim/{sim}_rep{rep}.sim.metadata.tsv",
+        recombs="results_santasim/{sim}_rep{rep}.sim.recombs.tsv",
+    shell:
+        """
+        python scripts/parse_santasim_output.py \
+            {input.fasta} \
+            results_santasim/{wildcards.sim}_rep{wildcards.rep}
+        """
+
+
+################
+# Sc2ts
+################
+
+rule import_alignments:
+    input:
+        fasta="results_santasim/{sim}_rep{rep}.sim.fasta",
+    output:
+        directory("results_santasim/{sim}_rep{rep}.aln"),
+    shell:
+        """
+        sc2ts import-alignments -i {output} {input.fasta}
+        """
+
+
+rule import_metadata:
+    input:
+        metadata="results_santasim/{sim}_rep{rep}.sim.metadata.tsv",
+        aln="results_santasim/{sim}_rep{rep}.aln",
+    output:
+        touch("results_santasim/{sim}_rep{rep}.metadata.done"),
+    shell:
+        """
+        sc2ts import-metadata \
+            results_santasim/{wildcards.sim}_rep{wildcards.rep}.aln \
+            {input.metadata}
+        """
+
+
+rule generate_sc2ts_config:
+    input:
+        "results_santasim/{sim}_rep{rep}.metadata.done",
+    output:
+        "config_sc2ts/{sim}_rep{rep}_k{k}.toml",
+    shell:
+        """
+        python scripts/generate_sc2ts_config.py {output} \
+            --sim-id {wildcards.sim} \
+            --rep {wildcards.rep} \
+            --k {wildcards.k} \
+            --num-threads {config[num_threads]} \
+            --memory-limit {config[memory_limit]} \
+            --hmm-cost-threshold {config[hmm_cost_threshold]} \
+            --max-missing-sites {config[max_missing_sites]} \
+            --deletions-as-missing {config[deletions_as_missing]} \
+            --min-group-size {config[min_group_size]} \
+            --min-root-mutations {config[min_root_mutations]} \
+            --max-recurrent-mutations {config[max_recurrent_mutations]} \
+            --max-mutations-per-sample {config[max_mutations_per_sample]} \
+            --retrospective-window {config[retrospective_window]}
+        """
+
+
+rule run_sc2ts_infer:
+    input:
+        metadata_done="results_santasim/{sim}_rep{rep}.metadata.done",
+        config="config_sc2ts/{sim}_rep{rep}_k{k}.toml",
+    output:
+        touch("results_sc2ts/trees/{sim}_rep{rep}_k{k}/.infer.done"),
+    shell:
+        """
+        sc2ts infer {input.config}
+        """
+
+
+rule run_sc2ts_postprocess:
+    input:
+        infer_done="results_sc2ts/trees/{sim}_rep{rep}_k{k}/.infer.done",
+        config="config_sc2ts/{sim}_rep{rep}_k{k}.toml",
+    output:
+        pp_tree="results_sc2ts/trees/{sim}_rep{rep}_k{k}/{sim}_rep{rep}_k{k}.final.ts",
+    params:
+        run=lambda wildcards: run_id(wildcards.sim, wildcards.rep, wildcards.k),
+        tree_dir="results_sc2ts/trees/{sim}_rep{rep}_k{k}",
+        match_db="results_sc2ts/matches/{sim}_rep{rep}_k{k}.matches.db",
+    shell:
+        """
+        LATEST_TREE=$(python scripts/get_latest_tree.py {params.tree_dir} {params.run})
+        sc2ts postprocess \
+            "$LATEST_TREE" \
+            {output.pp_tree} \
+            --match-db={params.match_db}
+        """
+
+
+################
+# Summary
+################
+
+rule summarise_detection_results:
+    input:
+        pp_tree="results_sc2ts/trees/{sim}_rep{rep}_k{k}/{sim}_rep{rep}_k{k}.final.ts",
+        truth="results_santasim/{sim}_rep{rep}.sim.recombs.tsv",
+    output:
+        "results_summary/{sim}_rep{rep}_k{k}.json",
+    shell:
+        """
+        python scripts/summarise_detection_results.py \
+            {input.pp_tree} \
+            {input.truth} \
+            > {output}
+        """
+
+
+rule visualise_detection_results:
+    input:
+        expand(
+            "results_summary/{sim}_rep{rep}_k{k}.json",
+            sim=SIM_COMBOS,
+            rep=REPLICATES,
+            k=K_VALUES,
+        ),
+    output:
+        "results_summary/recomb_detection_results.pdf",
+    params:
+        results_dir="results_summary",
+    shell:
+        """
+        python scripts/visualise_detection_results.py \
+            {params.results_dir} \
+            --output {output}
+        """
