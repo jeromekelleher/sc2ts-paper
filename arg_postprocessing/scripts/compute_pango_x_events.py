@@ -146,6 +146,10 @@ def run(ts_path, output):
             pango_x_counts[pango_x] += lineage_counts[pango]
         df_pango = df_node[df_node.pango.isin([pango_x] + descendants)]
 
+        # https://github.com/jeromekelleher/sc2ts-paper/issues/1046
+        if pango_x == "XEB":
+            continue
+
         for event in pango_x_events(ts, df_node, df_pango):
             event["pango"] = pango_x
             print(
