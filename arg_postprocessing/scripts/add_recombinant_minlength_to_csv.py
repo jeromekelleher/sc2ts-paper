@@ -79,6 +79,9 @@ def main(args):
     )
     arr = []
     for u, support in supporting_loci_count.items():
+        if len(support) > 2:
+            # Skip multiparent recombinants.
+            continue
         if len(support) != 2:
             raise ValueError(
                 f"Expected 2 edges above recombinant node {u} but found "
