@@ -27,7 +27,7 @@ rule all:
         # Rewiring recombinants report
         "logs/sc2ts_v2_2024-06-06_rewire-recombinants-report.ipynb",
         # Comparison between sc2ts and usher ARGs
-        "logs/usher_sc2ts_comparison.ipynb",
+        "logs/usher_sc2ts_comparison_2024-06-06.ipynb",
         # Deletion events.
         "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv",
         # Recombinant data. Suffixes after _recombinants denote the operations
@@ -41,16 +41,18 @@ rule all:
         # Events corresponding to Pango X lineages. This is the pango_x_events.csv file
         # in the top-level data directory
         "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
-        "logs/final_arg_report.ipynb",
+        "logs/final_arg_report_2024-06-06.ipynb",
         # Intersection file needed for ripples analyses
         "usher_intersection_2024-06-06.pb",
         # These will run ripples and do the data processing
         "sc2ts_viridian_v2.0_ripples_p4.csv",
         "sc2ts_viridian_v2.0_ripples_p3.csv",
 
-rule final_args:
-    conda: 
+rule final_arg_report:
+    conda:
         "sc2ts.yml"
+    wildcard_constraints:
+        DATE=r"\d{4}-\d{2}-\d{2}",
     input:
         # Final ARG
         # Order of operations:
@@ -62,23 +64,59 @@ rule final_args:
         # 6) Compute pango assignment (must be after parsimony mapping and heuristics)
         # 7) Dating (_dated)
         # 8) Minimise metadata (must be last step)
-        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
-        "usher_v1_2024-06-06_mm.trees.tsz",
-        "sc2ts_2024-06-06_intersection.trees.tsz",
-        "usher_2024-06-06_intersection_ds_di.trees.tsz",
-    output: 
-        # Version numbers - mainly driven by the sc2ts_viridian_v1 version
-        # as the others except usher_viridian are derived from this. These 
-        # are major.minor, with major versions meaning significant changes,
-        # minor being relatively minor tweaks to the ARG.
+        "sc2ts_v2_{DATE}_pr_pp_mp_aph_bps_pango_dated_mmps.trees.tsz",
+        "sc2ts_{DATE}_intersection.trees.tsz",
+        "usher_{DATE}_intersection_ds_di.trees.tsz",
+        # The full usher tree is date-independent and published separately
+        # (rule usher_viridian); the notebook loads it directly rather than
+        # copying it, so it is the last, unpaired input.
+        "usher_viridian.trees.tsz",
+    output:
+        # Dated copies of the final ARGs. The notebook copies the first three
+        # inputs to these outputs. The published version-numbered release names
+        # are derived from these by the release_args rule below.
+        "sc2ts_viridian_{DATE}.trees.tsz",
+        "sc2ts_viridian_inter_{DATE}.trees.tsz",
+        "usher_viridian_inter_{DATE}.trees.tsz",
+    log:
+        notebook="logs/final_arg_report_{DATE}.ipynb"
+    notebook:
+        "notebooks/final_arg_report.py.ipynb"
+
+# The full usher tree is a single fixed Sept-2024 snapshot, so it is
+# date-independent: publish it once under its (undated) viridian name.
+rule usher_viridian:
+    input:
+        "usher_v1_mm.trees.tsz",
+    output:
+        "usher_viridian.trees.tsz",
+    shell:
+        "cp {input} {output}"
+
+# Publish the dated final ARGs under their version-numbered release names.
+# Version numbers - mainly driven by the sc2ts_viridian_v1 version
+# as the others except usher_viridian are derived from this. These
+# are major.minor, with major versions meaning significant changes,
+# minor being relatively minor tweaks to the ARG. v2.0 / v1.0 correspond
+# to the 2024-06-06 data.
+rule release_args:
+    input:
+        "sc2ts_viridian_2024-06-06.trees.tsz",
+        "usher_viridian.trees.tsz",
+        "sc2ts_viridian_inter_2024-06-06.trees.tsz",
+        "usher_viridian_inter_2024-06-06.trees.tsz",
+    output:
         "sc2ts_viridian_v2.0.trees.tsz",
         "usher_viridian_v1.0.trees.tsz",
         "sc2ts_viridian_inter_v2.0.trees.tsz",
         "usher_viridian_inter_v2.0.trees.tsz",
-    log:
-        notebook="logs/final_arg_report.ipynb"
-    notebook:
-        "notebooks/final_arg_report.py.ipynb"
+    shell:
+        """
+        cp {input[0]} {output[0]}
+        cp {input[1]} {output[1]}
+        cp {input[2]} {output[2]}
+        cp {input[3]} {output[3]}
+        """
 
 rule initialise:
     input:
@@ -509,7 +547,10 @@ rule add_mutations:
         "usher_topology.trees",
         "usher_mutations.tsv"
     output:
-        "usher_v1_2024-06-06.trees"
+        # The usher tree is a single fixed Sept-2024 snapshot, so it is
+        # not date-dependent. Only the intersection with the dated sc2ts
+        # ARG (sc2ts_usher_intersection) carries a date.
+        "usher_v1.trees"
     shell:
         """
         python scripts/mat2tsk.py convert-mutations {input} reference.fasta {output}
@@ -519,7 +560,7 @@ rule date_samples:
     conda:
         "sc2ts.yml"
     input:
-        # Note: call with e.g. snakemake usher_v1_2024-06-06_ds.trees
+        # Note: call with e.g. snakemake usher_v1_ds.trees
         "{DS_PREFIX}.trees",
     output:
         "{DS_PREFIX}_ds.trees",
@@ -532,7 +573,7 @@ rule date_internal_nodes:
     conda:
         "sc2ts.yml"
     input:
-        # Note: call with e.g. snakemake usher_v1_2024-06-06_ds_di.trees
+        # Note: call with e.g. snakemake usher_v1_ds_di.trees
         "{DI_PREFIX}.trees"
     output:
         "{DI_PREFIX}_di.trees"
@@ -545,13 +586,15 @@ rule date_internal_nodes:
 rule sc2ts_usher_intersection:
     conda:
         "sc2ts.yml"
+    wildcard_constraints:
+        DATE=r"\d{4}-\d{2}-\d{2}",
     input:
-        "usher_v1_2024-06-06_mmd.trees",
+        "usher_v1_mmd.trees",
         # We use the final trees after post-processing and applying parsimony mapping
-        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_mm.trees"
+        "sc2ts_v2_{DATE}_pr_pp_mp_aph_mm.trees"
     output:
-        "usher_2024-06-06_intersection.trees",
-        "sc2ts_2024-06-06_intersection.trees",
+        "usher_{DATE}_intersection.trees",
+        "sc2ts_{DATE}_intersection.trees",
     shell:
         """
         python scripts/mat2tsk.py intersect --intersect-sites {input} {output}
@@ -593,15 +636,17 @@ rule all_sites_parsimony:
 rule usher_sc2ts_comparison:
     conda:
         "sc2ts.yml"
+    wildcard_constraints:
+        DATE=r"\d{4}-\d{2}-\d{2}",
     input:
-        "usher_2024-06-06_intersection.trees",
-        "usher_2024-06-06_intersection_asp.trees",
-        "usher_2024-06-06_intersection_asp.csv",
-        "sc2ts_2024-06-06_intersection.trees",
-        "sc2ts_2024-06-06_intersection_asp.trees",
-        "sc2ts_2024-06-06_intersection_asp.csv",
+        "usher_{DATE}_intersection.trees",
+        "usher_{DATE}_intersection_asp.trees",
+        "usher_{DATE}_intersection_asp.csv",
+        "sc2ts_{DATE}_intersection.trees",
+        "sc2ts_{DATE}_intersection_asp.trees",
+        "sc2ts_{DATE}_intersection_asp.csv",
     log:
-        notebook="logs/usher_sc2ts_comparison.ipynb"
+        notebook="logs/usher_sc2ts_comparison_{DATE}.ipynb"
 
     notebook:
         "notebooks/usher_sc2ts_comparison.py.ipynb"
