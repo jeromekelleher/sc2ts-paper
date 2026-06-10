@@ -475,20 +475,15 @@ rule download_pb:
 
 rule export_mutations_local:
     conda:
-        # The pangolin environment above also contains a full copy
-        # of Usher/matutils, so no point in redoing that.
+        # bte=0.9.3
         "pangolin.yml"
     input:
         "tree.all_viridian.202409.pb.gz"
     output:
         "usher_mutations.tsv"
     shell:
-        # Got GTF from 
-        # http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
         """
-        matUtils summary -i tree.all_viridian.202409.pb.gz \
-            -f reference.fasta -g ncbiGenes.gtf \
-            --translate usher_mutations.tsv
+        python scripts/export_mutations_local.py {input} {output}
         """
 
 rule subset_mat:
