@@ -457,10 +457,13 @@ rule download_pb:
     output:
         "tree.all_viridian.202409.pb.gz"
     shell:
+        # Use curl -fL: figshare answers wget --content-disposition with a
+        # 202 Accepted (0 bytes) instead of following its short-lived S3
+        # redirect, so wget silently writes an empty file.
         """
-        wget --quiet --content-disposition \
-            https://figshare.com/ndownloader/files/49691037 \
-            -O {output}
+        curl -fsSL --retry 3 --retry-delay 2 \
+            https://ndownloader.figshare.com/files/49691037 \
+            -o {output}
         """
 
 rule subset_mat:
