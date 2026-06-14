@@ -217,10 +217,9 @@ dependencies:
   - zipp=3.22.0
   - zstandard=0.23.0
   - zstd=1.5.7
-  # NOTE this isn't complete, should include the protobuf libs etc
-  # We need this for programmaticaly accessing the Usher trees.
+  # BTE gives programmatic access to the Usher MAT protobuf trees (mat2tsk.py
+  # convert). It pulls in its own protobuf dependencies.
   - bte=0.9.3
-  # FIXME wedgeing this in temporarily
   - nbconvert
   - jupyter
   - pip:
