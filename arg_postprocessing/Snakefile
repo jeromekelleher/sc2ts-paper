@@ -97,8 +97,9 @@ rule usher_viridian:
 # Version numbers - mainly driven by the sc2ts_viridian_v1 version
 # as the others except usher_viridian are derived from this. These
 # are major.minor, with major versions meaning significant changes,
-# minor being relatively minor tweaks to the ARG. v2.0 / v1.0 correspond
-# to the 2024-06-06 data.
+# minor being relatively minor tweaks to the ARG. sc2ts v2.0 and the
+# original usher v1.0 correspond to the 2024-06-06 data; usher v1.1 is 
+# a rebuild of the usher tree adding missing non-coding mutations from v1.0.
 rule release_args:
     input:
         "sc2ts_viridian_2024-06-06.trees.tsz",
@@ -107,7 +108,7 @@ rule release_args:
         "usher_viridian_inter_2024-06-06.trees.tsz",
     output:
         "sc2ts_viridian_v2.0.trees.tsz",
-        "usher_viridian_v1.0.trees.tsz",
+        "usher_viridian_v1.1.trees.tsz",
         "sc2ts_viridian_inter_v2.0.trees.tsz",
         "usher_viridian_inter_v2.0.trees.tsz",
     shell:
@@ -453,42 +454,17 @@ rule minimise_metadata:
 ########################
 # Usher tree conversion
 ########################
-rule download_json:
-    output:
-        "tree.all_viridian.202409.jsonl.gz"
-    shell:
-        """
-        wget --quiet --content-disposition \
-            https://figshare.com/ndownloader/files/49691040 \
-            -O {output}
-        """
-
 rule download_pb:
     output:
         "tree.all_viridian.202409.pb.gz"
     shell:
+        # Use curl -fL: figshare answers wget --content-disposition with a
+        # 202 Accepted (0 bytes) instead of following its short-lived S3
+        # redirect, so wget silently writes an empty file.
         """
-        wget --quiet --content-disposition \
-            https://figshare.com/ndownloader/files/49691037 \
-            -O {output}
-        """
-
-rule export_mutations_local:
-    conda:
-        # The pangolin environment above also contains a full copy
-        # of Usher/matutils, so no point in redoing that.
-        "pangolin.yml"
-    input:
-        "tree.all_viridian.202409.pb.gz"
-    output:
-        "usher_mutations.tsv"
-    shell:
-        # Got GTF from 
-        # http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
-        """
-        matUtils summary -i tree.all_viridian.202409.pb.gz \
-            -f reference.fasta -g ncbiGenes.gtf \
-            --translate usher_mutations.tsv
+        curl -fsSL --retry 3 --retry-delay 2 \
+            https://ndownloader.figshare.com/files/49691037 \
+            -o {output}
         """
 
 rule subset_mat:
@@ -530,22 +506,15 @@ rule process_ripples:
     shell:
         "python scripts/process_ripples.py {input} {output}"
 
-rule convert_topology:
+rule convert:
     conda:
         "sc2ts.yml"
     input:
-        "tree.all_viridian.202409.jsonl.gz"
-    output:
-        "usher_topology.trees"
-    shell:
-        "python scripts/mat2tsk.py convert-topology {input} {output}"
-
-rule add_mutations:
-    conda:
-        "sc2ts.yml"
-    input:
-        "usher_topology.trees",
-        "usher_mutations.tsv"
+        # Topology, node names and nucleotide mutations come from the MAT
+        # protobuf; per-sample dates come from the Viridian Zarr dataset.
+        "tree.all_viridian.202409.pb.gz",
+        "reference.fasta",
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
     output:
         # The usher tree is a single fixed Sept-2024 snapshot, so it is
         # not date-dependent. Only the intersection with the dated sc2ts
@@ -553,14 +522,13 @@ rule add_mutations:
         "usher_v1.trees"
     shell:
         """
-        python scripts/mat2tsk.py convert-mutations {input} reference.fasta {output}
+        python scripts/mat2tsk.py convert {input[0]} {input[1]} {input[2]} {output}
         """
 
 rule date_samples:
     conda:
         "sc2ts.yml"
     input:
-        # Note: call with e.g. snakemake usher_v1_ds.trees
         "{DS_PREFIX}.trees",
     output:
         "{DS_PREFIX}_ds.trees",
@@ -573,7 +541,6 @@ rule date_internal_nodes:
     conda:
         "sc2ts.yml"
     input:
-        # Note: call with e.g. snakemake usher_v1_ds_di.trees
         "{DI_PREFIX}.trees"
     output:
         "{DI_PREFIX}_di.trees"

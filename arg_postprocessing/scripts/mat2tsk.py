@@ -1,14 +1,13 @@
 """
-Convert an Usher tree in JSON format to sc2ts-like tskit.
+Convert an Usher MAT protobuf tree to sc2ts-like tskit.
 
 https://figshare.com/articles/dataset/Global_Viridian_tree/27194547
 
-Also requires the mutations to be converted into nucleotide format using
-matutils.
+The topology, node names and per-node nucleotide mutations are read directly
+from the protobuf using BTE (https://github.com/jmcbroome/BTE). Per-sample
+collection dates are not stored in the protobuf, so they are taken from the
+local Viridian Zarr dataset (the ``Date_tree`` field).
 """
-
-import gzip
-import json
 
 import sc2ts
 import pandas as pd
@@ -64,33 +63,75 @@ def set_mutations(ts, ref, mutations_per_node):
 
 
 @click.command()
-@click.argument("tsk_in", type=click.Path(dir_okay=False, file_okay=True))
-@click.argument("usher_tsv", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("usher_pb", type=click.Path(dir_okay=False, file_okay=True))
 @click.argument("reference_fa", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("dataset", type=click.Path(exists=True))
 @click.argument("tsk_out", type=click.Path(dir_okay=False, file_okay=True))
-def convert_mutations(tsk_in, usher_tsv, reference_fa, tsk_out):
+def convert(usher_pb, reference_fa, dataset, tsk_out):
+    """
+    Convert an Usher MAT protobuf to sc2ts-like tskit using BTE.
+
+    The topology, node names and per-node nucleotide mutations are read from
+    the protobuf. Per-sample dates are looked up by sample ID in the local
+    Viridian Zarr ``dataset`` using the ``Date_tree`` field.
+    """
+    import bte  # imported here because it is slow to import
+
     fa_map = dict(pyfaidx.Fasta(reference_fa))
     assert len(fa_map) == 1
     key = "MN908947"
-    # Convert to 0-based coordinate
+    # Prepend X to map from 1-based to 0-based coordinates
     reference = "X" + str(fa_map[key])
-    df = pd.read_csv(usher_tsv, sep="\t")
-    ts = tskit.load(tsk_in)
-    print("loaded tskit file")
+    L = len(reference)
+
+    # Sample dates are not stored in the protobuf; take them from the Zarr.
+    ds = sc2ts.Dataset(dataset, date_field="Date_tree")
+    md = ds.metadata
+    date_map = dict(zip(md.sample_id, md.sample_date))
+
+    tree = bte.MATree(usher_pb)
+    nodes = tree.depth_first_expansion()
+
+    tables = tskit.TableCollection(L)
+    tables.metadata_schema = tskit.MetadataSchema.permissive_json()
+    tables.nodes.metadata_schema = tskit.MetadataSchema.permissive_json()
+    tables.mutations.metadata_schema = tskit.MetadataSchema.permissive_json()
+    tables.sites.metadata_schema = tskit.MetadataSchema.permissive_json()
+
     node_id_map = {}
-    for node in tqdm.tqdm(ts.nodes(), total=ts.num_nodes):
-        node_id_map[node.metadata["strain"]] = node.id
-        # if node.id == 10000:
-        #     break
+    mutations_per_node = {}
+    sample_date = []
+    for node in tqdm.tqdm(nodes, desc="Nodes"):
+        flags = 0
+        metadata = {"strain": node.id}
+        if node.is_leaf():
+            flags = tskit.NODE_IS_SAMPLE
+            date = date_map.get(node.id, "")
+            metadata["Date_tree"] = date
+            if date:
+                sample_date.append(date)
+        u = tables.nodes.add_row(flags, time=-1, metadata=metadata)
+        node_id_map[node.id] = u
+        mutations_per_node[u] = node.mutations
 
-    nt_mutations = {}
-    for _, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        tsk_id = node_id_map[row.node_id]
-        assert tsk_id not in nt_mutations
-        nt_mutations[tsk_id] = set(row.nt_mutations.split(";"))
+    for node in nodes:
+        parent = node.parent
+        # The root has no parent (or a self-loop in some encodings).
+        if parent is not None and parent.id != node.id:
+            tables.edges.add_row(
+                0, L, parent=node_id_map[parent.id], child=node_id_map[node.id]
+            )
 
-    ts_muts = set_mutations(ts, reference, nt_mutations)
-    ts_muts.dump(tsk_out)
+    # This version does just enough to dates that fit tskit rules
+    tables.time_units = tskit.TIME_UNITS_UNCALIBRATED
+    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
+    set_tree_time(tables)
+    tables.sort()
+    tables.build_index()
+    ts = tables.tree_sequence()
+
+    ts = set_mutations(ts, reference, mutations_per_node)
+    ts.dump(tsk_out)
 
 
 def set_tree_time(tables, unit_scale=False):
@@ -110,61 +151,6 @@ def set_tree_time(tables, unit_scale=False):
     if unit_scale:
         tau /= max(1, np.max(tau))
     tables.nodes.time = tau
-
-
-@click.command()
-@click.argument("usher_json", type=click.Path(dir_okay=False, file_okay=True))
-@click.argument("tsk", type=click.Path(dir_okay=False, file_okay=True))
-def convert_topology(usher_json, tsk):
-    L = 29_904
-
-    tables = tskit.TableCollection(L)
-    tables.metadata_schema = tskit.MetadataSchema.permissive_json()
-    tables.nodes.metadata_schema = tskit.MetadataSchema.permissive_json()
-    tables.mutations.metadata_schema = tskit.MetadataSchema.permissive_json()
-    tables.sites.metadata_schema = tskit.MetadataSchema.permissive_json()
-
-    meta_prefix = "meta_"
-    sample_date = []
-    with gzip.open(usher_json) as f:
-        header = json.loads(next(f))
-        pi = np.zeros(header["total_nodes"]) - 1
-        for line in tqdm.tqdm(f, total=header["total_nodes"], desc="Parse"):
-            node = json.loads(line)
-            name = node["name"]
-            flags = 0
-            if not name.startswith("node_"):
-                flags = tskit.NODE_IS_SAMPLE
-                sample_date.append(node["meta_Date_tree"])
-            u = tables.nodes.add_row(
-                flags,
-                time=-1,
-                metadata={
-                    "strain": name,
-                    **{
-                        k[len(meta_prefix) :]: v
-                        for k, v in node.items()
-                        if k.startswith(meta_prefix)
-                    },
-                },
-            )
-            assert u == node["node_id"]
-            parent = node["parent_id"]
-            # The root has a loop.
-            if u != parent:
-                assert pi[u] == -1
-                assert pi[u] != u
-                pi[u] = parent
-                tables.edges.add_row(0, L, parent=parent, child=u)
-
-    # This version does just enough to dates that fit tskit rules
-    tables.time_units = tskit.TIME_UNITS_UNCALIBRATED
-    tables.metadata = {"sc2ts": {"date": max(sample_date)}}
-    set_tree_time(tables)
-    tables.sort()
-    tables.build_index()
-    ts = tables.tree_sequence()
-    ts.dump(tsk)
 
 
 @click.command()
@@ -400,8 +386,7 @@ def cli():
     pass
 
 
-cli.add_command(convert_topology)
-cli.add_command(convert_mutations)
+cli.add_command(convert)
 cli.add_command(date_samples)
 cli.add_command(date_internal)
 cli.add_command(export_samples)
