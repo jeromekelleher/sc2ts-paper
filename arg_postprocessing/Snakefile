@@ -97,8 +97,9 @@ rule usher_viridian:
 # Version numbers - mainly driven by the sc2ts_viridian_v1 version
 # as the others except usher_viridian are derived from this. These
 # are major.minor, with major versions meaning significant changes,
-# minor being relatively minor tweaks to the ARG. v2.0 / v1.0 correspond
-# to the 2024-06-06 data.
+# minor being relatively minor tweaks to the ARG. sc2ts v2.0 and the
+# original usher v1.0 correspond to the 2024-06-06 data; usher v1.1 is 
+# a rebuild of the usher tree adding missing non-coding mutations from v1.0.
 rule release_args:
     input:
         "sc2ts_viridian_2024-06-06.trees.tsz",
@@ -107,7 +108,7 @@ rule release_args:
         "usher_viridian_inter_2024-06-06.trees.tsz",
     output:
         "sc2ts_viridian_v2.0.trees.tsz",
-        "usher_viridian_v1.0.trees.tsz",
+        "usher_viridian_v1.1.trees.tsz",
         "sc2ts_viridian_inter_v2.0.trees.tsz",
         "usher_viridian_inter_v2.0.trees.tsz",
     shell:
