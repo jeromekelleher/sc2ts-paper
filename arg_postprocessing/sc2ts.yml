@@ -363,4 +363,4 @@ dependencies:
       - tsinfer==0.5.1
       # Editable git installs (dev packages, not pinned PyPI releases)
       - -e git+https://github.com/phac-nml/pangonet.git#egg=pangonet
-      - -e git+https://github.com/jeromekelleher/sc2ts.git#egg=sc2ts[inference,debug]
+      - -e git+https://github.com/tskit-dev/sc2ts.git#egg=sc2ts[inference,debug]
