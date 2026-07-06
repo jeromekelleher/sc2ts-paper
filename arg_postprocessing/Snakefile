@@ -557,8 +557,10 @@ rule sc2ts_usher_intersection:
         DATE=r"\d{4}-\d{2}-\d{2}",
     input:
         "usher_v1_mmd.trees",
-        # We use the final trees after post-processing and applying parsimony mapping
-        "sc2ts_v2_{DATE}_pr_pp_mp_aph_mm.trees"
+        # Stop before parsimony mapping (_mp): that step maps indel/deletion
+        # mutations onto the tree, but usher has no indels, so we exclude them
+        # here to keep the usher comparison a fair SNP-to-SNP comparison.
+        "sc2ts_v2_{DATE}_pr_pp_mm.trees"
     output:
         "usher_{DATE}_intersection.trees",
         "sc2ts_{DATE}_intersection.trees",
