@@ -121,7 +121,7 @@ rule release_args:
 
 rule initialise:
     input:
-        "../inference/results/v2_2026-04-17/v2_2026-04-17_{DATE}.ts",
+        "../inference/results/v2_2026-06-10/v2_2026-06-10_{DATE}.ts.tsz",
     output:
         "sc2ts_v2_{DATE}.trees",
     shell:
@@ -189,7 +189,7 @@ rule rematch_recombinants:
     shell:
         """
         python scripts/rematch_recombinants.py {input} \
-            --pattern=../inference/results/v2_2026-04-17/v2_2026-04-17_{{date}}.ts.tsz \
+            --pattern=../inference/results/v2_2026-06-10/v2_2026-06-10_{{date}}.ts.tsz \
             {output}
         """
 
@@ -206,7 +206,7 @@ rule postprocess:
     shell:
         """
         python -m sc2ts postprocess {input} {output} \
-            --match-db=../inference/results/v2_2026-04-17.matches.db
+            --match-db=../inference/results/v2_2026-06-10.matches.db
         """
 
 rule map_parsimony:
