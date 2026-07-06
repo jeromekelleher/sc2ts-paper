@@ -1,7 +1,7 @@
 # From https://zenodo.org/records/16314739/files/viridian_mafft_2024-10-14_v1.vcz.zip
 dataset="/well/kelleher/users/nrn539/sc2ts_revision/data/viridian_mafft_2024-10-14_v1.vcz.zip"
 
-run_id="v2_2026-06-05"
+run_id="v2_2026-06-10"
 results_dir = "results"
 log_dir = "logs"
 matches_dir= "/tmp/sc2ts/matches"
