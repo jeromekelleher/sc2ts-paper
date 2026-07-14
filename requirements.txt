@@ -1,3 +1,5 @@
+# This is not a comprehensive list. Use the pyproject.toml with uv to run most of the 
+# notebooks. The arg_postprocessing pipeline requires snakemake and conda.
 click
 tqdm
 numpy
