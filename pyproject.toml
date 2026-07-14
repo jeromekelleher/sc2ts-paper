@@ -17,6 +17,7 @@ dependencies = [
     "msprime",
     "requests",
     "tskit_arg_visualizer",
+    "pangonet",
     "adjustText",
     "matplotlib-venn",
     "Pillow",
@@ -30,3 +31,6 @@ dependencies = [
 [tool.uv]
 # Convenience env for the notebooks only; not a packaged distribution.
 package = false
+
+[tool.uv.sources]
+pangonet = { git = "https://github.com/phac-nml/pangonet" }
