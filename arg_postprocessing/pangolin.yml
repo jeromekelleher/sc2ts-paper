@@ -11,6 +11,7 @@ dependencies:
   - archspec=0.2.5
   - attr=2.5.1
   - attrs=25.3.0
+  - bcftools=1.21
   - biopython=1.85
   - boltons=25.0.0
   - boost-cpp=1.78.0
