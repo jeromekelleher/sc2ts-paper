@@ -1,0 +1,32 @@
+[project]
+name = "sc2ts-paper"
+version = "0.0.0"
+description = "Convenience environment for running (most of) the sc2ts-paper notebooks."
+requires-python = ">=3.11"
+dependencies = [
+    "sc2ts",
+    "zarr<3",
+    "tskit",
+    "tszip",
+    "numpy",
+    "pandas>=2.0.2",
+    "scipy",
+    "matplotlib",
+    "seaborn",
+    "tqdm",
+    "msprime",
+    "requests",
+    "tskit_arg_visualizer",
+    "adjustText",
+    "matplotlib-venn",
+    "Pillow",
+    "jupyterlab",
+    "notebook",
+    "ipykernel",
+    "ipython",
+    "ipywidgets",
+]
+
+[tool.uv]
+# Convenience env for the notebooks only; not a packaged distribution.
+package = false
