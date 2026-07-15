@@ -4,7 +4,7 @@ version = "0.0.0"
 description = "Convenience environment for running (most of) the sc2ts-paper notebooks."
 requires-python = ">=3.11"
 dependencies = [
-    "sc2ts",
+    "sc2ts[inference]",
     "zarr<3",
     "tskit",
     "tszip",
@@ -26,7 +26,6 @@ dependencies = [
     "ipykernel",
     "ipython",
     "ipywidgets",
-    "numba",
 ]
 
 [tool.uv]
