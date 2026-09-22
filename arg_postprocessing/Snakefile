@@ -8,7 +8,7 @@
 # needs a lot of cores, so in practise you need to do something like this
 # first to get the bit needing parallelism (and lots of memory) done
 #
-# snakemake sc2ts_viridian_v2.2.trees.tsz --cores=40
+# snakemake sc2ts_viridian_v2.3.trees.tsz --cores=40
 # 
 # Then, the rest should just run like
 #
@@ -45,8 +45,8 @@ rule all:
         # Intersection file needed for ripples analyses
         "usher_intersection_2024-06-06.pb",
         # These will run ripples and do the data processing
-        "sc2ts_viridian_v2.2_ripples_p4.csv",
-        "sc2ts_viridian_v2.2_ripples_p3.csv",
+        "sc2ts_viridian_v2.3_ripples_p4.csv",
+        "sc2ts_viridian_v2.3_ripples_p3.csv",
 
 rule final_arg_report:
     conda:
@@ -97,7 +97,7 @@ rule usher_viridian:
 # Version numbers - mainly driven by the sc2ts_viridian_v1 version
 # as the others except usher_viridian are derived from this. These
 # are major.minor, with major versions meaning significant changes,
-# minor being relatively minor tweaks to the ARG. sc2ts v2.2 and the
+# minor being relatively minor tweaks to the ARG. sc2ts v2.3 and the
 # original usher v1.0 correspond to the 2024-06-06 data; usher v1.1 is 
 # a rebuild of the usher tree adding missing non-coding mutations from v1.0.
 rule release_args:
@@ -107,10 +107,10 @@ rule release_args:
         "sc2ts_viridian_inter_2024-06-06.trees.tsz",
         "usher_viridian_inter_2024-06-06.trees.tsz",
     output:
-        "sc2ts_viridian_v2.2.trees.tsz",
+        "sc2ts_viridian_v2.3.trees.tsz",
         "usher_viridian_v1.1.trees.tsz",
-        "sc2ts_viridian_inter_v2.2.trees.tsz",
-        "usher_viridian_inter_v2.2.trees.tsz",
+        "sc2ts_viridian_inter_v2.3.trees.tsz",
+        "usher_viridian_inter_v2.3.trees.tsz",
     shell:
         """
         cp {input[0]} {output[0]}
@@ -121,7 +121,7 @@ rule release_args:
 
 rule initialise:
     input:
-        "../inference/results/v2_2026-08-23/v2_2026-08-23_{DATE}.ts.tsz",
+        "../inference/results/v2_2026-09-22/v2_2026-09-22_{DATE}.ts.tsz",
     output:
         "sc2ts_v2_{DATE}.trees",
     shell:
@@ -189,7 +189,7 @@ rule rematch_recombinants:
     shell:
         """
         python scripts/rematch_recombinants.py {input} \
-            --pattern=../inference/results/v2_2026-08-23/v2_2026-08-23_{{date}}.ts.tsz \
+            --pattern=../inference/results/v2_2026-09-22/v2_2026-09-22_{{date}}.ts.tsz \
             {output}
         """
 
@@ -206,7 +206,7 @@ rule postprocess:
     shell:
         """
         python -m sc2ts postprocess {input} {output} \
-            --match-db=../inference/results/v2_2026-08-23.matches.db
+            --match-db=../inference/results/v2_2026-09-22.matches.db
         """
 
 rule map_parsimony:
@@ -667,7 +667,7 @@ rule run3seq:
 rule generate_sample_list:
     conda: "sc2ts.yml"
     input: 
-        "sc2ts_viridian_v2.2_ripples_p{PARSIMONY}.csv",
+        "sc2ts_viridian_v2.3_ripples_p{PARSIMONY}.csv",
     output:
         "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     shell:
@@ -715,7 +715,7 @@ rule generate_usher_fastas:
 
 rule run_ripples_3seq:
     input: 
-        "sc2ts_viridian_v2.2_ripples_p{PARSIMONY}.csv",
+        "sc2ts_viridian_v2.3_ripples_p{PARSIMONY}.csv",
         "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated",
         "3seq/3seq",
     output:
