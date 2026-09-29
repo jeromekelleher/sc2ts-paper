@@ -11,12 +11,12 @@ import sc2ts
 
 
 def samples_csv():
-    return pd.read_csv("arg_postprocessing/sc2ts_v1_2023-02-21_samples.csv")
+    return pd.read_csv("arg_postprocessing/sc2ts_v2_2024-06-06_samples.csv")
 
 
 def resources_csv():
     return pd.read_csv(
-        "arg_postprocessing/sc2ts_v1_2023-02-21_resources.csv"
+        "arg_postprocessing/sc2ts_v2_2024-06-06_resources.csv"
     ).set_index("date")
 
 
