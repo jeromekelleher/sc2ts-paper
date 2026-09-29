@@ -637,7 +637,12 @@ rule build_3seq:
     output: 
         "3seq/3seq",
     shell: 
-        "cd 3seq && make"
+        # Note that 3seq needs to generate a P-value table which is the second command here
+        # (invocation taken from the 3seq docs: this may require internet access)
+        """
+        cd 3seq && make;
+        ./3seq -g my3seqTable700 700
+        """
 
 rule generate_sc2ts_fasta:
     conda: "sc2ts.yml"
