@@ -1,0 +1,26 @@
+% Standalone view of the Pango X lineage event table, for checking the layout
+% without building the whole paper. The generated table is \input by main.tex
+% as well; the tabularray setup below is a copy of the block in main.tex's
+% preamble and must be kept in step with it.
+\documentclass[12pt]{article}
+% Match the \newgeometry the table sits inside in main.tex.
+\usepackage[left=2cm, right=2cm, top=1cm, bottom=2cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs}
+\DefTblrTemplate{caption-tag}{sc2ts}{\tablename~\thetable}
+\DefTblrTemplate{caption-sep}{sc2ts}{:\space}
+\DefTblrTemplate{capcont}{sc2ts}{%
+  \centering\tablename~\thetable\ \emph{(continued)}\par}
+\NewTblrTheme{sc2ts}{%
+  \SetTblrTemplate{caption-tag}{sc2ts}%
+  \SetTblrTemplate{caption-sep}{sc2ts}%
+  \SetTblrTemplate{capcont}{sc2ts}%
+  \SetTblrStyle{caption}{font=\footnotesize}%
+  \SetTblrStyle{capcont}{font=\footnotesize}%
+}
+\pagestyle{empty}
+
+\begin{document}
+\input{pango_x_table/table.tex}
+\end{document}

@@ -19,6 +19,12 @@ main_text.pdf: main.tex
 	qpdf split_tmp.pdf --pages . 1-34 -- main_text.pdf
 	qpdf split_tmp.pdf --pages . 35-z -- supplementary.pdf
 
+# Standalone view of the Pango X event table; regenerate the table itself
+# with: python3 pango_x_table/make_table.py
+pango_x_table.pdf: pango_x_table.tex pango_x_table/table.tex
+	pdflatex pango_x_table.tex
+	pdflatex pango_x_table.tex
+
 
 .PHONY: spellcheck
 spellcheck: aspell.conf
