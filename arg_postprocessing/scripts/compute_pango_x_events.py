@@ -138,19 +138,28 @@ def run(ts_path, output):
     pango_xs = set(
         x.split(".")[0] for x in df_samples.pango.unique() if x.startswith("X")
     )
+    # Make sure XBB is last to make sure we hit the non-nested records first.
+    pango_xs = list(pango_xs - {"XBB"}) + ["XBB"]
 
-    data = []
+    data = {}
     for pango_x in pango_xs:
         descendants = pn.get_descendants(pango_x)
         for pango in [pango_x] + descendants:
             pango_x_counts[pango_x] += lineage_counts[pango]
         df_pango = df_node[df_node.pango.isin([pango_x] + descendants)]
 
-        # https://github.com/jeromekelleher/sc2ts-paper/issues/1046
-        if pango_x == "XEB":
-            continue
-
         for event in pango_x_events(ts, df_node, df_pango):
+            root = event["root"]
+            if root in data:
+                d = data[root].copy()
+                del d["pango"]
+                if d != event:
+                    # We get some disagreements when computing with deeply nested
+                    # recombinants. The first is taken as definitive.
+                    print("SKIPPING")
+                    print("existing:", d)
+                    print("skipped :", event)
+                continue
             event["pango"] = pango_x
             print(
                 pango_x,
@@ -158,8 +167,8 @@ def run(ts_path, output):
                 event["pango_samples"],
                 event["non_pango_samples"],
             )
-            data.append(event)
-    df = pd.DataFrame(data)
+            data[root] = event
+    df = pd.DataFrame(data.values())
     print(df)
     df.to_csv(output, index=False)
 
