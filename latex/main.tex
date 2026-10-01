@@ -606,8 +606,6 @@ In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb}
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
 summarised in Table~\ref{tab:recombinant_validation}.
-% (see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
-% and \ref{fig:recombinant_evidence_rebar}).
 CovRecomb has a substantially lower validation rate
 at 25\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
@@ -665,25 +663,6 @@ by allowing recombination (i.e., $x-y$).
 }
 \label{fig:recombinant_evidence}
 \end{figure}
-
-% Figure~\ref{fig:recombinant_evidence}A plots
-% the number of mutations required
-% in the recombinant versus non-recombinant
-% Viterbi solutions (upper scatter plot)
-% and the resulting distribution of the number of
-% averted mutations (lower histogram)
-% over all 354 recombination events that pass QC.
-% Also shown is the 3SEQ classification status of these recombinants.
-% The 5\% of recombinants that do not pass 3SEQ validation are
-% among the most weakly supported, with 4 or 5 averted mutations.
-% Figures~\ref{fig:recombinant_evidence}B,C show the
-% distribution of recombination events as a function of the
-% divergence between their two parents.
-
-% Figures~\ref{fig:recombinant_evidence_cov_recomb} and
-% \ref{fig:recombinant_evidence_rebar}
-% plot the same information as Figure~\ref{fig:recombinant_evidence}
-% broken down by CovRecomb and rebar validation status.
 
 \subsection*{Precision of recombination event times and positions}
 
@@ -3691,36 +3670,6 @@ See also Document S2 for exact positions and nucleotide bases.}
 
 % Reset this in case we make any more tables beyond this
 \renewcommand{\arraystretch}{1}
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=\linewidth]{recombinant_evidence_cov_recomb}
-% \caption{Properties of sc2ts recombination events, coloured by CovRecomb
-% classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
-% \label{fig:recombinant_evidence_cov_recomb}}
-% \end{figure}
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=\linewidth]{recombinant_evidence_rebar}
-% \caption{Properties of sc2ts recombination events, coloured by rebar
-% classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
-% \label{fig:recombinant_evidence_rebar}}
-% \end{figure}
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=\linewidth]{recombinant_evidence_ripples_p4}
-% \caption{Things}
-% \label{fig:recombinant_evidence_ripples_p4}
-% \end{figure}
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=\linewidth]{recombinant_evidence_ripples_p3}
-% \caption{Things}
-% \label{fig:recombinant_evidence_ripples_p3}
-% \end{figure}
 
 
 \begin{figure}
