@@ -1,0 +1,65 @@
+recombinant,group,sc2ts_event,sc2ts_type,in_p4,usher_num_descendants,path_len,clade_diff,descendants
+node_436920,equivalent,XA,I,True,39,0,0,{'XA': 39}
+node_544123,equivalent,XAC,II,True,19,1,0,{'XAC': 19}
+node_544114,equivalent,XAE,I,True,10,1,0,{'XAE': 10}
+node_701823,equivalent,XBM,I,True,21,1,0,{'XBM': 21}
+node_701774,equivalent,XBR,I,True,3,1,0,{'XBR': 3}
+node_627478,equivalent,XBV,I,True,3,1,0,{'XBV': 3}
+node_46581,equivalent,XC,II,False,6,0,0,"{'XC': 5, 'B.1.617.2': 1}"
+node_589090,equivalent,XCC,I,False,15,0,0,{'XCC': 15}
+SRR24762455,equivalent,XCE,I,True,1,1,0,{'XCE': 1}
+node_601093,equivalent,XCL,I,True,22,1,0,{'XCL': 22}
+ERR12306871,equivalent,XCP,I,False,1,1,0,{'XCP': 1}
+node_607666,equivalent,XCP,I,True,40,0,0,{'XCP': 40}
+node_600610,equivalent,XCR,I,True,84,1,0,{'XCR': 84}
+node_586861,equivalent,XCT,I,True,57,1,0,{'XCT': 57}
+node_623723,equivalent,XCY,I,False,1,1,0,{'XCY': 1}
+node_614475,equivalent,XDA,I,False,105,0,0,{'XDA': 105}
+node_635340,equivalent,XDD,I,True,112,0,0,{'XDD': 112}
+node_634351,equivalent,XDK,I,False,84,0,0,{'XDK': 84}
+node_629736,equivalent,XDY,I,True,3,0,0,{'XDY': 3}
+node_739377,equivalent,XE/XH,II,True,40,1,0,{'XH': 40}
+node_739604,equivalent,XL,I,False,67,0,0,{'XL': 67}
+node_544075,equivalent,XS,I,True,19,0,0,{'XS': 19}
+node_739693,equivalent,XW,I,False,37,1,0,{'XW': 37}
+node_739358,equivalent,XY,I,False,23,1,0,{'XY': 23}
+ERR13048009,equivalent,,,False,1,1,0,{'XCT': 1}
+node_634392,equivalent,,,False,7,1,0,"{'XDR': 6, 'JN.1.1': 1}"
+node_635991,equivalent,,,False,32,0,0,{'XDV': 32}
+node_586864,equivalent,,,False,53,0,1,{'XCT': 53}
+node_777628,equivalent,,,True,98,0,0,{'XBC': 98}
+node_777514,equivalent,,,True,371,0,0,{'XAY': 371}
+node_7007,equivalent,,,True,426,0,0,"{'B.1': 224, 'XB': 202}"
+ERR13320567,descendant,XBB,I,False,1,12,0,{'XDF': 1}
+node_614945,descendant,XBB,I,True,13,5,0,{'XBL': 13}
+node_580409,descendant,XBF,I,False,2,5,0,{'XBF': 2}
+node_580569,descendant,XBF,I,False,2,3,0,{'XBF': 2}
+node_580470,descendant,XBF,I,False,2,3,0,{'XBF': 2}
+SRR27825872,descendant,XCR,I,False,1,7,0,{'XCR': 1}
+SRR29008035,descendant,XDP/XEB1,II,False,1,2,0,{'XDP': 1}
+ERR12934671,descendant,XG,II,False,1,6,0,{'XG': 1}
+SRR19708375,descendant,XQ,I,False,1,8,0,{'XAM': 1}
+node_739645,descendant,XQ,I,False,26,7,0,{'XAM': 26}
+node_777623,descendant,,,False,2,2,0,{'XAY': 2}
+ERR11189965,non_recombinant,,IV,False,1,,0,{'XBK': 1}
+node_615174,not_comparable,XBB,I,False,6,2,106375,"{'XBW': 5, 'XBB': 1}"
+node_623725,not_comparable,XBB,I,True,7,0,112014,"{'XCZ': 6, 'XBB': 1}"
+node_623719,not_comparable,XBB,I,False,8,0,112013,"{'XCZ': 6, 'XCY': 1, 'XBB': 1}"
+node_607665,not_comparable,XBB,I,False,41,10,20370,"{'XCP': 40, 'XBB': 1}"
+node_586859,not_comparable,XBB,I,True,58,0,111963,"{'XCT': 57, 'BA.2': 1}"
+node_600545,not_comparable,XBB,I,True,240,8,597,"{'XCH': 155, 'XCR': 84, 'XBB': 1}"
+node_600544,not_comparable,XBB,I,False,1286,7,6,"{'XBB': 1047, 'XCH': 155, 'XCR': 84}"
+node_600543,not_comparable,XBB,I,True,1308,4,55744,"{'XBB': 1047, 'XCH': 155, 'XCR': 84, 'XCL': 22}"
+node_587121,not_comparable,XBB,I,False,4075,0,107946,"{'XBB': 4067, 'XCQ': 8}"
+node_635330,not_comparable,XDP/XEB2,II,False,2,1,4,{'XDP': 2}
+node_739388,not_comparable,XE/XH,II,False,1253,3,3,{'XE': 1253}
+node_627477,not_comparable,,,False,10,0,244531,"{'XBB': 7, 'XBV': 3}"
+node_555793,not_comparable,,IV,True,22,,51225,"{'XAJ': 21, 'BA.4': 1}"
+node_701771,not_comparable,,,True,22,,17287,"{'XBS': 19, 'XBR': 3}"
+node_544074,not_comparable,,,False,23,,1240989,"{'XS': 19, 'BA.1': 2, 'BA.1.1': 1, 'BA.1.15': 1}"
+node_701778,not_comparable,,,True,53,,17256,"{'XBD': 46, 'BA.2.75': 7}"
+node_586857,not_comparable,,,False,59,,858735,"{'XCT': 57, 'BA.2': 2}"
+node_701768,not_comparable,,,True,75,,17234,"{'XBD': 46, 'XBS': 19, 'BA.2.75': 7, 'XBR': 3}"
+node_635338,not_comparable,,,True,113,,858681,"{'XDD': 112, 'BA.2.86.1': 1}"
+node_777510,not_comparable,,,False,469,,552252,"{'XAY': 371, 'XBC': 98}"
+node_739288,not_comparable,,,False,1552,,433753,"{'XE': 1253, 'BA.2': 109, 'XJ': 71, 'XH': 40, 'XM': 33, 'XY': 23, 'XAL': 14, 'XV': 9}"
