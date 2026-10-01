@@ -13,7 +13,7 @@ data_dir = Path(__file__).resolve().parent.parent / "data"
 png_dir = Path(__file__).resolve().parent.parent / "figures/static"
 
 
-ts = tszip.load(data_dir / "sc2ts_viridian_v1.2.trees.tsz")
+ts = tszip.load(data_dir / "sc2ts_viridian_v2.2.trees.tsz")
 
 def pangoX_RE_node_labels(exclude_dups=True):
     """
@@ -27,12 +27,20 @@ def pangoX_RE_node_labels(exclude_dups=True):
     # Get number of descendants for RE node so we can exclude those with >1e5 descendants, i.e. BA.5
     recombinants = pd.read_csv(data_dir / "recombinants.csv").set_index('recombinant')
     closest_recombinant_num_samples = -np.ones(len(pango_x_events), dtype=int)
-    use = (pango_x_events.closest_recombinant >= 0).values
+    in_csv = np.isin(pango_x_events.closest_recombinant, recombinants.index)
+    is_missing = np.logical_and(in_csv == False, pango_x_events.closest_recombinant > 0)
+    missing = {k: v for k, v in zip(
+        pango_x_events.closest_recombinant[is_missing],
+        pango_x_events.root_pango[is_missing],
+    )}
+    assert all([len(set(ts.edges_parent[ts.edges_child==u])) > 2 for u in missing.keys()])
+    use = np.logical_and(is_missing == False, pango_x_events.closest_recombinant >= 0)
+    print(f"Using {len(use)} recombinant nodes (omitting {missing} with > 2 parents)")
     closest_recombinant_num_samples[use] = recombinants.loc[
         pango_x_events.closest_recombinant[use],
         'num_descendant_samples'
     ]
-    # Exclude non-recombinants, and nodes where closes RE node is BA.5
+    # Exclude non-recombinants, and nodes where closest RE node is BA.5
     pango_x = pango_x_events[np.logical_and(
         closest_recombinant_num_samples > 0,
         closest_recombinant_num_samples < 1e5
