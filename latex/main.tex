@@ -535,10 +535,10 @@ recombinant (``X'') lineages requires the manual synthesis
 of multiple lines of evidence\cite{Smith2023tracking}.
 By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides a systematic framework for evaluating these origins.
-Of the 44 Pango X lineages present in the dataset
+Of the 73 Pango X lineages present in the ARG
 (\supref{sec:supplement_x_pango_lineages};
 Table~\ref{tab:pango_x_lineages}),
-16 map precisely to
+42 map precisely to
 recombination nodes in the ARG that are ancestral to all samples assigned to
 the lineage, indicating fully concordant recombinant origins.
 For these
@@ -1870,7 +1870,7 @@ notebook for details.
 We compare concordance rates of sc2ts in identifying the
 Pango lineages of recombinant parents and the location
 of breakpoint intervals with RecombinHunt\cite{Alfonsi2024} and
-CovRecomb\cite{Zhou2023virusrecom}.
+CovRecomb\cite{Li2024CovRecomb}.
 We use these two methods because detection
 results on the Pango X lineages were reported and made available
 in the original publications. We do not compare here with
@@ -1881,8 +1881,16 @@ We use the data from the Pango designation community
 (\url{https://github.com/cov-lineages/pango-designation/})
 as the ``truth'' when comparing performance in identifying
 parent Pango lineages and breakpoints between the methods.
-We focus on the 16 Type I recombination events
+We focus on the 42 Type I recombination events
 (Table~\ref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
+Seven of these (XAY, XAZ, XBC, XCH, XCT, XDD and XDV) are designated
+as having multiple breakpoints and are excluded, and
+no breakpoint interval is given in the designation for a further three
+(XBS, XBV and XCE), which are included only in the comparison of parent lineages.
+The published RecombinHunt and CovRecomb results are based on data
+collected up to early 2023, and so are not available for
+the 16 Type I lineages from XCC onwards
+(XBV is present only in the RecombinHunt Nextstrain results).
 While this is certainly biased in favour of sc2ts (i.e., by
 ignoring likely sc2ts false negatives such as XB), it helps to
 understand the probable accuracy of sc2ts on the true positives.
@@ -1890,7 +1898,7 @@ It is important to emphasise that the ``true'' truth set among
 the Pango X lineages is currently unknown.
 
 For RecombinHunt, we obtained two sets of detection results of the Pango X lineages
-from the supplementary materials of Alfonso et al.\cite{Alfonsi2024}.
+from the supplementary materials of Alfonsi et al.\cite{Alfonsi2024}.
 One set of results is based on mutational profiles calculated from a global GISAID dataset,
 and the other set from a global Nextstrain dataset.
 The breakpoint intervals identified using RecombinHunt are defined
@@ -3877,13 +3885,15 @@ Start & Length & Region & Occurrences & Samples\\
 \caption{
 Concordance among methods in characterizing Pango X lineages.
 These comparisons focus on the Pango X lineages associated with
-the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
+those of the 42 Type I recombination events (Table~\ref{tab:pango_x_lineages})
+which have a single breakpoint according to the Pango designation.
 For each method, we calculated the number of Pango X lineages
 which have inferred parent Pango lineages and breakpoint intervals
 concordant with those proposed by the community.
 The denominators indicate the number of Pango X lineages
 for which detection results are available from the original
-studies\cite{Alfonsi2024,Li2024CovRecomb}.
+studies\cite{Alfonsi2024,Li2024CovRecomb},
+which do not cover lineages designated after early 2023.
 For the Pango X lineages with non-overlapping breakpoint intervals,
 the distances between the inferred breakpoint intervals and
 those proposed by the community are shown (median and range).
@@ -3895,10 +3905,10 @@ those proposed by the community are shown (median and range).
 \cmidrule(lr){2-2} \cmidrule(lr){3-4}
 Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
 \midrule
-Sc2ts & 14 / 16 (87.5) & 14 / 16 (87.5) & 540.5 (315, 766)\\
-RecombinHunt-GISAID & 13 / 15 (86.7) & 10 / 15 (66.7) & 764.0 (4, 1202)\\
-RecombinHunt-Nextstrain & 12 / 15 (80.0) & 11 / 15 (73.3) & 1160.0 (559, 2785)\\
-CovRecomb & 7 / 8 (87.5) & 4 / 8 (50.0) & 1562.5 (217, 13208)\\
+Sc2ts & 27 / 35 (77.1) & 31 / 32 (96.9) & 315.0 (315, 315)\\
+RecombinHunt-GISAID & 15 / 19 (78.9) & 11 / 19 (57.9) & 1202.0 (2, 7955)\\
+RecombinHunt-Nextstrain & 20 / 23 (87.0) & 15 / 22 (68.2) & 2785.0 (559, 7955)\\
+CovRecomb & 8 / 11 (72.7) & 6 / 11 (54.5) & 2059.0 (217, 13208)\\
 \bottomrule
 \end{tabular}
 \end{table}
