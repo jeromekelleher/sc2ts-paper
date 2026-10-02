@@ -53,8 +53,9 @@ def run(ts, output, pattern):
 
     all_work = []
     for u in recombinants:
-        # Skip multi-parent recombinants.
-        if np.sum(ts.edges_child == u) > 2:
+        # The lbs rematch assumes a single breakpoint, so skip
+        # multi-parent recombinants there.
+        if pattern is None and np.sum(ts.edges_child == u) > 2:
             continue
         md = ts.node(u).metadata
         date = md["sc2ts"]["date_added"]

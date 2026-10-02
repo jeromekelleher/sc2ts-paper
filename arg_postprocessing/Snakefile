@@ -20,6 +20,10 @@
 # recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
 # pango_x_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
 # deletion_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
+#
+# The rematch_recombinants rule is expensive and needs the per-day inference
+# ARGs, so its k1000 mutation counts are saved in git in this directory as
+# sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_k1000_muts.json
 rule all:
     input:
         # Base debug report
@@ -301,11 +305,25 @@ rule add_net_supporting_loci_to_csv:
         python scripts/add_recombinant_minlength_to_csv.py -v {input} {output}
         """
 
+# Extract the number of mutations in the no-recombination (k=1000) match
+# for each recombinant. The output is small and is kept in git.
+rule extract_k1000_muts:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{EKM_PREFIX}_recombinants.json",
+    output:
+        "{EKM_PREFIX}_k1000_muts.json",
+    shell:
+        """
+        python scripts/extract_k1000_muts.py {input} {output}
+        """
+
 rule add_k1000_muts:
     conda:
         "sc2ts.yml"
     input:
-        "{AKM_PREFIX}_recombinants.json",
+        "{AKM_PREFIX}_k1000_muts.json",
         "{AKM_PREFIX}_recombinants_{AKM_SUFFIX}.csv",
     output:
         "{AKM_PREFIX}_recombinants_{AKM_SUFFIX}_akm.csv",
