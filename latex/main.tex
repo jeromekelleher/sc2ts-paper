@@ -599,20 +599,20 @@ those identified by Jackson et al.\ (\supref{sec:jackson_recombs}).
 We validated the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
 on the putative recombinant sequence trios (Methods).
-Of the 855 recombination events identified by sc2ts,
-3SEQ verified 57\% of them,
-rising to 95\% verification among the 354 recombinants that passed our QC filter.
+Of the 1319 recombination events identified by sc2ts,
+3SEQ verified 66\% of them,
+rising to 96\% verification among the 647 recombinants that passed our QC filter.
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb}
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
 summarised in Table~\ref{tab:recombinant_validation}.
 CovRecomb has a substantially lower validation rate
-at 25\% among the QC-passing recombinants.
+at 33\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
 to detect inter-lineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
-Rebar validation is intermediate, at 57\% among QC-passing recombinants.
+Rebar validation is intermediate, at 61\% among QC-passing recombinants.
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -635,7 +635,7 @@ would require 37 additional mutations, indicating strong support for
 recombination (Figure~\ref{fig:recombinant_evidence}A;
 Table~\ref{tab:pango_x_lineages}).
 Strongly supported events show high concordance with independent validation by
-3SEQ, whereas the 5\% of events that fail 3SEQ validation are
+3SEQ, whereas the 4\% of events that fail 3SEQ validation are
 concentrated among the weakest-supported cases ($\leq 5$ averted mutations)
 and associated with recently diverged parents
 (Figure~\ref{fig:recombinant_evidence}B,C).
@@ -645,7 +645,7 @@ and associated with recently diverged parents
 \includegraphics[width=1\linewidth]{recombinant_evidence.pdf}
 \caption{
 Properties of recombination events.
-A,B,C show summaries of the 354 sc2ts recombination nodes passing QC filters
+A,B,C show summaries of the 647 sc2ts recombination nodes passing QC filters
 coloured by 3SEQ classification (recombinant: purple, non-recombinant: grey).
 (A) Upper: jittered scatterplot comparing number of mutations
 when recombination allowed ($y$: right axis)
@@ -1736,7 +1736,7 @@ using default thresholds.
 We used 3SEQ source code downloaded from \url{https://gitlab.com/lamhm/3seq}
 at git hash e45ee3b4.
 
-For CovRecomb\cite{Zhou2023virusrecom}, we obtained the original alignments
+For CovRecomb\cite{Li2024CovRecomb}, we obtained the original alignments
 for the ``causal'' samples for each recombination node, and ran
 CovRecomb-Local-Version with default settings. We used source code
 downloaded from \url{https://github.com/wuaipinglab/CovRecomb} at
@@ -3985,7 +3985,7 @@ XBT & 1 & 1 & 2\\   % Multiple breakpoint Pango X
 
 \begin{table}
 \caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over
-all 855 recombinants and the 354 passing and 501 failing QC.
+all 1319 recombinants and the 647 passing and 672 failing QC.
 }
 \label{tab:recombinant_validation}
 \centering
@@ -3993,9 +3993,9 @@ all 855 recombinants and the 354 passing and 501 failing QC.
 \toprule
 Method & Total    & QC Pass & QC Fail \\
 \midrule
-3SEQ        & 484 & 338     & 146 \\
-CovRecomb   & 92  & 90      & 2\\
-rebar       & 213 & 203     & 10 \\
+3SEQ        & 876 & 619     & 257 \\
+CovRecomb   & 233 & 213     & 20 \\
+rebar       & 417 & 396     & 21 \\
 \bottomrule
 \end{tabular}
 \end{table}
