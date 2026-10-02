@@ -1,4 +1,4 @@
-DATA=
+DATA=pango_x_table/table.tex ripples_tables/x_lineages.tex
 FIGURES=
 
 all: combined.pdf main_text.pdf
@@ -19,8 +19,15 @@ main_text.pdf: main.tex
 	qpdf split_tmp.pdf --pages . 1-34 -- main_text.pdf
 	qpdf split_tmp.pdf --pages . 35-z -- supplementary.pdf
 
-# Standalone view of the Pango X event table; regenerate the table itself
-# with: python3 pango_x_table/make_table.py
+# The generated tables. The CSVs are written by the notebooks.
+pango_x_table/table.tex: pango_x_table/make_table.py $(wildcard pango_x_table/*.csv)
+	python3 pango_x_table/make_table.py
+
+# Also writes ripples_tables/event_descendants.tex
+ripples_tables/x_lineages.tex: ripples_tables/make_tables.py $(wildcard ripples_tables/*.csv)
+	python3 ripples_tables/make_tables.py
+
+# Standalone view of the Pango X event table.
 pango_x_table.pdf: pango_x_table.tex pango_x_table/table.tex
 	pdflatex pango_x_table.tex
 	pdflatex pango_x_table.tex

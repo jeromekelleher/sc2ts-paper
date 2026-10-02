@@ -875,44 +875,40 @@ methods, and initially set the RIPPLES ``parsimony improvement''
 parameter to $p=4$ (rather than the more lenient default of 3),
 to match the equivalent $k=4$ setting used in sc2ts (Methods).
 Under this setting,
-RIPPLES reported 1174 recombination events of which
-601 were validated by 3SEQ (51\%; Methods).
+RIPPLES reported 1498 recombination events of which
+781 were validated by 3SEQ (52\%; Methods).
 % JK: There's no point in making a meal of the 3SEQ validation rate,
 % This is notably lower than the equivalent
 % concordance rate of 57\% among the 855 recombination events reported by sc2ts.
 We then compared
 the specific events reported by both methods by aligning them
 using sets of descendant samples (Methods),
-giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
-The 706 recombination events detected by RIPPLES that do not
-correspond to a recombination event in the sc2ts ARG can largely
-be explained by a combination
-of the strict time ordering imposed by sc2ts
-(parents must precede recombinant offspring)
-and the differing sets of problematic sites masked
-by sc2ts and UShER
-(\supref{sec:detailed_ripples}).
-The 387 events detected by sc2ts and not by UShER+RIPPLES
+giving 680 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
+The 818 recombination events detected by RIPPLES that do not
+correspond to a recombination event in the sc2ts ARG can partly
+be explained by the strict time ordering imposed by sc2ts
+(parents must precede recombinant offspring;
+\supref{sec:detailed_ripples}).
+The 643 events detected by sc2ts and not by UShER+RIPPLES
  include some of the well characterised Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows the events detected
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages, showing that at $p=4$
-only 9 of the Pango X lineages are present and
-with unequivocal recombinant origin for 6
-(contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
-We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall
-and increasing the intersection of events with sc2ts to 595
+only 13 of the 39 Type I events in Table~\ref{tab:pango_x_lineages}
+have an equivalent RIPPLES recombination event.
+We therefore reran RIPPLES with $p=3$, resulting in 5365 events overall
+and increasing the intersection of events with sc2ts to 890
 (Figure~\ref{fig:ripples_sc2ts_events}).
-At this more lenient threshold, 23 of the 44 Pango X lineages
-are identified as descendants of RIPPLES recombinant events,
-with unequivocal origins for 10 lineages, and
-7 lineages associated with two competing events
+At this more lenient threshold, 20 of the 39 Type I events
+and 3 of the 9 Type II events
+have an equivalent RIPPLES recombination event
 (\supref{sec:detailed_ripples}).
-Thus, a more lenient threshold ($p=3$) was needed for UShER+RIPPLES to detect a
-similar fraction of Pango X lineages as sct2ts with $k=4$, resulting in more
-false positives. That said, XB and XAJ are among the lineages detected by
-UShER+RIPPLES, even at $p=4$, strengthening evidence that these are false
-negatives for sc2ts (\supref{sec:dd_xaj}).
+Thus, even at the more lenient threshold ($p=3$) UShER+RIPPLES detects
+around half of the Type I events found by sc2ts with $k=4$, while
+reporting 3.6 times as many events overall. That said, XAJ is among the
+lineages detected by
+UShER+RIPPLES, even at $p=4$, strengthening evidence that this is a false
+negative for sc2ts (\supref{sec:dd_xaj}).
 
 The choice of the $p$ threshold has a large effect
 on the number of recombination events detected by RIPPLES, and
@@ -924,8 +920,8 @@ RIPPLES reported 589 unique recombination events with 43,104 descendant
 samples---corresponding to $\sim$2.7\% of all samples of recombinant origin.
 Over the same time interval, the sc2ts ARG ($k=4$) identifies
 14 recombination events passing QC with
-172 descendant samples among 501,235 samples (0.034\%),
-a 40- to 80-fold reduction.
+160 descendant samples among 517,724 samples (0.031\%),
+a 40- to 90-fold reduction.
 The sc2ts ARG identifies more of the well-characterised Pango X lineages
 at a more stringent threshold, and therefore provides us with a
 conservative lower bound
@@ -3353,33 +3349,35 @@ We ran RIPPLES and aligned events with the sc2ts ARG as described in
 the Methods. We begin by describing the overall composition of events output
 by RIPPLES at the two parameter values used.
 
-At $p=4$, RIPPLES returned a total of 1174 events, and
-610 pass 3SEQ validation (51\%). 1052 events
-(89.6\%) were in close clade agreement with the sc2ts ARG,
-and 468 (40\%) corresponded to recombination events in the ARG
+At $p=4$, RIPPLES returned a total of 1498 events, and
+781 pass 3SEQ validation (52\%). 1327 events
+(88.6\%) were in close clade agreement with the sc2ts ARG,
+and 685 (46\%) corresponded to recombination events in the ARG.
+Several RIPPLES events can correspond to the same recombination event
+in the ARG, so these represent 680 distinct sc2ts events
 (Figure~\ref{fig:ripples_sc2ts_events}A).
-We investigated the 701 RIPPLES events that could be aligned
-with the ARG but were not close to a recombination node
+We investigated the 813 RIPPLES events that did not correspond
+to a recombination event in the ARG
 to determine why they were not found by sc2ts.
-For 408 of these RIPPLES identified recombination events,
-one or more parents were \emph{younger} than the
+For 507 (62\%) of these RIPPLES identified recombination events,
+one or more parents were \emph{not older} than the
 recombinant sequence based on metadata,
 and therefore impossible under the strict time ordering
 enforced by sc2ts.
-Secondly, of the 179
-remaining events with matching clades and in which the
-sc2ts node has more than 4 mutations, of the total
-1,167 mutations, 452 of these occurred at sites that were
-remapped during post-hoc parsimony (and thus the mutations
-were not observed by the LS HMM during primary inference).
-The remaining ``missing'' events are likely attributable
+This is also the case, however, for 279 (41\%) of the 685 events
+that do correspond to a recombination event in the ARG,
+so time ordering is only a partial explanation.
+Of the 306 remaining events, 264 have matching clades,
+and so sc2ts explains the same samples by mutation rather than recombination.
+These events are likely attributable
 to the finer details of the
 differences in tree building approaches between UShER and sc2ts.
 
-At $p=3$, RIPPLES returned a total of 4111 events, and
-2718 pass 3SEQ validation (66\%). 3755 events
-(91.3\%) were in close clade agreement with the sc2ts ARG,
-and 595 (14\%) corresponded to recombination events in the ARG
+At $p=3$, RIPPLES returned a total of 5365 events, and
+1961 pass 3SEQ validation (37\%). 4856 events
+(90.5\%) were in close clade agreement with the sc2ts ARG,
+and 909 (17\%) corresponded to recombination events in the ARG,
+representing 890 distinct sc2ts events
 (Figure~\ref{fig:ripples_sc2ts_events}B).
 We did not investigate the $p=3$ events any further as the additional
 events detected at the lower threshold are not expected to be detected
@@ -3393,34 +3391,40 @@ very few descendants and being dominated by singletons.
 The events subtending $>$ 100,000 samples
 in all three cases are noteworthy (see
 \supref{sec:spurious-ancestrally-important-recombinants}
-for analysis of the two sc2ts events).
+for analysis of the BA.2 and BA.5 sc2ts events; the third is XBB).
 
 
 We next examined the RIPPLES events referencing Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows a summary of all
 recombination events associated with Pango X lineages detected by RIPPLES
 at $p=3$ and their relationship with the sc2ts ARG.
-Of the 16 Class I events (X lineages unequivocally associated with
-a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
-8 have corresponding recombination events (4, at $p=4$).
-Of the 5 Type II events
-(recombination nodes with more complex assocation with X lineages),
-two have close matches.
-XBM matches exactly (including 2 descending BF.3 samples),
-and XE/XH is similar (but without including the 2 XH samples in the clade).
-UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
-makes these both descendants of the Xx event,
+Of the 64 events, 31 are equivalent to a recombination event in the ARG:
+the clades agree and the sc2ts node is within one edge of a recombination node.
+These cover 20 of the 39 Type I events (X lineages unequivocally associated with
+a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages}
+(13, at $p=4$) and
+3 of the 9 Type II events
+(recombination nodes with more complex association with X lineages):
+XAC, XC and XE/XH (all three also at $p=4$).
+The remaining equivalent events are at recombination nodes in the ARG
+that are not among the named events in Table~\ref{tab:pango_x_lineages}.
+In a further 11 events the clades agree, but the sc2ts node is a more distant
+descendant of a recombination node.
+For example, UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
+makes these both descendants of the XQ event,
 RIPPLES creates two independent recombinations.
-Similarly, XAC and XAE have exactly matching clades, but RIPPLES
-infers two independent recombination events while sc2ts groups them both
-under the Xx event. XB is notable as a likely sc2ts false negative that is
-identified by RIPPLES at both $p=3$ and $p=4$. The remaining events
-associated with X lineages output by RIPPLES cannot be easily mapped
+Similarly, RIPPLES infers separate recombination events for XE and XH,
+while sc2ts groups them both under the XE/XH event; the XH clade matches
+exactly, and the XE clade differs by 3 samples.
+The 21 events that are not comparable
+cannot be easily mapped
 to the sc2ts ARG as one or more descendants are distantly placed.
+Nine of these are clades of X lineages descending from XBB
+whose most recent common ancestor in the ARG is within the much larger XBB clade.
 XAJ is an outlier for sc2ts, being the Pango X lineage identified as a
 non-recombinant with the largest number of mutations
 (Table~\ref{tab:pango_x_lineages}), and a likely false negative.
-The remaining 4 events are mixtures of multiple lineages that are
+Most of the others are mixtures of multiple lineages that are
 difficult to reconcile with either the other events in the table
 or the sc2ts ARG.
 
@@ -4003,89 +4007,12 @@ rebar       & 213 & 203     & 10 \\
 
 
 
-\begin{table}
-\caption{
-RIPPLES events associated with Pango X lineages.
-Each row is a recombination event identified by RIPPLEs (at $p=3$)
-in which Pango X lineages appear,
-along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
-where applicable, grouped by class.
-Events also present at $p=4$ are indicated.
-Clades are matched by finding the most recent common ancestor of
-the samples associated with each UShER+RIPPLES event in the sc2ts ARG.
-The clade differences indicates the closeness of the match.
-}
-\label{tab:ripples_x_lineages}
-\centering
-\begin{scriptsize}
+\clearpage % flush the floats above so that the tables stay in order
+\nolinenumbers % a long tblr is not a float, so lineno would number its pages
+\input{ripples_tables/x_lineages.tex} % generated by make_tables.py -- do not edit
+\linenumbers
+\clearpage
 
-\begin{tabular}{lrrlrl}
-\toprule
-sc2ts event & in $p=4$ & UShER desc & sc2ts class & clade diff & descendants \\
-\midrule
-\multicolumn{6}{l}{Equivalent Sc2ts and RIPPLES recombination events}\\
-XC & $\checkmark$ & 5 & I & 0 & {XC:5} \\
-XBR & $\checkmark$ & 1 & I & 0 & {XBR:1} \\
-% XM3 & $\checkmark$ & 1 & I & 0 & {XM:1} \\
-XS & $\checkmark$ & 17 & I & 0 & {XS:17} \\
-XA & $\checkmark$ & 39 & I & 0 & {XA:39} \\
-XY &  & 23 & I & 0 & {XY:23} \\
-XW &  & 32 & I & 0 & {XW:32} \\
-XL &  & 64 & I & 0 & {XL:64} \\
-XBB &  & 6452 & I & 1 & {XBB:6452} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event close to sc2ts recombination event}\\
-XBM & $\checkmark$ & 12 & II & 0 & {XBM:10, BF.3:2} \\
-XM & $\checkmark$ & 8 & II & 0 & {XM:4, BA.2:4} \\
-Xx & $\checkmark$ & 18 & II & 0 & {XAC:18} \\
-Xx &  & 9 & II & 0 & {XAE:9} \\
-XQ &  & 1 & II & 0 & {XAM:1} \\
-XQ &  & 21 & II & 0 & {XAM:21} \\
-XE/XH &  & 1113 & II & 3 & {XE:1113} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event equivalant to sc2ts non-recombination event}\\
-XB & $\checkmark$ & 411 & IV & 0 & {XB:192, B.1:219} \\
-\midrule
-\multicolumn{6}{l}{RIPPLEs recombination event not comparable to sc2ts}\\
-NA & $\checkmark$ & 19 & NA & 45190 & {XAJ:18, BA.4:1} \\
-NA & $\checkmark$ & 35 & NA & 7147 & {XBD:30, BA.2.75:5} \\
-NA & $\checkmark$ & 36 & NA & 7146 & {XBR:1, XBD:30, BA.2.75:5} \\
-NA &  & 20 & NA & 1061775 & {XS:17, BA.1:1, BA.1.1:1, BA.1.15:1} \\
-NA &  & 1321 & NA & 340501 & {XE:1113, XJ:68, BA.2:82, XM:29, XY:23,
-XAL:3, XAF:1, XH:2} \\
-\bottomrule
-\end{tabular}
-
-\end{scriptsize}
-\end{table}
-
-
-\begin{table}
-\caption{
-Distribution of numbers of descendants for UShER+RIPPLES events
-and sc2ts. The first column shows the number of descendants (binned
-for larger values) and the others show the corresponding number of events.
-}
-\label{tab:ripples_sc2ts_event_descendants}
-\centering
-\begin{tabular}{lrrr}
-\toprule
-Count & RIPPLES p3 & RIPPLES p4 & sc2ts \\
-\midrule
-1 & 2616 & 757 & 525 \\
-2 & 575 & 178 & 124 \\
-3 & 232 & 65 & 47 \\
-4 & 124 & 38 & 32 \\
-5 & 74 & 14 & 17 \\
-5-100 & 437 & 108 & 96 \\
-100-1000 & 32 & 6 & 8 \\
-1000-10k & 15 & 6 & 4 \\
-10k-100k & 2 & 0 & 0 \\
-100k-1m & 4 & 2 & 2 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
+\input{ripples_tables/event_descendants.tex} % generated by make_tables.py -- do not edit
 
 \end{document}
