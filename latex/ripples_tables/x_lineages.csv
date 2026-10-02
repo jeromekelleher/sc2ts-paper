@@ -42,24 +42,24 @@ ERR12934671,descendant,XG,II,False,1,6,0,{'XG': 1}
 SRR19708375,descendant,XQ,I,False,1,8,0,{'XAM': 1}
 node_739645,descendant,XQ,I,False,26,7,0,{'XAM': 26}
 ERR11189965,non_recombinant,,IV,False,1,,0,{'XBK': 1}
-node_615174,not_comparable,XBB,I,False,6,2,106375,"{'XBW': 5, 'XBB': 1}"
-node_623725,not_comparable,XBB,I,True,7,0,112014,"{'XCZ': 6, 'XBB': 1}"
-node_623719,not_comparable,XBB,I,False,8,0,112013,"{'XCZ': 6, 'XCY': 1, 'XBB': 1}"
-node_607665,not_comparable,XBB,I,False,41,10,20370,"{'XCP': 40, 'XBB': 1}"
-node_586859,not_comparable,XBB,I,True,58,0,111963,"{'XCT': 57, 'BA.2': 1}"
-node_600545,not_comparable,XBB,I,True,240,8,597,"{'XCH': 155, 'XCR': 84, 'XBB': 1}"
-node_600544,not_comparable,XBB,I,False,1286,7,6,"{'XBB': 1047, 'XCH': 155, 'XCR': 84}"
-node_600543,not_comparable,XBB,I,True,1308,4,55744,"{'XBB': 1047, 'XCH': 155, 'XCR': 84, 'XCL': 22}"
-node_587121,not_comparable,XBB,I,False,4075,0,107946,"{'XBB': 4067, 'XCQ': 8}"
-node_635330,not_comparable,XDP/XEB2,II,False,2,1,4,{'XDP': 2}
-node_739388,not_comparable,XE/XH,II,False,1253,3,3,{'XE': 1253}
-node_627477,not_comparable,,,False,10,0,244531,"{'XBB': 7, 'XBV': 3}"
-node_555793,not_comparable,,IV,True,22,,51225,"{'XAJ': 21, 'BA.4': 1}"
+node_635330,not_comparable,,,False,2,,4,{'XDP': 2}
+node_615174,not_comparable,,,False,6,,106375,"{'XBW': 5, 'XBB': 1}"
+node_623725,not_comparable,,,True,7,,112014,"{'XCZ': 6, 'XBB': 1}"
+node_623719,not_comparable,,,False,8,,112013,"{'XCZ': 6, 'XCY': 1, 'XBB': 1}"
+node_627477,not_comparable,,,False,10,,244531,"{'XBB': 7, 'XBV': 3}"
+node_555793,not_comparable,,,True,22,,51225,"{'XAJ': 21, 'BA.4': 1}"
 node_701771,not_comparable,,,True,22,,17287,"{'XBS': 19, 'XBR': 3}"
 node_544074,not_comparable,,,False,23,,1240989,"{'XS': 19, 'BA.1': 2, 'BA.1.1': 1, 'BA.1.15': 1}"
+node_607665,not_comparable,,,False,41,,20370,"{'XCP': 40, 'XBB': 1}"
 node_701778,not_comparable,,,True,53,,17256,"{'XBD': 46, 'BA.2.75': 7}"
+node_586859,not_comparable,,,True,58,,111963,"{'XCT': 57, 'BA.2': 1}"
 node_586857,not_comparable,,,False,59,,858735,"{'XCT': 57, 'BA.2': 2}"
 node_701768,not_comparable,,,True,75,,17234,"{'XBD': 46, 'XBS': 19, 'BA.2.75': 7, 'XBR': 3}"
 node_635338,not_comparable,,,True,113,,858681,"{'XDD': 112, 'BA.2.86.1': 1}"
+node_600545,not_comparable,,,True,240,,597,"{'XCH': 155, 'XCR': 84, 'XBB': 1}"
 node_777510,not_comparable,,,True,469,,552252,"{'XAY': 371, 'XBC': 98}"
+node_739388,not_comparable,,,False,1253,,3,{'XE': 1253}
+node_600544,not_comparable,,,False,1286,,6,"{'XBB': 1047, 'XCH': 155, 'XCR': 84}"
+node_600543,not_comparable,,,True,1308,,55744,"{'XBB': 1047, 'XCH': 155, 'XCR': 84, 'XCL': 22}"
 node_739288,not_comparable,,,False,1552,,433753,"{'XE': 1253, 'BA.2': 109, 'XJ': 71, 'XH': 40, 'XM': 33, 'XY': 23, 'XAL': 14, 'XV': 9}"
+node_587121,not_comparable,,,False,4075,,107946,"{'XBB': 4067, 'XCQ': 8}"
