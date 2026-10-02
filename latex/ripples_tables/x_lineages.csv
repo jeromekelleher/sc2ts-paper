@@ -5,7 +5,7 @@ node_544114,equivalent,XAE,I,True,10,1,0,{'XAE': 10}
 node_701823,equivalent,XBM,I,True,21,1,0,{'XBM': 21}
 node_701774,equivalent,XBR,I,True,3,1,0,{'XBR': 3}
 node_627478,equivalent,XBV,I,True,3,1,0,{'XBV': 3}
-node_46581,equivalent,XC,II,False,6,0,0,"{'XC': 5, 'B.1.617.2': 1}"
+node_46581,equivalent,XC,II,True,6,0,0,"{'XC': 5, 'B.1.617.2': 1}"
 node_589090,equivalent,XCC,I,False,15,0,0,{'XCC': 15}
 SRR24762455,equivalent,XCE,I,True,1,1,0,{'XCE': 1}
 node_601093,equivalent,XCL,I,True,22,1,0,{'XCL': 22}
@@ -61,5 +61,5 @@ node_701778,not_comparable,,,True,53,,17256,"{'XBD': 46, 'BA.2.75': 7}"
 node_586857,not_comparable,,,False,59,,858735,"{'XCT': 57, 'BA.2': 2}"
 node_701768,not_comparable,,,True,75,,17234,"{'XBD': 46, 'XBS': 19, 'BA.2.75': 7, 'XBR': 3}"
 node_635338,not_comparable,,,True,113,,858681,"{'XDD': 112, 'BA.2.86.1': 1}"
-node_777510,not_comparable,,,False,469,,552252,"{'XAY': 371, 'XBC': 98}"
+node_777510,not_comparable,,,True,469,,552252,"{'XAY': 371, 'XBC': 98}"
 node_739288,not_comparable,,,False,1552,,433753,"{'XE': 1253, 'BA.2': 109, 'XJ': 71, 'XH': 40, 'XM': 33, 'XY': 23, 'XAL': 14, 'XV': 9}"
