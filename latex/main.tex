@@ -418,7 +418,7 @@ accurately depicting a range of results from the literature.
 First, we compared the sc2ts ARG
 with the state-of-the-art UShER tree inferred from the same dataset
 by pruning both to their intersection of
-2,475,418 samples and 27,507 sites (Methods).
+3,107,392 samples and 27,963 sites (Methods).
 Eliminating recombination nodes and their descendants (which we expected to differ),
 we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
@@ -2188,35 +2188,20 @@ the different alignments used as input,
 the different sets of sites used for inference and
 the fact that we are including deletions
 for a subset of sites in the sc2ts ARG.
+As the UShER tree contains no mutations involving deletions,
+we therefore compare it with the sc2ts ARG before the post-hoc
+parsimony mapping of deletions, so that only
+nucleotide substitutions are counted in both.
 
-% TODO implement this
-% When we compare the intersection of the base sc2ts ARG
-% (pre site-remapping), sc2ts is very slightly more parsimonious
-% See https://github.com/jeromekelleher/sc2ts-paper/issues/684
-% with XX mutations over the YYY sites shared between them.
-After site remapping, and including all mutations involving
-deletion characters, sc2ts has 143,690 mutations more
-(2,078,370 vs 1,934,680). If we exclude mutations involving
-deletions in sc2ts, this is reduced to 46,371 more (2.3\%) than UShER.
-If we restrict to the 26,192 sites that were not remapped,
-sc2ts has 4,785 (0.26\%) fewer mutations than UShER,
-and has around 2.5 times more mutations than UShER
-on the 163 sites that were post-hoc remapped.
-
-To provide a more objective measure of the overall parsimony
-of the inferred ARGs with respect to the Viridian alignments,
-we remapped all 29903 sites in both ARGs
-using Fitch-Hartigan parsimony. Here the nucleotides
-ACGT and ``-'' were treated as distinct characters, with all
-other values regarded as missing data. In this case, the sc2ts
-ARG has 629,864 (5.5\%) fewer mutations (10,840,687
-vs 11,470,551). Some of this difference may be due to the
-post-hoc incorporation of phylogenetic signal from deletions
-by sc2ts, but more work is required to fully understand
-the differences between the two approaches.
+Over the intersection of 3,107,392 samples and 27,963 sites
+shared between them, the sc2ts ARG has 47,874 (1.9\%) more
+mutations than the UShER tree (2,600,828 vs 2,552,954).
+This difference is not uniform along the genome, with
+sc2ts having substantially more mutations than UShER
+at a small number of sites.
 
 See notebook
-\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_usher\_sc2ts.ipynb}{analysis\_usher\_sc2ts.ipynb}
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg\_postprocessing/logs/usher\_sc2ts\_comparison\_2024-06-06.ipynb}{usher\_sc2ts\_comparison\_2024-06-06.ipynb}
 for details.
 
 
