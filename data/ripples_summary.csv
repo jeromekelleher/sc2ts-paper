@@ -11,7 +11,11 @@ ripples_only,818,4475
 sc2ts_only,643,433
 unmatched_events,813,4456
 unmatched_parent_not_older,507,2628
-unmatched_clade_agreement_over_4_mutations,185,713
+unmatched_parent_not_older_percent,62.4,59.0
+matching_parent_not_older,279,395
+matching_parent_not_older_percent,40.7,43.5
+unmatched_parent_older,306,1828
+unmatched_parent_older_clade_agreement,264,1720
 x_lineage_events,30,64
 x_lineages_in_events,26,48
 x_equivalent_type_I_events,13,20

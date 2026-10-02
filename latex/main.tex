@@ -885,13 +885,10 @@ the specific events reported by both methods by aligning them
 using sets of descendant samples (Methods),
 giving 680 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
 The 818 recombination events detected by RIPPLES that do not
-correspond to a recombination event in the sc2ts ARG can largely
-be explained by a combination
-of the strict time ordering imposed by sc2ts
-(parents must precede recombinant offspring)
-and the differing sets of problematic sites masked
-by sc2ts and UShER
-(\supref{sec:detailed_ripples}).
+correspond to a recombination event in the sc2ts ARG can partly
+be explained by the strict time ordering imposed by sc2ts
+(parents must precede recombinant offspring;
+\supref{sec:detailed_ripples}).
 The 643 events detected by sc2ts and not by UShER+RIPPLES
  include some of the well characterised Pango X lineages.
 Table~\ref{tab:ripples_x_lineages} shows the events detected
@@ -3360,17 +3357,17 @@ and 685 (46\%) corresponded to one of 680 recombination events in the ARG
 We investigated the 813 RIPPLES events that did not correspond
 to a recombination event in the ARG
 to determine why they were not found by sc2ts.
-For 507 of these RIPPLES identified recombination events,
+For 507 (62\%) of these RIPPLES identified recombination events,
 one or more parents were \emph{not older} than the
 recombinant sequence based on metadata,
 and therefore impossible under the strict time ordering
 enforced by sc2ts.
-Secondly, 185 of the
-remaining events have matching clades and more than 4 mutations
-on the sc2ts node, which may in part reflect mutations at sites that were
-remapped during post-hoc parsimony (and thus
-were not observed by the LS HMM during primary inference).
-The remaining ``missing'' events are likely attributable
+This is also the case, however, for 279 (41\%) of the 685 events
+that do correspond to a recombination event in the ARG,
+so time ordering is only a partial explanation.
+Of the 306 remaining events, 264 have matching clades,
+and so sc2ts explains the same samples by mutation rather than recombination.
+These events are likely attributable
 to the finer details of the
 differences in tree building approaches between UShER and sc2ts.
 
