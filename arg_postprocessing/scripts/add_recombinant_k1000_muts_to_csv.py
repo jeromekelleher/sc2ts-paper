@@ -5,20 +5,16 @@ import numpy as np
 
 
 @click.command()
-@click.argument("rematches_json")
+@click.argument("k1000_muts_json")
 @click.argument("recombinants_csv")
 @click.argument("output")
-def run(rematches_json, recombinants_csv, output):
+def run(k1000_muts_json, recombinants_csv, output):
     dfr = pd.read_csv(recombinants_csv).set_index("recombinant")
-    no_recomb_match_mutations = {}
-    with open(rematches_json) as f:
-        for r in json.load(f):
-            nrm = r["no_recomb_match"]
-            assert len(nrm["path"]) == 1
-            nrm_muts = len(nrm["mutations"])
-            no_recomb_match_mutations[r["recombinant"]] = nrm_muts
+    with open(k1000_muts_json) as f:
+        # JSON keys are strings, convert back to node IDs
+        k1000_muts = {int(k): v for k, v in json.load(f).items()}
 
-    dfr["k1000_muts"] = no_recomb_match_mutations
+    dfr["k1000_muts"] = k1000_muts
     missing = np.sum(dfr["k1000_muts"].isna())
     if missing > 0:
         print(f"WARNING!!! Missing {missing}/{dfr.shape[0]} recombinants from matches")
