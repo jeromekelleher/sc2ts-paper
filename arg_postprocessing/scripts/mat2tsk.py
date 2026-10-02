@@ -261,7 +261,7 @@ def date_internal(tsk_in, tsk_out):
 @click.option(
     "--intersect-sites/--no-intersect-sites",
     default=True,
-    help="Reduce sites to the intersection of both (assuming sc2ts is superset)",
+    help="Reduce sites to the intersection of both (the sites with mutations in usher)",
     show_default=True,
 )
 def intersect(usher_in, sc2ts_in, usher_out, sc2ts_out, intersect_sites):
