@@ -440,17 +440,17 @@ against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
 finding close agreement (Figure~\ref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
-by computing Pango assignments for all 2.75 million nodes in the ARG
+by computing Pango assignments for all 3.41 million nodes in the ARG
 using Pangolin~\cite{OToole2021assignment} (Methods).
-Only a small minority of the exported sample alignments (21,680; 0.87\%) disagreed
+Only a small minority of the exported sample alignments (28,817; 0.93\%) disagreed
 % NOTE Sally pointed out as potentially needing clarification.
 with the source consensus sequences in terms of Pango lineage assignment
-(comparable to the 0.27\% disagreement between pangolin-data
+(lower than the 2.39\% disagreement between pangolin-data
 versions 1.21 and 1.29 in the source Viridian metadata).
-A majority of the Pango lineages (1473 of 2058)
+A majority of the Pango lineages (2037 of 3032)
 % SO: Not "these" as that seemed to refer to the conflicting nodes.
 have monophyletic origins in the ARG,
-increasing to 1779 (86\%) when we allow
+increasing to 2457 (81\%) when we allow
 for multiple sibling origination nodes
 (\supref{sec:supplement_pango_lineages}).
 The ARG is time-resolved, with internal node dates estimated
@@ -2259,16 +2259,16 @@ putative origination nodes among those labelled with a given lineage as the node
 with the maximum number of descendant samples and the earliest time (if there
 is a tie).
 
-Of the 2058 distinct Pango lineages in the ARG, 1473 of these (comprising
-717798 samples) match perfectly, with unique origination events in the ARG
+Of the 3032 distinct Pango lineages in the ARG, 2037 of these (comprising
+898542 samples) match perfectly, with unique origination events in the ARG
 where all samples assigned a given lineage descend from the first node assigned
-that lineage. A further 245 lineages (589197 samples) match perfectly when we
+that lineage. A further 420 lineages (730289 samples) match perfectly when we
 count the descendants of the parent of the first node (accounting for
 polytomies in which multiple originating nodes for a given lineage are
-siblings). We then have 306 lineages (755840 samples) where the difference in
-the number descendants of the first node's parent is $<$ 100. The remaining 35
-lineages (420047 samples) are dominated by a few large lineages such as BA.1.1
-(147271 samples) and AY.4.2 (54607 samples) which have multiple non-sibling
+siblings). We then have 541 lineages (522442 samples) where the difference in
+the number descendants of the first node's parent is $<$ 100. The remaining 34
+lineages (963336 samples) are dominated by a few large lineages such as AY.4
+(552697 samples) and BA.1.1 (177608 samples) which have multiple non-sibling
 origins within the ARG.
 
 See notebook
