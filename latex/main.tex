@@ -132,7 +132,7 @@ and simple tree representations are therefore
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies
 as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
-We infer an ARG for 2.48 million SARS-CoV-2 genomes,
+We infer an ARG for 3.11 million SARS-CoV-2 genomes,
 which leverages the widely used tskit software ecosystem to support further analyses and
 visualisation.
 This rich and validated resource clarifies
@@ -278,7 +278,7 @@ in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
 and artifacts~\cite{Hunt2024},
-we present an ARG with 2.48 million high-quality genomes.
+we present an ARG with 3.11 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
@@ -377,21 +377,23 @@ See Methods for details.
 
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
-Using sc2ts, we built an ARG from 2,482,157 samples
+Using sc2ts, we built an ARG from 3,114,609 samples
 from the Viridian v04 dataset~\cite{Hunt2024},
-collected between 2020-01-01 and 2023-02-20.
-Inference took 21 days on a server with
+collected between 2020-01-01 and 2024-06-06.
+Inference took 19 days on a server with
+% TODO update the hardware description for the v2.2 run (config: 192 threads,
+% 800 GB memory limit; peak memory 841 GiB)
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
-($\sim$5 CPU years;
+($\sim$8 CPU years;
 Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}).
 After post-processing, the ARG contains
-2,689,054 nodes,  % Note the estimated dates ?
-2,748,838 edges, and
-2,285,344 mutations
+3,409,262 nodes,  % Note the estimated dates ?
+3,410,592 edges, and
+2,755,961 mutations
 at 29,640 sites
-and is stored in a 32 MiB file.
-Of the nodes, 855 represent recombination events,
-resulting in 316 distinct trees along the genome
+and is stored in a 38 MiB file.
+Of the nodes, 1323 represent recombination events,
+resulting in 510 distinct trees along the genome
 (some events occurred at the same breakpoints).
 Using the tskit Python API,
 % NOTE: numbers from Yan's laptop are:
@@ -400,7 +402,7 @@ Using the tskit Python API,
 the ARG can be loaded into memory in half a second,
 and the vectorised representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
-For example, a tabular summary of the 2.75 million nodes
+For example, a tabular summary of the 3.41 million nodes
 including sample IDs and Pango assignments
 can be derived in less than half a second.
 The ARG can therefore be easily accessed using familiar tools
@@ -560,9 +562,9 @@ Table~\ref{tab:extra_hmm_results}).
 In contrast, the ARG indicates that multiple named recombinant lineages descend
 from shared ancestral recombination events rather than representing independent
 origins.
-Specifically, 14 Pango X lineages are close descendants of 7 distinct
-recombination events, with up to 5 lineages descending from a
-single recombination event (Figure~\ref{fig:subgraphs}B).
+Specifically, 19 Pango X lineages are close descendants of 11 distinct
+recombination events, with up to 6 lineages descending from a
+single recombination event.
 The remaining designated recombinant lineages show limited or ambiguous support for
 recombination in the ARG. In some cases, the lineage origin nodes differ from the
 parent by a small number of mutations (Figure~\ref{fig:subgraphs}C),
@@ -633,7 +635,7 @@ passing quality-control filters, support spans a wide range, from marginal
 cases with only a small number of averted mutations to strongly supported
 events for which a non-recombinant placement would require dozens of additional
 mutations. For example, the most parsimonious non-recombinant placement of XC
-would require 37 additional mutations, indicating strong support for
+would require 36 additional mutations, indicating strong support for
 recombination (Figure~\ref{fig:recombinant_evidence}A;
 Table~\ref{tab:pango_x_lineages}).
 Strongly supported events show high concordance with independent validation by
@@ -700,7 +702,7 @@ While this might result from a higher recombination rate in this region,
 it may also be due to the higher levels of polymorphism in the Spike gene,
 making recombination events more likely to be detected and
 allowing breakpoint intervals to be estimated more precisely.
-We found the median breakpoint interval length to be 2,207 bases
+We found the median breakpoint interval length to be 2,018 bases
 (Figure~\ref{fig:recombinant_intervals}C),
 indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
@@ -725,8 +727,8 @@ the time interval size is less than $\sim$2 months
 % Group B ERR5058070 (5 day), singleton ERR5054123 (7 days)
 for example, the time intervals of
 the events associated with the Jackson et al.\ recombinants
-span 5 to 48 days.
-% Q3: 60 days, max: 259 days
+span 1 to 48 days.
+% Q3: 62 days, max: 216 days
 Longer time intervals imply that a parental or a recombinant lineage
 might have been unsampled for an extended period of time.
 
@@ -737,7 +739,7 @@ might have been unsampled for an extended period of time.
 \caption{
 Recombination breakpoint and time intervals.
 (A) Distribution of the breakpoint intervals of
-354 recombination events along the genome
+647 recombination events along the genome
 (annotated with gene labels on top).
 Each line represents a breakpoint interval coloured by its length.
 (B) Number of overlapping breakpoint intervals per site.
@@ -871,7 +873,7 @@ may break up the artefactually long branches used to detect recombination.
 
 We compared the performance of sc2ts to detect recombination
 against RIPPLES run on the Viridian UShER phylogeny,
-subset to the 2,475,418 samples shared with the ARG (Methods).
+subset to the 3,107,392 samples shared with the ARG (Methods).
 To enable exact comparison, we omitted the QC filtering steps from both
 methods, and initially set the RIPPLES ``parsimony improvement''
 parameter to $p=4$ (rather than the more lenient default of 3),
@@ -931,7 +933,7 @@ on the frequency of detectable recombination events in SARS-CoV-2.
 
 \section*{Discussion}
 There are two primary contributions of this work. The first is an
-ARG for 2.48 million SARS-CoV-2 genomes.
+ARG for 3.11 million SARS-CoV-2 genomes.
 Through multiple layers of validation against results from the
 literature, we have demonstrated that this ARG synthesises
 the evolutionary features of genetic inheritance, point mutations,
