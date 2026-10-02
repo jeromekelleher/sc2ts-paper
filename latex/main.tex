@@ -2229,15 +2229,15 @@ In doing so, we impute the missing and ambiguous data for these samples.
 We evaluate the imputation performance of sc2ts and UShER by comparing their
 outputs on the Viridian alignments.
 
-The total aligned dataset for 2,475,418 samples and 27,507 sites
+The total aligned dataset for 3,107,392 samples and 27,963 sites
 in the sc2ts and UShER intersection ARGs represents
-63.41 GiB of nucleotide calls.
-Of the 162,838,461 missing data calls (Ns) in the alignments,
-sc2ts and UShER disagreed in their imputed values for only 203,579 (0.125\%).
-Additionally, 956,859 calls made use of the IUPAC uncertainty codes.
-Of these sc2ts imputed 435 (0.05\%) incorrectly
+80.92 GiB of nucleotide calls.
+Of the 345,666,540 missing data calls (Ns) in the alignments,
+sc2ts and UShER disagreed in their imputed values for only 265,081 (0.077\%).
+Additionally, 1,508,971 calls made use of the IUPAC uncertainty codes.
+Of these sc2ts imputed 566 (0.04\%) incorrectly
 (i.e., with a base that is not compatible with the ambiguity code).
-UShER imputed only 7 calls (0.007\%) from this set incorrectly,
+UShER imputed only 13 calls (0.0009\%) from this set incorrectly,
 likely due to special handling of
 ambiguous bases in the parsimony calculations.
 
@@ -2247,8 +2247,8 @@ that can be easily performed using the combination of tskit and VCF Zarr.
 The entire analysis is performed in a short Jupyter
 notebook~\cite{kluyver2016jupyter},
 with the core calculation requiring about 30 lines of Python code.
-Retrieving data from the base alignments and ARGs for 2.48 million samples
-at the same time over all 27,507 sites took a little under 5 minutes,
+Retrieving data from the base alignments and ARGs for 3.11 million samples
+at the same time over all 27,963 sites took a little under 5 minutes,
 with a peak memory usage of about 4.5GiB of RAM
 on a standard laptop.
 
