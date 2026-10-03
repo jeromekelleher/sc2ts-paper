@@ -583,8 +583,11 @@ to an alternative genome rather than the true parent,
 which can be mistaken for evidence of recombination.
 We use a simple quality control (QC) measure
 that counts the number of ``loci'' (clusters of closely spaced sites)
-supporting the left and right parents of a recombinant (Methods),
-which effectively identifies a range of issues.
+supporting the left and right parents of a recombinant (Methods).
+This measure effectively identifies a range of issues,
+% https://github.com/jeromekelleher/sc2ts-paper/issues/421
+including multiple simultaneous nucleotide substitutions
+suggested to cause false positive recombinants~\cite{DeMaio2024}.
 Figure~\ref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
 for the 1319 single-breakpoint recombination events.
