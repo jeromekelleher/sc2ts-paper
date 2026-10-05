@@ -1,0 +1,89 @@
+### Description
+This Snakemake workflow estimates the false positive and detection rates of sc2ts
+recombinant matching as a function of the recombination penalty `k`.
+
+The paper chooses `k = 4` on qualitative grounds: `k = 3` gave "many dubious
+recombination events", `k = 5` "failed to include the well supported recombination
+events documented in" Jackson et al. Those are a false positive claim and a false
+negative claim, and this workflow measures both.
+
+Synthetic single-breakpoint recombinants are made by splicing together pairs of real
+sequences, and matched against the raw inference ARG using `sc2ts run-hmm`. Real
+sequences held out of the parent pool are matched the same way as controls, so a
+control reported with more than one parent is a false positive.
+
+All the code is in `simulate.py`, as click subcommands: `make-pool`, `generate` and
+`summarise`.
+
+
+### Date and lineages
+Samples are taken from **2021-05-16** in the UK, when Alpha and Delta were
+co-circulating at close to equal frequency. Lineages are read from `Viridian_scorpio`:
+Alpha is any call containing `B.1.1.7-like`, Delta any call beginning `Delta (`. Among
+the UK samples from that day accepted by the published inference, 342 are Alpha and 334
+are Delta.
+
+Matching is against the ARG for **2021-05-15**, the day before, so none of the parents
+or controls are in it and the synthetic samples are matched as new arrivals, as
+`extend` would see them.
+
+
+### Crosses
+Two crosses bracket the range of parent divergence in the real ARG, where
+`parent_pangonet_distance` runs from 0 to 19 with a median of 2:
+
+- **Alpha x Alpha** — parents are all plain `B.1.1.7`, so distance 0, matching the 31%
+  of real recombinants whose parents share a lineage. Few sites separate the parents,
+  so this is the regime where detection is hardest and false positives would arise.
+- **Alpha x Delta** — distance 4 or 5, with far more signal.
+
+The pool is split in half within each lineage, one half for parents and one for
+controls, so no control is a parent of any recombinant.
+
+
+### Detectability
+A breakpoint that leaves one flank with no sites distinguishing the parents yields a
+sequence identical to one parent, which no value of `k` could recover. Rather than draw
+over the genome and reject those, breakpoints are drawn directly from the window in
+which they are detectable — between the first and last site separating the parents —
+which gives the same distribution without the loop. `detectable_window` in the output
+records the span that was sampled.
+
+
+### Characterisation
+Recombinants are characterised with the quantities the paper reports, reusing the
+pipeline's own code where possible:
+
+- **Breakpoint intervals** come from `sc2ts.inference.characterise_recombinants`, the
+  function the inference pipeline itself calls. It derives both edges of the interval
+  from the matched parents' haplotypes; no reverse HMM pass is involved, and none is
+  needed, because the forward pass already lands exactly on the first site supporting
+  the right parent.
+- **Net supporting loci** follow the paper's QC measure: sites where the inferred
+  parents differ, clustered into one locus when within 3 bases, scored +1 where the
+  recombinant carries the assigned parent's allele and -1 where it carries the other's.
+  The gate is 4 or more on both flanks, which leaves 647 of 1,319 real events. The
+  scoring is ported from `arg_postprocessing/scripts/add_recombinant_minlength_to_csv.py`,
+  which cannot be imported directly because it works on recombinant nodes already in an
+  ARG.
+- **Pangonet distance** between the parents uses `get_pangonet_distance` from
+  `arg_postprocessing/scripts/add_pangonet_distance_to_csv.py` with the pinned
+  pango-designation data in `arg_postprocessing/pangonet_data`.
+
+
+### Output
+`results.csv` has one row per (strain, `k`). Columns that also appear in
+`data/recombinants.csv` carry the same names: `interval_left`, `interval_right`,
+`net_min_supporting_loci_lft`, `net_min_supporting_loci_rgt`,
+`net_min_supporting_loci_lft_rgt_ge_4`, `parent_pangonet_distance`. Analysis is in
+`notebooks/analysis_synthetic_recombinants.ipynb`.
+
+
+### Running
+```
+snakemake --cores 4
+```
+
+Matching is the expensive step, at roughly 8 seconds per sample per value of `k` on 4
+cores against an ARG of 242,799 samples. The committed configuration is sized to run in
+about half an hour; `config.yaml` notes the larger values for a full run.

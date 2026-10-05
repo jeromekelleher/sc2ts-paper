@@ -1,0 +1,5 @@
+.snakemake/
+/synthetic.fasta
+/synthetic.fasta.fai
+/synthetic.vcz/
+/synthetic.vcz.zip
