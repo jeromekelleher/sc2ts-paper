@@ -1,0 +1,15 @@
+id,parent,child,style,color,num_mutations
+1,206140,206138,solid,black,1
+2,206138,-206138,dashed,black,0
+3,132996,164802,solid,black,3
+4,199532,206140,solid,black,1
+5,206140,-206140,dashed,black,0
+6,132996,132995,solid,black,0
+7,132996,199532,solid,black,1
+8,199532,-199532,dashed,black,0
+9,120557,132996,solid,black,0
+10,108722,132996,solid,black,0
+11,85758,120557,dashdot,black,0
+12,120557,-120557,dashed,black,0
+13,96843,108722,dashdot,black,0
+14,108722,-108722,dashed,black,0
