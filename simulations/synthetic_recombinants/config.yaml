@@ -1,0 +1,23 @@
+# Date the synthetic samples are given. Alpha and Delta were circulating at
+# roughly equal frequency in the UK on this day.
+sample_date: "2021-05-16"
+country: "United Kingdom"
+
+# Paths, relative to simulations/synthetic_recombinants/
+viridian_dataset: "../../data/viridian_mafft_2024-10-14_v1.vcz.zip"
+# Raw inference ARG for the day before sample_date, so the synthetic samples
+# are matched as new arrivals.
+arg: "../../data/v2_2026-09-22_2021-05-15.ts.tsz"
+# Used only to filter the sample pool down to samples that the published
+# inference accepted.
+reference_arg: "../../data/sc2ts_viridian_v2.2.trees.tsz"
+
+num_recombinants: 1000
+seed: 42
+
+k_values:
+  - 3
+  - 4
+  - 5
+
+num_threads: 4

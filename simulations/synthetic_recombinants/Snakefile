@@ -1,0 +1,126 @@
+"""
+Estimate the false positive and detection rates of sc2ts recombinant matching
+under idealised conditions, for a range of values of k.
+
+Synthetic single-breakpoint Alpha x Delta recombinants, and real
+non-recombinant controls, are matched against the raw inference ARG for the day
+before they were collected.
+
+Run from simulations/synthetic_recombinants/, e.g.:
+    snakemake --cores 4
+"""
+
+configfile: "config.yaml"
+
+
+K_VALUES = config["k_values"]
+
+PREFIX = "synthetic"
+
+
+wildcard_constraints:
+    k=r"[0-9]+",
+
+
+rule all:
+    input:
+        "results.csv",
+
+
+rule make_pool:
+    """
+    The pool of real samples that parents and controls are drawn from. Slow
+    because it reads the sample ids out of the published ARG, so cached.
+    """
+    input:
+        dataset=config["viridian_dataset"],
+        reference_arg=config["reference_arg"],
+    output:
+        "pool.csv",
+    shell:
+        """
+        python scripts/make_pool.py \
+            {input.dataset} {input.reference_arg} {output} \
+            --date {config[sample_date]} --country "{config[country]}"
+        """
+
+
+rule make_synthetic:
+    input:
+        pool="pool.csv",
+        dataset=config["viridian_dataset"],
+        arg=config["arg"],
+    output:
+        fasta=f"{PREFIX}.fasta",
+        metadata=f"{PREFIX}.metadata.tsv",
+        strains=f"{PREFIX}.strains.txt",
+        truth=f"{PREFIX}.truth.csv",
+    shell:
+        """
+        python scripts/make_synthetic.py \
+            {input.pool} {input.dataset} {input.arg} \
+            --out-prefix {PREFIX} \
+            --date {config[sample_date]} \
+            --num-recombinants {config[num_recombinants]} \
+            --seed {config[seed]}
+        """
+
+
+rule import_dataset:
+    input:
+        fasta=f"{PREFIX}.fasta",
+        metadata=f"{PREFIX}.metadata.tsv",
+    output:
+        directory(f"{PREFIX}.vcz"),
+    shell:
+        """
+        sc2ts import-alignments -i {output} {input.fasta}
+        sc2ts import-metadata {output} {input.metadata}
+        """
+
+
+rule zip_dataset:
+    """
+    run-hmm takes a zipped dataset rather than a directory.
+    """
+    input:
+        f"{PREFIX}.vcz",
+    output:
+        f"{PREFIX}.vcz.zip",
+    shell:
+        """
+        python -c "import sc2ts, sys; sc2ts.Dataset.create_zip(sys.argv[1], sys.argv[2])" \
+            {input} {output}
+        """
+
+
+rule run_hmm:
+    input:
+        dataset=f"{PREFIX}.vcz.zip",
+        arg=config["arg"],
+        strains=f"{PREFIX}.strains.txt",
+    output:
+        "hmm_k{k}.jsonl",
+    threads: config["num_threads"]
+    shell:
+        """
+        sc2ts run-hmm \
+            -k {wildcards.k} \
+            --num-threads {threads} \
+            {input.dataset} {input.arg} $(cat {input.strains}) \
+            > {output}
+        """
+
+
+rule summarise:
+    input:
+        truth=f"{PREFIX}.truth.csv",
+        arg=config["arg"],
+        hmm=expand("hmm_k{k}.jsonl", k=K_VALUES),
+    output:
+        "results.csv",
+    shell:
+        """
+        python scripts/summarise.py \
+            {input.truth} {input.arg} {output} {input.hmm}
+        """

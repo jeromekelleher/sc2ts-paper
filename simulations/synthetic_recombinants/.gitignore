@@ -1,0 +1,5 @@
+.snakemake/
+pool.csv
+synthetic.*
+hmm_k*.jsonl
+results.csv
