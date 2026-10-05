@@ -63,7 +63,7 @@ def make_caption(num_shown, omitted):
     caption = (
         f"Copying patterns for the {num_shown} recombination events associated "
         r"with Pango X lineages listed in Table~\ref{tab:pango_x_lineages}, "
-        "ordered by recombination node ID within each event type. "
+        "ordered by label within each event type. "
         "The ID of the recombination node is shown to the right of each "
         "copying pattern."
     )
@@ -122,6 +122,7 @@ def make_figure():
     ]
     for event_type in types:
         rows = [row for row in shown if int(row["type"]) == event_type]
+        rows.sort(key=lambda row: row["name"])
         rule = r"\toprule" if event_type == types[0] else r"\midrule"
         lines.append(
             rf"{rule} \SetCell[c=2]{{l}} \textbf{{{SECTION_TITLES[event_type]}}} \\"
