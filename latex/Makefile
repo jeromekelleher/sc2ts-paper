@@ -17,11 +17,6 @@ main_text.pdf: main.tex references.bib ${DATA} ${FIGURES}
 	qpdf split_tmp.pdf --pages . 1-34 -- main_text.pdf
 	qpdf split_tmp.pdf --pages . 35-z -- supplementary.pdf
 
-# A single quick pass that skips the generated long tables, which take
-# about 90% of the compile time. References to them show as ??.
-draft.pdf: main.tex
-	pdflatex -jobname=draft -interaction=nonstopmode "\def\FASTBUILD{1}\input{main.tex}"
-
 # The generated tables. The CSVs are written by the notebooks.
 pango_x_table/table.tex: pango_x_table/make_table.py $(wildcard pango_x_table/*.csv)
 	python3 pango_x_table/make_table.py
@@ -51,7 +46,7 @@ clean:
 	rm -f *.log *.dvi *.aux
 	rm -f *.blg *.bbl
 	rm -f *.fdb_latexmk *.fls *.out
-	rm -f split_tmp* draft.*
+	rm -f split_tmp*
 
 mrproper: clean
 	rm -f *.ps *.pdf
