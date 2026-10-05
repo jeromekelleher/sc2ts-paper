@@ -11,8 +11,18 @@ arg: "../../data/v2_2026-09-22_2021-05-15.ts.tsz"
 # Used only to filter the sample pool down to samples that the published
 # inference accepted.
 reference_arg: "../../data/sc2ts_viridian_v2.2.trees.tsz"
+# Pinned pango-designation data, shared with the postprocessing pipeline.
+pangonet_data: "../../arg_postprocessing/pangonet_data"
 
-num_recombinants: 1000
+# Parent lineage pairs. Alpha x Alpha parents are far closer than Alpha x Delta,
+# so the two bracket the range of parent divergence seen in the real ARG.
+crosses: "Alpha:Delta,Alpha:Alpha"
+
+# Per cross. A full run uses 500.
+num_recombinants: 25
+# -1 for the whole control pool (338). A full run uses -1.
+num_controls: 25
+
 seed: 42
 
 k_values:

@@ -1,55 +1,82 @@
 ### Description
-This Snakemake workflow estimates the false positive and detection rates of
-sc2ts recombinant matching as a function of the number of mismatches, `k`,
-under idealised conditions.
+This Snakemake workflow estimates the false positive and detection rates of sc2ts
+recombinant matching as a function of the recombination penalty `k`.
 
-Synthetic single-breakpoint Alpha x Delta recombinants are made by splicing
-together pairs of real sequences, and matched against the raw inference ARG
-using `sc2ts run-hmm`. Real non-recombinant sequences held out of the parent
-pool are matched in the same way as controls, so a control reported with more
-than one parent is a false positive.
+The paper chooses `k = 4` on qualitative grounds: `k = 3` gave "many dubious
+recombination events", `k = 5` "failed to include the well supported recombination
+events documented in" Jackson et al. Those are a false positive claim and a false
+negative claim, and this workflow measures both.
+
+Synthetic single-breakpoint recombinants are made by splicing together pairs of real
+sequences, and matched against the raw inference ARG using `sc2ts run-hmm`. Real
+sequences held out of the parent pool are matched the same way as controls, so a
+control reported with more than one parent is a false positive.
+
+All the code is in `simulate.py`, as click subcommands: `make-pool`, `generate` and
+`summarise`.
 
 
-### Date
+### Date and lineages
 Samples are taken from **2021-05-16** in the UK, when Alpha and Delta were
-co-circulating at close to equal frequency: among the UK samples from that day
-accepted by the published inference, 342 are Alpha (`B.1.1.7`, `Q.*`) and 334
-are Delta (`B.1.617.2`, `AY.*`). Delta's share of UK samples rose from about 5%
-on 19 April 2021 to over 95% by mid-June, crossing 50% on 15-16 May.
+co-circulating at close to equal frequency. Lineages are read from `Viridian_scorpio`:
+Alpha is any call containing `B.1.1.7-like`, Delta any call beginning `Delta (`. Among
+the UK samples from that day accepted by the published inference, 342 are Alpha and 334
+are Delta.
+
+Matching is against the ARG for **2021-05-15**, the day before, so none of the parents
+or controls are in it and the synthetic samples are matched as new arrivals, as
+`extend` would see them.
 
 
-### Setup
-The pool of real samples is split in half within each lineage: one half
-supplies recombinant parents, the other supplies controls. The two are
-disjoint, so no control is a parent of any recombinant.
+### Crosses
+Two crosses bracket the range of parent divergence in the real ARG, where
+`parent_pangonet_distance` runs from 0 to 19 with a median of 2:
 
-Each recombinant draws one Alpha and one Delta parent, chooses at random which
-is on the left, and takes a single breakpoint uniformly over the genome.
-Positions below the breakpoint come from the left parent and the rest from the
-right parent.
+- **Alpha x Alpha** — parents are all plain `B.1.1.7`, so distance 0, matching the 31%
+  of real recombinants whose parents share a lineage. Few sites separate the parents,
+  so this is the regime where detection is hardest and false positives would arise.
+- **Alpha x Delta** — distance 4 or 5, with far more signal.
 
-Matching is against the ARG for **2021-05-15**, the day before the samples were
-collected, so none of the parents or controls are in it and the synthetic
-samples are matched as new arrivals, as `extend` would see them.
+The pool is split in half within each lineage, one half for parents and one for
+controls, so no control is a parent of any recombinant.
 
 
 ### Detectability
-A breakpoint drawn uniformly will sometimes land where the two parents have no
-distinguishing sites on one side, and such a recombinant cannot be detected for
-any `k`. These are kept rather than redrawn, and `num_informative_left` and
-`num_informative_right` in the output record how many sites separate the parents
-either side of the true breakpoint, so detection can be reported conditional on
-being detectable. Only sites present in the ARG are counted, as those are the
-only ones the HMM sees.
+A breakpoint that leaves one flank with no sites distinguishing the parents yields a
+sequence identical to one parent, which no value of `k` could recover. Rather than draw
+over the genome and reject those, breakpoints are drawn directly from the window in
+which they are detectable — between the first and last site separating the parents —
+which gives the same distribution without the loop. `detectable_window` in the output
+records the span that was sampled.
+
+
+### Characterisation
+Recombinants are characterised with the quantities the paper reports, reusing the
+pipeline's own code where possible:
+
+- **Breakpoint intervals** come from `sc2ts.inference.characterise_recombinants`, the
+  function the inference pipeline itself calls. It derives both edges of the interval
+  from the matched parents' haplotypes; no reverse HMM pass is involved, and none is
+  needed, because the forward pass already lands exactly on the first site supporting
+  the right parent.
+- **Net supporting loci** follow the paper's QC measure: sites where the inferred
+  parents differ, clustered into one locus when within 3 bases, scored +1 where the
+  recombinant carries the assigned parent's allele and -1 where it carries the other's.
+  The gate is 4 or more on both flanks, which leaves 647 of 1,319 real events. The
+  scoring is ported from `arg_postprocessing/scripts/add_recombinant_minlength_to_csv.py`,
+  which cannot be imported directly because it works on recombinant nodes already in an
+  ARG.
+- **Pangonet distance** between the parents uses `get_pangonet_distance` from
+  `arg_postprocessing/scripts/add_pangonet_distance_to_csv.py` with the pinned
+  pango-designation data in `arg_postprocessing/pangonet_data`.
 
 
 ### Output
-`results.csv` has one row per (strain, `k`), giving the number of parents
-matched, the HMM cost, the inferred breakpoints, the lineage of each matched
-parent, and the simulation truth. Note that `breakpoint_correct` is judged
-against the informative sites of the *true* parents, whereas the HMM matches
-nodes in the ARG that are relatives of those parents, so it is a strict
-criterion; `breakpoint_error` gives the raw distance.
+`results.csv` has one row per (strain, `k`). Columns that also appear in
+`data/recombinants.csv` carry the same names: `interval_left`, `interval_right`,
+`net_min_supporting_loci_lft`, `net_min_supporting_loci_rgt`,
+`net_min_supporting_loci_lft_rgt_ge_4`, `parent_pangonet_distance`. Analysis is in
+`notebooks/analysis_synthetic_recombinants.ipynb`.
 
 
 ### Running
@@ -57,5 +84,6 @@ criterion; `breakpoint_error` gives the raw distance.
 snakemake --cores 4
 ```
 
-Matching is the expensive step: roughly 7 seconds per sample per value of `k`
-on 4 cores, against an ARG of 242,799 samples.
+Matching is the expensive step, at roughly 8 seconds per sample per value of `k` on 4
+cores against an ARG of 242,799 samples. The committed configuration is sized to run in
+about half an hour; `config.yaml` notes the larger values for a full run.

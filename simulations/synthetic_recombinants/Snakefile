@@ -1,10 +1,10 @@
 """
 Estimate the false positive and detection rates of sc2ts recombinant matching
-under idealised conditions, for a range of values of k.
+for a range of values of k.
 
-Synthetic single-breakpoint Alpha x Delta recombinants, and real
-non-recombinant controls, are matched against the raw inference ARG for the day
-before they were collected.
+Synthetic single-breakpoint recombinants, and real non-recombinant controls,
+are matched against the raw inference ARG for the day before they were
+collected.
 
 Run from simulations/synthetic_recombinants/, e.g.:
     snakemake --cores 4
@@ -39,13 +39,13 @@ rule make_pool:
         "pool.csv",
     shell:
         """
-        python scripts/make_pool.py \
+        python simulate.py make-pool \
             {input.dataset} {input.reference_arg} {output} \
             --date {config[sample_date]} --country "{config[country]}"
         """
 
 
-rule make_synthetic:
+rule generate:
     input:
         pool="pool.csv",
         dataset=config["viridian_dataset"],
@@ -57,11 +57,14 @@ rule make_synthetic:
         truth=f"{PREFIX}.truth.csv",
     shell:
         """
-        python scripts/make_synthetic.py \
+        python simulate.py generate \
             {input.pool} {input.dataset} {input.arg} \
             --out-prefix {PREFIX} \
             --date {config[sample_date]} \
+            --crosses {config[crosses]} \
             --num-recombinants {config[num_recombinants]} \
+            --num-controls {config[num_controls]} \
+            --pangonet-data {config[pangonet_data]} \
             --seed {config[seed]}
         """
 
@@ -115,12 +118,13 @@ rule run_hmm:
 rule summarise:
     input:
         truth=f"{PREFIX}.truth.csv",
+        dataset=f"{PREFIX}.vcz",
         arg=config["arg"],
         hmm=expand("hmm_k{k}.jsonl", k=K_VALUES),
     output:
         "results.csv",
     shell:
         """
-        python scripts/summarise.py \
-            {input.truth} {input.arg} {output} {input.hmm}
+        python simulate.py summarise \
+            {input.truth} {input.dataset} {input.arg} {output} {input.hmm}
         """

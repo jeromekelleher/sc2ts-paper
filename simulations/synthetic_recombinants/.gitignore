@@ -1,5 +1,5 @@
 .snakemake/
-/pool.csv
-/synthetic.*
-/hmm_k*.jsonl
-/results.csv
+/synthetic.fasta
+/synthetic.fasta.fai
+/synthetic.vcz/
+/synthetic.vcz.zip
