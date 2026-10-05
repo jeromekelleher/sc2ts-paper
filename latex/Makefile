@@ -1,23 +1,26 @@
 DATA=pango_x_table/table.tex ripples_tables/x_lineages.tex copying_patterns/figure.tex
 FIGURES=
 
-all: combined.pdf main_text.pdf
+all: combined.pdf
 
+# latexmk reruns pdflatex and bibtex only as many times as needed.
 combined.pdf: main.tex references.bib ${DATA} ${FIGURES}
-	pdflatex -shell-escape main.tex
-	bibtex main
-	pdflatex main.tex
-	pdflatex main.tex
+	latexmk -pdf -interaction=nonstopmode main.tex
 	cp main.pdf combined.pdf
 
-main_text.pdf: main.tex
-	cp main.tex split_tmp.tex
-	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
-	bibtex split_tmp
-	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
-	pdflatex -shell-escape "\def\SPLITBUILD{1}\input{split_tmp.tex}"
+# The journal submission split into main text and supplementary PDFs.
+split: main_text.pdf
+
+main_text.pdf: main.tex references.bib ${DATA} ${FIGURES}
+	latexmk -pdf -interaction=nonstopmode -jobname=split_tmp \
+		-pdflatex='pdflatex %O "\def\SPLITBUILD{1}\input{%S}"' main.tex
 	qpdf split_tmp.pdf --pages . 1-34 -- main_text.pdf
 	qpdf split_tmp.pdf --pages . 35-z -- supplementary.pdf
+
+# A single quick pass that skips the generated long tables, which take
+# about 90% of the compile time. References to them show as ??.
+draft.pdf: main.tex
+	pdflatex -jobname=draft -interaction=nonstopmode "\def\FASTBUILD{1}\input{main.tex}"
 
 # The generated tables. The CSVs are written by the notebooks.
 pango_x_table/table.tex: pango_x_table/make_table.py $(wildcard pango_x_table/*.csv)
@@ -37,7 +40,7 @@ pango_x_table.pdf: pango_x_table.tex pango_x_table/table.tex
 	pdflatex pango_x_table.tex
 
 
-.PHONY: spellcheck
+.PHONY: all split spellcheck clean mrproper
 spellcheck: aspell.conf
 	aspell --conf ./aspell.conf --check main.tex
 
@@ -47,7 +50,8 @@ clean:
 	rm -f illustrations/*.svg
 	rm -f *.log *.dvi *.aux
 	rm -f *.blg *.bbl
-	rm split_tmp*
+	rm -f *.fdb_latexmk *.fls *.out
+	rm -f split_tmp* draft.*
 
 mrproper: clean
 	rm -f *.ps *.pdf
