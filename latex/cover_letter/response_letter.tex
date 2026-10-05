@@ -3,6 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{xcolor}
 \usepackage{url}
+\usepackage{enumitem}
+\setlist{noitemsep}
 
 \newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
 
@@ -19,7 +21,14 @@ We thank you and the reviewers for the careful and constructive evaluation of
 our Article, ``A Pandemic-Scale Ancestral Recombination Graph for
 SARS-CoV-2.''
 
-\todo{Summary of the main changes.}
+\begin{itemize}
+  \item We have made a major effort to make the resource as up to date and extensive as possible. The ARG now includes all of the latest Viridian data, running to 2024-06-06 with 3,114,609 samples (previously 2,482,157 samples to 2023-02-20).
+  \item We have made particular efforts to capture the origins of Delta and Omicron more accurately, using groups of high-quality seed samples (B.1.617.1/Kappa and B.1.617.3, early B.1.617.2/Delta, AY.4 and AY.120.1; BA.1 and BA.2), and now include lesser-sampled Omicron lineages such as BA.3 and BA.4.
+  \item All analyses updated to the new ARG: 1,323 recombination nodes, of which 647 of the 1,319 single-breakpoint events pass QC; 73 Pango X lineages placed.
+  \item New simulation study quantifying false positive and detection rates of recombinant inference as a function of the recombination penalty $k$.
+  \item Language softened throughout (``validated'' $\to$ ``corroborated''), and clearer statement of intended users.
+  \item \todo{sc2ts can now be applied to other species, but we have not yet done any analysis. Decide on pathogen(s) and dataset(s) and carry out the application.}
+\end{itemize}
 
 We have included a copy of the manuscript in which all changes have been
 highlighted.
@@ -42,7 +51,10 @@ application to a broader range of plausible pandemic-causing pathogens, and
 address all referee comments as thoroughly as possible with appropriate
 revisions.''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{sc2ts can now be applied to other species, but we have not yet done any analysis. }
+  \item All referee comments addressed point by point below.
+\end{itemize}
 
 \noindent \textbf{Editor:} ``When re-submitting your manuscript, please ensure
 that any supplementary figures and tables that are crucial to the manuscript's
@@ -50,7 +62,9 @@ conclusions are converted into Extended Data figures and tables to increase
 visibility of these data. [\ldots] A maximum of ten Extended Data display items
 (figures and tables) is permitted.''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Decide which supplementary figures/tables are crucial to the conclusions and convert them to Extended Data (maximum 10 items).}
+\end{itemize}
 
 \medskip
 \hrule
@@ -68,7 +82,9 @@ the purpose of evaluating the results. I have a few specific analyses that I
 suggest below and consider to be essential for investigating the quality of
 the resulting ARG and method.''
 
-\todo{Acknowledgement.}
+\begin{itemize}
+  \item Thank the reviewer for the positive assessment of the method and documentation.
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``Most critically, I wonder who this is for
 exactly? As a resource, I have substantial misgivings about whether applied
@@ -78,14 +94,38 @@ applications. Furthermore, the ARG provided is not real time because there is
 no included plan to update as new data are deposited. It's already far behind
 the evolution of SARS-CoV-2 so won't be used soon in this regard.''
 
-\todo{Response.}
+\begin{itemize}
+  \item We agree that the primary users are researchers (evolutionary
+biologists, population geneticists, epidemiologists studying the pandemic
+phase, methods developers, lineage curators) rather than routine applied public
+health, and will say so explicitly.
+
+  \item We now frame the ARG as a stable, comprehensive record of the pandemic
+phase of SARS-CoV-2, extending to the end of the available Viridian data.
+``Real time'' refers to the method (incremental, daily inference of the ARG as
+samples arrive), not a commitment to maintain the resource indefinitely.
+\item We have made a major effort to make the resource as up to date and extensive as
+possible. The ARG now includes all of the latest Viridian data, running to
+2024-06-06 with 3,114,609 samples (previously 2,482,157 samples to 2023-02-20).
+  \item \todo{Add a Discussion paragraph on intended users and how they access
+the ARG (tskit Python API, visualisation tools, Zenodo download), and soften
+``real-time'' claims about the resource.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``If this is intended as a method suitable for
 genomic epidemiology applications in future pandemics, it needs to be
 evaluated against a much broader range of plausible pandemic-causing pathogens
 with the limitations and recommendations clearly established.''
 
-\todo{Response.}
+\begin{itemize}
+  \item Same as the editor's priority point.
+  \item Done: sc2ts can now be run on other species;
+simulation study of recombinant detection (see below).
+  \item \todo{sc2ts can now be applied to other species, but we have not yet done any
+analysis. Do some simulations.}
+  \item \todo{State limitations and recommendations for applying sc2ts
+to other pathogens in the Discussion.}
+\end{itemize}
 
 \medskip
 \noindent \textit{Major}
@@ -104,7 +144,13 @@ expected as a consequence of the inference procedure. While I still think this
 is useful to consider, the explanation and discussion could be more
 nuanced.''
 
-\todo{Response.}
+\begin{itemize}
+  \item Done (exploratory): for the 224 QC-passing recombinants whose left and right parents are both sampled genomes, we extracted the sampling dates and countries of the two parents (\texttt{notebooks/explore\_geographical\_structure.ipynb}).
+  \item \todo{Summarise this analysis (fraction of events with parents sampled in the same country; overlap of parental lineages in time) and add to Results/Supplement. Note geographic sampling bias (dominated by UK, USA, Denmark).}
+  \item We agree that the diversity--recombination relationship is partly expected from detectability.
+  \item \todo{Nuance the text in the ``Emergence of recombinants over time'' section and the Discussion accordingly.}
+  \item \todo{This analysis must also be redone for the v2.2 ARG: JHU case data stop in March 2023 while the ARG runs to June 2024.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``There has been some research in the effect
 of recurrent mutli-nucleotide mutations with convincing examples at quite a
@@ -114,7 +160,14 @@ expect that sc2ts could be impacted by these events resulting in elevated
 rates of inferred recombination. This should be addressed and if possible
 mitigated.''
 
-\todo{Response.}
+\begin{itemize}
+  \item Done: the QC text now states that the supporting-loci measure (sites within 3 bases clustered
+into a single locus) identifies multiple simultaneous nucleotide substitutions suggested to
+cause false positive recombinants, citing de Maio et al.
+  \item Recombinants with insufficient support (672 of 1,319) are flagged as failing QC, mitigating this effect.
+  \item \todo{Optional: quantify overlap between QC-failing breakpoint intervals and the
+recurrent multi-nucleotide mutation sites reported by de Maio et al.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``The SARS-CoV-2 pandemic has largely come and
 gone and global sequencing efforts are in free-fall (note that this resource
@@ -126,7 +179,23 @@ encompassing varied plausible parameters. E.g., a flu pandemic is thought to
 be likely, could this be used to handle the kinds of reassortment that we see
 with segmented genomes?''
 
-\todo{Response.}
+\begin{itemize}
+  \item Done: new simulation study of synthetic recombinants spliced from real UK Alpha and
+Delta sequences (2021-05-16) and matched against the ARG for the previous day
+with \texttt{sc2ts run-hmm} at $k = 3, 4, 5$ (\texttt{simulations/synthetic\_recombinants},
+\texttt{notebooks/analysis\_synthetic\_recombinants.ipynb}).
+Two crosses bracket the parent divergence in the real ARG: Alpha$\times$Alpha
+(pangonet distance 0, like 31\% of real recombinants) and Alpha$\times$Delta (distance 4--5).
+  \item Pilot results: no false positives among held-out non-recombinant controls at any $k$;
+detection at $k=4$ is 52\% (Alpha$\times$Alpha) and 96\% (Alpha$\times$Delta); the true
+breakpoint always lies within the inferred interval; and interval widths
+reproduce the negative relationship with parent divergence seen in the real ARG.
+  \item \todo{Full-size simulation run (pilot has only 25 recombinants per cross and
+25 controls, bounding the false positive rate below ${\sim}11\%$), and add the results to the Supplement.}
+  \item \todo{Reassortment in segmented genomes: this is out of scope}
+  \item \todo{sc2ts can now be applied to other species, but we have not yet
+done any simulations.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``In parts of the introduction and results,
 the overall tone is one that suggests this method has solved genealogical
@@ -137,7 +206,13 @@ data are `corroborative analyses' in reality. This work would benefit from a
 substantive effort to soften and inject more circumspect phrasing
 throughout.''
 
-\todo{Response.}
+\begin{itemize}
+  \item We agree, and have adopted more circumspect phrasing.
+  \item \todo{Pass through the Introduction and Results replacing
+``validated''/``validation'' (28 occurrences of ``validat*'' in \texttt{main.tex})
+with ``corroborated''/``consistent with'', and rephrasing
+``The ARG is a comprehensive and deeply validated record'' (main.tex:417).}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``Some recommendations should be provided for
 the expected practical use cases. Much of the text suggests this will be used
@@ -149,7 +224,13 @@ If this is a new method and resource, it is critical that we establish who the
 intended user-base is in reality and how they would interact with it to
 address their concerns.''
 
-\todo{Response.}
+\begin{itemize}
+  \item We agree that the primary users are researchers (evolutionary
+biologists, population geneticists, epidemiologists studying the pandemic
+phase, methods developers, lineage curators) rather than routine applied public
+health, and will say so explicitly.
+  \item \todo{Add recommendations for practical use cases to the Discussion (see above).}
+\end{itemize}
 
 \medskip
 \noindent \textit{Minor}
@@ -161,7 +242,13 @@ inference method using the same underlying data. These events are
 comprehensive and deeply validated record of the pandemic phase' is a
 overstatement for similar reasons (see also above).''
 
-\todo{Response.}
+\begin{itemize}
+  \item Agreed.
+  \item \todo{Pass through the Introduction and Results replacing
+``validated''/``validation'' (28 occurrences of ``validat*'' in \texttt{main.tex})
+with ``corroborated''/``consistent with'', and rephrasing
+``The ARG is a comprehensive and deeply validated record'' (main.tex:417).}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``I am not sure if the authors will have seen
 this preprint,
@@ -171,7 +258,10 @@ was published very recently, so it may not be ready for this specific
 application. One way that this resource could be made much more accessible
 would be to present this ARG on the platform.''
 
-\todo{Response.}
+\begin{itemize}
+  \item We already cite tsbrowse, tskit\_arg\_visualizer and ARGscape (main.tex:1071).
+  \item \todo{Check whether the preprint's platform can host the 3.1-million-sample ARG; cite the preprint.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``One element that may be worth mentioning is
 that the original RIPPLES analysis was run on the `real' UShER tree. While the
@@ -181,13 +271,25 @@ initial placements of plausible recombinants is anyone's guess, and I
 certainly don't expect the authors to take on that problem, but this
 distinction might be worth addressing briefly.''
 
-\todo{Response.}
+\begin{itemize}
+  \item Agreed.
+  \item \todo{Add a sentence to the RIPPLES Methods/Supplement noting that the original RIPPLES
+analysis used the curated UShER tree, whereas we compare against the Viridian UShER tree.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``Is there a plan to update the ARG with newly
 produced data? This would certainly help establish this as a `real time'
 resource.''
 
-\todo{Response.}
+\begin{itemize}
+  \item We frame the ARG as a stable, comprehensive record of the pandemic phase of SARS-CoV-2,
+extending to the end of the available Viridian data.
+``Real time'' refers to the method (incremental, daily inference of the ARG as samples arrive),
+not a commitment to maintain the resource indefinitely.
+  \item We have made a major effort to make the resource as up to date and extensive as possible.
+The ARG now includes all of the latest Viridian data, running to 2024-06-06 with 3,114,609 samples
+(previously 2,482,157 samples to 2023-02-20).
+\end{itemize}
 
 \medskip
 \noindent \textit{Code availability}
@@ -196,7 +298,9 @@ resource.''
 not gone through everything myself, I am confident that I could reproduce the
 analyses presented in the manuscript with sufficient effort.''
 
-\todo{Acknowledgement.}
+\begin{itemize}
+  \item Thank the reviewer.
+\end{itemize}
 
 \medskip
 \hrule
@@ -228,7 +332,9 @@ understanding the evolutionary trajectory of future pandemics. The manuscript
 is clear and well-written, and I had only minor suggestions for increasing the
 clarity and impact of the work.''
 
-\todo{Acknowledgement.}
+\begin{itemize}
+  \item Thank the reviewer for the very positive assessment.
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (1):} ``Future work. The only major comments I
 have deal with future work that I hope will come out of this group.''
@@ -244,7 +350,10 @@ method's behavior and identifying areas of parameter space (e.g., rates of
 recombination vs.\ mutation, or time-density of sampling, etc.) in which its
 performance might become unreliable.''
 
-\todo{Response.}
+\begin{itemize}
+  \item Done: sythetic recombinants simulation.
+  \item \todo{Other pathogens simulation}.
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (1b):} ``Second (although following from 1a
 above), it seems like much of the inference done by sc2ts relies on
@@ -257,7 +366,15 @@ in the selection of, e.g., the `k' parameter so that researchers employing
 this method in the study of other pathogens might have a playbook off of which
 to work.''
 
-\todo{Response.}
+\begin{itemize}
+  \item The simulations now quantify the trade-off governed by $k$: as $k$
+increases from 3 to 5, detection falls (Alpha$\times$Alpha: 76\% $\to$ 20\%)
+while the fraction of detected recombinants passing QC rises (74\% $\to$
+100\%), providing an empirical basis for $k = 4$.
+  \item \todo{Add a Methods/Supplement section describing how $k$ and the other
+heuristic parameters were chosen, as a playbook for other pathogens, rather
+than a companion manuscript.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (2):} ``Main Figure: ARGs are often difficult to
 parse visually, but I feel this paper would be more compelling with a
@@ -270,7 +387,11 @@ may not be possible (and it's by no means a dealbreaker for me as a reviewer),
 but I think it would help demonstrate the power of this approach to a general
 audience.''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Thank the reviewer for the nice idea, but explain that capturing
+ the full scale ARG is hard and also kind of pointless, as we already know
+what the SC2 tree looks like.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3):} ``Writing. I had some minor
 corrections/suggestions to increase the clarity of the work.''
@@ -279,33 +400,45 @@ corrections/suggestions to increase the clarity of the work.''
 the course of a pandemic or over computer time in the algorithm of the
 method.''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Clarify ``over time'' means over the course of the pandemic (now main.tex:140).}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3b):} ``L161: missing word.''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Map submitted L161 to current text and fix the missing word.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3c):} ``L166: should be `855 inferred
 recombination events' right?''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Fix; the count is now 1,323 inferred recombination nodes.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3d):} ``L236: it might be useful to define
 `Scorpio' for the audience of a general journal like this''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Define Scorpio at first use in Results (now main.tex:781).}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3e):} ``L243: should be `inferred recombination
 events' right?''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Fix wording to ``inferred recombination events''.}
+\end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3f):} ``Throughout, it seems like sometimes the
 quotations marks were facing the wrong direction (i.e., closing when they
 should be opening, or vice versa), so I'd recommend the authors do a careful
 proofread for this.''
 
-\todo{Response.}
+\begin{itemize}
+  \item \todo{Proofread for wrong-way quotation marks (likely introduced in the Word conversion).}
+\end{itemize}
 
 \closing{Sincerely,}
 
