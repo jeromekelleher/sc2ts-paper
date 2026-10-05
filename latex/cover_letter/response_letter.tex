@@ -1,0 +1,313 @@
+\documentclass{letter}
+
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{url}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+
+\signature{Shing H. Zhan and Jerome Kelleher}
+
+\address{Big Data Institute\\University of Oxford\\UK}
+\begin{document}
+
+\begin{letter}{Nature Genetics}
+
+\opening{Dear Dr Li,}
+
+We thank you and the reviewers for the careful and constructive evaluation of
+our Article, ``A Pandemic-Scale Ancestral Recombination Graph for
+SARS-CoV-2.''
+
+\todo{Summary of the main changes.}
+
+We have included a copy of the manuscript in which all changes have been
+highlighted.
+
+Below we respond point by point.
+
+\medskip
+\hrule
+\medskip
+
+\noindent \textbf{Response to the editor}
+
+\noindent \textbf{Editor:} ``To guide the scope of the revisions, the editors
+discuss the referee reports in detail within the team with a view to
+identifying key priorities that should be addressed in revision. In this case,
+we think both referees have provided constructive reviews aimed at
+strengthening the analyses and improving the presentation. We particularly ask
+that you demonstrate the practical utility of this method by expanding its
+application to a broader range of plausible pandemic-causing pathogens, and
+address all referee comments as thoroughly as possible with appropriate
+revisions.''
+
+\todo{Response.}
+
+\noindent \textbf{Editor:} ``When re-submitting your manuscript, please ensure
+that any supplementary figures and tables that are crucial to the manuscript's
+conclusions are converted into Extended Data figures and tables to increase
+visibility of these data. [\ldots] A maximum of ten Extended Data display items
+(figures and tables) is permitted.''
+
+\todo{Response.}
+
+\medskip
+\hrule
+\medskip
+
+\noindent \textbf{Response to Reviewer \#1}
+
+\noindent \textbf{Reviewer \#1:} ``This manuscript introduces a method for
+constructing an ARG from millions of viral genome sequences sampled during the
+pandemic. They show that a `real-time' ARG can be constructed at scale and is
+similarly or more accurate than existing methods for incorporating
+recombination into genealogical inference. Overall, the method is well
+described and the analyses are clearly documented and largely appropriate for
+the purpose of evaluating the results. I have a few specific analyses that I
+suggest below and consider to be essential for investigating the quality of
+the resulting ARG and method.''
+
+\todo{Acknowledgement.}
+
+\noindent \textbf{Reviewer \#1:} ``Most critically, I wonder who this is for
+exactly? As a resource, I have substantial misgivings about whether applied
+public health would have any interest or practical ability to use it.
+Phylogenetic trees are already challenging in many public health
+applications. Furthermore, the ARG provided is not real time because there is
+no included plan to update as new data are deposited. It's already far behind
+the evolution of SARS-CoV-2 so won't be used soon in this regard.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``If this is intended as a method suitable for
+genomic epidemiology applications in future pandemics, it needs to be
+evaluated against a much broader range of plausible pandemic-causing pathogens
+with the limitations and recommendations clearly established.''
+
+\todo{Response.}
+
+\medskip
+\noindent \textit{Major}
+
+\noindent \textbf{Reviewer \#1:} ``The post hoc examination of factors
+consistent with increased recombination rates (case rates and viral genetic
+diversity) seems reasonable, but should be much more precise. Specifically,
+recombination requires that viral lineages co-circulate in space and time.
+Given that most samples will have both a sampling date and a location, this
+analysis should be much more granular and could be substantially more
+convincing. Do the identified precise parental lineages co-circulate in region
+and time? Additionally, given that recombination between closely related
+samples will likely not be detectable by this and other methods, the
+relationship between lineage diversity and recombination rates might be
+expected as a consequence of the inference procedure. While I still think this
+is useful to consider, the explanation and discussion could be more
+nuanced.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``There has been some research in the effect
+of recurrent mutli-nucleotide mutations with convincing examples at quite a
+few sites (see de Maio et al.
+\url{https://academic.oup.com/mbe/article/42/11/msaf272/8301027}). I would
+expect that sc2ts could be impacted by these events resulting in elevated
+rates of inferred recombination. This should be addressed and if possible
+mitigated.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``The SARS-CoV-2 pandemic has largely come and
+gone and global sequencing efforts are in free-fall (note that this resource
+is not updated with the most recently produced data). While I appreciate the
+tool could be `real time' in a new pandemic, there's no telling exactly what
+the next pandemic will resemble. If this is going to be a meaningful method
+going forward, I suggest this should be evaluated across simulations
+encompassing varied plausible parameters. E.g., a flu pandemic is thought to
+be likely, could this be used to handle the kinds of reassortment that we see
+with segmented genomes?''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``In parts of the introduction and results,
+the overall tone is one that suggests this method has solved genealogical
+inference for SARS-CoV-2 and to a casual reader might indicate very accurate
+genealogical inference. While I do think some aspects are improved by this
+work, the uncertainty is still enormous, all `validations' applied to real
+data are `corroborative analyses' in reality. This work would benefit from a
+substantive effort to soften and inject more circumspect phrasing
+throughout.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``Some recommendations should be provided for
+the expected practical use cases. Much of the text suggests this will be used
+by researchers -- certainly I would expect population geneticists and the like
+to be interested. I don't think this has much practical utility in applied
+public health where it is already a struggle to incorporate single phylogenies
+and instead we use broad-scale categories for analysis and reporting concerns.
+If this is a new method and resource, it is critical that we establish who the
+intended user-base is in reality and how they would interact with it to
+address their concerns.''
+
+\todo{Response.}
+
+\medskip
+\noindent \textit{Minor}
+
+\noindent \textbf{Reviewer \#1:} ``The word `validated' (for example, when
+considering 3seq agreement) is an overstatement. It is a comparison against an
+inference method using the same underlying data. These events are
+`corroborated' or something more along those lines. The phrasing `The ARG is a
+comprehensive and deeply validated record of the pandemic phase' is a
+overstatement for similar reasons (see also above).''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``I am not sure if the authors will have seen
+this preprint,
+\url{https://www.biorxiv.org/content/10.64898/2026.02.19.706861v1.abstract},
+which provides a way to visualize and explore large-scale ARGs? I realize this
+was published very recently, so it may not be ready for this specific
+application. One way that this resource could be made much more accessible
+would be to present this ARG on the platform.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``One element that may be worth mentioning is
+that the original RIPPLES analysis was run on the `real' UShER tree. While the
+viridian tree is similar, it has not had anywhere near the same level of
+community inspection and manual curation. Whether that curation impacts the
+initial placements of plausible recombinants is anyone's guess, and I
+certainly don't expect the authors to take on that problem, but this
+distinction might be worth addressing briefly.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#1:} ``Is there a plan to update the ARG with newly
+produced data? This would certainly help establish this as a `real time'
+resource.''
+
+\todo{Response.}
+
+\medskip
+\noindent \textit{Code availability}
+
+\noindent \textbf{Reviewer \#1:} ``The documentation is excellent. While I have
+not gone through everything myself, I am confident that I could reproduce the
+analyses presented in the manuscript with sufficient effort.''
+
+\todo{Acknowledgement.}
+
+\medskip
+\hrule
+\medskip
+
+\noindent \textbf{Response to Reviewer \#2}
+
+\noindent \textbf{Reviewer \#2:} ``Summary: In this manuscript, the authors
+present both an extraordinary data resource -- an inferred Ancestral
+Recombination Graph (ARG) for SARS-CoV-2 -- as well as a statistical method --
+sc2ts -- for inferring ARGs using time-series sampling of pandemic-scale
+genomic data. This method builds off a widely used model in population
+genetics, the Li and Stephens Hidden Markov Model, that is tweaked here to
+rely only on a `recombination penalty' parameter, the value of which is
+determined heuristically. The inferred ARG is rigorously compared and
+sanity-checked against what is known (or has been previously inferred) about
+the history of the genomic evolution of SARS-CoV-2.''
+
+\noindent ``Opinion: Although recombination between SARS-CoV-2 lineages is
+rare, it has unambiguously occurred, which means that the true genetic history
+of the virus is best understood as a reticulate genealogy, i.e., an ARG. An
+accurate genetic history, as well as tools for inferring such histories, are
+crucial not only to fundamental questions in epidemiology and evolution, but
+also to the development of appropriate measures for mitigating the spread of
+human pathogens. The work presented in this manuscript represents a clear step
+forward as both an accessible data resource for our understanding of the
+evolution of the modern diversity of SARS-CoV-2 and as a method for
+understanding the evolutionary trajectory of future pandemics. The manuscript
+is clear and well-written, and I had only minor suggestions for increasing the
+clarity and impact of the work.''
+
+\todo{Acknowledgement.}
+
+\noindent \textbf{Reviewer \#2 (1):} ``Future work. The only major comments I
+have deal with future work that I hope will come out of this group.''
+
+\noindent \textbf{Reviewer \#2 (1a):} ``First, with any novel statistical
+method, it is reassuring to assess its behavior on simulated datasets. In this
+case, the authors are able to assess the reliability and accuracy of their
+method reasonably well by simply relying on the extraordinary wealth of data
+on SARS-CoV-2 evolution in lieu of simulations where the truth is known.
+However, I think a future project in which the performance of sc2ts is
+assessed using viral simulations would be useful, both for quantifying the
+method's behavior and identifying areas of parameter space (e.g., rates of
+recombination vs.\ mutation, or time-density of sampling, etc.) in which its
+performance might become unreliable.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (1b):} ``Second (although following from 1a
+above), it seems like much of the inference done by sc2ts relies on
+heuristics. This is understandable, and indeed difficult to avoid in the
+analysis of real-world empirical biological data, which is often messy or
+unreliable. However, the authors note that a goal of the current work is to
+prepare for the next pandemic, so I encourage them to consider publishing a
+companion manuscript that walks through the decision-making process involved
+in the selection of, e.g., the `k' parameter so that researchers employing
+this method in the study of other pathogens might have a playbook off of which
+to work.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (2):} ``Main Figure: ARGs are often difficult to
+parse visually, but I feel this paper would be more compelling with a
+graphical demonstration of the inferred relatedness structure enabled by
+sc2ts. I wonder if the authors could adapt Figure 2 to display inferred ARG of
+SARS-CoV-2? Perhaps the complexity of such a figure could be reduced by
+collapsing some clades into triangles, as is often done in the phylogenetics
+literature, in order to emphasize the important inferred reticulations? This
+may not be possible (and it's by no means a dealbreaker for me as a reviewer),
+but I think it would help demonstrate the power of this approach to a general
+audience.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (3):} ``Writing. I had some minor
+corrections/suggestions to increase the clarity of the work.''
+
+\noindent \textbf{Reviewer \#2 (3a):} ``L45: unclear if `over time' means over
+the course of a pandemic or over computer time in the algorithm of the
+method.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (3b):} ``L161: missing word.''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (3c):} ``L166: should be `855 inferred
+recombination events' right?''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (3d):} ``L236: it might be useful to define
+`Scorpio' for the audience of a general journal like this''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (3e):} ``L243: should be `inferred recombination
+events' right?''
+
+\todo{Response.}
+
+\noindent \textbf{Reviewer \#2 (3f):} ``Throughout, it seems like sometimes the
+quotations marks were facing the wrong direction (i.e., closing when they
+should be opening, or vice versa), so I'd recommend the authors do a careful
+proofread for this.''
+
+\todo{Response.}
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}
