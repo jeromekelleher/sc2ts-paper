@@ -1,0 +1,184 @@
+// Neutral, no-indel, and constant-rates forward-in-time simulation,
+// inspired by SANTA-SIM.
+//
+// Run SLiM, e.g.:
+// slim -d N=1000 -d L=10000 -d GENS=100 \
+//      -d DUAL=0.2 -d MU=1e-4 -d RHO=1e-4 \
+//      -d OUT=out.fasta santasam_like.slim
+//
+// Parameters:
+//   N      Population size
+//   L      Sequence length
+//   GENS   Number of generations after initial generation
+//   DUAL   Probability that a child has two parents
+//   MU     Mutation rate (per-site per-generation)
+//   RHO    Recombination rate (per-site per-generation)
+//
+// Recombination (provided small RHO):
+//   Pr(recombinant child) = DUAL * (1 - (1 - RHO)^(L - 1))
+//
+// Given that recombination occurs, the set of breakpoints is drawn from a binomial
+// distribution across L-1 sites, conditioned on having at least one breakpoint.
+
+initialize() {
+    initializeSLiMModelType("nonWF");
+    initializeSLiMOptions(nucleotideBased=T);
+
+    if (!exists("N"))
+        defineConstant("N", 1000);
+    if (!exists("L"))
+        defineConstant("L", 10000);
+    if (!exists("GENS"))
+        defineConstant("GENS", 100);
+    if (!exists("DUAL"))
+        defineConstant("DUAL", 0.2);
+    if (!exists("MU"))
+        defineConstant("MU", 1e-4);
+    if (!exists("RHO"))
+        defineConstant("RHO", 1e-4);
+    if (!exists("OUT"))
+        defineConstant("OUT", "santasim_like.fasta");
+
+    defineConstant("END_TICK", GENS + 1);
+
+    if (L < 1)
+        stop("L must be at least 1.");
+    if ((DUAL < 0.0) | (DUAL > 1.0))
+        stop("DUAL must be a probability in [0, 1].");
+    if ((MU < 0.0) | (MU > 1.0))
+        stop("MU must be a probability in [0, 1].");
+    if ((RHO < 0.0) | (RHO > 1.0))
+        stop("RHO must be a probability in [0, 1].");
+
+    if (L == 1)
+        defineConstant("P_RECOMB_CHILD", 0.0);
+    else
+        defineConstant("P_RECOMB_CHILD",
+            DUAL * (1.0 - (1.0 - RHO)^(L - 1)));
+
+    // Neutral nucleotide mutation type.
+    // The mutation matrix is zero because mutations are added manually in
+    // modifyChild(), giving exact binomial per-site mutation sampling.
+    initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(0.0));
+    initializeGenomicElement(g1, 0, L - 1);
+
+    // Not using SLiM's built-in crossover process; breakpoints are explicit.
+    initializeRecombinationRate(0.0);
+
+    // All initial haploid genomes start from the same random ancestral sequence.
+    initializeAncestralNucleotides(randomNucleotides(L));
+}
+
+
+// Draw breakpoint locations from Bernoulli(RHO).
+// Returned breakpoints are in 1..L-1.
+function (i) drawBreakpoints(void) {
+    if (L <= 1)
+        return integer(0);
+
+    breaks = integer(0);
+
+    // Conditional on recombination, require at least one breakpoint.
+    while (size(breaks) == 0) {
+        breaks = which(runif(L - 1) < RHO) + 1;
+    }
+
+    return breaks;
+}
+
+
+// Generation 0: haploid population.
+1 early() {
+    sim.addSubpop("p1", N, haploid=T);
+}
+
+
+// One bulk reproduction pass per generation.
+// Parents are sampled uniformly from the current generation.
+// Two-parent sampling is with replacement.
+// See note below if you want the two parents to be forced distinct.
+reproduction() {
+    parents = subpop.individuals;
+
+    for (i in seqLen(N)) {
+        if (runif(1) < P_RECOMB_CHILD) {
+            parent1 = sample(parents, 1);
+            parent2 = sample(parents, 1);
+            breaks = drawBreakpoints();
+
+            // Haploid recombinant offspring:
+            // genome1 recombines parent1.genome1 and parent2.genome1;
+            // genome2 is kept empty.
+            subpop.addRecombinant(
+                parent1.genome1, parent2.genome1, breaks,
+                NULL, NULL, NULL,
+                NULL,
+                parent1=parent1,
+                parent2=parent2,
+                randomizeStrands=T
+            );
+        } else {
+            parent1 = sample(parents, 1);
+
+            // Haploid clonal offspring:
+            // genome1 is copied from parent1.genome1;
+            // genome2 is kept empty.
+            subpop.addRecombinant(
+                parent1.genome1, NULL, NULL,
+                NULL, NULL, NULL,
+                NULL,
+                parent1=parent1
+            );
+        }
+    }
+
+    // This callback generated the whole next generation, so do not run it
+    // again for each individual in the same tick.
+    self.active = 0;
+}
+
+
+// Add mutations to each new sequence.
+// This implements:
+//   K ~ Binomial(L, MU)
+//   positions ~ Uniform without replacement
+//   derived base ~ Uniform among the three non-current bases
+modifyChild() {
+    nMuts = rbinom(1, L, MU);
+
+    if (nMuts > 0) {
+        positions = sample(0:(L - 1), nMuts);
+        bases = c("A", "C", "G", "T");
+
+        for (pos in positions) {
+            oldBase = childGenome1.nucleotides(start=pos, end=pos);
+            newBase = sample(bases[bases != oldBase], 1);
+            childGenome1.addNewDrawnMutation(m1, pos, nucleotide=newBase);
+        }
+    }
+
+    return T;
+}
+
+
+// Discrete generations: keep newborns, kill parents.
+// This gives a Wright-Fisher-like replacement process, but with custom
+// SANTA-like parent choice/recombination/mutation.
+survival() {
+    return individual.age == 0;
+}
+
+
+// Output final haploid genomes as FASTA.
+END_TICK late() {
+    inds = p1.individuals;
+
+    for (i in seqLen(size(inds))) {
+        rec = ">seq_" + i + "\n" + inds[i].genome1.nucleotides();
+        writeFile(OUT_FASTA, rec, append=(i != 0));
+    }
+
+    catn("Wrote " + size(inds) + " haploid sequences to " + OUT_FASTA);
+    sim.simulationFinished();
+}
