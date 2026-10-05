@@ -85,7 +85,7 @@ def main_quadrants():
     rec = pd.read_csv(data_dir / "recombinants.csv", index_col=0)
     for u, lab in tqdm([
         (366701, "RE_node-QCpass-366701"),  # Q1
-        (259308, "RE_node-QCfail-259308"),  # Q2
+        (420981, "RE_node-QCfail-420981"),  # Q2
         (1876313, "RE_node-QCfail-1876313"),  # Q3
         (374005, "RE_node-QCfail-374005"),  # Q4
     ]):
