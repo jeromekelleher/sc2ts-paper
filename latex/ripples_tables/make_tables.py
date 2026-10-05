@@ -86,38 +86,49 @@ def make_row(cells):
 def x_lineages_table():
     caption = " ".join(X_LINEAGES_CAPTION.split())
     num_cols = 7
+    # Repeated at the top of each page
+    header = make_row(
+        [
+            "sc2ts event",
+            "type",
+            "in $p=4$",
+            "UShER desc",
+            "path len",
+            "clade diff",
+            "descendants",
+        ]
+    )
+    # The layout follows pango_x_table/make_table.py
     lines = HEADER + [
         r"\begingroup\scriptsize",
-        r"\begin{longtabs}[",
-        r"    theme   = sc2ts,",
-        r"    label   = {tab:ripples_x_lineages},",
-        r"    entry   = {RIPPLES events associated with Pango X lineages},",
-        rf"    caption = {{{caption}}},",
-        r"  ]{",
-        r"    colspec = {llcrrrX[l]},",
-        r"    width   = \linewidth,",
-        r"    colsep  = 4pt,",
-        r"    rowhead = 1,",
-        r"  }",
+        r"\setlength{\tabcolsep}{4pt}",
+        r"\setlength{\LTleft}{0pt}",
+        r"\setlength{\LTright}{0pt}",
+        r"\begin{longtable}{@{\extracolsep{\fill}}llcrrr"
+        r">{\raggedright\arraybackslash}p{7cm}}",
+        r"\caption[RIPPLES events associated with Pango X lineages]{%",
+        caption + "}",
+        r"\label{tab:ripples_x_lineages} \\",
         r"\toprule",
-        make_row(
-            [
-                "sc2ts event",
-                "type",
-                "in $p=4$",
-                "UShER desc",
-                "path len",
-                "clade diff",
-                "descendants",
-            ]
-        ),
+        header,
+        r"\endfirsthead",
+        rf"\LTcontinuedhead{{{num_cols}}} \\",
+        r"\toprule",
+        header,
+        r"\midrule",
+        r"\endhead",
+        rf"\LTcontinuedfoot{{{num_cols}}} \\",
+        r"\endfoot",
+        r"\endlastfoot",
     ]
     group = None
     for row in read_csv("x_lineages.csv"):
         if row["group"] != group:
             group = row["group"]
             title = X_LINEAGES_GROUPS[group]
-            lines.append(rf"\midrule \SetCell[c={num_cols}]{{l}} \textbf{{{title}}} \\")
+            lines.append(
+                rf"\midrule \multicolumn{{{num_cols}}}{{l}}{{\textbf{{{title}}}}} \\"
+            )
         lines.append(
             make_row(
                 [
@@ -131,7 +142,7 @@ def x_lineages_table():
                 ]
             )
         )
-    lines += [r"\bottomrule", r"\end{longtabs}", r"\endgroup"]
+    lines += [r"\bottomrule", r"\end{longtable}", r"\endgroup"]
     return "\n".join(lines) + "\n"
 
 

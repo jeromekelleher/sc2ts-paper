@@ -1,24 +1,28 @@
 % Standalone view of the Pango X lineage event table, for checking the layout
 % without building the whole paper. The generated table is \input by main.tex
-% as well; the tabularray setup below is a copy of the block in main.tex's
+% as well; the longtable setup below is a copy of the block in main.tex's
 % preamble and must be kept in step with it.
 \documentclass[12pt]{article}
 % Match the \newgeometry the table sits inside in main.tex.
 \usepackage[left=2cm, right=2cm, top=1cm, bottom=2cm]{geometry}
 \usepackage{booktabs}
-\usepackage{tabularray}
-\UseTblrLibrary{booktabs}
-\DefTblrTemplate{caption-tag}{sc2ts}{\tablename~\thetable}
-\DefTblrTemplate{caption-sep}{sc2ts}{:\space}
-\DefTblrTemplate{capcont}{sc2ts}{%
-  \centering\tablename~\thetable\ \emph{(continued)}\par}
-\NewTblrTheme{sc2ts}{%
-  \SetTblrTemplate{caption-tag}{sc2ts}%
-  \SetTblrTemplate{caption-sep}{sc2ts}%
-  \SetTblrTemplate{capcont}{sc2ts}%
-  \SetTblrStyle{caption}{font=\footnotesize}%
-  \SetTblrStyle{capcont}{font=\footnotesize}%
-}
+\usepackage{array}
+\usepackage{longtable}
+% Captions of the generated long tables (see pango_x_table/make_table.py):
+% footnotesize and full width, laid out like the float captions. The
+% continuation head and foot macros take the number of columns in the table.
+\makeatletter
+\def\LT@makecaption#1#2#3{%
+  \LT@mcol\LT@cols c{\hbox to\z@{\hss\parbox[t]\textwidth{%
+    \reset@font\footnotesize
+    #1{#2: }#3%
+    \endgraf\vskip\baselineskip}%
+  \hss}}}
+\makeatother
+\newcommand{\LTcontinuedhead}[1]{%
+  \multicolumn{#1}{c}{\footnotesize\tablename~\thetable\ \emph{(continued)}}}
+\newcommand{\LTcontinuedfoot}[1]{%
+  \multicolumn{#1}{r}{\footnotesize Continued on next page}}
 \pagestyle{empty}
 
 \begin{document}
