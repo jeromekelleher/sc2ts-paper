@@ -1417,63 +1417,72 @@ In total, 882,398 daily
 sample groups were added to the ARG, while only 100 were
 added via this retrospective grouping mechanism.
 
-The Delta, BA.1, and BA.2 lineages were
+The Delta and Omicron lineages were
 particularly challenging, however, as the initial emergences of
 these lineages were not densely sampled. In this case,
 there is little information for the retrospective sampling grouping mechanism
 to work with and it is very difficult to distinguish short-term time travellers
-from true outbreak samples. For these cases, we chose specific
-high-quality samples with confident dates as ``seeds`` which are
-unconditionally included in the ARG on the specified date.
+from true outbreak samples. For these cases, we chose groups of
+high-quality samples with confident dates as ``seed groups'', which are
+unconditionally included in the ARG.
+Each seed group is inserted as a single unit on the
+earliest date among its members.
+Rather than matching each seed against the ARG individually,
+we first infer a tree over the group's haplotypes
+(using the same neighbour-joining approach as for daily sample clusters)
+and then match the haplotype of the group's inferred common ancestor
+against the ARG using the LS model.
+The group's tree is then attached at the resulting copying path,
+in the same way as a daily sample cluster.
+Because the inferred ancestor of a saltational lineage is much
+closer to the contemporaneous ARG than any individual sample,
+this places the lineage's origin more reliably.
+Seed samples dated later than the insertion date keep their own dates,
+and are only available for subsequent samples to copy from
+after that date.
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
+The full list of seed samples is given in the
+inference configuration file.
 
-% We used more seeds, but in practise it doesn't matter and it's just
-% complicating the story.
 For Delta
 (first detected in December, 2020 in India \cite{ECDCVOCUpdates}),
-% https://github.com/jeromekelleher/sc2ts-paper/issues/267
-% More samples were unconditionally added,
-% but the earliest are the seeds.
-we used two seeds:
-% https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
-ERR5461562 assigned to B.1.617.1/Kappa
-(dated February 22, 2021 from the UK) and
-ERR5676810 assigned to B.1.617.2/Delta
-(dated March 23, 2021 from the UK).
-Kappa is closely related to Delta \cite{Stern2021}, and
-therefore seeding it helps to reconstruct the origin of Delta.
-% What we actually did is a bit more complicated,
-% as it was manual, but this is easier to explain.
-These are the earliest Kappa and Delta samples
-in the Viridian v04 dataset
-% https://github.com/jeromekelleher/sc2ts-paper/issues/267
-% SHZ: I'd like to recheck this.
-that were used for the designation of these Pango lineages.
-%[should we mention long branch splitting here too?]
-% YW: I think we don't need to, actually. That's a subsequent thing, and also discusses in the "further explanation" link
+% https://github.com/jeromekelleher/sc2ts-paper/issues/1006
+we used a group of 13 samples from the B.1.617 clade,
+dated between February 22 and April 13, 2021
+(from the UK, India, the USA and Finland),
+spanning B.1.617, B.1.617.1/Kappa, B.1.617.3
+and B.1.617.2/Delta (including early AY.4 and AY.120.1 samples).
+Kappa and B.1.617.3 are closely related to Delta
+\cite{Stern2021,Cherian2021}, and
+therefore including them helps to reconstruct the origin of Delta.
+This group was inserted on February 22, 2021, the date of
+the earliest Kappa sample (ERR5461562).
 The resulting subgraph around Delta in the ARG
 can be seen in Figure~\ref{fig:subgraph_delta};
 for further explanation, see \supref{sec:dd_delta}.
 
-For Omicron BA.1 and BA.2
+For Omicron
 (first detected in South Africa or Botswana
 in November, 2021 \cite{ECDCVOCUpdates}),
-we used SRR17041376 and SRR17461792, respectively.
-We chose SRR17041376 (dated November 6, 2021 from South Africa)
-for the BA.1 seed, as it is among the earliest African Viridian samples,
-and its initial placement in the ARG mirrors the initial placement of a subsequent high-quality COG-UK sample (ERR7443564).
-For BA.2,
-we chose SRR17461792 (dated November 27, 2021 from South Africa),
-which is the earliest BA.2 sample present in the Viridian v04 dataset.
-Note that this sample is dated later than SRR17041376 (the BA.1 seed),
-allowing time for the BA.1 lineage
-to become established and accumulate descendant samples in the ARG.
-The resulting subgraph around these Omicron lineages in the ARG
+we used a group of 11 samples spanning BA.1, BA.2, BA.3 and BA.4,
+dated between November 13, 2021 and March 31, 2022
+(all from South Africa except one BA.3 sample from each of the UK and the USA),
+which was inserted on November 13, 2021.
+BA.5 was incorporated by the standard mechanisms
+and did not require seeding.
+The resulting subgraph around the Omicron lineages BA.1 and BA.2 in the ARG
 can be seen in Figure~\ref{fig:subgraph_omicron}.
 For further explanation, see \supref{sec:dd_omicron}.
 
+Finally, we used single-sample seed groups for one sample each
+of B.1.634 (SRR14037887) and B.1.631 (SRR16176783), the parental lineages of the
+recombinant XB \cite{Gutierrez2022}, which
+otherwise were not added to the ARG due to high HMM costs
+(\supref{sec:dd_xb}).
+
 With the combination of these mechanisms---gradual accumulation
 of diversity through daily sample groups, retrospective group
-inclusion and manual seeding---we successfully incorporated all major
+inclusion and seed groups---we successfully incorporated all major
 lineages in the dataset into the ARG (Figure~\ref{fig:samples_per_day}).
 
 
