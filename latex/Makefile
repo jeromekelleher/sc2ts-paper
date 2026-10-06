@@ -1,4 +1,5 @@
-DATA=pango_x_table/table.tex ripples_tables/x_lineages.tex copying_patterns/figure.tex
+DATA=pango_x_table/table.tex ripples_tables/x_lineages.tex copying_patterns/figure.tex \
+	absent_pango_x_table/table.tex
 FIGURES=
 
 all: combined.pdf
@@ -24,6 +25,9 @@ pango_x_table/table.tex: pango_x_table/make_table.py $(wildcard pango_x_table/*.
 # The copying pattern images are written by src/save_copying_patterns.py
 copying_patterns/figure.tex: copying_patterns/make_figure.py ../data/pango_x_event_details.csv
 	python3 copying_patterns/make_figure.py
+
+absent_pango_x_table/table.tex: absent_pango_x_table/make_table.py absent_pango_x_table/absent_pango_x.csv
+	python3 absent_pango_x_table/make_table.py
 
 # Also writes ripples_tables/event_descendants.tex
 ripples_tables/x_lineages.tex: ripples_tables/make_tables.py $(wildcard ripples_tables/*.csv)
