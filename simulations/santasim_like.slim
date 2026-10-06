@@ -1,0 +1,192 @@
+// Neutral, panmictic, constant-rates, constant-pop. size, no-indel, haploid WF simulation,
+// inspired by SANTA-SIM (https://academic.oup.com/ve/article/5/1/vez003/5372481).
+//
+// Run SLiM, e.g.:
+// slim -d N=1000 -d L=10000 -d GENS=100 \
+//      -d DUAL=0.2 -d MU=1e-4 -d RHO=1e-4 \
+//      -d 'OUT_PREFIX="out"' santasim_like.slim
+//
+// Parameters:
+//   N      Population size
+//   L      Sequence length
+//   GENS   Number of generations after the initial population
+//   DUAL   Probability of a co-infection
+//   MU     Mutation rate (per-site per generation) in [0, 1)
+//   RHO    Crossover rate (per-site per generation) in [0, 0.5]
+//   OUT_PREFIX    Output prefix
+//
+// Notes:
+// Recombination events sample distinct parents uniformly without replacement.
+// An individual can be a parent to multiple children.
+// For L > 1, every event has exactly one uniformly drawn breakpoint.
+//
+// Output:
+// In the sequence file, the header is formatted "seq_ID".
+// These IDs match the child and parent IDs in the pedigree file.
+
+initialize() {
+    initializeSLiMModelType("WF");
+
+    // preventIncidentalSelfing=T forces distinct parents.
+    initializeSLiMOptions(
+        keepPedigrees=T,
+        preventIncidentalSelfing=T,
+        nucleotideBased=T
+    );
+
+    // Set defaults.
+    if (!exists("N"))
+        defineConstant("N", 100);
+    if (!exists("L"))
+        defineConstant("L", 1000);
+    if (!exists("GENS"))
+        defineConstant("GENS", 100);
+    if (!exists("DUAL"))
+        defineConstant("DUAL", 0.2);
+    if (!exists("MU"))
+        defineConstant("MU", 1e-3);
+    if (!exists("RHO"))
+        defineConstant("RHO", 1e-3);
+
+    defineConstant("OUT_FASTA", OUT_PREFIX + ".slim.sequences.fa");
+    defineConstant("OUT_PEDIGREE", OUT_PREFIX + ".slim.pedigree.tsv");
+
+    if (!isInteger(N) | (N < 1))
+        stop("N must be a positive integer.");
+    if (!isInteger(L) | (L < 1))
+        stop("L must be a positive integer.");
+    if (!isInteger(GENS) | (GENS < 0))
+        stop("GENS must be a nonnegative integer.");
+    if ((DUAL < 0.0) | (DUAL > 1.0))
+        stop("DUAL must be a probability in [0, 1].");
+    if ((N < 2) & (DUAL > 0.0) & (GENS > 0))
+        stop("N must be at least 2 when DUAL > 0 and GENS > 0.");
+    if ((MU < 0.0) | (MU >= 1.0))
+        stop("MU must be in [0, 1).");
+    if ((RHO < 0.0) | (RHO > 0.5))
+        stop("RHO must be in [0, 0.5].");
+
+    defineConstant("END_TICK", GENS + 1);
+
+    // Set mutation type to neutral.
+    // Dominance is irrelevant for haploids, so setting coefficient to 1.0 is okay.
+    // Fixed ("f") selection coefficient of 0.0.
+    initializeMutationTypeNuc("m1", 1.0, "f", 0.0);
+    // JC takes mutation rate to each alternative base.
+    initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(MU / 3.0));
+
+    initializeChromosome(1, L, type="H");
+    // Entire genome consists of sites subject to neutral mutation.
+    initializeGenomicElement(g1, 0, L - 1);
+
+    initializeRecombinationRate(0.0);
+
+    // TODO: Provide a reference genome for more realistic simulations.
+    initializeAncestralNucleotides(randomNucleotides(L));
+}
+
+
+1 late() {
+    sim.addSubpop("p1", N);
+
+    p1.setCloningRate(1.0 - DUAL);
+
+    for (ind in p1.individuals) {
+        ind.setValue("breakpoints", integer(0));
+        ind.setValue("copy_parent", -1);
+        ind.setValue("is_clonal", F);
+    }
+
+    // copy_parent provides the initial genome.
+    // breakpoints indicate where switching to the other parent occurs.
+    // e.g.,
+    // In a 1000-base genome with parents a and b,
+    // parent a as the copy parent, and
+    // 0-based breakpoint at 500,
+    // the segment [0, 500) comes from parent a and [500, 1000) from parent b.
+    writeFile(
+        OUT_PEDIGREE,
+        "gen\tchild\tparent1\tparent2\tis_clonal\tcopy_parent\tbreakpoints\tis_recombinant"
+    );
+}
+
+
+recombination() {
+    breakpoints = integer(0);
+
+    if (L > 1)
+        breakpoints = rdunif(1, 1, sim.chromosome.lastPosition);
+
+    // Did this when there could be multiple breakpoints.
+    sim.setValue("pending_breakpoints", sort(unique(breakpoints)));
+    sim.setValue("pending_copy_parent", haplosome1.individual.pedigreeID);
+
+    return T;
+}
+
+
+modifyChild() {
+    breaks = integer(0);
+    copyParent = parent1.pedigreeID;
+
+    if (!isCloning) {
+        breaks = sim.getValue("pending_breakpoints");
+        copyParent = sim.getValue("pending_copy_parent");
+        if (isNULL(breaks) | isNULL(copyParent))
+            stop("Missing recombination record for a two-parent event.");
+    }
+
+    child.setValue("breakpoints", breaks);
+    child.setValue("copy_parent", copyParent);
+    // isCloning is supplied by modifyChild.
+    child.setValue("is_clonal", isCloning);
+    sim.setValue("pending_breakpoints", NULL);
+    sim.setValue("pending_copy_parent", NULL);
+
+    return T;
+}
+
+
+late() {
+    inds = p1.individuals;
+    records = string(size(inds));
+    sequences = string(size(inds));
+
+    for (i in seqLen(size(inds))) {
+        ind = inds[i];
+        sequences[i] = ">seq_" + ind.pedigreeID + "\n" +
+            ind.haplosomes[0].nucleotides();
+        parents = ind.pedigreeParentIDs;
+        breaks = ind.getValue("breakpoints");
+        breakText = ".";
+
+        if (size(breaks) > 0)
+            breakText = paste(breaks, sep=",");
+        isRecombinant = (size(breaks) > 0) & (parents[0] != parents[1]);
+
+        records[i] = paste(
+            c(
+                community.tick - 1,
+                ind.pedigreeID,
+                parents,
+                asInteger(ind.getValue("is_clonal")),
+                ind.getValue("copy_parent"),
+                breakText,
+                asInteger(isRecombinant)
+            ),
+            sep="\t"
+        );
+    }
+
+    writeFile(OUT_PEDIGREE, records, append=T);
+    // Overwrite at gen 0, then append each subsequent cohort once.
+    writeFile(OUT_FASTA, sequences, append=(community.tick != 1));
+}
+
+
+END_TICK late() {
+    catn("Write " + (N * (GENS + 1)) + " sequences from gen 0.." + GENS + " to " + OUT_FASTA);
+    catn("Write pedigree records to " + OUT_PEDIGREE);
+
+    sim.simulationFinished();
+}
