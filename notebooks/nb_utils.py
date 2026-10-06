@@ -41,11 +41,13 @@ def standard_recombinant_labels(ts, details_file=DATA_DIR / "pango_x_event_detai
     """
     Return a standard set of labels for "known" recombination nodes
     (Pango Xs plus hard-coded Jackson recombinants). The Pango X labels
-    are read from details_file, which defaults to pango_x_event_details.csv.
+    are read from details_file, which defaults to pango_x_event_details.csv,
+    keeping only the recombination events (Types I and II).
     """
     df = sc2ts.node_data(ts).set_index("sample_id")
     details = pd.read_csv(details_file)
-    labels = {int(row.recombinant): row.name for row in details.itertuples()}
+    details = details[details.type.isin([1, 2])]
+    labels = {int(row.node): row.name for row in details.itertuples()}
     tree = ts.first()
 
     # Add the Jackson recombinants
@@ -457,6 +459,14 @@ class D3ARG_viz:
 
             # Get only the duplicate keys that appear multiple times
             duplicate_keys = df[duplicate_mask]["duplicate_key"].unique()
+            # Sort to put deletions last, then by mutation positions
+            duplicate_keys = sorted(
+                duplicate_keys,
+                key=lambda key: (
+                    any(df.loc[df["duplicate_key"] == key, "derived"] == "-"),
+                    min(df.loc[df["duplicate_key"] == key, "position"]),
+                ),
+            )
             colors = {key: rgb2hex(cmap(i)) for i, key in enumerate(duplicate_keys)}
 
             # Process only the duplicate groups

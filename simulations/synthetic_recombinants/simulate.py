@@ -51,6 +51,20 @@ def is_acgt(a):
     return (a >= 0) & (a < NUM_ACGT)
 
 
+def mutate(alignment, mean, rng):
+    """
+    A copy of the alignment with Poisson(mean) substitutions at positions drawn
+    uniformly over the genome, each to one of the other three bases. Positions
+    that are missing or ambiguous are left alone.
+    """
+    alignment = alignment.copy()
+    positions = rng.integers(0, len(alignment), size=rng.poisson(mean))
+    for j in positions:
+        if is_acgt(alignment[j]):
+            alignment[j] = (alignment[j] + rng.integers(1, NUM_ACGT)) % NUM_ACGT
+    return alignment
+
+
 def classify_scorpio(scorpio):
     """
     Alpha/Delta label from a Viridian scorpio call. Missing is the literal
@@ -131,6 +145,14 @@ def make_pool(dataset, reference_arg, output, date, country):
 @click.option("--pangonet-data", type=click.Path(exists=True, file_okay=False))
 @click.option("--seed", type=int, required=True)
 @click.option("--max-attempts", type=int, default=100)
+@click.option(
+    "--mutation-multiplier",
+    type=int,
+    default=0,
+    help="Multiple of one generation's mutations added to each parent and control",
+)
+@click.option("--mutation-rate", type=float, default=0.0008, help="per site per year")
+@click.option("--generation-time", type=float, default=5.5, help="in days")
 def generate(
     pool,
     dataset,
@@ -143,6 +165,9 @@ def generate(
     pangonet_data,
     seed,
     max_attempts,
+    mutation_multiplier,
+    mutation_rate,
+    generation_time,
 ):
     """
     Make synthetic recombinants and controls, and write them out for import as
@@ -150,8 +175,17 @@ def generate(
 
     The pool is split in half within each lineage: one half supplies parents,
     the other controls, so no control is a parent of any recombinant.
+
+    To model parents that were not themselves sampled, each parent is given
+    Poisson mutations before splicing, with mean mutation_multiplier times the
+    number expected in one transmission generation. A multiplier of 1 is as if
+    every case were sequenced, 5 as if one in five were. Controls get the same,
+    so false positive rates are comparable across multipliers.
     """
     rng = np.random.default_rng(seed)
+    # Mutations draw from their own stream, so that parents, breakpoints and
+    # controls are the same for every multiplier.
+    mutation_rng = np.random.default_rng([seed, 1])
     df_pool = pd.read_csv(pool)
     crosses = [tuple(cross.split(":")) for cross in crosses.split(",")]
     pango, pangonet_distance = load_pangonet(pangonet_data)
@@ -166,6 +200,17 @@ def generate(
     order = sorted(df_pool.strain, key=lambda strain: ds.metadata.sample_id_map[strain])
     alignments = {strain: ds.alignment[strain] for strain in order}
     sequence_length = len(next(iter(alignments.values())))
+    mutation_mean = (
+        mutation_multiplier * mutation_rate * generation_time / 365 * sequence_length
+    )
+    print(f"{mutation_mean:.3f} mutations per sequence")
+
+    def added_mutations(sequence, original):
+        differs = sequence != original
+        return {
+            "num_added_mutations": int(np.sum(differs)),
+            "num_added_mutations_arg": int(np.sum(differs[arg_index])),
+        }
 
     parents = {}
     controls = []
@@ -217,6 +262,11 @@ def generate(
 
             left_alignment = alignments[left]
             right_alignment = alignments[right]
+            original = np.concatenate(
+                [left_alignment[: breakpoint - 1], right_alignment[breakpoint - 1 :]]
+            )
+            left_alignment = mutate(left_alignment, mutation_mean, mutation_rng)
+            right_alignment = mutate(right_alignment, mutation_mean, mutation_rng)
             sequence = np.concatenate(
                 [left_alignment[: breakpoint - 1], right_alignment[breakpoint - 1 :]]
             )
@@ -244,11 +294,13 @@ def generate(
                     # the draw above was conditioned on.
                     "detectable_window": int(sites[-1] - sites[0]),
                     "num_missing": int(np.sum(sequence[arg_index] < 0)),
+                    **added_mutations(sequence, original),
                 }
             )
 
     for strain in controls:
-        sequences[strain] = alignments[strain]
+        sequence = mutate(alignments[strain], mutation_mean, mutation_rng)
+        sequences[strain] = sequence
         records.append(
             {
                 "strain": strain,
@@ -265,11 +317,13 @@ def generate(
                 "num_informative_left": -1,
                 "num_informative_right": -1,
                 "detectable_window": -1,
-                "num_missing": int(np.sum(alignments[strain][arg_index] < 0)),
+                "num_missing": int(np.sum(sequence[arg_index] < 0)),
+                **added_mutations(sequence, alignments[strain]),
             }
         )
 
     df_truth = pd.DataFrame(records)
+    df_truth.insert(1, "mutation_multiplier", mutation_multiplier)
     df_truth.to_csv(f"{out_prefix}.truth.csv", index=False)
 
     with open(f"{out_prefix}.fasta", "w") as f:

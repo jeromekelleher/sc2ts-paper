@@ -50,6 +50,31 @@ which gives the same distribution without the loop. `detectable_window` in the o
 records the span that was sampled.
 
 
+### Parent mutations
+The parents of real recombinants are rarely sampled themselves, so the closest sampled
+relatives the HMM can copy from differ from them by a few private mutations. To model
+this, each parent is given Poisson mutations before splicing, at positions drawn
+uniformly over the genome, each to one of the other three bases (missing and ambiguous
+positions are left alone). Each parent is mutated independently every time it is used.
+
+The mean is a multiple of the number expected in one transmission generation, with a
+substitution rate of 0.0008 per site per year (about 24 per genome per year) and a
+generation time of 5.5 days, which gives 0.36 mutations per sequence. There are three
+arms:
+
+- **0x** — the sequences as they are, as a control.
+- **1x** — as if every case were sequenced, so a parent is one generation from its
+  closest sampled relative.
+- **5x** — as if one case in five were sequenced, about 1.8 mutations per sequence.
+
+Controls get the same mutations as parents, so that false positive rates are
+comparable across arms. Mutations draw from their own random stream, so the parents,
+breakpoints and controls are identical in every arm, and differences between arms are
+due to the mutations alone. `num_added_mutations` in the output records how many sites
+differ from the unmutated sequence, and `num_added_mutations_arg` how many of those are
+sites in the ARG.
+
+
 ### Characterisation
 Recombinants are characterised with the quantities the paper reports, reusing the
 pipeline's own code where possible:
@@ -72,7 +97,8 @@ pipeline's own code where possible:
 
 
 ### Output
-`results.csv` has one row per (strain, `k`). Columns that also appear in
+`results.csv` has one row per (`mutation_multiplier`, strain, `k`); strain names repeat
+across arms. Each arm's files carry an `_m{multiplier}` suffix. Columns that also appear in
 `data/recombinants.csv` carry the same names: `interval_left`, `interval_right`,
 `net_min_supporting_loci_lft`, `net_min_supporting_loci_rgt`,
 `net_min_supporting_loci_lft_rgt_ge_4`, `parent_pangonet_distance`. Analysis is in
@@ -85,5 +111,6 @@ snakemake --cores 4
 ```
 
 Matching is the expensive step, at roughly 8 seconds per sample per value of `k` on 4
-cores against an ARG of 242,799 samples. The committed configuration is sized to run in
-about half an hour; `config.yaml` notes the larger values for a full run.
+cores against an ARG of 242,799 samples, repeated for each mutation multiplier. The
+committed configuration takes about two hours, k = 5 being the slowest; `config.yaml` notes
+the larger values for a full run.

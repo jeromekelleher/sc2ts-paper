@@ -24,7 +24,9 @@ def pangoX_RE_node_labels():
     (currently only a few XMs, not including the main XM, which is joint with XAL
     """
     df = pd.read_csv(data_dir / "pango_x_event_details.csv")
-    return {int(row['recombinant']): row['name'] for _, row in df.iterrows()}
+    # Type IV events are not recombinants
+    df = df[df["type"].isin([1, 2])]
+    return {int(row['node']): row['name'] for _, row in df.iterrows()}
 
 def save_copying_pattern_image(html_str, label, save_dir, zoom=None):
     options = {"format": "png", "quiet": "", "transparent": ""}  # use transparent so we can crop

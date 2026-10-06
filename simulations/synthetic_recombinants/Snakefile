@@ -4,7 +4,8 @@ for a range of values of k.
 
 Synthetic single-breakpoint recombinants, and real non-recombinant controls,
 are matched against the raw inference ARG for the day before they were
-collected.
+collected. Each mutation multiplier is a separate arm, with the same parents,
+breakpoints and controls but different numbers of mutations added to them.
 
 Run from simulations/synthetic_recombinants/, e.g.:
     snakemake --cores 4
@@ -14,12 +15,14 @@ configfile: "config.yaml"
 
 
 K_VALUES = config["k_values"]
+MULTIPLIERS = config["mutation_multipliers"]
 
-PREFIX = "synthetic"
+PREFIX = "synthetic_m{m}"
 
 
 wildcard_constraints:
     k=r"[0-9]+",
+    m=r"[0-9]+",
 
 
 rule all:
@@ -59,13 +62,16 @@ rule generate:
         """
         python simulate.py generate \
             {input.pool} {input.dataset} {input.arg} \
-            --out-prefix {PREFIX} \
+            --out-prefix synthetic_m{wildcards.m} \
             --date {config[sample_date]} \
             --crosses {config[crosses]} \
             --num-recombinants {config[num_recombinants]} \
             --num-controls {config[num_controls]} \
             --pangonet-data {config[pangonet_data]} \
-            --seed {config[seed]}
+            --seed {config[seed]} \
+            --mutation-multiplier {wildcards.m} \
+            --mutation-rate {config[mutation_rate]} \
+            --generation-time {config[generation_time]}
         """
 
 
@@ -103,7 +109,7 @@ rule run_hmm:
         arg=config["arg"],
         strains=f"{PREFIX}.strains.txt",
     output:
-        "hmm_k{k}.jsonl",
+        "hmm_m{m}_k{k}.jsonl",
     threads: config["num_threads"]
     shell:
         """
@@ -120,11 +126,24 @@ rule summarise:
         truth=f"{PREFIX}.truth.csv",
         dataset=f"{PREFIX}.vcz",
         arg=config["arg"],
-        hmm=expand("hmm_k{k}.jsonl", k=K_VALUES),
+        hmm=expand("hmm_m{{m}}_k{k}.jsonl", k=K_VALUES),
     output:
-        "results.csv",
+        "results_m{m}.csv",
     shell:
         """
         python simulate.py summarise \
             {input.truth} {input.dataset} {input.arg} {output} {input.hmm}
         """
+
+
+rule combine:
+    input:
+        expand("results_m{m}.csv", m=MULTIPLIERS),
+    output:
+        "results.csv",
+    run:
+        import pandas as pd
+
+        pd.concat([pd.read_csv(path) for path in input]).to_csv(
+            output[0], index=False
+        )
