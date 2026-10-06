@@ -25,6 +25,19 @@ num_controls: 25
 
 seed: 42
 
+# Mutations added to each parent (and control) before splicing, to model
+# parents that were not themselves sampled. A multiplier of 1 is the number
+# expected in one transmission generation, as if every case were sequenced; 5
+# is as if one in five were. 0 leaves the sequences as they are.
+mutation_multipliers:
+  - 0
+  - 1
+  - 5
+# Substitutions per site per year, about 24 per genome per year.
+mutation_rate: 0.0008
+# Mean transmission generation time, in days.
+generation_time: 5.5
+
 k_values:
   - 3
   - 4
