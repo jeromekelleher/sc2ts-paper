@@ -112,5 +112,5 @@ snakemake --cores 4
 
 Matching is the expensive step, at roughly 8 seconds per sample per value of `k` on 4
 cores against an ARG of 242,799 samples, repeated for each mutation multiplier. The
-committed configuration is sized to run in about an hour and a half; `config.yaml` notes
+committed configuration takes about two hours, k = 5 being the slowest; `config.yaml` notes
 the larger values for a full run.

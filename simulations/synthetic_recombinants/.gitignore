@@ -3,3 +3,4 @@
 /synthetic_m*.fasta.fai
 /synthetic_m*.vcz/
 /synthetic_m*.vcz.zip
+/results_m*.csv
