@@ -459,6 +459,14 @@ class D3ARG_viz:
 
             # Get only the duplicate keys that appear multiple times
             duplicate_keys = df[duplicate_mask]["duplicate_key"].unique()
+            # Sort to put deletions last, then by mutation positions
+            duplicate_keys = sorted(
+                duplicate_keys,
+                key=lambda key: (
+                    any(df.loc[df["duplicate_key"] == key, "derived"] == "-"),
+                    min(df.loc[df["duplicate_key"] == key, "position"]),
+                ),
+            )
             colors = {key: rgb2hex(cmap(i)) for i, key in enumerate(duplicate_keys)}
 
             # Process only the duplicate groups
