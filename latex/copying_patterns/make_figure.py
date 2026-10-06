@@ -3,7 +3,8 @@ r"""
 Generate the LaTeX source for the Pango X copying patterns figure
 (Figure~\ref{fig:pango_x_copying_patterns} in main.tex).
 
-Event names and types are read from data/pango_x_event_details.csv, and the
+Event names and types of the recombination events (Types I and II) are read
+from data/pango_x_event_details.csv, and the
 copying pattern images are those written to figures/static by
 src/save_copying_patterns.py. The figure is a ``longtable``, which breaks
 over pages, written to figure.tex and pulled into main.tex with
@@ -15,8 +16,7 @@ Run it from anywhere; paths are resolved relative to this file:
     python3 copying_patterns/make_figure.py
 
 Only the standard library is used, so it runs under any python3 without the
-project environment. Rows are in the order of the CSV (recombination node ID)
-within each event type.
+project environment. Rows are ordered by label within each event type.
 """
 
 import argparse
@@ -41,7 +41,8 @@ SECTION_TITLES = {
 
 def read_events():
     with open(DETAILS_CSV, newline="") as f:
-        return list(csv.DictReader(f))
+        # Type IV events are not recombinants, so have no copying pattern
+        return [row for row in csv.DictReader(f) if int(row["type"]) in (1, 2)]
 
 
 def check_safe(name):
