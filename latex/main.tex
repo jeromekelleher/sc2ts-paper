@@ -378,7 +378,7 @@ See Methods for details.
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
 Using sc2ts, we built an ARG from 3,114,609 samples
-from the Viridian v04 dataset~\cite{Hunt2024},
+from the Viridian dataset~\cite{Hunt2024},
 collected between 2020-01-01 and 2024-06-06.
 Inference took 19 days on a server with
 % TODO update the hardware description for the v2.2 run (config: 192 threads,
@@ -2170,7 +2170,7 @@ available at \url{https://zenodo.org/records/17558489}. The UShER tree
 in tskit format is also available, as well as the intersection files.
 \item The sequence alignments in VCF Zarr format have been deposited at
 Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
-\item The Snakemake workflow for aligning and converting the Viridian v05 dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
+\item The Snakemake workflow for aligning and converting the Viridian dataset to VCF Zarr is publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/viridian\_dataset/}.
 \item The complete configuration file for running sc2ts to build the ARG above is
 publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
 \item The Snakemake workflow for ARG post-processing is publicly
@@ -2976,8 +2976,9 @@ BJ.1 and BM.1.1.1, respectively.
 In the ARG, the Pango lineage of the right parent is identical,
 but that of the left parent is a related ancestral Pango lineage
 (BA.2.10 instead of BA.2.10.1.1 = BJ.1).
+[FIXME these numbers refer to Viridian v04. There are 5 BJ.1s in Viridian v05]
 This is likely due to the absence of BJ.1 in the ARG:
-only four BJ.1 samples exist in the Viridian v04 dataset,
+only four BJ.1 samples exist in the Viridian dataset,
 a single one passed sequence-level QC, and
 that was then rejected due to high HMM cost.
 Note that BJ.1 differs from BA.2.10 by over 20 mutations
@@ -3467,7 +3468,7 @@ Start & Length & Region & Node & Pango lineage & Frequency (\%) & Ref\\
 Recurrent deletions in the ARG.
 These deletions occur on at least two branches in the ARG and
 are found in the alignments of at least 10,000 (0.3\%) samples
-in the Viridian v04 dataset.
+in the Viridian dataset.
 For each deletion, the number of occurrences in the ARG and
 the number of samples where it is observed are shown.
 For further explanation,
