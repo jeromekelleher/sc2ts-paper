@@ -1123,7 +1123,7 @@ MAFFT v7.475 \cite{Katoh2013},
 with the option \texttt{--keeplength} to retain the reference coordinate system.
 We then used \texttt{sc2ts import-alignments} and
 \texttt{sc2ts import-metadata} to convert all alignments and metadata to VCF
-Zarr format, resulting in a single 401 MiB file
+Zarr format, resulting in a single 400 MiB file
 (around 77$\times$ smaller than gzip compressed FASTA\cite{Czech2025}).
 
 A classical trade-off in bioinformatics is whether to store data
@@ -1186,6 +1186,7 @@ to mask any non-nucleotide characters (A, C, G, or T) as missing data
 using Numba accelerated \cite{Lam2015numba} Python code.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 Then, excluding the 265 masked sites, we filtered any samples that had missing data at more than 500 sites (this was set to 10,000 sites for the initial period up to 2020-03-01
+and for the final period from 2023-01-01,
 when sampling density was low).
 
 \subsubsection*{Li and Stephens model}
@@ -1343,7 +1344,7 @@ The patterns of
 shared mutations between siblings can be complex, and the current
 implementation uses a simple greedy strategy for choosing
 the particular mutations to collapse.
-119,844 nodes were
+102,952 nodes were
 added to the ARG during primary inference by mutation collapsing.
 
 The reversion push operation inspects a newly added node to see
@@ -1353,14 +1354,14 @@ immediate parent. We increase the overall parsimony of the
 inference by ``pushing in'' a new node which descends from the
 original parent and carries all its mutations except those
 causing the reversions on the newly added node.
-Reversion pushing led to the addition of 52,336 nodes during primary inference.
+Reversion pushing led to the addition of 56,488 nodes during primary inference.
 
 \subsubsection*{Filtering time travellers}
 Time-travelling samples---those in which the recorded collection date differs
 substantially from their true collection date---pose significant problems
 for sc2ts and are present at a significant frequency. For example, of the
-43 Scorpio~\cite{Colquhoun2023scorpio}
-designations present in the Viridian dataset studied, 32 have
+42 Scorpio~\cite{Colquhoun2023scorpio}
+designations present in the Viridian dataset studied, 31 have
 samples present with sampling dates in 2020, including lineages that do not
 arise until late 2022. Inserting these time-travellers into the ARG
 at the claimed sampling date causes major artefacts, and they must therefore be
@@ -1398,23 +1399,27 @@ as standard daily sample clusters.
 
 Distinguishing a truly emerging outbreak from different forms of
 correlated error is non-trivial, and
-sc2ts has 5 parameters to fine-tune the behaviour.
+sc2ts has 7 parameters to fine-tune the behaviour.
 Firstly, we require at least 10 samples in the
-group to ensure there is sufficient support over a time window of
-seven days. Then, we build a local tree of the samples and consider
+group, collected on at least 3 different dates,
+to ensure there is sufficient support over a time window of
+seven days.
+We also require that the samples are assigned to at most 3
+different Pango lineages in the Viridian metadata.
+Then, we build a local tree of the samples and consider
 some tree metrics to evaluate whether the samples within the
 group are closely related. If we have at least 2 mutations
 shared by all samples, there are at most 2 recurrent mutations
-within the group and at most 5 mutations unique to each sample,
+within the group and at most 5 mutations per sample on average,
 the retrospective group is accepted for inclusion.
 Although this process is highly heuristic, it successfully
 captured the majority of saltational lineages
 such as Alpha (Figure~\ref{fig:subgraph_alpha}), and the
 vast majority of samples were added following the standard
 daily sample grouping mechanisms.
-% https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_report.ipynb
-In total, 882,398 daily
-sample groups were added to the ARG, while only 100 were
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v2_2024-06-06_debug-report.ipynb
+In total, 1,166,734 sample groups were added to the ARG
+during primary inference, of which only 150 were
 added via this retrospective grouping mechanism.
 
 The Delta and Omicron lineages were
@@ -1523,25 +1528,21 @@ below the node. We refer to this process as ``long branch splitting'', and it
 creates additional nodes which are available for recombinant rematching.
 
 % Data from
-% https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_rewire-recombinants-report.ipynb
+% https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v2_2024-06-06_rewire-recombinants-report.ipynb
 Using recombinant-rematching,
-58 recombinants were identified as being more parsimoniously
+98 recombinants were identified as being more parsimoniously
 explained by matching to existing nodes in the ARG (inserted by
-subsequent parsimony improving heuristics) and 16 by long branch
-splitting. Of these 16 recombinants, two are noteworthy as
-being the origins of the Delta (B.1.617.2) and Omicron-BA.2 lineages in the ARG.
-Both result in substantially fewer mutations (15 fewer for
-Delta, 6 for BA.2) than the previous recombinant HMM solution.
-We then updated the ARG to remove these 74 artefactual
+subsequent parsimony improving heuristics) and 30 by long branch
+splitting.
+We then updated the ARG to remove these 128 artefactual
 recombinants by ``rewiring'' the recombination node to the
 more parsimonious non-recombinant solution. This
-resulted in 16 additional nodes, 182 fewer mutations and reduced
-the number of trees along the genome from 348 to 317. The long branches
-involved in the origins of Delta and BA.2 originally joined
-B.1 to B.1.167 and B.1.1 to BA.1 respectively; they can be seen
-in Figure \ref{fig:subgraph_delta} and \ref{fig:subgraph_omicron}
-with inserted intermediate nodes leading to the Delta and BA.2
-origination nodes.
+resulted in 30 additional nodes and reduced
+the number of trees along the genome from 556 to 509.
+Because each recombination event contributes $k=4$ to the HMM cost,
+a non-recombinant solution requiring up to 3 additional mutations
+is more parsimonious under our model, and so rewiring
+increased the total number of mutations in the ARG by 334.
 
 % and requires a lot of off-topic explanation.
 % It is also noteworthy that the origin of the BA.5
@@ -1564,14 +1565,14 @@ splitting of long branches.
 For performance reasons, samples that match exactly to an existing
 node in the ARG are not added during primary inference, but are
 stored in a secondary ``match database''.
-During postprocessing, we added 1,252,208 of these exact match samples
+During postprocessing, we added 1,504,210 of these exact match samples
 into the ARG using the stored information.
 
 During primary inference, gap characters (``-'') are masked
 out as missing data, but this excludes both important information
 about deletions from the ARG as well as potentially informative
 phylogenetic signal.
-We therefore performed post-hoc parsimony mapping at 77 sites to include
+We therefore performed post-hoc parsimony mapping at 75 sites to include
 the effects of deletions and to ensure that all Pango-informative
 sites are included in the ARG.
 Using deletions with a minimum frequency of 1\%
@@ -1579,16 +1580,17 @@ Using deletions with a minimum frequency of 1\%
 from Table S1 of Li et al.\cite{Li2023indels},
 we chose 75 sites for deletion-remapping (see \supref{sec:supplement_dels}
 for analysis of the major deletions identified from this process).
-These sites are all included in primary inference, and so
+Most of these sites are included in primary inference, and so
 remapping them adds mutations to the gap character
 rather than new sites.
-In addition, we remapped data at the two masked sites
+Two of them, however, are masked sites
 (21987 and 28253) that were excluded
 from primary inference and are defined as Pango lineage
 defining sites by Freyja\cite{Karthikeyan2022}
-(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}),
+(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
+Remapping adds these two sites,
 so that the final ARG contains 29,640 sites.
-Alignment data for these 77 sites was then mapped to the
+Alignment data for these 75 sites was then mapped to the
 ARG using the Fitch-Hartigan algorithm\cite{Fitch1971toward,Hartigan1973minimum}
 implemented in tskit, including the gap character as a state
 along with the four nucleotides.
@@ -1597,8 +1599,8 @@ heuristics in sc2ts until there were no further reductions in
 the numbers of mutations.
 
 % Shifting breakpoints is a minor point, not worth mentioning?
-We computed Pango assignments for all 2,747,985 nodes in the ARG by first
-exporting their aligned sequences to a 77GiB FASTA file and
+We computed Pango assignments for all 3,409,262 nodes in the ARG by first
+exporting their aligned sequences to a 95GiB FASTA file and
 then running pangolin (version 4.3.1; pangolin-data version 1.29).
 Note that this version of pangolin uses UShER placement
 for classification~\cite{McBroome2024}.
@@ -1614,7 +1616,7 @@ Finally, we reduced the metadata stored in the ARG to a minimal
 set (node sample IDs, and the computed Pango and Scorpio
 designations), encoded to enable efficient columnar access,
 and compressed the file using tszip (version 0.2.5). The final
-file requires 32MiB of storage.
+file requires 38MiB of storage.
 
 %%%
 % This is an early draft which was trying to tackle the problem of why
@@ -1808,6 +1810,9 @@ The full UShER tree and the intersection files are available for download
 in tszip format. % (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
+% TODO: the numbers in this section (1286, 4, 1282, two recombination nodes,
+% positions 1-26858) are from the v1.2 ARG; rerun
+% supp_pdf-cophylogeny-tanglegrams.ipynb on the v2.2 intersection files.
 We compare the non-recombinant parts of the ARG with the UShER topology
 by simplifying the phylogenies to a smaller number of
 Pango representative samples.
@@ -2008,7 +2013,7 @@ $\sim2$ x $10^{-6}$ per site per day
 \subsubsection*{Comparison with UShER+RIPPLES}
 We began with the Viridian UShER tree downloaded from Figshare.
 To simplify the comparison with sc2ts, we subset this
-file down to the 2,475,418 samples shared with the sc2ts ARG
+file down to the 3,107,392 samples shared with the sc2ts ARG
 by running \texttt{matUtils extract}.
 We then ran \texttt{ripples-fast}~\cite{Smith2023tracking}
 on this file, using \texttt{-n1} so that all detected
@@ -2091,6 +2096,8 @@ in \textit{Mathematica} 14.2 (Wolfram 2024) and
 available at
 \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/TemporalTrends\_RecEvent25August2025.nb}.
 
+% TODO: the numbers in this paragraph are from the v1.2 ARG and need the
+% Mathematica notebook rerunning on v2.2 (JHU case data end in March 2023).
 In addition to the analysis of the 354 recombination events that pass QC,
 we analyzed the relationship between the full set of 855 recombinants and case numbers.
 These additional recombinants occurred disproportionately
