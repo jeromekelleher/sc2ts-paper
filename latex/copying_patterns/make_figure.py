@@ -129,7 +129,7 @@ def make_figure():
     ]
     for event_type in types:
         rows = [row for row in shown if int(row["type"]) == event_type]
-        rows.sort(key=lambda row: row["name"])
+        rows.sort(key=lambda row: row["name"].split("/")[0].rjust(3))
         rule = r"\toprule" if event_type == types[0] else r"\midrule"
         lines.append(
             rf"{rule} \multicolumn{{2}}{{l}}{{\textbf{{{SECTION_TITLES[event_type]}}}}} \\"
