@@ -277,7 +277,7 @@ to UShER, while automatically detecting and incorporating recombination
 in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
-and artifacts~\cite{Hunt2024},
+and artifacts~\cite{Hunt2026},
 we present an ARG with 3.11 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
@@ -297,7 +297,7 @@ genealogical relationships, point mutations, deletions, and
 recombination---provides a basis for the study of SARS-CoV-2
 that systematically accounts for all of these evolutionary forces.
 This ARG, coupled with the rich suite of supporting software
-in the tskit~\cite{Ralph2020} and VCF-Zarr~\cite{Czech2025} ecosystems,
+in the tskit~\cite{Jeffery2026population} and VCF-Zarr~\cite{Czech2025} ecosystems,
 enables pandemic-scale analysis on a laptop.
 These resources provide a strong platform for future research,
 helping us to learn from the vast troves of data collected during the
@@ -378,7 +378,7 @@ See Methods for details.
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
 Using sc2ts, we built an ARG from 3,114,609 samples
-from the Viridian dataset~\cite{Hunt2024},
+from the Viridian dataset~\cite{Hunt2026},
 collected between 2020-01-01 and 2024-06-06.
 Inference took 19 days on a server with
 % TODO update the hardware description for the v2.2 run (config: 192 threads,
@@ -695,7 +695,7 @@ Varabyou2021rapid,Zhou2023virusrecom,Alfonsi2024,Li2024CovRecomb}.
 The distribution of breakpoint intervals of
 the QC-passing recombination events in the sc2ts ARG
 shows an overall enrichment of breakpoints
-towards the 3’ end of the genome,
+towards the 3' end of the genome,
 particularly at the left boundary of the Spike gene
 (Figure~\ref{fig:recombinant_intervals}A,B),
 consistent with the patterns seen in previous
@@ -778,7 +778,8 @@ increasing our power to detect recombination.
 
 We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
 to relate the timing of recombination events with global case numbers. We binned case numbers ($n$) by week from January, 2020 to March, 2023 and
-sub-divided by the proportion in each Scorpio label inferred within the ARG
+sub-divided by the proportion in each Scorpio label~\cite{Colquhoun2023scorpio}
+inferred within the ARG
 (shading in Figure~\ref{fig:recombinants_over_time}).
 These lineages correspond loosely to a group
 of related lineages within a major VOC in the Viridian dataset.
@@ -943,7 +944,8 @@ the evolutionary features of genetic inheritance, point mutations,
 deletions and recombination in a single cohesive structure.
 The ARG is freely available and easily accessible using the
 tskit software ecosystem, a rich and efficient platform for
-recombination-aware analyses widely used in population genomics.
+recombination-aware analyses widely used in population
+genomics~\cite{Jeffery2026population}.
 Previous landmark ARGs~\cite{Wohns2022,Anderson2023genes}
 have helped spur the development of ARG-aware methods in human
 genomics~\cite{Mejia2025using,Grundler2025geographic,
@@ -959,7 +961,7 @@ saltational variants can also be detected by analysing the rate and position of 
 branches (which persist after accounting for recombination).
 We envisage the ARG as a long-term stable resource---building on the
 high-quality, freely available reassemblies of
-the Viridian dataset~\cite{Hunt2024}---to facilitate the study
+the Viridian dataset~\cite{Hunt2026}---to facilitate the study
 of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
 
 The other primary contribution of this work is the method used to
@@ -1018,7 +1020,7 @@ These results underscore the utility of the ARG
 and provide a template for future analyses.
 
 % \paragraph{Limitations of the study}
-We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather
+We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2026} rather
 than the larger GISAID resource~\cite{Shu2017} for two reasons.
 Firstly, the Viridian dataset is of higher quality and major efforts
 have been made to remove sources of error. Applying sc2ts to
@@ -1064,7 +1066,8 @@ recombination~\cite{Wong2024} and providing the basis for a range of highly
 efficient
 algorithms~\cite{Kelleher2016,Ralph2020,Kelleher2020coalescent,
 Grundler2025geographic,Lehmann2025args}.
-The mature and feature-rich tskit library has interfaces in Python, C and Rust,
+The mature and feature-rich tskit library~\cite{Jeffery2026population}
+has interfaces in Python, C and Rust,
 extensive documentation,
 and underpins a rapidly growing software ecosystem of
 simulation~\cite{Baumdicker2022,Haller2019,Petr2023,Tsambos2023link,Tagami2024tstrait,Gopalan2025bridging},
@@ -1113,7 +1116,7 @@ high levels of data compression, efficient access across multiple
 dimensions, and is ideally suited to modern cloud-based
 deployments~\cite{Czech2025}.
 
-We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
+We converted the Viridian v05 dataset\cite{Hunt2026}, consisting of 4,484,157 SARS-CoV-2
 consensus sequences (125 GiB over 48 FASTA files) and 30 metadata fields (1.4
 GiB TSV file) to VCF Zarr using
 pyfaidx~\cite{Shirley2015efficient} and Pandas~\cite{Mckinney2010data} in a
@@ -1154,7 +1157,7 @@ see Data and code availability for details.
 
 The collection date of a sample
 is an important piece of information for sc2ts.
-We used the Viridian consensus date (``Date\_tree``),
+We used the Viridian consensus date (``Date\_tree''),
 based on information from COG-UK, GISAID, and ENA/SRA as our source.
 Samples that have missing or incomplete dates (e.g., 2020-01) were omitted.
 Samples with a collection date of December 31, 2020
@@ -1172,7 +1175,7 @@ the pandemic~\cite{DeMaio2020issues,Turakhia2020stability}.
 These sites are recommended to be masked for phylogenetic
 inference~\cite{Turakhia2020stability}, and
 we masked the same set of 265 problematic sites that was masked
-when building the Viridian UShER tree~\cite{Hunt2024}
+when building the Viridian UShER tree~\cite{Hunt2026}
 (the first 55 and last 100 bases of the genome, and 110 internal sites;
 see the sc2ts configuration file for the full list).
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
@@ -1851,7 +1854,7 @@ for details.
 \subsubsection*{Comparison of mutational spectra}
 % To validate the mutational information contained in the sc2ts ARG,
 % we compared the all-site mutational spectra of major VOCs in the ARG,
-% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
+% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2026},
 % and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
 % Mutational spectra are defined as the relative proportions of
 % each possible type of nucleotide change.
@@ -2022,7 +2025,7 @@ RIPPLES with the parsimony improvement parameter $p$
 equal to 3 (the default) and 4.
 
 The output of RIPPLES is two text files, ``recombination.tsv''
-and ``descendants.tsv``. We use the ``descendants.tsv'' file,
+and ``descendants.tsv''. We use the ``descendants.tsv'' file,
 which lists the descendant samples of all recombination events
 keyed by the recombinant node ID, to match events with sc2ts.
 Specifically, for each RIPPLES event identified by a list of
@@ -3193,7 +3196,7 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 \caption{
 All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
 the mutation count data from Bloom et al. (2023)\cite{Bloom2023} (B), and
-the Viridian UShER phylogeny from Hunt et al. (2024)\cite{Hunt2024}.
+the Viridian UShER phylogeny from Hunt et al. (2024)\cite{Hunt2026}.
 }
 \label{fig:mutational_spectra}
 \end{figure}
