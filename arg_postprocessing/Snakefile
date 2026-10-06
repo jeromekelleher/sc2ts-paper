@@ -20,6 +20,7 @@
 # recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
 # pango_x_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
 # deletion_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
+# pango_x_absent_in_arg.csv -> sc2ts_viridian_v2.2_absent_pango_x_matches.csv
 #
 # The rematch_recombinants rule is expensive and needs the per-day inference
 # ARGs, so its k1000 mutation counts are saved in git in this directory as
@@ -45,6 +46,9 @@ rule all:
         # Events corresponding to Pango X lineages. This is the pango_x_events.csv file
         # in the top-level data directory
         "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
+        # Pango X lineages absent from the ARG, with their samples' HMM matches.
+        # This is the pango_x_absent_in_arg.csv file in the top-level data directory
+        "sc2ts_viridian_v2.2_absent_pango_x_matches.csv",
         "logs/final_arg_report_2024-06-06.ipynb",
         # Intersection file needed for ripples analyses
         "usher_intersection_2024-06-06.pb",
@@ -278,6 +282,28 @@ rule pango_x_events:
     shell:
         """
         python scripts/compute_pango_x_events.py {input} {output}
+        """
+
+# Samples from Pango X lineages in the dataset with no samples in the ARG,
+# along with the HMM match recorded for each during primary inference. This
+# needs the same inference match DB as the postprocess rule. NOTE: the run
+# ID here and in postprocess (v2_2026-08-23) differs from the one in
+# inference/viridian_config.toml (v2_2026-09-22); check which is correct.
+rule absent_pango_x_matches:
+    conda:
+        "sc2ts.yml"
+    wildcard_constraints:
+        VERSION=r"v\d+\.\d+",
+    input:
+        "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
+        "sc2ts_viridian_{VERSION}.trees.tsz",
+        "../inference/results/v2_2026-08-23.matches.db",
+    output:
+        "sc2ts_viridian_{VERSION}_absent_pango_x_matches.csv",
+    shell:
+        """
+        python scripts/export_absent_pango_x_matches.py {input[0]} {input[1]} \
+            {output} --match-db={input[2]}
         """
 
 rule add_pangonet_to_csv:
