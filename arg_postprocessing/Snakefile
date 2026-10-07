@@ -17,7 +17,7 @@
 
 # Notes on saved files in the data directory
 #
-# recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
+# recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm_mns.csv
 # pango_x_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
 # deletion_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
 # pango_x_absent_in_arg.csv -> sc2ts_viridian_v2.2_absent_pango_x_matches.csv
@@ -38,7 +38,7 @@ rule all:
         # Recombinant data. Suffixes after _recombinants denote the operations
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
-        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm_mns.csv",
         # CovRecomb output is left in its own file
         "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_CovRecomb_output.csv",
         # 3SEQ output
@@ -356,6 +356,21 @@ rule add_k1000_muts:
     shell:
         """
         python scripts/add_recombinant_k1000_muts_to_csv.py {input} {output}
+        """
+
+# Add the highly recurrent multi-nucleotide substitutions (MNS) supporting
+# each side of the breakpoint for each recombinant.
+rule add_mns_to_csv:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{AMN_PREFIX}.trees",
+        "{AMN_PREFIX}_recombinants_{AMN_SUFFIX}.csv",
+    output:
+        "{AMN_PREFIX}_recombinants_{AMN_SUFFIX}_mns.csv",
+    shell:
+        """
+        python scripts/add_mns_to_csv.py {input} {output}
         """
 
 rule shift_breakpoints:
