@@ -2954,7 +2954,7 @@ Adding up to ten generations' worth of mutations to the parents
 (on average 3.6 per genome) had little effect on detection
 (Figure~\ref{fig:synthetic_recombinants}D),
 with the detection rate for each cross and value of $k$
-differing from that without added mutations by at most 1.6 percentage points,
+differing from that without added mutations by at most 1.6\%
 and little effect on the assigned parents, whose Pango lineages were almost unchanged.
 It did, however, increase the HMM cost.
 At $k=4$ with ten generations of mutations,
@@ -2969,7 +2969,13 @@ so the divergence between them is set by the choice of cross
 rather than drawn from the course of the pandemic.
 Added mutations are uniform along the genome,
 with no mutational spectrum or rate variation.
-Finally, controls can only bound the false positive rate from above.
+
+It is worth noting that false positives do occur during sc2ts inference on
+real data, as discussed in
+\supref{sec:spurious-ancestrally-important-recombinants}
+and the ``Recombinant rematching'' section (Methods).
+These are usually due to [TODO EXPLAIN].
+
 
 \subsection{Pango X lineages not added to the ARG}
 \label{sec:supplement_rejected_pango_x_lineages}
