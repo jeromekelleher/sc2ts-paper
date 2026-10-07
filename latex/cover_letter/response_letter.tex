@@ -166,18 +166,9 @@ into a single locus) identifies multiple simultaneous nucleotide substitutions s
 cause false positive recombinants, citing de Maio et al.
   \item Recombinants with insufficient support (672 of 1,319) are flagged as failing QC, mitigating this effect.
   \item Done: we checked every single-breakpoint recombinant against the 19 highly recurrent
-MNS in Table~1 of de Maio et al. An MNS counts as supporting a parent if it lies on that parent's
-side of the breakpoint interval, and the recombinant carries the derived alleles,
-matching that parent and not the other (new Methods paragraph; Snakemake step
-\texttt{add\_mns\_to\_csv}; \texttt{notebooks/analysis\_mns.ipynb}).
-115 of 647 QC-passing and 87 of 672 QC-failing events have a supporting MNS.
-In QC-passing events these are mostly lineage-defining (e.g.\ G27382C-A27383T-T27384C
-in BA.2-descended parents, 84 events). Discounting one locus per MNS would move only
-7 of the 647 QC-passing events below the threshold. All 42 events involving the
-MNS at 27875--27883 fail QC, as do 9 of the 10 involving the A507T-T508C-G509A
-sequencing artefact. Recurrent MNS therefore do produce some spurious
-recombinants, but the existing QC already removes them, and they have little effect on
-the QC-passing set. The Results text now reports these numbers.
+MNS in Table~1 of de Maio et al. We found that recurrent MNS do produce some spurious
+recombinants, but the existing QC already removes them, and the effect on
+the QC-passing set is small. The Results text now reports these numbers.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``The SARS-CoV-2 pandemic has largely come and
