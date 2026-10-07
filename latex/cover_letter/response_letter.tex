@@ -148,8 +148,8 @@ nuanced.''
   \item Done (exploratory): for the 224 QC-passing recombinants whose left and right parents are both sampled genomes, we extracted the sampling dates and countries of the two parents (\texttt{notebooks/explore\_geographical\_structure.ipynb}).
   \item \todo{Summarise this analysis (fraction of events with parents sampled in the same country; overlap of parental lineages in time) and add to Results/Supplement. Note geographic sampling bias (dominated by UK, USA, Denmark).}
   \item We agree that the diversity--recombination relationship is partly expected from detectability.
-  \item The new simulation study quantifies this: at $k=4$, 96\% of synthetic recombinants
-between Alpha and Delta parents are detected, but only 52\% of those between two Alpha % SIMNUM
+  \item The new simulation study quantifies this: at $k=4$, 89\% of synthetic recombinants
+between Alpha and Delta parents are detected, but only 40\% of those between two Alpha
 parents (Results, ``Quality control and validation of recombination events''; SI
 ``Synthetic recombinant simulations'').
   \item \todo{Nuance the text in the ``Emergence of recombinants over time'' section and the Discussion accordingly.}
@@ -195,11 +195,12 @@ Two crosses bracket the parent divergence in the real ARG: Alpha$\times$Alpha
   \item Each parent is also given random mutations before splicing, at 0, 1, 5 and
 10 times the number expected in one transmission generation, to model recombinants
 whose parents were not themselves sampled.
-  \item Results: no false positives among the 338 held-out non-recombinant controls at % SIMNUM
-any $k$ (95\% upper bound 0.9\%); detection at $k=4$ is 52\% (Alpha$\times$Alpha) and % SIMNUM
-96\% (Alpha$\times$Delta); the true breakpoint lies within the inferred interval; % SIMNUM
-the assigned parents are of the correct Pango lineage in all but one detected % SIMNUM
-recombinant, and in most cases are identical to the true parents over the matched
+  \item Results: no false positives among the 338 held-out non-recombinant controls at
+any $k$ (95\% upper bound 0.9\%); detection at $k=4$ is 40\% (Alpha$\times$Alpha) and
+89\% (Alpha$\times$Delta); the true breakpoint lies within the inferred interval for 99\% of
+detected recombinants; both assigned parents are of the correct Pango lineage in all
+Alpha$\times$Alpha and 89\% of Alpha$\times$Delta recombinants (the errors being closely
+related Delta lineages), and in most cases are identical to the true parents over the matched
 segment; interval widths reproduce the negative relationship with parent divergence seen in
 the real ARG; and mutations in unsampled parents barely affect detection but push
 many recombinants beyond the HMM cost threshold for inclusion.
@@ -387,8 +388,8 @@ to work.''
 
 \begin{itemize}
   \item The simulations now quantify the trade-off governed by $k$: as $k$
-increases from 3 to 5, detection falls (Alpha$\times$Alpha: 76\% $\to$ 20\%) % SIMNUM
-while the fraction of detected recombinants passing QC rises (74\% $\to$ % SIMNUM
+increases from 3 to 5, detection falls (Alpha$\times$Alpha: 62\% $\to$ 21\%)
+while the fraction of detected recombinants passing QC rises (71\% $\to$
 100\%), providing an empirical basis for $k = 4$.
   \item The Methods section ``Choice of k parameter'' now describes this, and sets out
 the procedure as a playbook for other pathogens: simulate recombinants from real
