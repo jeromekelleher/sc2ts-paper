@@ -1,21 +1,28 @@
-// Neutral, panmictic, constant-rates, constant-pop. size, no-indel, haploid WF simulation,
+// Neutral, panmictic, constant-rates, no-indel, haploid WF simulation,
 // inspired by SANTA-SIM (https://academic.oup.com/ve/article/5/1/vez003/5372481).
 //
+// This follows a simple demographic model, where the population starts with
+// one founder, undergoes exponential growth, and then remains constant in size.
+//
 // Run SLiM, e.g.:
-// slim -d N=1000 -d L=10000 -d GENS=100 \
+// slim -d N=1000 -d GENS=100 -d GROWTH_GENS=20 -d L=10000 \
 //      -d DUAL=0.2 -d MU=1e-4 -d RHO=1e-4 \
 //      -d 'OUT_PREFIX="out"' santasim_like.slim
 //
 // Parameters:
-//   N      Population size
+//   N      Final population size (starts from one founder)
+//   GENS   Total number of generations after the founder
+//   GROWTH_GENS   Generations of exponential growth to N
 //   L      Sequence length
-//   GENS   Number of generations after the initial population
 //   DUAL   Probability of a co-infection
 //   MU     Mutation rate (per-site per generation) in [0, 1)
 //   RHO    Crossover rate (per-site per generation) in [0, 0.5]
 //   OUT_PREFIX    Output prefix
 //
 // Notes:
+// At generation g, size = round(N^(g / GROWTH_GENS)) until g = GROWTH_GENS,
+// then size stays at N. Runs with GENS < GROWTH_GENS stop during growth.
+// Reproduction is clonal whenever the parental population has only one individual.
 // Recombination events sample distinct parents uniformly without replacement.
 // An individual can be a parent to multiple children.
 // For L > 1, every event has exactly one uniformly drawn breakpoint.
@@ -37,10 +44,12 @@ initialize() {
     // Set defaults.
     if (!exists("N"))
         defineConstant("N", 100);
-    if (!exists("L"))
-        defineConstant("L", 1000);
     if (!exists("GENS"))
         defineConstant("GENS", 100);
+    if (!exists("GROWTH_GENS"))
+        defineConstant("GROWTH_GENS", 20);
+    if (!exists("L"))
+        defineConstant("L", 1000);
     if (!exists("DUAL"))
         defineConstant("DUAL", 0.2);
     if (!exists("MU"))
@@ -53,14 +62,16 @@ initialize() {
 
     if (!isInteger(N) | (N < 1))
         stop("N must be a positive integer.");
+    if (!isInteger(GENS) | (GENS < 1))
+        stop("GENS must be a positive integer.");
+    if (!isInteger(GROWTH_GENS) | (GROWTH_GENS < 1))
+        stop("GROWTH_GENS must be a positive integer.");
+    if (GENS < GROWTH_GENS)
+        stop("GENS must be equal to or greater than GROWTH_GENS.");
     if (!isInteger(L) | (L < 1))
         stop("L must be a positive integer.");
-    if (!isInteger(GENS) | (GENS < 0))
-        stop("GENS must be a nonnegative integer.");
     if ((DUAL < 0.0) | (DUAL > 1.0))
         stop("DUAL must be a probability in [0, 1].");
-    if ((N < 2) & (DUAL > 0.0) & (GENS > 0))
-        stop("N must be at least 2 when DUAL > 0 and GENS > 0.");
     if ((MU < 0.0) | (MU >= 1.0))
         stop("MU must be in [0, 1).");
     if ((RHO < 0.0) | (RHO > 0.5))
@@ -87,9 +98,10 @@ initialize() {
 
 
 1 late() {
-    sim.addSubpop("p1", N);
+    sim.addSubpop("p1", 1);
+    sim.setValue("sequence_count", 0);
 
-    p1.setCloningRate(1.0 - DUAL);
+    p1.setCloningRate(1.0);
 
     for (ind in p1.individuals) {
         ind.setValue("breakpoints", integer(0));
@@ -108,6 +120,23 @@ initialize() {
         OUT_PEDIGREE,
         "gen\tchild\tparent1\tparent2\tis_clonal\tcopy_parent\tbreakpoints\tis_recombinant"
     );
+}
+
+
+first() {
+    // In WF, first() sets the offspring size before reproduction.
+    if (community.tick > 1) {
+        if (p1.individualCount == 1)
+            p1.setCloningRate(1.0);
+        else
+            p1.setCloningRate(1.0 - DUAL);
+
+        generation = community.tick - 1;
+        targetSize = N;
+        if (generation < GROWTH_GENS)
+            targetSize = asInteger(round(exp(log(N) * generation / GROWTH_GENS)));
+        p1.setSubpopulationSize(targetSize);
+    }
 }
 
 
@@ -149,6 +178,7 @@ modifyChild() {
 
 late() {
     inds = p1.individuals;
+    sim.setValue("sequence_count", sim.getValue("sequence_count") + size(inds));
     records = string(size(inds));
     sequences = string(size(inds));
 
@@ -185,7 +215,7 @@ late() {
 
 
 END_TICK late() {
-    catn("Write " + (N * (GENS + 1)) + " sequences from gen 0.." + GENS + " to " + OUT_FASTA);
+    catn("Write " + sim.getValue("sequence_count") + " sequences from gen 0.." + GENS + " to " + OUT_FASTA);
     catn("Write pedigree records to " + OUT_PEDIGREE);
 
     sim.simulationFinished();
