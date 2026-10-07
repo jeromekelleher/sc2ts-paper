@@ -103,7 +103,8 @@ across arms. Each arm's files carry an `_m{multiplier}` suffix. Columns that als
 `data/recombinants.csv` carry the same names: `interval_left`, `interval_right`,
 `net_min_supporting_loci_lft`, `net_min_supporting_loci_rgt`,
 `net_min_supporting_loci_lft_rgt_ge_4`, `parent_pangonet_distance`. Analysis is in
-`notebooks/analysis_synthetic_recombinants.ipynb`.
+`notebooks/analysis_synthetic_recombinants.ipynb`, which also writes the paper's
+supplementary figure to `figures/synthetic_recombinants.pdf`.
 
 
 ### Running

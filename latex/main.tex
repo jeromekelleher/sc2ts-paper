@@ -630,6 +630,20 @@ to detect inter-lineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar validation is intermediate, at 61\% among QC-passing recombinants.
+
+To quantify detection directly, we simulated synthetic recombinants
+by splicing together real Alpha and Delta genomes
+and matched them against the ARG,
+along with real non-recombinant controls
+(Methods, \supref{sec:synthetic_recombinants},
+Figure~\ref{fig:synthetic_recombinants}).
+No control was inferred to be recombinant, % SIMNUM
+and the true breakpoint always lay within the inferred breakpoint interval. % SIMNUM
+With $k=4$, 96\% of Alpha$\times$Delta recombinants were detected, % SIMNUM
+but only 52\% of Alpha$\times$Alpha recombinants, % SIMNUM
+whose parents differ at few sites.
+Recombination between closely related viruses
+is therefore substantially under-detected.
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -1037,6 +1051,11 @@ conservative parameter choices and real-time handling of
 recombination events, we provide a stringent lower
 bound on the amount of recombination that occurred during
 the pandemic phase of SARS-CoV-2.
+Our simulations support this interpretation:
+around half of the recombinants between parents of the same lineage % SIMNUM
+were not detected, and private mutations in unsampled parents
+pushed many detected recombinants beyond the HMM cost threshold
+for immediate inclusion in the ARG.
 These results underscore the utility of the ARG
 and provide a template for future analyses.
 
@@ -1324,6 +1343,31 @@ to include the well supported recombination events documented
 in a previous study\cite{Jackson2021}.
 Hence, we decided to use $k$ set to 4
 to infer the final ARG described in this study.
+
+We subsequently quantified this trade-off by simulation,
+matching synthetic recombinants with known breakpoints and
+real non-recombinant controls against the ARG
+(see below, \supref{sec:synthetic_recombinants} and
+Figure~\ref{fig:synthetic_recombinants}).
+No control was matched to more than one parent at any value of $k$, % SIMNUM
+so the dubious events seen with $k=3$ in real data
+are not produced from clean non-recombinant sequences,
+but from the sequencing artefacts that our QC measure identifies
+(see below), which the simulation does not model.
+Increasing $k$ instead trades sensitivity for support.
+For recombinants between closely related parents (Alpha$\times$Alpha),
+detection fell from 76\% at $k=3$ to 52\% at $k=4$ and 20\% at $k=5$, % SIMNUM
+while the fraction of detected recombinants passing our QC filter
+rose from 74\% to 92\% and 100\%. % SIMNUM
+Recombinants between more divergent parents (Alpha$\times$Delta)
+were detected at a high rate for all values of $k$ (92--96\%). % SIMNUM
+Thus $k=4$ retains most detectable recombinants while
+ensuring that almost all of those detected are well supported.
+For other pathogens, the same procedure can be followed:
+splice synthetic recombinants from real sequences
+spanning the parental divergences of interest,
+and choose the smallest $k$ at which detected events
+are consistently supported by several loci on each side of the breakpoint.
 
 \subsubsection*{Tree inference from daily sample clusters}
 With tens of thousands of samples being added to the ARG per day,
@@ -1800,6 +1844,61 @@ rebar dataset version ``2025-01-28''.
 These steps are included in the Snakemake postprocessing
 workflow. % (see \nameref{sec:data_and_code_availability}).
 
+\subsubsection*{Simulation of synthetic recombinants}
+To estimate the false positive and detection rates of recombinant
+inference as a function of $k$, we matched synthetic
+single-breakpoint recombinants and real non-recombinant controls
+against the ARG using the same HMM as the inference.
+We took samples collected in the United Kingdom on 2021-05-16,
+when the Alpha and Delta lineages were co-circulating at
+close to equal frequency, restricting to those accepted into the final ARG.
+Lineages were assigned from the Viridian Scorpio~\cite{Colquhoun2023scorpio}
+calls (Alpha: any call containing ``B.1.1.7-like''; Delta: any call beginning ``Delta''),
+giving 342 Alpha and 334 Delta samples.
+Within each lineage, samples were split at random into two halves,
+one used as parents of synthetic recombinants and the other as controls,
+so that no control is a parent of any recombinant.
+Recombinants were generated in two crosses that bracket the range
+of parental divergence among real recombinants in the ARG
+(pangonet distance 0 to 19, median 2; see below):
+Alpha$\times$Alpha, whose parents are all B.1.1.7 (distance 0),
+and Alpha$\times$Delta (distance 4 to 5).
+For each recombinant we drew two parents and a single breakpoint,
+and copied the left parent's sequence to the left of the breakpoint
+and the right parent's to the right.
+A breakpoint that leaves no site distinguishing the parents on one side
+gives a sequence identical to one parent, which no method could detect,
+so breakpoints were drawn uniformly between the first and last
+sites at which the parents differ.
+
+Real recombinant parents are rarely sampled themselves,
+so the closest relatives available in the ARG differ from them by
+private mutations.
+We modelled this by adding Poisson-distributed substitutions,
+at positions uniform over the genome, to each parent before splicing
+(and to each control).
+The mean is a multiple of the number expected in one transmission generation,
+which for a substitution rate of $8 \times 10^{-4}$ per site per year
+and a generation time of 5.5 days is 0.36 per genome.
+We used multiples of 0, 1, 5 and 10
+(as if every case, or one in 5 or one in 10 cases, were sequenced).
+Added mutations were drawn from a separate random stream,
+so the parents, breakpoints and controls are identical for every multiple.
+
+Each synthetic dataset was imported into VCF Zarr format, and the samples
+matched against the ARG for 2021-05-15 (the day before collection,
+so that the samples are matched as new arrivals, as during inference)
+using \texttt{sc2ts run-hmm} with $k$ set to 3, 4 and 5.
+A sample matched to more than one parent was counted as detected
+(a false positive, for a control).
+Breakpoint intervals were computed with the function used during inference,
+and net supporting loci and pangonet distances as described in
+the corresponding sections of the Methods.
+We report one-sided 95\% Clopper--Pearson upper bounds for the false positive rate.
+Each multiple uses 500 recombinants per cross and all 338 controls. % SIMNUM
+The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
+(\url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/synthetic_recombinants}).
+
 \subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian
 UShER tree from MAT~\cite{McBroome2021} to tskit format.
@@ -2214,6 +2313,8 @@ Zenodo and are publicly available at \url{https://zenodo.org/records/16314739}.
 publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian\_config.toml}.
 \item The Snakemake workflow for ARG post-processing is publicly
 available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
+\item The Snakemake workflow for the synthetic recombinant simulations is publicly
+available at \url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/synthetic_recombinants}.
 \item The original code of sc2ts is publicly available on
 GitHub at \url{https://github.com/tskit-dev/sc2ts}.
 \item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
@@ -2759,6 +2860,78 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
 {analysis\_jackson\_recombinants.ipynb}
 for details.
+
+\subsection{Synthetic recombinant simulations}\label{sec:synthetic_recombinants}
+We matched synthetic single-breakpoint recombinants with known parents
+and breakpoints, and held-out real non-recombinant controls, against the ARG
+for 2021-05-15 with $k$ set to 3, 4 and 5 (see Methods for details).
+Two crosses bracket the divergence between the parents of real recombinants:
+Alpha$\times$Alpha parents are at pangonet distance 0,
+like the 31\% of real recombinants whose parents share a lineage,
+and Alpha$\times$Delta parents at distance 4--5, against a median of 2
+among real recombinants.
+Results are summarised in Figure~\ref{fig:synthetic_recombinants}.
+
+\paragraph{False positives.}
+No control was matched to more than one parent, at any value of $k$ % SIMNUM
+or with any number of added mutations, % SIMNUM
+giving a one-sided 95\% upper bound on the false positive rate of 0.9\%. % SIMNUM
+This applies to clean, high-quality sequences: the simulation does not model
+the sequencing and assembly artefacts (such as amplicon dropout and
+multiple-nucleotide substitutions) that generate most of the
+QC-failing recombinants in the real ARG
+(Methods, Quality control of recombination events).
+
+\paragraph{Detection.}
+Detection falls as $k$ increases (Figure~\ref{fig:synthetic_recombinants}A).
+For Alpha$\times$Alpha it was 76\%, 52\% and 20\% at $k=3$, 4 and 5, % SIMNUM
+and for Alpha$\times$Delta 96\%, 96\% and 92\%. % SIMNUM
+Conversely, the fraction of detected Alpha$\times$Alpha recombinants
+passing the QC filter of at least 4 net supporting loci on each side
+of the breakpoint rose from 74\% at $k=3$ to 92\% and 100\%, % SIMNUM
+and all detected Alpha$\times$Delta recombinants passed. % SIMNUM
+Detection is determined by the number of sites distinguishing
+the parents on the side of the breakpoint with fewer such sites
+(Figure~\ref{fig:synthetic_recombinants}B).
+A recombinant is found only when copying from a single parent
+would require more than $k$ mismatches, so detection
+rises from zero with 1--2 distinguishing sites to complete
+with 6 or more at $k=3$ and $k=4$, % SIMNUM
+and 11 or more at $k=5$. % SIMNUM
+
+\paragraph{Breakpoint intervals.}
+The true breakpoint lay within the inferred breakpoint interval
+for every detected recombinant without added mutations, % SIMNUM
+and for at least 93\% with them. % SIMNUM
+Interval widths reproduce the negative relationship with parental divergence
+seen in the real ARG (Figure~\ref{fig:recombinant_intervals}),
+and the two crosses bracket the real median of 2,018 bases:
+at $k=4$ the median width was 4,021 bases for Alpha$\times$Alpha % SIMNUM
+and 1,118 bases for Alpha$\times$Delta % SIMNUM
+(Figure~\ref{fig:synthetic_recombinants}C).
+
+\paragraph{Unsampled parents.}
+Adding up to ten generations' worth of mutations to the parents
+(on average 3.6 per genome) had little effect on detection % SIMNUM
+(Figure~\ref{fig:synthetic_recombinants}D),
+with the detection rate for each cross and value of $k$
+differing from that without added mutations by at most one recombinant. % SIMNUM
+It did, however, increase the HMM cost.
+At $k=4$ with ten generations of mutations,
+56\% of Alpha$\times$Delta and 36\% of Alpha$\times$Alpha recombinants % SIMNUM
+exceeded the HMM cost threshold of 7, compared with none and 4\% % SIMNUM
+without added mutations,
+and so would not be immediately included in the ARG during inference.
+This is a further reason why the number of recombinants in the ARG
+is a lower bound.
+
+\paragraph{Limitations.}
+Parents are contemporaneous samples from a single day,
+so the divergence between them is set by the choice of cross
+rather than drawn from the course of the pandemic.
+Added mutations are uniform along the genome,
+with no mutational spectrum or rate variation.
+Finally, controls can only bound the false positive rate from above.
 
 \subsection{Pango X lineages not added to the ARG}
 \label{sec:supplement_rejected_pango_x_lineages}
@@ -3358,6 +3531,38 @@ Recombination events associated with
 the origins of Pango X and Jackson\cite{Jackson2021} lineages are labeled.
 }
 \label{fig:recombinant_qc}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{synthetic_recombinants}
+\caption{
+Detection of synthetic recombinants
+(\supref{sec:synthetic_recombinants}).
+Synthetic single-breakpoint recombinants between
+Alpha$\times$Alpha (blue) and Alpha$\times$Delta (orange) parents,
+and real non-recombinant controls (grey),
+were matched against the ARG for 2021-05-15.
+(A) Fraction of samples matched to more than one parent
+for each value of the recombination penalty $k$.
+Dashed lines show recombinants that were detected and passed
+the QC filter (at least 4 net supporting loci on each side of the breakpoint).
+Error bars show one-sided 95\% upper bounds on the false positive rate among controls.
+(B) Detection rate as a function of the number of sites distinguishing the parents
+on the side of the breakpoint with fewer such sites,
+for both crosses combined.
+Numbers of recombinants in each bin are shown in brackets.
+(C) Cumulative distribution of breakpoint interval widths for
+detected recombinants at $k=4$.
+The dashed line is the median width for recombinants in the real ARG.
+(D) Effect of unsampled parents at $k=4$.
+Each parent and control was given random mutations before splicing,
+with a mean of a multiple of the number expected in one transmission
+generation (0.36 per genome).
+Solid lines show the fraction matched to more than one parent,
+and dotted lines the fraction with an HMM cost above the inclusion threshold of 7.
+}
+\label{fig:synthetic_recombinants}
 \end{figure}
 
 \newcommand{\cprheight}{4.0em}
