@@ -644,7 +644,7 @@ With $k=4$, 96\% of Alpha$\times$Delta recombinants were detected, % SIMNUM
 but only 52\% of Alpha$\times$Alpha recombinants, % SIMNUM
 whose parents differ at few sites.
 Recombination between closely related viruses
-is therefore substantially under-detected.
+may therefore substantially under-detected.
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -1052,11 +1052,6 @@ conservative parameter choices and real-time handling of
 recombination events, we provide a stringent lower
 bound on the amount of recombination that occurred during
 the pandemic phase of SARS-CoV-2.
-Our simulations support this interpretation:
-around half of the recombinants between parents of the same lineage % SIMNUM
-were not detected, and private mutations in unsampled parents
-pushed many detected recombinants beyond the HMM cost threshold
-for immediate inclusion in the ARG.
 These results underscore the utility of the ARG
 and provide a template for future analyses.
 
@@ -1352,8 +1347,8 @@ real non-recombinant controls against the ARG
 No control was matched to more than one parent at any value of $k$, % SIMNUM
 so the dubious events seen with $k=3$ in real data
 are most likely a consequence of the sequencing artefacts
-that our QC measure identifies
-(see below), which the simulation does not model.
+that our QC measure identifies,
+which the simulation does not model.
 Increasing $k$ instead trades sensitivity for support.
 For recombinants between closely related parents (Alpha$\times$Alpha),
 detection fell from 76\% at $k=3$ to 52\% at $k=4$ and 20\% at $k=5$, % SIMNUM
