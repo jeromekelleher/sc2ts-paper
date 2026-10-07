@@ -59,13 +59,14 @@ positions are left alone). Each parent is mutated independently every time it is
 
 The mean is a multiple of the number expected in one transmission generation, with a
 substitution rate of 0.0008 per site per year (about 24 per genome per year) and a
-generation time of 5.5 days, which gives 0.36 mutations per sequence. There are three
+generation time of 5.5 days, which gives 0.36 mutations per sequence. There are four
 arms:
 
 - **0x** — the sequences as they are, as a control.
 - **1x** — as if every case were sequenced, so a parent is one generation from its
   closest sampled relative.
 - **5x** — as if one case in five were sequenced, about 1.8 mutations per sequence.
+- **10x** — as if one case in ten were sequenced, about 3.6 mutations per sequence.
 
 Controls get the same mutations as parents, so that false positive rates are
 comparable across arms. Mutations draw from their own random stream, so the parents,
@@ -112,5 +113,5 @@ snakemake --cores 4
 
 Matching is the expensive step, at roughly 8 seconds per sample per value of `k` on 4
 cores against an ARG of 242,799 samples, repeated for each mutation multiplier. The
-committed configuration takes about two hours, k = 5 being the slowest; `config.yaml` notes
+committed configuration takes about two and a half hours, k = 5 being the slowest; `config.yaml` notes
 the larger values for a full run.
