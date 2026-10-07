@@ -165,8 +165,10 @@ mitigated.''
 into a single locus) identifies multiple simultaneous nucleotide substitutions suggested to
 cause false positive recombinants, citing de Maio et al.
   \item Recombinants with insufficient support (672 of 1,319) are flagged as failing QC, mitigating this effect.
-  \item \todo{Optional: quantify overlap between QC-failing breakpoint intervals and the
-recurrent multi-nucleotide mutation sites reported by de Maio et al.}
+  \item Done: we checked every single-breakpoint recombinant against the 19 highly recurrent
+MNS in Table~1 of de Maio et al. We found that recurrent MNS do produce some spurious
+recombinants, but the existing QC already removes them, and the effect on
+the QC-passing set is small. The Results text now reports these numbers.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``The SARS-CoV-2 pandemic has largely come and

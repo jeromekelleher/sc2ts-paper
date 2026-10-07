@@ -602,6 +602,16 @@ contain those identified by Jackson et al.\ (\supref{sec:jackson_recombs})
 and all of the single-breakpoint recombinants associated with Pango X lineages
 (Table~\ref{tab:pango_x_lineages}), with the exception of XCF,
 which has only one net supporting locus for its right parent.
+Checking explicitly for the 19 highly recurrent
+multi-nucleotide substitutions (MNS) catalogued by De Maio et al.~\cite{DeMaio2024}
+(Methods),
+115 of the 647 QC-passing and 87 of the 672 QC-failing recombination events
+have an MNS supporting one of the parents.
+In QC-passing events these are mostly lineage-defining
+(e.g., G27382C-A27383T-T27384C, carried by the BA.2-descended right parent
+in 84 events),
+and discounting the MNS would move only 7 events below the QC threshold.
+In contrast, all 42 events involving the MNS at positions 27875--27883 fail QC.
 
 We validated the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
@@ -1745,8 +1755,23 @@ Finally, Q4 shows an artefactual recombination event
 associated with the A507T-T508C-G509A MNS,
 which has been identified as a sequencing error
 due to incomplete read trimming \cite{DeMaio2024}.
-There are 10 recombination events involving this particular MNS,
-of which 6 failed QC.
+There are 10 recombination events in which this MNS supports one of the parents
+(see below), of which 9 failed QC.
+
+We also checked each single-breakpoint recombination event for the
+19 highly recurrent MNS listed by De Maio et al.~\cite{DeMaio2024}.
+We say that an MNS supports the left (right) parent if
+all of its sites lie to the left (right) of the breakpoint interval,
+the recombinant carries the derived allele at each of these sites,
+and the recombinant matches the left (right) parent
+and differs from the other parent at each site.
+Most MNS consist of sites within 3 bases of each other, and so
+already count as a single locus in the QC measure above.
+Discounting one supporting locus for each MNS
+would move only 7 of the 647 QC-passing events below the QC threshold.
+See the notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_mns.ipynb}{analysis\_mns.ipynb}
+for details.
 
 \subsubsection*{Validation of recombination events}
 
