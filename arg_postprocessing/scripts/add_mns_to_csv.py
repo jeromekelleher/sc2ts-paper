@@ -308,28 +308,15 @@ def annotate_recombinants(recomb_df, ts):
     return result
 
 
-def add_mns_to_csv(recomb_file, ts_file, mns_file):
-    recomb_df = pd.read_csv(recomb_file)
-    ts = tszip.load(ts_file)
-    annotate_recombinants(recomb_df, ts).to_csv(mns_file, index=False)
-
-
 @click.command()
-@click.argument(
-    "recomb_file",
-    type=click.Path(exists=True, dir_okay=False)
-)
-@click.argument(
-    "ts_file",
-    type=click.Path(exists=True, dir_okay=False)
-)
-@click.argument(
-    "mns_file",
-    type=click.Path(dir_okay=False)
-)
-def main(recomb_file, ts_file, mns_file):
-    add_mns_to_csv(recomb_file, ts_file, mns_file)
+@click.argument("ts_file")
+@click.argument("recombinants_csv")
+@click.argument("output")
+def run(ts_file, recombinants_csv, output):
+    ts = tszip.load(ts_file)
+    dfr = pd.read_csv(recombinants_csv)
+    annotate_recombinants(dfr, ts).to_csv(output, index=False)
 
 
 if __name__ == "__main__":
-    main()
+    run()
