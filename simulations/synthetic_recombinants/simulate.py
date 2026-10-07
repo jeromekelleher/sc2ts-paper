@@ -406,26 +406,69 @@ def net_supporting_loci(recombinant, parents, positions, path):
 def parent_lineages(ts, queries):
     """
     Label each (position, node) query with the majority Alpha/Delta lineage
-    among the node's descendant samples in the tree covering that position.
+    among the node's descendant samples in the tree covering that position, the
+    number of those samples, and a Pango lineage: the node's own if it is a
+    sample, otherwise the majority among its descendant samples.
     """
     sample_lineage = {}
+    sample_pango = {}
     for u in ts.samples():
-        scorpio = ts.node(u).metadata.get("Viridian_scorpio")
+        metadata = ts.node(u).metadata
+        scorpio = metadata.get("Viridian_scorpio")
         if scorpio is not None:
             sample_lineage[u] = classify_scorpio(scorpio)
+        pango = metadata.get("Viridian_pangolin")
+        if pango is not None:
+            sample_pango[u] = pango
 
     result = {}
     tree = tskit.Tree(ts, sample_lists=True)
     for position, node in sorted(queries):
         tree.seek(position)
         counts = collections.Counter()
+        pango_counts = collections.Counter()
         for j, u in enumerate(tree.samples(node)):
             if j == MAX_DESCENDANTS:
                 break
             counts[sample_lineage.get(u, "Other")] += 1
+            if u in sample_pango:
+                pango_counts[sample_pango[u]] += 1
+        if node in sample_pango:
+            pango = sample_pango[node]
+        elif len(pango_counts) > 0:
+            pango = pango_counts.most_common(1)[0][0]
+        else:
+            pango = ""
         result[(position, node)] = (
             counts.most_common(1)[0][0] if len(counts) > 0 else "Other",
             tree.num_samples(node),
+            pango,
+        )
+    return result
+
+
+def parent_steps(ts, queries):
+    """
+    For each (position, inferred, true) query, the number of edges between the
+    two nodes in the tree covering that position, and how they are related:
+    "same", "ancestor" (the inferred node is above the true one), "descendant"
+    or "other".
+    """
+    result = {}
+    tree = tskit.Tree(ts)
+    for position, inferred, true in sorted(queries):
+        tree.seek(position)
+        if inferred == true:
+            relation = "same"
+        elif tree.is_descendant(true, inferred):
+            relation = "ancestor"
+        elif tree.is_descendant(inferred, true):
+            relation = "descendant"
+        else:
+            relation = "other"
+        result[(position, inferred, true)] = (
+            int(tree.path_length(inferred, true)),
+            relation,
         )
     return result
 
@@ -436,24 +479,44 @@ def parent_lineages(ts, queries):
 @click.argument("arg", type=click.Path(exists=True, dir_okay=False))
 @click.argument("output", type=click.Path(dir_okay=False))
 @click.argument("hmm_files", nargs=-1, type=click.Path(exists=True, dir_okay=False))
-def summarise(truth, dataset, arg, output, hmm_files):
+@click.option(
+    "--parents-hmm",
+    type=click.Path(exists=True, dir_okay=False),
+    required=True,
+    help="run-hmm output for the real parents, matched directly",
+)
+@click.option("--pangonet-data", type=click.Path(exists=True, file_okay=False))
+def summarise(truth, dataset, arg, output, hmm_files, parents_hmm, pangonet_data):
     """
     Join the run-hmm output for each k with the simulation truth, giving one
     row per (strain, k).
+
+    The parents assigned to each detected recombinant are compared with the
+    true parents: by Pango lineage, and by the number of edges separating each
+    assigned parent from the node its true parent matches when matched directly.
     """
     df_truth = pd.read_csv(truth, keep_default_na=False).set_index("strain")
     ts = tszip.load(arg)
     positions = ts.sites_position.astype(int)
     arg_index = positions - 1
     ds = sc2ts.Dataset(dataset)
+    pango, pangonet_distance = load_pangonet(pangonet_data)
 
-    runs = []
-    for path in hmm_files:
+    def read_runs(path):
         with open(path) as f:
             for line in f:
                 run = json.loads(line)
                 run["match"] = HmmMatch.fromdict(run["match"])
-                runs.append(run)
+                yield run
+
+    runs = [run for path in hmm_files for run in read_runs(path)]
+    parent_paths = {run["strain"]: run["match"].path for run in read_runs(parents_hmm)}
+
+    def true_node(strain, position):
+        for segment in parent_paths[strain]:
+            if segment.left <= position < segment.right:
+                return segment.parent
+        raise ValueError(f"No segment of {strain} covers {position}")
 
     # Breakpoint intervals, using the function the inference pipeline itself
     # calls (sc2ts.inference._extend). It derives both edges of the interval
@@ -465,11 +528,29 @@ def summarise(truth, dataset, arg, output, hmm_files):
         run["sample"] = sample
     characterise_recombinants(ts, [run["sample"] for run in runs])
 
-    recombinant_nodes = sorted(
+    # The first and last segments of a detected recombinant are compared with its
+    # true left and right parents, midway along each segment.
+    side_queries = {}
+    for run in runs:
+        path = run["match"].path
+        if len(path) == 2:
+            truth_row = df_truth.loc[run["strain"]]
+            for side, segment in zip(["left", "right"], path):
+                position = (segment.left + segment.right) // 2
+                strain = truth_row[f"{side}_parent"]
+                side_queries[(run["strain"], int(run["num_mismatches"]), side)] = (
+                    position,
+                    segment.parent,
+                    true_node(strain, position),
+                )
+    steps = parent_steps(ts, set(side_queries.values()))
+
+    nodes = sorted(
         {segment.parent for run in runs for segment in run["match"].path}
+        | {query[2] for query in side_queries.values()}
     )
-    node_index = {node: j for j, node in enumerate(recombinant_nodes)}
-    chars = node_allele_chars(ts, recombinant_nodes)
+    node_index = {node: j for j, node in enumerate(nodes)}
+    chars = node_allele_chars(ts, nodes)
 
     queries = {
         ((segment.left + segment.right) // 2, segment.parent)
@@ -502,7 +583,7 @@ def summarise(truth, dataset, arg, output, hmm_files):
             "parents": "|".join(str(segment.parent) for segment in path),
             "parent_left_scorpio": labels[0][0],
             "parent_right_scorpio": labels[-1][0],
-            "parent_num_samples": "|".join(str(n) for _, n in labels),
+            "parent_num_samples": "|".join(str(n) for _, n, _ in labels),
         }
 
         if len(path) == 2:
@@ -527,6 +608,32 @@ def summarise(truth, dataset, arg, output, hmm_files):
             row[f"net_min_supporting_loci_lft_rgt_ge_{NET_SUPPORTING_LOCI_CUTOFF}"] = (
                 bool(min(counts) >= NET_SUPPORTING_LOCI_CUTOFF)
             )
+            for side, label, segment in zip(["left", "right"], labels, path):
+                inferred_pango = label[2]
+                true_pango = truth_row[f"{side}_pango"]
+                query = side_queries[(run["strain"], k, side)]
+                row[f"{side}_inferred_pango"] = inferred_pango
+                row[f"{side}_pango_correct"] = inferred_pango == true_pango
+                row[f"{side}_pango_distance"] = (
+                    pangonet_distance(pango, inferred_pango, true_pango)
+                    if inferred_pango != ""
+                    else np.nan
+                )
+                row[f"{side}_true_node"] = query[2]
+                row[f"{side}_parent_steps"], row[f"{side}_parent_relation"] = steps[
+                    query
+                ]
+                # A different node is not necessarily a wrong one: over a segment
+                # that holds none of the sites separating it from the true parent,
+                # the two cannot be told apart.
+                assigned = chars[node_index[segment.parent]]
+                true = chars[node_index[query[2]]]
+                in_segment = (positions >= segment.left) & (positions < segment.right)
+                row[f"{side}_parent_diffs"] = int(
+                    np.sum(
+                        in_segment & (assigned != true) & (assigned != "N") & (true != "N")
+                    )
+                )
         rows.append(row)
 
     df = pd.DataFrame(rows).merge(
@@ -545,11 +652,21 @@ def summarise(truth, dataset, arg, output, hmm_files):
             )
         else:
             for cross, sub in group.groupby("cross"):
+                detected = sub[sub.detected]
+                both_pango = (
+                    detected.left_pango_correct.astype(bool)
+                    & detected.right_pango_correct.astype(bool)
+                ).sum()
+                max_steps = np.maximum(
+                    detected.left_parent_steps, detected.right_parent_steps
+                )
                 print(
                     f"k={k} {cross}: detected "
                     f"{sub.detected.sum()}/{len(sub)} "
                     f"({sub.detected.mean():.2f}), "
-                    f"passing QC {sub[qc_column].fillna(False).sum()}"
+                    f"passing QC {sub[qc_column].fillna(False).sum()}, "
+                    f"both parents' Pango correct {both_pango}, "
+                    f"median steps to true parent {max_steps.median()}"
                 )
 
 

@@ -638,7 +638,8 @@ along with real non-recombinant controls
 (Methods, \supref{sec:synthetic_recombinants},
 Figure~\ref{fig:synthetic_recombinants}).
 No control was inferred to be recombinant, % SIMNUM
-and the true breakpoint always lay within the inferred breakpoint interval. % SIMNUM
+the true breakpoint always lay within the inferred breakpoint interval, % SIMNUM
+and the assigned parents were almost always of the correct Pango lineage. % SIMNUM
 With $k=4$, 96\% of Alpha$\times$Delta recombinants were detected, % SIMNUM
 but only 52\% of Alpha$\times$Alpha recombinants, % SIMNUM
 whose parents differ at few sites.
@@ -1893,6 +1894,17 @@ A sample matched to more than one parent was counted as detected
 Breakpoint intervals were computed with the function used during inference,
 and net supporting loci and pangonet distances as described in
 the corresponding sections of the Methods.
+To assess whether the correct parents were found, we compared
+each parent assigned to a detected recombinant with the true parent,
+midway along the corresponding matched segment.
+An assigned parent node was given its own Pango lineage if it is a sample,
+and otherwise the most common lineage among its descendant samples.
+Because the true parents are not themselves in the ARG,
+we matched their (unmutated) sequences directly against the same ARG
+with $k=4$ to find the nodes they would attach to,
+and counted the number of edges between these nodes and the assigned parents
+in the local tree,
+and the number of sites within the matched segment at which they differ.
 We report one-sided 95\% Clopper--Pearson upper bounds for the false positive rate.
 Each multiple uses 500 recombinants per cross and all 338 controls. % SIMNUM
 The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
@@ -2909,12 +2921,32 @@ at $k=4$ the median width was 4,021 bases for Alpha$\times$Alpha % SIMNUM
 and 1,118 bases for Alpha$\times$Delta % SIMNUM
 (Figure~\ref{fig:synthetic_recombinants}C).
 
+\subsubsection{Parent identification}
+Both parents of a detected recombinant were assigned the correct Pango lineage
+in every Alpha$\times$Alpha recombinant (a weak test, since these parents
+are all B.1.1.7) and in all but one Alpha$\times$Delta recombinant at each value of $k$. % SIMNUM
+In that recombinant, the AY.4 right parent was assigned a node
+in a neighbouring B.1.617.2 clade, at pangonet distance 1.
+The assigned parent nodes were often not exactly those to which the true parents attach
+when matched directly:
+at $k=4$, both were the same nodes in 29\% of Alpha$\times$Delta % SIMNUM
+and 46\% of Alpha$\times$Alpha recombinants. % SIMNUM
+This largely reflects the limited information in each matched segment
+rather than error. Most of the other assigned parents are ancestors of
+the true parent's node, carrying the same alleles over a segment
+that contains none of the mutations below them.
+At $k=4$, in 79\% of Alpha$\times$Delta and 92\% of Alpha$\times$Alpha recombinants % SIMNUM
+both assigned parents were identical to the true parents' nodes
+at every site within their matched segments,
+and no assigned parent differed at more than 2 sites. % SIMNUM
+
 \subsubsection{Unsampled parents}
 Adding up to ten generations' worth of mutations to the parents
 (on average 3.6 per genome) had little effect on detection % SIMNUM
 (Figure~\ref{fig:synthetic_recombinants}D),
 with the detection rate for each cross and value of $k$
-differing from that without added mutations by at most one recombinant. % SIMNUM
+differing from that without added mutations by at most one recombinant, % SIMNUM
+and little effect on the assigned parents, whose Pango lineages were unchanged. % SIMNUM
 It did, however, increase the HMM cost.
 At $k=4$ with ten generations of mutations,
 56\% of Alpha$\times$Delta and 36\% of Alpha$\times$Alpha recombinants % SIMNUM
