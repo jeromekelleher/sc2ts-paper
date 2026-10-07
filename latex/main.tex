@@ -637,15 +637,17 @@ and matched them against the ARG,
 along with real non-recombinant controls
 (Methods, \supref{sec:synthetic_recombinants},
 Figure~\ref{fig:synthetic_recombinants}).
-No control was inferred to be recombinant, % SIMNUM
-and the true breakpoint always lay within the inferred breakpoint interval. % SIMNUM
+No control was inferred to be recombinant,
+and with $k=4$ the true breakpoint lay within the inferred breakpoint interval
+for 99\% of detected recombinants.
 Sc2ts also accurately placed the parents of detected recombinants:
-the assigned parents were of the correct Pango lineage in all but one case, % SIMNUM
-and with $k=4$ both were identical to the true parents
-at every site within their matched segments
-in 79--92\% of recombinants, never differing at more than 2 sites. % SIMNUM
-With $k=4$, 96\% of Alpha$\times$Delta recombinants were detected, % SIMNUM
-but only 52\% of Alpha$\times$Alpha recombinants, % SIMNUM
+with $k=4$, both assigned parents were of the correct Pango lineage
+in all Alpha$\times$Alpha and 89\% of Alpha$\times$Delta recombinants,
+the errors being closely related Delta lineages,
+and in 86--87\% of recombinants both were identical to the true parents
+at every site within their matched segments, never differing at more than 4 sites.
+With $k=4$, 89\% of Alpha$\times$Delta recombinants were detected,
+but only 40\% of Alpha$\times$Alpha recombinants,
 whose parents differ at few sites.
 Recombination between closely related viruses
 may therefore be substantially under-detected.
@@ -1348,20 +1350,20 @@ We quantified this trade-off by simulation,
 matching synthetic recombinants with known breakpoints and
 real non-recombinant controls against the ARG
 (\supref{sec:synthetic_recombinants}, Figure~\ref{fig:synthetic_recombinants}).
-No control was matched to more than one parent at any value of $k$, % SIMNUM
+No control was matched to more than one parent at any value of $k$,
 so the dubious events seen with $k=3$ in real data
 are most likely a consequence of the sequencing artefacts
 that our QC measure identifies,
 which the simulation does not model.
 Increasing $k$ instead trades sensitivity for support.
 For recombinants between closely related parents (Alpha$\times$Alpha),
-detection fell from 76\% at $k=3$ to 52\% at $k=4$ and 20\% at $k=5$, % SIMNUM
+detection fell from 62\% at $k=3$ to 40\% at $k=4$ and 21\% at $k=5$,
 while the fraction of detected recombinants passing our QC filter
-rose from 74\% to 92\% and 100\%. % SIMNUM
+rose from 71\% to over 99\% and 100\%.
 Recombinants between more divergent parents (Alpha$\times$Delta)
-were detected at a high rate for all values of $k$ (92--96\%). % SIMNUM
-Thus $k=4$ retains most detectable recombinants while
-ensuring that almost all of those detected are well supported.
+were detected at a high rate for all values of $k$ (85--92\%).
+Thus $k=4$ is the smallest value at which
+almost all detected recombinants are well supported.
 For other pathogens, the same procedure could be followed:
 splice synthetic recombinants from real sequences
 spanning the parental divergences of interest,
@@ -1905,7 +1907,7 @@ and counted the number of edges between these nodes and the assigned parents
 in the local tree,
 and the number of sites within the matched segment at which they differ.
 We report one-sided 95\% Clopper--Pearson upper bounds for the false positive rate.
-Each multiple uses 500 recombinants per cross and all 338 controls. % SIMNUM
+Each multiple uses 500 recombinants per cross and all 338 controls.
 The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
 (\url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/synthetic_recombinants}).
 
@@ -2883,9 +2885,9 @@ among real recombinants.
 Results are summarised in Figure~\ref{fig:synthetic_recombinants}.
 
 \subsubsection{False positives}
-No control was matched to more than one parent, at any value of $k$ % SIMNUM
-or with any number of added mutations, % SIMNUM
-giving a one-sided 95\% upper bound on the false positive rate of 0.9\%. % SIMNUM
+No control was matched to more than one parent, at any value of $k$
+or with any number of added mutations,
+giving a one-sided 95\% upper bound on the false positive rate of 0.9\%.
 This applies to clean, high-quality sequences: the simulation does not model
 the sequencing and assembly artefacts (such as amplicon dropout and
 multiple-nucleotide substitutions) that generate most of the
@@ -2894,62 +2896,70 @@ QC-failing recombinants in the real ARG
 
 \subsubsection{Detection}
 Detection falls as $k$ increases (Figure~\ref{fig:synthetic_recombinants}A).
-For Alpha$\times$Alpha it was 76\%, 52\% and 20\% at $k=3$, 4 and 5, % SIMNUM
-and for Alpha$\times$Delta 96\%, 96\% and 92\%. % SIMNUM
+For Alpha$\times$Alpha it was 62\%, 40\% and 21\% at $k=3$, 4 and 5,
+and for Alpha$\times$Delta 92\%, 89\% and 85\%.
 Conversely, the fraction of detected Alpha$\times$Alpha recombinants
 passing the QC filter of at least 4 net supporting loci on each side
-of the breakpoint rose from 74\% at $k=3$ to 92\% and 100\%, % SIMNUM
-and all detected Alpha$\times$Delta recombinants passed. % SIMNUM
+of the breakpoint rose from 71\% at $k=3$ to 99.5\% and 100\%,
+and for Alpha$\times$Delta from 96\% at $k=3$ to 100\% at $k=4$ and 5.
 Detection is determined by the number of sites distinguishing
 the parents on the side of the breakpoint with fewer such sites
 (Figure~\ref{fig:synthetic_recombinants}B).
 A recombinant is found only when copying from a single parent
 would require more than $k$ mismatches, so detection
 rises from zero with 1--2 distinguishing sites to complete
-with 6 or more at $k=3$ and $k=4$, % SIMNUM
-and 11 or more at $k=5$. % SIMNUM
+with 8 or more at $k=3$, 9 or more at $k=4$
+and 10 or more at $k=5$.
 
 \subsubsection{Breakpoint intervals}
 The true breakpoint lay within the inferred breakpoint interval
-for every detected recombinant without added mutations, % SIMNUM
-and for at least 93\% with them. % SIMNUM
+for 98.8\% of detected recombinants at $k=4$ without added mutations,
+and for at least 94\% at every value of $k$ and number of added mutations.
+In each exception, at least one assigned parent was a different node
+from that to which the true parent attaches (see below),
+so the sites bounding the interval are not those that distinguish the true parents.
 Interval widths reproduce the negative relationship with parental divergence
 seen in the real ARG (Figure~\ref{fig:recombinant_intervals}),
 and the two crosses bracket the real median of 2,018 bases:
-at $k=4$ the median width was 4,021 bases for Alpha$\times$Alpha % SIMNUM
-and 1,118 bases for Alpha$\times$Delta % SIMNUM
+at $k=4$ the median width was 3,861 bases for Alpha$\times$Alpha
+and 1,112 bases for Alpha$\times$Delta
 (Figure~\ref{fig:synthetic_recombinants}C).
 
 \subsubsection{Parent identification}
 Both parents of a detected recombinant were assigned the correct Pango lineage
 in every Alpha$\times$Alpha recombinant (a weak test, since these parents
-are all B.1.1.7) and in all but one Alpha$\times$Delta recombinant at each value of $k$. % SIMNUM
-In that recombinant, the AY.4 right parent was assigned a node
-in a neighbouring B.1.617.2 clade, at pangonet distance 1.
+are all B.1.1.7) and in 87--90\% of Alpha$\times$Delta recombinants,
+depending on $k$.
+Every error was in a Delta parent, and at $k=4$, 41 of the 51 errors
+were assignments to closely related Delta lineages at pangonet distance 1 or 2
+(for example, AY.5 parents assigned to AY.4 nodes,
+or AY.8 parents to B.1.617.2 nodes).
+Most of the remainder were short Delta segments
+at the start of the genome, matched to a deep ancestral node.
 The assigned parent nodes were often not exactly those to which the true parents attach
 when matched directly:
-at $k=4$, both were the same nodes in 29\% of Alpha$\times$Delta % SIMNUM
-and 46\% of Alpha$\times$Alpha recombinants. % SIMNUM
+at $k=4$, both were the same nodes in 19\% of Alpha$\times$Delta
+and 34\% of Alpha$\times$Alpha recombinants.
 This largely reflects the limited information in each matched segment
 rather than error. Most of the other assigned parents are ancestors of
 the true parent's node, carrying the same alleles over a segment
 that contains none of the mutations below them.
-At $k=4$, in 79\% of Alpha$\times$Delta and 92\% of Alpha$\times$Alpha recombinants % SIMNUM
+At $k=4$, in 86\% of Alpha$\times$Delta and 87\% of Alpha$\times$Alpha recombinants
 both assigned parents were identical to the true parents' nodes
 at every site within their matched segments,
-and no assigned parent differed at more than 2 sites. % SIMNUM
+and no assigned parent differed at more than 4 sites.
 
 \subsubsection{Unsampled parents}
 Adding up to ten generations' worth of mutations to the parents
-(on average 3.6 per genome) had little effect on detection % SIMNUM
+(on average 3.6 per genome) had little effect on detection
 (Figure~\ref{fig:synthetic_recombinants}D),
 with the detection rate for each cross and value of $k$
-differing from that without added mutations by at most one recombinant, % SIMNUM
-and little effect on the assigned parents, whose Pango lineages were unchanged. % SIMNUM
+differing from that without added mutations by at most 1.6\%
+and little effect on the assigned parents, whose Pango lineages were almost unchanged.
 It did, however, increase the HMM cost.
 At $k=4$ with ten generations of mutations,
-56\% of Alpha$\times$Delta and 36\% of Alpha$\times$Alpha recombinants % SIMNUM
-exceeded the HMM cost threshold of 7, compared with none and 4\% % SIMNUM
+54\% of Alpha$\times$Delta and 38\% of Alpha$\times$Alpha recombinants
+exceeded the HMM cost threshold of 7, compared with 1\% of each
 without added mutations,
 and so would not be immediately included in the ARG during inference.
 
@@ -2959,7 +2969,13 @@ so the divergence between them is set by the choice of cross
 rather than drawn from the course of the pandemic.
 Added mutations are uniform along the genome,
 with no mutational spectrum or rate variation.
-Finally, controls can only bound the false positive rate from above.
+
+It is worth noting that false positives do occur during sc2ts inference on
+real data, as discussed in
+\supref{sec:spurious-ancestrally-important-recombinants}
+and the ``Recombinant rematching'' section (Methods).
+These are usually due to [TODO EXPLAIN].
+
 
 \subsection{Pango X lineages not added to the ARG}
 \label{sec:supplement_rejected_pango_x_lineages}
@@ -3573,8 +3589,8 @@ and real non-recombinant controls (grey),
 were matched against the ARG for 2021-05-15.
 (A) Fraction of samples matched to more than one parent
 for each value of the recombination penalty $k$.
-Dashed line shows Alpha$\times$Alpha recombinants that were detected and passed
-the QC filter (all Delta$\times$Delta recombinants passed QC).
+Dashed lines show recombinants that were detected and passed
+the QC filter.
 Error bars show one-sided 95\% upper bounds on the false positive rate among controls.
 (B) Detection rate as a function of the number of sites distinguishing the parents
 on the side of the breakpoint with fewer such sites,

@@ -18,10 +18,10 @@ pangonet_data: "../../arg_postprocessing/pangonet_data"
 # so the two bracket the range of parent divergence seen in the real ARG.
 crosses: "Alpha:Delta,Alpha:Alpha"
 
-# Per cross. A full run uses 500.
-num_recombinants: 25
-# -1 for the whole control pool (338). A full run uses -1.
-num_controls: 25
+# Per cross.
+num_recombinants: 500
+# -1 for the whole control pool (338).
+num_controls: -1
 
 seed: 42
 
