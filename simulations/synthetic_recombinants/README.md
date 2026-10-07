@@ -97,13 +97,40 @@ pipeline's own code where possible:
   pango-designation data in `arg_postprocessing/pangonet_data`.
 
 
+### Parent identification
+For each detected recombinant, the two parents the HMM assigned are compared with the
+true parents in two ways, midway along each of the matched segments:
+
+- **Pango lineage.** An assigned parent node takes its own `Viridian_pangolin` if it is
+  a sample, and otherwise the most common one among its descendant samples (at most
+  1,000). It is compared with the true parent's `Viridian_pangolin`, by exact match and
+  by pangonet distance.
+- **Steps to the true parent.** The true parents are not in the ARG, and never appear as
+  controls, because the pool is split in half. So each one is matched directly, as the
+  unmutated sequence in the Viridian dataset, with `run-hmm` at `k = 4` (the inference's
+  value) against the same ARG. The node it matches is where it would attach. The
+  number of edges between that node and the assigned parent in the local tree gives
+  `{side}_parent_steps`. `{side}_parent_relation` records whether the assigned parent
+  is the same node, an ancestor or descendant of it, or neither. A different node is
+  not necessarily a wrong one: if the segment holds none of the sites separating the
+  two, they cannot be told apart. `{side}_parent_diffs` counts the sites within the
+  matched segment at which the assigned and true parents differ.
+
+
 ### Output
 `results.csv` has one row per (`mutation_multiplier`, strain, `k`); strain names repeat
 across arms. Each arm's files carry an `_m{multiplier}` suffix. Columns that also appear in
 `data/recombinants.csv` carry the same names: `interval_left`, `interval_right`,
 `net_min_supporting_loci_lft`, `net_min_supporting_loci_rgt`,
-`net_min_supporting_loci_lft_rgt_ge_4`, `parent_pangonet_distance`. Analysis is in
-`notebooks/analysis_synthetic_recombinants.ipynb`.
+`net_min_supporting_loci_lft_rgt_ge_4`, `parent_pangonet_distance`. Parent
+identification adds `{side}_inferred_pango`, `{side}_pango_correct`,
+`{side}_pango_distance`, `{side}_true_node`, `{side}_parent_steps`,
+`{side}_parent_relation` and `{side}_parent_diffs` for `side` in `left` and `right`,
+filled for detected
+recombinants only. The parents' direct matches are in `hmm_parents.jsonl`, for the
+strains in `parents.strains.txt`. Analysis is in
+`notebooks/analysis_synthetic_recombinants.ipynb`, which also writes the paper's
+supplementary figure to `figures/synthetic_recombinants.pdf`.
 
 
 ### Running
@@ -112,6 +139,7 @@ snakemake --cores 4
 ```
 
 Matching is the expensive step, at roughly 8 seconds per sample per value of `k` on 4
-cores against an ARG of 242,799 samples, repeated for each mutation multiplier. The
+cores against an ARG of 242,799 samples, repeated for each mutation multiplier, plus one
+direct match of the parents. The
 committed configuration takes about two and a half hours, k = 5 being the slowest; `config.yaml` notes
 the larger values for a full run.

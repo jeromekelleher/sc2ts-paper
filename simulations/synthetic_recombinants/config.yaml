@@ -40,6 +40,11 @@ mutation_rate: 0.0008
 # Mean transmission generation time, in days.
 generation_time: 5.5
 
+# The real parents are also matched directly, unmutated, to find where each
+# would attach in the ARG, as a reference for the parents the HMM assigns the
+# recombinants. The same k as the inference.
+parent_match_k: 4
+
 k_values:
   - 3
   - 4

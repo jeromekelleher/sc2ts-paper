@@ -121,18 +121,61 @@ rule run_hmm:
         """
 
 
+rule parent_strains:
+    """
+    The parents are the same in every arm, so take them from the first.
+    """
+    input:
+        f"synthetic_m{MULTIPLIERS[0]}.truth.csv",
+    output:
+        "parents.strains.txt",
+    run:
+        import pandas as pd
+
+        df = pd.read_csv(input[0], keep_default_na=False)
+        df = df[df.type == "recombinant"]
+        strains = sorted(set(df.left_parent) | set(df.right_parent))
+        with open(output[0], "w") as f:
+            for strain in strains:
+                print(strain, file=f)
+
+
+rule match_parents:
+    """
+    Match the real parents directly, from the Viridian dataset, so unmutated.
+    """
+    input:
+        dataset=config["viridian_dataset"],
+        arg=config["arg"],
+        strains="parents.strains.txt",
+    output:
+        "hmm_parents.jsonl",
+    threads: config["num_threads"]
+    shell:
+        """
+        sc2ts run-hmm \
+            -k {config[parent_match_k]} \
+            --num-threads {threads} \
+            {input.dataset} {input.arg} $(cat {input.strains}) \
+            > {output}
+        """
+
+
 rule summarise:
     input:
         truth=f"{PREFIX}.truth.csv",
         dataset=f"{PREFIX}.vcz",
         arg=config["arg"],
+        parents_hmm="hmm_parents.jsonl",
         hmm=expand("hmm_m{{m}}_k{k}.jsonl", k=K_VALUES),
     output:
         "results_m{m}.csv",
     shell:
         """
         python simulate.py summarise \
-            {input.truth} {input.dataset} {input.arg} {output} {input.hmm}
+            {input.truth} {input.dataset} {input.arg} {output} {input.hmm} \
+            --parents-hmm {input.parents_hmm} \
+            --pangonet-data {config[pangonet_data]}
         """
 
 
