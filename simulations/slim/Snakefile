@@ -1,0 +1,330 @@
+import csv
+from datetime import date, timedelta
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import tskit
+
+configfile: "config.yaml"
+
+PREFIX = config["OUT_PREFIX"]
+NUM_MISMATCHES = [3, 4, 5]
+
+# Maximum number of threads per sc2ts inference job.
+# Snakemake will reduce this if fewer cores are available.
+SC2TS_THREADS = 8
+
+
+# ------------------------------------------------------------
+# Helper function for analysing inferred tree sequences
+# ------------------------------------------------------------
+
+def get_results(ts: tskit.TreeSequence) -> pd.DataFrame:
+    num_parents = np.bincount(
+        ts.edges_child,
+        minlength=ts.num_nodes,
+    )
+
+    return pd.DataFrame({
+        "node": np.arange(ts.num_nodes),
+        "num_parents": num_parents,
+    })
+
+
+# ------------------------------------------------------------
+# Final targets
+# ------------------------------------------------------------
+
+rule all:
+    input:
+        f"{PREFIX}.slim.reference.fa",
+        f"{PREFIX}.recombination_summary.csv",
+
+
+# ------------------------------------------------------------
+# Run SLiM simulation
+# ------------------------------------------------------------
+
+rule run_slim:
+    input:
+        slim="santasim_like.slim",
+    output:
+        pedigree=f"{PREFIX}.slim.pedigree.tsv",
+        fasta=f"{PREFIX}.slim.sequences.fa",
+    shell:
+        """
+        slim \
+            -d N={config[N]} \
+            -d L={config[L]} \
+            -d GENS={config[GENS]} \
+            -d DUAL={config[DUAL]} \
+            -d MU={config[MU]} \
+            -d RHO={config[RHO]} \
+            -d 'OUT_PREFIX="{config[OUT_PREFIX]}"' \
+            {input.slim}
+        """
+
+
+# ------------------------------------------------------------
+# Extract first sequence as reference
+# ------------------------------------------------------------
+
+rule make_reference:
+    input:
+        fasta=f"{PREFIX}.slim.sequences.fa",
+    output:
+        reference=f"{PREFIX}.slim.reference.fa",
+    shell:
+        r"""
+        awk '/^>/ {{if (n++) exit}} {{print}}' \
+            {input.fasta} > {output.reference}
+        """
+
+
+# ------------------------------------------------------------
+# Generate metadata TSV
+#
+# gen = 0 -> 2026-01-01
+# gen = 1 -> 2026-01-02
+# etc.
+# ------------------------------------------------------------
+
+rule make_metadata:
+    input:
+        pedigree=f"{PREFIX}.slim.pedigree.tsv",
+    output:
+        metadata=f"{PREFIX}.metadata.tsv",
+    run:
+        start_date = date(2026, 1, 1)
+
+        with open(input.pedigree, newline="") as infile, \
+             open(output.metadata, "w", newline="") as outfile:
+
+            reader = csv.DictReader(
+                infile,
+                delimiter="\t",
+            )
+
+            writer = csv.DictWriter(
+                outfile,
+                fieldnames=["Run", "date"],
+                delimiter="\t",
+            )
+
+            writer.writeheader()
+
+            for row in reader:
+                gen = int(row["gen"])
+                child = row["child"]
+
+                writer.writerow({
+                    "Run": f"seq_{child}",
+                    "date": (
+                        start_date + timedelta(days=gen)
+                    ).isoformat(),
+                })
+
+
+# ------------------------------------------------------------
+# Import sequences and metadata into sc2ts
+# ------------------------------------------------------------
+
+rule import_dataset:
+    input:
+        fasta=f"{PREFIX}.slim.sequences.fa",
+        metadata=f"{PREFIX}.metadata.tsv",
+        reference=f"{PREFIX}.slim.reference.fa",
+    output:
+        dataset=directory(f"{PREFIX}.vcz"),
+    shell:
+        """
+        sc2ts import-alignments \
+            -i \
+            {output.dataset} \
+            {input.fasta} \
+            --reference {input.reference}
+
+        sc2ts import-metadata \
+            {output.dataset} \
+            {input.metadata}
+        """
+
+
+# ------------------------------------------------------------
+# Zip sc2ts dataset
+# ------------------------------------------------------------
+
+rule zip_dataset:
+    input:
+        dataset=f"{PREFIX}.vcz",
+    output:
+        zip=f"{PREFIX}.vcz.zip",
+    shell:
+        """
+        python -c \
+            "import sc2ts, sys; sc2ts.Dataset.create_zip(sys.argv[1], sys.argv[2])" \
+            {input.dataset} \
+            {output.zip}
+        """
+
+
+# ------------------------------------------------------------
+# Run sc2ts inference
+#
+# The config is generated immediately before each inference.
+#
+# Produces:
+#
+#   out.k3.sc2ts.config.toml
+#   out.k4.sc2ts.config.toml
+#   out.k5.sc2ts.config.toml
+#
+# and:
+#
+#   out.k3.infer.done
+#   out.k4.infer.done
+#   out.k5.infer.done
+#
+# {threads} is the number of threads actually allocated by
+# Snakemake and is written to num_threads in the TOML.
+# ------------------------------------------------------------
+
+rule infer:
+    input:
+        dataset=f"{PREFIX}.vcz.zip",
+        reference=f"{PREFIX}.slim.reference.fa",
+    output:
+        config=f"{PREFIX}.k{{nm}}.sc2ts.config.toml",
+        done=touch(f"{PREFIX}.k{{nm}}.infer.done"),
+    params:
+        nm=lambda wildcards: int(wildcards.nm),
+    threads: SC2TS_THREADS
+    shell:
+        r"""
+        cat > {output.config} <<EOF
+dataset = "{input.dataset}"
+
+run_id = "{PREFIX}.k{params.nm}"
+results_dir = "results/k{params.nm}"
+log_dir = "logs/k{params.nm}"
+matches_dir = "{PREFIX}/matches/k{params.nm}"
+log_level = 2
+
+exclude_dates = []
+exclude_sites = []
+
+date_field = "date"
+
+reference_fasta = "{input.reference}"
+reference_date = "2025-12-31"
+
+[extend_parameters]
+num_mismatches = {params.nm}
+hmm_cost_threshold = 7
+max_missing_sites = 500
+deletions_as_missing = true
+
+# max_daily_samples = 1000
+
+# Knobs for tuning retro group insertion
+min_group_size = 10
+min_root_mutations = 2
+max_recurrent_mutations = 2
+max_mutations_per_sample = 5
+retrospective_window = 7
+max_pango_lineages = 3
+
+num_threads = {threads}
+memory_limit = 4
+
+seed_groups = []
+EOF
+
+        sc2ts infer {output.config}
+
+        touch {output.done}
+        """
+
+
+# ------------------------------------------------------------
+# Summarise inferred recombination results
+#
+# Counts nodes with more than one parent for each k.
+#
+# Produces:
+#
+#   out.recombination_summary.csv
+# ------------------------------------------------------------
+
+rule summarise_results:
+    input:
+        expand(
+            f"{PREFIX}.k{{nm}}.infer.done",
+            nm=NUM_MISMATCHES,
+        ),
+    output:
+        summary=f"{PREFIX}.recombination_summary.csv",
+    run:
+        res_dir = Path("results")
+
+        final_date = (
+            date(2026, 1, 1)
+            + timedelta(days=config["GENS"])
+        ).isoformat()
+
+        summary = []
+
+        for k in NUM_MISMATCHES:
+            ts_path = (
+                res_dir
+                / f"k{k}"
+                / f"{PREFIX}.k{k}"
+                / f"{PREFIX}.k{k}_{final_date}.ts"
+            )
+
+            ts = tskit.load(ts_path)
+            df = get_results(ts)
+
+            num_recombs = int(
+                np.sum(df["num_parents"] > 1)
+            )
+
+            summary.append({
+                "k": k,
+                "num_recombs": num_recombs,
+            })
+
+        pd.DataFrame(summary).to_csv(
+            output.summary,
+            index=False,
+        )
+
+
+# ------------------------------------------------------------
+# Clean generated files
+#
+# Run:
+#
+#   snakemake clean --cores 1
+# ------------------------------------------------------------
+
+rule clean:
+    shell:
+        """
+        rm -rf \
+            {PREFIX}.slim.pedigree.tsv \
+            {PREFIX}.slim.sequences.fa \
+            {PREFIX}.slim.sequences.fa.fai \
+            {PREFIX}.slim.reference.fa \
+            {PREFIX}.slim.reference.fa.fai \
+            {PREFIX}.metadata.tsv \
+            {PREFIX}.vcz \
+            {PREFIX}.vcz.zip \
+            {PREFIX}.k*.sc2ts.config.toml \
+            {PREFIX}.k*.infer.done \
+            {PREFIX}.recombination_summary.csv \
+            {PREFIX}/ \
+            results \
+            logs
+        """

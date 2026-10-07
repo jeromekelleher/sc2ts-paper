@@ -1,0 +1,7 @@
+N: 100
+L: 10000
+GENS: 100
+DUAL: 0.01
+MU: 1e-5
+RHO: 1e-5
+OUT_PREFIX: "out"
