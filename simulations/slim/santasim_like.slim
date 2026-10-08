@@ -6,7 +6,7 @@
 //
 // Run SLiM, e.g.:
 // slim -d N=1000 -d GENS=100 -d GROWTH_GENS=20 -d L=10000 \
-//      -d DUAL=0.2 -d MU=1e-4 -d RHO=1e-4 \
+//      -d EFF_RECOMB=0.2 -d MU=1e-4 \
 //      -d 'OUT_PREFIX="out"' santasim_like.slim
 //
 // Parameters:
@@ -14,9 +14,8 @@
 //   GENS   Total number of generations after the founder
 //   GROWTH_GENS   Generations of exponential growth to N
 //   L      Sequence length
-//   DUAL   Probability of a co-infection
+//   EFF_RECOMB   Probability of two-parent reproduction in [0, 1]
 //   MU     Mutation rate (per-site per generation) in [0, 1)
-//   RHO    Crossover rate (per-site per generation) in [0, 0.5]
 //   OUT_PREFIX    Output prefix
 //
 // Notes:
@@ -53,12 +52,10 @@ initialize() {
         defineConstant("GROWTH_GENS", 20);
     if (!exists("L"))
         defineConstant("L", 1000);
-    if (!exists("DUAL"))
-        defineConstant("DUAL", 0.2);
     if (!exists("MU"))
         defineConstant("MU", 1e-3);
-    if (!exists("RHO"))
-        defineConstant("RHO", 1e-3);
+    if (!exists("EFF_RECOMB"))
+        defineConstant("EFF_RECOMB", 0.2);
 
     defineConstant("OUT_FASTA", OUT_PREFIX + ".slim.sequences.fa");
     defineConstant("OUT_PEDIGREE", OUT_PREFIX + ".slim.pedigree.tsv");
@@ -74,12 +71,10 @@ initialize() {
         stop("GENS must be equal to or greater than GROWTH_GENS.");
     if (!isInteger(L) | (L < 1))
         stop("L must be a positive integer.");
-    if ((DUAL < 0.0) | (DUAL > 1.0))
-        stop("DUAL must be a probability in [0, 1].");
     if ((MU < 0.0) | (MU >= 1.0))
         stop("MU must be in [0, 1).");
-    if ((RHO < 0.0) | (RHO > 0.5))
-        stop("RHO must be in [0, 0.5].");
+    if ((EFF_RECOMB < 0.0) | (EFF_RECOMB > 1.0))
+        stop("EFF_RECOMB must be a probability in [0, 1].");
 
     defineConstant("END_TICK", GENS + 1);
 
@@ -133,7 +128,7 @@ first() {
         if (p1.individualCount == 1)
             p1.setCloningRate(1.0);
         else
-            p1.setCloningRate(1.0 - DUAL);
+            p1.setCloningRate(1.0 - EFF_RECOMB);
 
         generation = community.tick - 1;
         targetSize = N;
