@@ -52,6 +52,8 @@ rule all:
 
 
 rule run_slim:
+    conda:
+        "environment.yml",
     input:
         "santasim_like.slim",
     output:
