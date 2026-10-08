@@ -88,7 +88,7 @@ rule sample:
         seed=seed,
     shell:
         """
-        python -m scripts.sample_slim {input} {output} \
+        python pipeline.py sample {input} {output} \
             --probability {wildcards.p} --seed {params.seed}
         """
 
@@ -103,7 +103,7 @@ rule export_samples:
         metadata=f"{SAMPLE_DIR}/metadata.tsv",
     shell:
         """
-        python -m scripts.export_samples \
+        python pipeline.py export-samples \
             {input.trees} {input.fasta} {input.pedigree} \
             {output.fasta} {output.metadata}
         """
@@ -118,7 +118,7 @@ rule make_truth:
         f"{SAMPLE_DIR}/truth.csv",
     shell:
         """
-        python -m scripts.make_truth \
+        python pipeline.py make-truth \
             {input.trees} {input.fasta} {input.pedigree} {output}
         """
 
@@ -168,7 +168,7 @@ rule infer:
     shell:
         """
         rm -rf {params.sc2ts_dir}
-        python -m scripts.write_sc2ts_config {output.config} \
+        python pipeline.py write-sc2ts-config {output.config} \
             --dataset {input.dataset} \
             --reference {input.reference} \
             --run-id {params.run_id} \
@@ -201,7 +201,7 @@ rule evaluate:
         output_dir=RUN_DIR,
     shell:
         """
-        python -m scripts.evaluate \
+        python pipeline.py evaluate \
             {input.true} {input.inferred} {input.truth} {params.output_dir} \
             --pathogen {wildcards.pathogen} --rep {wildcards.rep} \
             --p {wildcards.p} --k {wildcards.k}

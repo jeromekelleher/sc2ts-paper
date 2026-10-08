@@ -12,8 +12,9 @@ value of `k` (`num_mismatches`). The inferred ARG is then scored against:
 - the **true ARG**, the SLiM tree sequence simplified to the samples, with
   [tscompare](https://github.com/tskit-dev/tscompare).
 
-All significant code is in `scripts/`, one click command per step, with tests in
-`tests/`.
+All the code after the SLiM simulation is in `pipeline.py`, as click subcommands:
+`sample`, `export-samples`, `make-truth`, `write-sc2ts-config` and `evaluate`.
+Tests are in `tests/`.
 
 
 ### Running
@@ -53,20 +54,19 @@ Each generation is one day, starting on 2026-01-01.
 
 
 ### Steps
-| Rule | Script | Output |
+| Rule | Command | Output |
 |---|---|---|
 | `run_slim` | `santasim_like.slim` | `sim.slim.{ts,sequences.fa,pedigree.tsv}` |
 | `make_reference` | | `reference.fa`, the founder's sequence |
-| `sample` | `sample_slim.py` | `p{P}/true.trees`, the true ARG of the samples |
-| `export_samples` | `export_samples.py` | `p{P}/{sequences.fa,metadata.tsv}` |
-| `make_truth` | `make_truth.py` | `p{P}/truth.csv` |
+| `sample` | `pipeline.py sample` | `p{P}/true.trees`, the true ARG of the samples |
+| `export_samples` | `pipeline.py export-samples` | `p{P}/{sequences.fa,metadata.tsv}` |
+| `make_truth` | `pipeline.py make-truth` | `p{P}/truth.csv` |
 | `import_dataset`, `zip_dataset` | `sc2ts import-*` | `p{P}/dataset.vcz.zip` |
-| `infer` | `write_sc2ts_config.py`, `sc2ts infer` | `p{P}/k{k}/inferred.ts`, the final day's ARG |
-| `evaluate` | `evaluate.py` | `p{P}/k{k}/{evaluation,events,placement,samples}.csv` |
+| `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `p{P}/k{k}/inferred.ts`, the final day's ARG |
+| `evaluate` | `pipeline.py evaluate` | `p{P}/k{k}/{evaluation,events,placement,samples}.csv` |
 | `combine` | | `results/{pathogen}/{summary,events,placement}.csv` |
 
-Everything else is written under `results/{pathogen}/rep{r}/`. Scripts are run as
-modules (`python -m scripts.x`) so they can share code.
+Everything else is written under `results/{pathogen}/rep{r}/`.
 
 Truth is made separately from the exported sequences so that scoring can be
 changed without re-running sc2ts, e.g.:
@@ -88,7 +88,7 @@ from both of its parents'), and the sampled individuals in between.
 A sample is then *expected* to be inferred to be a recombinant if it has a
 recombinant ancestor and none of the sampled individuals in between (including the
 ancestor) were placed in the ARG. This depends on what sc2ts placed, so it is
-decided in `evaluate.py`.
+decided in `evaluate`.
 
 
 ### Output

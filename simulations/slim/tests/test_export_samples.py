@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 import tskit
 
-from scripts.export_samples import START_DATE, read_fasta
+from pipeline import START_DATE, read_fasta
 
 
 def fasta_names(path):

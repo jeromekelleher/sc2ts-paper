@@ -4,13 +4,13 @@ import pytest
 import tskit
 from click.testing import CliRunner
 
-from scripts.evaluate import (
+from pipeline import (
     classify_samples,
+    evaluate,
     event_table,
     num_recombinant_nodes,
     placement_table,
     prepare_for_comparison,
-    run,
     score_arg,
     score_recombinants,
 )
@@ -319,7 +319,7 @@ class TestCli:
         inferred_path = tmp_path / "inferred.ts"
         to_sc2ts_style(true_ts, truth).dump(inferred_path)
         result = CliRunner().invoke(
-            run,
+            evaluate,
             [str(exported / "true.trees"), str(inferred_path),
              str(exported / "truth.csv"), str(tmp_path),
              "--pathogen", "x", "--rep", "0", "--p", "1.0", "--k", "4"],

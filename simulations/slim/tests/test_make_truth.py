@@ -1,9 +1,13 @@
 import pandas as pd
 import pytest
 
-from scripts.export_samples import sample_pedigree_ids
-from scripts.make_truth import recombinant_ancestors, required_sequences, truth_table
-from scripts.sample_slim import sample
+from pipeline import (
+    recombinant_ancestors,
+    required_sequences,
+    sample_individuals,
+    sample_pedigree_ids,
+    truth_table,
+)
 
 
 def make_pedigree(rows):
@@ -88,7 +92,7 @@ class TestSlim:
     def test_ancestors(self, slim_ts, slim_prefix, probability):
         pedigree = pd.read_csv(f"{slim_prefix}.slim.pedigree.tsv", sep="\t")
         df = pedigree.set_index("child")
-        ids = sample_pedigree_ids(sample(slim_ts, probability, seed=1))
+        ids = sample_pedigree_ids(sample_individuals(slim_ts, probability, seed=1))
         sampled = set(ids)
         ancestors, between = recombinant_ancestors(pedigree, ids)
         num_unaccounted = 0
