@@ -365,7 +365,7 @@ class TestCli:
             evaluate,
             [str(exported / "true.trees"), str(inferred_path),
              str(exported / "truth.csv"), str(tmp_path),
-             "--pathogen", "x", "--rep", "0", "--p", "1.0", "--k", "4"],
+             "--pathogen", "x", "--rep", "0", "--samples-per-day", "1000", "--k", "4"],
         )
         assert result.exit_code == 0, result.output
         df = pd.read_csv(tmp_path / "evaluation.csv")
@@ -381,7 +381,7 @@ class TestCli:
         placement = pd.read_csv(tmp_path / "placement.csv")
         assert placement.num_samples.sum() == len(truth)
         for df in [events, placement]:
-            assert list(df.columns[:4]) == ["pathogen", "rep", "p", "k"]
+            assert list(df.columns[:4]) == ["pathogen", "rep", "samples_per_day", "k"]
             assert (df.k == 4).all()
         samples = pd.read_csv(tmp_path / "samples.csv")
         assert len(samples) == len(truth)

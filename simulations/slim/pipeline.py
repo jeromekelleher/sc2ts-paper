@@ -4,7 +4,8 @@ subcommands: sample, export-samples, make-truth, write-sc2ts-config and
 evaluate. See README.md.
 
 Run from simulations/slim/, e.g.:
-    python pipeline.py sample sim.slim.ts true.trees --probability 0.1 --seed 1
+    python pipeline.py sample sim.slim.ts sim.slim.samples.tsv true.trees \
+        --samples-per-day 100
 """
 import datetime
 import json
@@ -36,24 +37,36 @@ def find_founder(ts):
     return founders[0]
 
 
-def sample_individuals(ts, probability, seed):
+def read_candidates(path):
     """
-    Return the genealogy of individuals sampled with the given probability,
-    simplified so the founder is sample node 0. The founder is always sampled.
-    Draws are made for every individual regardless of probability, so for a
-    given seed the samples are nested as probability increases.
+    Return the candidate samples SLiM wrote, indexed by pedigree ID.
     """
-    if not 0 <= probability <= 1:
-        raise ValueError("Probability must be in [0, 1].")
+    return pd.read_csv(path, sep="\t").set_index("id")
+
+
+def sample_individuals(ts, candidates, samples_per_day):
+    """
+    Return the genealogy of samples_per_day individuals from each generation,
+    simplified so the founder is sample node 0. SLiM puts each generation in a
+    random order and keeps the first few as candidates, so these are the
+    candidates of rank below samples_per_day: a uniform random sample of each
+    generation, nested as samples_per_day increases. The founder is the only
+    individual in its generation, so is always sampled.
+    """
+    if samples_per_day < 1:
+        raise ValueError("samples_per_day must be at least 1.")
     founder = find_founder(ts)
-    rng = np.random.default_rng(seed)
-    selected = rng.random(ts.num_individuals) < probability
-    selected[founder] = True
+    selected = set(candidates.index[candidates["rank"] < samples_per_day])
     # Haploid individuals still have a second, vacant, node in SLiM. These have
     # no ancestry, so drop them as samples and keep one node per individual.
     ts = pyslim.remove_vacant(ts)
     samples = ts.samples()
-    samples = samples[selected[ts.nodes_individual[samples]]]
+    pedigree_ids = np.array(
+        [ind.metadata["pedigree_id"] for ind in ts.individuals()], dtype=int
+    )
+    samples = samples[
+        np.isin(pedigree_ids[ts.nodes_individual[samples]], list(selected))
+    ]
     is_founder = ts.nodes_individual[samples] == founder
     samples = np.concatenate((samples[is_founder], samples[~is_founder]))
     return ts.simplify(samples=samples, filter_individuals=True)
@@ -90,92 +103,51 @@ def read_fasta(path, names):
     return sequences
 
 
-def recombinant_ancestors(pedigree, ids):
+def truth_table(ids, candidates, recombinants):
     """
-    Return, for each sampled individual, its nearest recombinant ancestor on
-    its clonal line (itself, if it is a recombinant), or -1 if there is none,
-    and the sampled individuals strictly between the two, along with the
-    ancestor itself if it is sampled and not the individual. If any of those
-    are in the inferred ARG, they account for the recombination; otherwise the
-    individual should be inferred to be a recombinant.
-    """
-    parent = dict(zip(pedigree.child, pedigree.parent1))
-    is_recombinant = dict(zip(pedigree.child, pedigree.is_recombinant.astype(bool)))
-    sampled = set(ids)
-    ancestors = []
-    between = []
-    for child in ids:
-        ancestor = -1
-        path = []
-        u = child
-        while True:
-            if is_recombinant[u]:
-                ancestor = u
-                break
-            # Non-recombinants have parent1 == parent2.
-            u = parent[u]
-            if u < 0:
-                break
-            if u in sampled:
-                path.append(u)
-        ancestors.append(ancestor)
-        between.append(path if ancestor >= 0 else [])
-    return ancestors, between
-
-
-def required_sequences(pedigree, ids):
-    """
-    Return the pedigree IDs whose sequences truth_table needs: every
-    recombinant ancestor and its parents.
-    """
-    df = pedigree.set_index("child")
-    ancestors = {x for x in recombinant_ancestors(pedigree, ids)[0] if x >= 0}
-    return (
-        ancestors | set(df.parent1[list(ancestors)]) | set(df.parent2[list(ancestors)])
-    )
-
-
-def truth_table(pedigree, ids, sequences):
-    """
-    Return the true recombination history of the sampled individuals.
+    Return the true recombination history of the sampled individuals, from the
+    ancestry SLiM tracks for each candidate.
 
     is_recombinant and breakpoint describe the sample itself. The
-    recombinant_ancestor is its nearest recombinant ancestor on its clonal
-    line, and sampled_between the sampled individuals that could account for
-    that recombination in the inferred ARG (see recombinant_ancestors), as
-    space-separated strains. ancestor_breakpoint is the ancestor's breakpoint,
-    and ancestor_detectable whether the ancestor's sequence differs from both
-    of its parents', without which the recombination leaves no trace.
+    recombinant_ancestor is its nearest recombinant ancestor on its clonal line
+    (itself, if it is a recombinant), or -1 if there is none. sampled_between
+    lists, as space-separated strains, the candidates on the clonal line between
+    the sample and that ancestor, including the ancestor if it is a candidate,
+    found by following prev_candidate. If any of those are in the inferred ARG
+    they account for the recombination; otherwise the sample should be inferred
+    to be a recombinant. ancestor_breakpoint is the ancestor's breakpoint, and
+    ancestor_detectable whether the ancestor's sequence differs from both of
+    its parents', without which the recombination leaves no trace.
     """
-    df = pedigree.set_index("child", drop=False)
-
-    def detectable(u):
-        row = df.loc[u]
-        seq = sequences[strain_name(u)]
-        return (
-            seq != sequences[strain_name(row.parent1)]
-            and seq != sequences[strain_name(row.parent2)]
-        )
-
-    def breakpoint(u):
-        return int(df.breakpoints[u])
-
-    ancestors, between = recombinant_ancestors(pedigree, ids)
-    rows = df.loc[ids]
+    rows = candidates.loc[ids]
+    recombinants = recombinants.set_index("id")
+    ancestors = rows.recombinant_ancestor.values
+    between = []
+    for u, ancestor in zip(ids, ancestors):
+        path = []
+        if ancestor >= 0:
+            u = candidates.prev_candidate[u]
+            while u >= 0:
+                path.append(u)
+                u = candidates.prev_candidate[u]
+        between.append(" ".join(strain_name(v) for v in path))
+    has_ancestor = ancestors >= 0
     out = pd.DataFrame({
         "strain": [strain_name(c) for c in ids],
         "gen": rows.gen.values,
-        "parent1": rows.parent1.values,
-        "parent2": rows.parent2.values,
         "is_recombinant": rows.is_recombinant.astype(bool).values,
+        "recombinant_ancestor": ancestors,
     })
-    out["breakpoint"] = [
-        breakpoint(c) if rec else -1 for c, rec in zip(ids, out.is_recombinant)
-    ]
-    out["recombinant_ancestor"] = ancestors
-    out["ancestor_breakpoint"] = [breakpoint(a) if a >= 0 else -1 for a in ancestors]
-    out["ancestor_detectable"] = [detectable(a) if a >= 0 else False for a in ancestors]
-    out["sampled_between"] = [" ".join(strain_name(u) for u in path) for path in between]
+    ancestor_breakpoint = np.full(len(ids), -1)
+    ancestor_breakpoint[has_ancestor] = recombinants.breakpoint[ancestors[has_ancestor]]
+    out["breakpoint"] = np.where(out.is_recombinant, ancestor_breakpoint, -1)
+    out["ancestor_breakpoint"] = ancestor_breakpoint
+    ancestor_detectable = np.zeros(len(ids), dtype=bool)
+    ancestor_detectable[has_ancestor] = recombinants.detectable[
+        ancestors[has_ancestor]
+    ].astype(bool)
+    out["ancestor_detectable"] = ancestor_detectable
+    out["sampled_between"] = between
     return out
 
 
@@ -450,31 +422,31 @@ def cli():
 
 @cli.command()
 @click.argument("input_ts", type=click.Path(exists=True, dir_okay=False))
+@click.argument("candidates", type=click.Path(exists=True, dir_okay=False))
 @click.argument("output_ts", type=click.Path(dir_okay=False))
-@click.option("--probability", type=float, required=True)
-@click.option("--seed", type=int, required=True)
-def sample(input_ts, output_ts, probability, seed):
+@click.option("--samples-per-day", type=int, required=True)
+def sample(input_ts, candidates, output_ts, samples_per_day):
     """
-    Sample individuals from all generations of a SLiM simulation and simplify
+    Sample individuals from each generation of a SLiM simulation and simplify
     their genealogy to give the true ARG.
     """
     ts = tskit.load(input_ts)
-    sample_individuals(ts, probability, seed).dump(output_ts)
+    sample_individuals(ts, read_candidates(candidates), samples_per_day).dump(output_ts)
 
 
 @cli.command()
 @click.argument("sampled_ts", type=click.Path(exists=True, dir_okay=False))
 @click.argument("fasta", type=click.Path(exists=True, dir_okay=False))
-@click.argument("pedigree", type=click.Path(exists=True, dir_okay=False))
+@click.argument("candidates", type=click.Path(exists=True, dir_okay=False))
 @click.argument("output_fasta", type=click.Path(dir_okay=False))
 @click.argument("output_metadata", type=click.Path(dir_okay=False))
-def export_samples(sampled_ts, fasta, pedigree, output_fasta, output_metadata):
+def export_samples(sampled_ts, fasta, candidates, output_fasta, output_metadata):
     """
     Export the sequences and sc2ts metadata of the individuals sampled in a
     simplified SLiM tree sequence.
     """
     ids = sample_pedigree_ids(tskit.load(sampled_ts))
-    df = pd.read_csv(pedigree, sep="\t").set_index("child").loc[ids]
+    gens = read_candidates(candidates).gen[ids]
     sequences = read_fasta(fasta, [strain_name(x) for x in ids])
 
     with open(output_fasta, "w") as f:
@@ -484,26 +456,26 @@ def export_samples(sampled_ts, fasta, pedigree, output_fasta, output_metadata):
 
     metadata = pd.DataFrame({
         "Run": [strain_name(c) for c in ids],
-        "date": [str(START_DATE + datetime.timedelta(days=int(g))) for g in df.gen],
+        "date": [str(START_DATE + datetime.timedelta(days=int(g))) for g in gens],
     })
     metadata.to_csv(output_metadata, sep="\t", index=False)
 
 
 @cli.command()
 @click.argument("sampled_ts", type=click.Path(exists=True, dir_okay=False))
-@click.argument("fasta", type=click.Path(exists=True, dir_okay=False))
-@click.argument("pedigree", type=click.Path(exists=True, dir_okay=False))
+@click.argument("candidates", type=click.Path(exists=True, dir_okay=False))
+@click.argument("recombinants", type=click.Path(exists=True, dir_okay=False))
 @click.argument("output", type=click.Path(dir_okay=False))
-def make_truth(sampled_ts, fasta, pedigree, output):
+def make_truth(sampled_ts, candidates, recombinants, output):
     """
-    Record the true recombination history of each sampled individual from the
-    SLiM pedigree.
+    Record the true recombination history of each sampled individual, from the
+    ancestry SLiM tracked.
     """
     ids = sample_pedigree_ids(tskit.load(sampled_ts))
-    pedigree = pd.read_csv(pedigree, sep="\t")
-    names = [strain_name(x) for x in required_sequences(pedigree, ids)]
-    sequences = read_fasta(fasta, names)
-    truth_table(pedigree, ids, sequences).to_csv(output, index=False)
+    truth = truth_table(
+        ids, read_candidates(candidates), pd.read_csv(recombinants, sep="\t")
+    )
+    truth.to_csv(output, index=False)
 
 
 @cli.command()
@@ -550,9 +522,11 @@ def write_sc2ts_config(
 @click.argument("output_dir", type=click.Path(file_okay=False))
 @click.option("--pathogen", required=True)
 @click.option("--rep", type=int, required=True)
-@click.option("--p", "probability", type=float, required=True)
+@click.option("--samples-per-day", type=int, required=True)
 @click.option("--k", type=int, required=True)
-def evaluate(true_ts, inferred_ts, truth, output_dir, pathogen, rep, probability, k):
+def evaluate(
+    true_ts, inferred_ts, truth, output_dir, pathogen, rep, samples_per_day, k
+):
     """
     Score an sc2ts ARG inferred from simulated sequences against the true ARG:
     overall accuracy with tscompare, and recombinant detection against the
@@ -570,7 +544,12 @@ def evaluate(true_ts, inferred_ts, truth, output_dir, pathogen, rep, probability
     events = event_table(samples)
     placement = placement_table(samples)
 
-    run_params = {"pathogen": pathogen, "rep": rep, "p": probability, "k": k}
+    run_params = {
+        "pathogen": pathogen,
+        "rep": rep,
+        "samples_per_day": samples_per_day,
+        "k": k,
+    }
     row = dict(run_params)
     row.update(score_recombinants(samples, events))
     row["num_recombinant_nodes"] = num_recombinant_nodes(inferred_ts)
