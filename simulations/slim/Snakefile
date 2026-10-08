@@ -160,6 +160,7 @@ rule infer:
     output:
         config=f"{RUN_DIR}/sc2ts.toml",
         trees=f"{RUN_DIR}/inferred.ts",
+        match_db=f"{RUN_DIR}/sc2ts/matches/{{pathogen}}_rep{{rep}}_p{{p}}_k{{k}}.matches.db",
     params:
         run_id="{pathogen}_rep{rep}_p{p}_k{k}",
         sc2ts_dir=f"{RUN_DIR}/sc2ts",
@@ -184,13 +185,31 @@ rule infer:
         """
 
 
+rule postprocess:
+    """
+    sc2ts doesn't add a node for a sample identical to one already in the ARG,
+    only counting it against that node. Add them from the match DB, as for the
+    published ARG, along with its other minor tidy-ups.
+    """
+    input:
+        trees=f"{RUN_DIR}/inferred.ts",
+        match_db=f"{RUN_DIR}/sc2ts/matches/{{pathogen}}_rep{{rep}}_p{{p}}_k{{k}}.matches.db",
+    output:
+        f"{RUN_DIR}/inferred_pp.ts",
+    shell:
+        """
+        sc2ts postprocess {input.trees} {output} \
+            --match-db {input.match_db} --no-progress
+        """
+
+
 rule evaluate:
     """
     Per-sample results stay here; the rest are combined across runs.
     """
     input:
         true=f"{SAMPLE_DIR}/true.trees",
-        inferred=f"{RUN_DIR}/inferred.ts",
+        inferred=f"{RUN_DIR}/inferred_pp.ts",
         truth=f"{SAMPLE_DIR}/truth.csv",
     output:
         evaluation=f"{RUN_DIR}/evaluation.csv",

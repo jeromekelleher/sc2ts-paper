@@ -14,6 +14,7 @@ import click
 import numpy as np
 import pandas as pd
 import pyslim
+import sc2ts.core
 import tscompare
 import tskit
 
@@ -277,17 +278,24 @@ def prepare_for_comparison(true_ts, inferred_ts):
 def classify_samples(inferred_ts, truth):
     """
     Return the truth table with the sc2ts match of each sample, and whether it
-    is expected to be a recombinant, added. A sample is inferred to be a
-    recombinant if its HMM match has more than one parent.
-    Breakpoints are converted to SLiM's 0-based coordinates, where the
-    breakpoint is the first position inherited from the second parent.
+    is expected to be a recombinant, added.
+
+    A sample is placed if it has a node in the inferred ARG. Samples identical
+    to a node already in the ARG are exact matches, added by sc2ts postprocess;
+    samples without a node were held back by sc2ts. A sample is inferred to be a
+    recombinant if its HMM match has more than one parent. Breakpoints are
+    converted to SLiM's 0-based coordinates, where the breakpoint is the first
+    position inherited from the second parent.
     """
-    matches = {}
+    nodes = {}
     for u in inferred_ts.samples():
         md = inferred_ts.node(u).metadata
         path = md["sc2ts"]["hmm_match"]["path"]
         row = {
             "placed": True,
+            "exact_match": bool(
+                inferred_ts.nodes_flags[u] & sc2ts.core.NODE_IS_EXACT_MATCH
+            ),
             "num_inferred_parents": len(path),
             "inferred_recombinant": len(path) > 1,
             "inferred_breakpoint": -1,
@@ -299,11 +307,12 @@ def classify_samples(inferred_ts, truth):
             left, right = md["sc2ts"]["breakpoint_intervals"][0]
             row["breakpoint_interval_left"] = left - 1
             row["breakpoint_interval_right"] = right - 1
-        matches[md["strain"]] = row
+        nodes[md["strain"]] = row
     df = truth.copy()
-    placed = pd.DataFrame.from_dict(matches, orient="index")
+    placed = pd.DataFrame.from_dict(nodes, orient="index")
     df = df.join(placed, on="strain")
-    df["placed"] = df["placed"].astype("boolean").fillna(False).astype(bool)
+    for col in ["placed", "exact_match", "inferred_recombinant"]:
+        df[col] = df[col].astype("boolean").fillna(False).astype(bool)
     # A sample should be inferred to be a recombinant if it has a recombinant
     # ancestor on its clonal line (or is one), and nothing placed in the ARG
     # in between already accounts for that recombination.
@@ -314,9 +323,6 @@ def classify_samples(inferred_ts, truth):
             df.recombinant_ancestor, df.sampled_between.fillna("")
         )
     ]
-    df["inferred_recombinant"] = (
-        df["inferred_recombinant"].astype("boolean").fillna(False).astype(bool)
-    )
     for col in ["num_inferred_parents", "inferred_breakpoint",
                 "breakpoint_interval_left", "breakpoint_interval_right"]:
         df[col] = df[col].fillna(-1).astype(int)
@@ -362,12 +368,16 @@ def event_table(samples):
 
 def placement_table(samples):
     """
-    Return the number of samples, and the number placed in the ARG, in each
-    generation.
+    Return the number of samples in each generation, and how many were placed
+    in the ARG and were exact matches.
     """
     return (
         samples.groupby("gen")
-        .agg(num_samples=("strain", "size"), num_placed=("placed", "sum"))
+        .agg(
+            num_samples=("strain", "size"),
+            num_placed=("placed", "sum"),
+            num_exact_matches=("exact_match", "sum"),
+        )
         .reset_index()
     )
 
@@ -389,6 +399,8 @@ def score_recombinants(samples, events):
     return {
         "num_samples": len(samples),
         "num_placed": len(df),
+        "num_exact_matches": int(np.sum(df.exact_match)),
+        "num_held_back": len(samples) - len(df),
         "num_sampled_recombinants": int(np.sum(df.is_recombinant)),
         "num_expected_recombinants": int(np.sum(expected)),
         "num_inferred_recombinants": int(np.sum(inferred)),

@@ -3,6 +3,7 @@ import pandas as pd
 import pytest
 import tskit
 from click.testing import CliRunner
+from sc2ts.core import NODE_IS_EXACT_MATCH
 
 from pipeline import (
     classify_samples,
@@ -16,15 +17,16 @@ from pipeline import (
 )
 
 
-def to_sc2ts_style(true_ts, truth, recombinant=None, unplaced=()):
+def to_sc2ts_style(true_ts, truth, recombinant=None, unplaced=(), exact=()):
     """
     Return a copy of the true ARG laid out as sc2ts would infer it: 1-based
     coordinates with sequence length L + 1, times relative to the last sample,
     strain and HMM match metadata on sample nodes, a non-sample reference node
     and the samples in a different order. Samples named in ``recombinant`` (by
     default the sampled recombinants) are given two-parent HMM matches at their
-    recombinant ancestor's breakpoints, and the others single-parent matches; ``unplaced`` samples
-    are left as non-sample nodes.
+    recombinant ancestor's breakpoints, and the others single-parent matches.
+    ``exact`` samples are flagged as exact matches, and ``unplaced`` samples are
+    left as non-sample nodes.
     """
     truth = truth.set_index("strain")
     if recombinant is None:
@@ -44,6 +46,8 @@ def to_sc2ts_style(true_ts, truth, recombinant=None, unplaced=()):
         if node.id in strains and strains[node.id] not in unplaced:
             strain = strains[node.id]
             flags = tskit.NODE_IS_SAMPLE
+            if strain in exact:
+                flags |= NODE_IS_EXACT_MATCH
             path = [{"left": 0, "right": L + 1, "parent": 0}]
             sc2ts = {}
             if strain in recombinant:
@@ -268,9 +272,46 @@ class TestClassifySamples:
         assert samples.expected_recombinant[child.strain]
         result = score(samples.reset_index())
         assert result["num_placed"] == len(truth) - 1
+        assert result["num_exact_matches"] == 0
+        assert result["num_held_back"] == 1
         assert result["num_expected_recombinants"] == (
             truth.is_recombinant.sum() - 1 + len(children[children.sampled_between == parent])
         )
+
+    def test_exact_match(self, true_ts, truth):
+        strain = truth.strain[~truth.is_recombinant].iloc[-1]
+        inferred = to_sc2ts_style(true_ts, truth, exact={strain})
+        samples = classify_samples(inferred, truth).set_index("strain")
+        assert samples.placed[strain]
+        assert samples.exact_match[strain]
+        assert not samples.inferred_recombinant[strain]
+        assert not samples.exact_match.drop(strain).any()
+        result = score(samples.reset_index())
+        assert result["num_placed"] == len(truth)
+        assert result["num_exact_matches"] == 1
+        assert result["num_held_back"] == 0
+
+    def test_exact_match_recombinant(self, true_ts, truth):
+        # A recombinant identical to a node already in the ARG is added as an
+        # exact match, and accounts for its children's recombination.
+        rec = truth[truth.is_recombinant]
+        children = truth[truth.sampled_between.isin(rec.strain)]
+        child = children.iloc[0]
+        parent = child.sampled_between
+        recombinant = set(rec.strain) - {parent}
+        inferred = to_sc2ts_style(
+            true_ts, truth, recombinant=recombinant, exact={parent}
+        )
+        samples = classify_samples(inferred, truth).set_index("strain")
+        assert samples.placed[parent]
+        assert samples.exact_match[parent]
+        assert not samples.expected_recombinant[child.strain]
+        # The recombinant itself is expected, but its single-parent exact
+        # match means the event is missed.
+        assert samples.expected_recombinant[parent]
+        assert not samples.inferred_recombinant[parent]
+        result = score(samples.reset_index())
+        assert result["events_detected"] == result["num_events"] - 1
 
     def test_no_recombinants(self, true_ts, truth):
         inferred = to_sc2ts_style(true_ts, truth, recombinant=set())
@@ -302,13 +343,15 @@ class TestPlacementTable:
 
     def test_counts(self, true_ts, truth):
         unplaced = set(truth.strain[1:4])
+        exact = set(truth.strain[4:6])
         samples = classify_samples(
-            to_sc2ts_style(true_ts, truth, unplaced=unplaced), truth
+            to_sc2ts_style(true_ts, truth, unplaced=unplaced, exact=exact), truth
         )
         df = placement_table(samples)
         assert df.gen.tolist() == sorted(truth.gen.unique())
         assert df.num_samples.sum() == len(truth)
         assert df.num_placed.sum() == len(truth) - 3
+        assert df.num_exact_matches.sum() == 2
         expected = truth.groupby("gen").size()
         np.testing.assert_array_equal(df.num_samples, expected.values)
 

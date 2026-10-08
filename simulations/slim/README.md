@@ -46,11 +46,31 @@ snakemake --cores 4 results/tiny/summary.csv --configfile tests/tiny_config.yaml
 `config.yaml` has a named set of SLiM parameters for each pathogen under
 `pathogens` (see `santasim_like.slim` for what they mean), the number of
 `replicates`, the sampling probabilities `P` (`p_values`), the `k_values`, and the
-other sc2ts `extend` parameters under `sc2ts`. Replicate `r` uses SLiM seed `seed + r`, and the
-same seed for sampling, so for a given replicate the samples are nested as `P`
-increases. The founder is always sampled and is used as the sc2ts reference.
+other sc2ts `extend` parameters under `sc2ts`. Replicate `r` uses SLiM seed
+`seed + r`, and the same seed for sampling, so for a given replicate the samples
+are nested as `P` increases. The founder is always sampled and is used as the
+sc2ts reference.
 
 Each generation is one day, starting on 2026-01-01.
+
+#### No time-traveller filtering
+On real data, sc2ts holds back any sample whose HMM cost (mismatches plus `k` times
+the number of breakpoints) is above `hmm_cost_threshold`, and only adds held-back
+samples later if enough of them form a plausible retrospective group, as judged by
+`min_group_size`, `min_different_dates`, `retrospective_window`,
+`max_pango_lineages`, `min_root_mutations`, `max_recurrent_mutations` and
+`max_mutations_per_sample`. This is there to keep out "time travellers", samples
+whose recorded date is badly wrong, and samples with many sequencing errors (see
+"Filtering time travellers" and "Inserting saltational lineages" in the paper's
+methods).
+
+Simulated samples have exact dates and no sequencing errors, so here the filter
+only costs us samples: in the coronavirus pilot with the Viridian settings
+(threshold 7), 39% of samples at P = 0.02 and 3% at P = 0.1 were held back and
+never added to the ARG. So `hmm_cost_threshold` is set high enough (1,000,000) that every sample is
+added on its own day. It can't simply be left out, as sc2ts then defaults it to 5.
+With nothing held back the retrospective group parameters are never used, so they
+are left out and take sc2ts's defaults.
 
 
 ### Steps
@@ -62,7 +82,8 @@ Each generation is one day, starting on 2026-01-01.
 | `export_samples` | `pipeline.py export-samples` | `p{P}/{sequences.fa,metadata.tsv}` |
 | `make_truth` | `pipeline.py make-truth` | `p{P}/truth.csv` |
 | `import_dataset`, `zip_dataset` | `sc2ts import-*` | `p{P}/dataset.vcz.zip` |
-| `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `p{P}/k{k}/inferred.ts`, the final day's ARG |
+| `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `p{P}/k{k}/inferred.ts`, the final day's ARG, and the match DB |
+| `postprocess` | `sc2ts postprocess` | `p{P}/k{k}/inferred_pp.ts`, with exact matches added |
 | `evaluate` | `pipeline.py evaluate` | `p{P}/k{k}/{evaluation,events,placement,samples}.csv` |
 | `combine` | | `results/{pathogen}/{summary,events,placement}.csv` |
 
@@ -87,25 +108,31 @@ from both of its parents'), and the sampled individuals in between.
 
 A sample is then *expected* to be inferred to be a recombinant if it has a
 recombinant ancestor and none of the sampled individuals in between (including the
-ancestor) were placed in the ARG. This depends on what sc2ts placed, so it is
+ancestor) were placed in the ARG (see below). This depends on what sc2ts did, so it is
 decided in `evaluate`.
 
 
 ### Output
-`results/{pathogen}/summary.csv` has one row per replicate, `P` and `k`. Recombinant
-detection is scored over the samples sc2ts placed in the ARG, where a sample is
-inferred to be a recombinant if its HMM match has more than one parent. Precision
-is per sample. Recall and breakpoint accuracy are per recombination event, as several samples
+`results/{pathogen}/summary.csv` has one row per replicate, `P` and `k`.
+
+During inference sc2ts doesn't add a node for a sample identical to one already in
+the ARG (an HMM cost of 0), but only counts it against that node. `sc2ts
+postprocess` adds these *exact matches* as sample nodes from the match DB, as for
+the published ARG, so the post-processed ARG is the one scored. A sample is
+*placed* if it has a node in it; anything else was held back by sc2ts. Recombinant
+detection is scored over placed samples, where a sample is inferred to be a
+recombinant if its HMM match has more than one parent. Precision is per sample. Recall and breakpoint accuracy are per recombination event, as several samples
 can share an expected recombinant ancestor and once sc2ts has inferred the
 recombination in one of them the others correctly match it with a single parent.
 Breakpoints are taken from the earliest sample the event was found in.
 
 | Column | |
 |---|---|
-| `num_samples`, `num_placed` | Samples, and those placed in the inferred ARG |
+| `num_samples` | Samples |
+| `num_placed`, `num_exact_matches`, `num_held_back` | Samples with a node in the ARG, those of them added as exact matches, and samples without a node |
 | `num_sampled_recombinants` | Placed samples that are recombinants themselves |
 | `num_expected_recombinants` | Placed samples expected to be inferred as recombinants |
-| `num_inferred_recombinants` | Placed samples with a multi-parent HMM match |
+| `num_inferred_recombinants` | Samples with a multi-parent HMM match |
 | `true_positives`, `false_positives`, `precision` | Inferred recombinants that are, and aren't, expected |
 | `num_events`, `num_detectable_events` | Distinct recombinant ancestors of expected samples |
 | `events_detected`, `recall`, `recall_detectable` | Events with at least one expected sample inferred to be a recombinant |
@@ -124,9 +151,9 @@ span represented in the inferred one.
 `results/{pathogen}/events.csv` has one row per expected recombination event per
 run: how many samples carry it, whether the recombinant itself was sampled,
 whether it is detectable and detected, and the breakpoint interval width and
-error. `results/{pathogen}/placement.csv` has the number of samples, and the number
-placed, per generation per run. Both stay small as runs are added, so are what to
-keep. The per-sample truth and inferred matches are in each run's `samples.csv`,
+error. `results/{pathogen}/placement.csv` has the number of samples, the number
+placed, and the number of those added as exact matches, per generation per run.
+Both stay small as runs are added, so are what to keep. The per-sample truth and inferred matches are in each run's `samples.csv`,
 which is not combined.
 
 
