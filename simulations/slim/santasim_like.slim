@@ -30,6 +30,8 @@
 // Output:
 // In the sequence file, the header is formatted "seq_ID".
 // These IDs match the child and parent IDs in the pedigree file.
+// The tree sequence file keeps every simulated individual (including the founder),
+// their pedigree IDs and parents, and the ancestry.
 
 initialize() {
     initializeSLiMModelType("WF");
@@ -40,6 +42,7 @@ initialize() {
         preventIncidentalSelfing=T,
         nucleotideBased=T
     );
+    initializeTreeSeq();
 
     // Set defaults.
     if (!exists("N"))
@@ -59,6 +62,7 @@ initialize() {
 
     defineConstant("OUT_FASTA", OUT_PREFIX + ".slim.sequences.fa");
     defineConstant("OUT_PEDIGREE", OUT_PREFIX + ".slim.pedigree.tsv");
+    defineConstant("OUT_TREES", OUT_PREFIX + ".slim.ts");
 
     if (!isInteger(N) | (N < 1))
         stop("N must be a positive integer.");
@@ -178,6 +182,8 @@ modifyChild() {
 
 late() {
     inds = p1.individuals;
+    // Keep the full pedigree, including individuals with no descendants at GEN.
+    sim.treeSeqRememberIndividuals(inds, permanent=T);
     sim.setValue("sequence_count", sim.getValue("sequence_count") + size(inds));
     records = string(size(inds));
     sequences = string(size(inds));
@@ -215,8 +221,10 @@ late() {
 
 
 END_TICK late() {
+    sim.treeSeqOutput(OUT_TREES);
     catn("Write " + sim.getValue("sequence_count") + " sequences from gen 0.." + GENS + " to " + OUT_FASTA);
     catn("Write pedigree records to " + OUT_PEDIGREE);
+    catn("Write tree sequence with the full pedigree to " + OUT_TREES);
 
     sim.simulationFinished();
 }
