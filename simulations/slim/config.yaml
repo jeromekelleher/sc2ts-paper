@@ -1,39 +1,48 @@
-# Named SLiM parameter sets, one per pathogen. See santasim_like.slim for the
-# meaning of each parameter.
+# The pathogens studied. Each has a set of SLiM parameters (see
+# santasim_like.slim for their meaning) and the probabilities with which
+# individuals are sampled across all generations. The founder is always
+# sampled, and the same draws are used for each sampling probability, so
+# samples are nested as it increases.
 pathogens:
-  default:
-    N: 100
-    GENS: 100
-    GROWTH_GENS: 20
-    L: 10000
-    MU: 1.0e-3
-    EFF_RECOMB: 0.01
+  coronavirus:
+    # A generic coronavirus: ~30 kb genome, 0.0008 substitutions/site/year
+    # and a 5.5 day generation time (as in synthetic_recombinants), so
+    # ~0.36 mutations per genome per generation. 1% of transmissions are
+    # recombinant.
+    slim:
+      N: 1000
+      GENS: 100
+      GROWTH_GENS: 20
+      L: 30000
+      MU: 1.2e-5
+      EFF_RECOMB: 0.01
+    p_values: [0.02, 0.1]
   sars_like:
     # SARS-CoV-like
     # https://pmc.ncbi.nlm.nih.gov/articles/PMC9297283/#CR30
-    N: 10000
-    GENS: 730 # 2 years
-    GROWTH_GENS: 180  # 6 months
-    L: 30000  # SARS-CoV-1/2
-    MU: 1.37e-6 # 5e-4 (/site/year) / 365 days
-    EFF_RECOMB: 1.64e-4 # 2e-6 (/site/year) x L / 365 days
+    slim:
+      N: 10000
+      GENS: 730 # 2 years
+      GROWTH_GENS: 180  # 6 months
+      L: 30000  # SARS-CoV-1/2
+      MU: 1.37e-6 # 5e-4 (/site/year) / 365 days
+      EFF_RECOMB: 1.64e-4 # 2e-6 (/site/year) x L / 365 days
+    p_values: [0.02, 0.1]
   flu_like:
     # pdm2009-like H1N1
     # https://www.pnas.org/doi/10.1073/pnas.1918304117#supplementary-materials
-    N: 10000
-    GENS: 730 # 2 years
-    GROWTH_GENS: 180  # 6 months
-    L: 13000  # pdm2009 H1N1
-    MU: 7.53e-6 # 2.75e-3 (/site/year) / 365 days
-    EFF_RECOMB: 6.85e-4 # 0.25 (/lineage/year) / 365 days
+    slim:
+      N: 10000
+      GENS: 730 # 2 years
+      GROWTH_GENS: 180  # 6 months
+      L: 13000  # pdm2009 H1N1
+      MU: 7.53e-6 # 2.75e-3 (/site/year) / 365 days
+      EFF_RECOMB: 6.85e-4 # 0.25 (/lineage/year) / 365 days
+    p_values: [0.02, 0.1]
 
 # Independent SLiM runs per pathogen. Replicate r uses SLiM seed seed + r.
 replicates: 1
 seed: 42
-
-# Sampling probabilities across all generations; the founder is always sampled.
-# The same draws are used for each P, so samples are nested as P increases.
-P: [0.1, 0.5, 1.0]
 
 # sc2ts num_mismatches values.
 k_values: [3, 4, 5]
@@ -41,15 +50,17 @@ k_values: [3, 4, 5]
 # Maximum threads per sc2ts inference job.
 num_threads: 8
 
-# Other sc2ts extend parameters.
+# Other sc2ts extend parameters (see README.md).
 sc2ts:
-  hmm_cost_threshold: 7
+  # No time-traveller filtering. On real data, samples whose HMM cost is above
+  # hmm_cost_threshold are held back, and only added later if enough of them
+  # form a plausible retrospective group, to keep out samples with wrong dates
+  # ("time travellers") and sequencing errors. Simulated samples have neither,
+  # so the threshold is set high enough that every sample is added on its own
+  # day. It can't just be left out: sc2ts then defaults it to 5. With nothing
+  # held back, the retrospective group parameters (min_group_size,
+  # retrospective_window, etc.) are never used, so are left at their defaults.
+  hmm_cost_threshold: 1000000
   max_missing_sites: 500
   deletions_as_missing: true
-  min_group_size: 10
-  min_root_mutations: 2
-  max_recurrent_mutations: 2
-  max_mutations_per_sample: 5
-  retrospective_window: 7
-  max_pango_lineages: 3
   memory_limit: 4

@@ -4,7 +4,7 @@ import tomllib
 import pytest
 from click.testing import CliRunner
 
-from scripts.write_sc2ts_config import run, toml_value
+from pipeline import toml_value, write_sc2ts_config
 
 
 class TestWriteSc2tsConfig:
@@ -12,7 +12,7 @@ class TestWriteSc2tsConfig:
     def run_script(self, tmp_path, extend_parameters):
         output = tmp_path / "config.toml"
         result = CliRunner().invoke(
-            run,
+            write_sc2ts_config,
             [
                 str(output),
                 "--dataset", "dataset.vcz.zip",

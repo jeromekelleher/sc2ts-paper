@@ -1,11 +1,12 @@
 """
 Evaluate sc2ts on SLiM simulations of pathogen-like epidemics.
 
-For each pathogen parameter set and replicate, a neutral haploid Wright-Fisher
-population is simulated with SLiM, keeping the full pedigree. Individuals are
-sampled from all generations with probability P, sc2ts is run on their
-sequences for each k, and the inferred ARG is scored against the true ARG
-(tscompare) and the true recombinants (the pedigree).
+For each pathogen and replicate, a neutral haploid Wright-Fisher population is
+simulated with SLiM, keeping the full pedigree. Individuals are sampled from
+all generations with each of the pathogen's sampling probabilities P, sc2ts is
+run on their sequences for each k, and the inferred ARG is scored against the
+true ARG (tscompare) and the true recombinants (the pedigree). Each pathogen's
+results are combined and copied to summaries/{pathogen}/, which is tracked.
 
 Run from simulations/slim/, e.g.:
     snakemake --cores 8
@@ -18,7 +19,6 @@ configfile: "config.yaml"
 
 PATHOGENS = config["pathogens"]
 REPLICATES = list(range(config["replicates"]))
-P_VALUES = [str(p) for p in config["P"]]
 K_VALUES = config["k_values"]
 
 DIR = "results/{pathogen}/rep{rep}"
@@ -30,17 +30,26 @@ RUN_DIR = f"{SAMPLE_DIR}/k{{k}}"
 wildcard_constraints:
     pathogen="|".join(re.escape(name) for name in PATHOGENS),
     rep=r"[0-9]+",
-    p="|".join(re.escape(p) for p in P_VALUES),
+    p="|".join(
+        re.escape(str(p)) for pathogen in PATHOGENS.values() for p in pathogen["p_values"]
+    ),
     k=r"[0-9]+",
+
+
+SUMMARIES = ["summary", "events", "placement"]
 
 
 def seed(wildcards):
     return config["seed"] + int(wildcards.rep)
 
 
+def p_values(wildcards):
+    return [str(p) for p in PATHOGENS[wildcards.pathogen]["p_values"]]
+
+
 rule all:
     input:
-        "results/summary.csv",
+        expand("summaries/{pathogen}/{name}.csv", pathogen=PATHOGENS, name=SUMMARIES),
 
 
 rule run_slim:
@@ -54,7 +63,7 @@ rule run_slim:
         seed=seed,
         args=lambda wildcards: " ".join(
             f"-d {name}={value}"
-            for name, value in PATHOGENS[wildcards.pathogen].items()
+            for name, value in PATHOGENS[wildcards.pathogen]["slim"].items()
         ),
         prefix=SIM,
     shell:
@@ -88,7 +97,7 @@ rule sample:
         seed=seed,
     shell:
         """
-        python scripts/sample_slim.py {input} {output} \
+        python pipeline.py sample {input} {output} \
             --probability {wildcards.p} --seed {params.seed}
         """
 
@@ -101,12 +110,25 @@ rule export_samples:
     output:
         fasta=f"{SAMPLE_DIR}/sequences.fa",
         metadata=f"{SAMPLE_DIR}/metadata.tsv",
-        truth=f"{SAMPLE_DIR}/truth.csv",
     shell:
         """
-        python scripts/export_samples.py \
+        python pipeline.py export-samples \
             {input.trees} {input.fasta} {input.pedigree} \
-            {output.fasta} {output.metadata} {output.truth}
+            {output.fasta} {output.metadata}
+        """
+
+
+rule make_truth:
+    input:
+        trees=f"{SAMPLE_DIR}/true.trees",
+        fasta=f"{SIM}.slim.sequences.fa",
+        pedigree=f"{SIM}.slim.pedigree.tsv",
+    output:
+        f"{SAMPLE_DIR}/truth.csv",
+    shell:
+        """
+        python pipeline.py make-truth \
+            {input.trees} {input.fasta} {input.pedigree} {output}
         """
 
 
@@ -147,6 +169,7 @@ rule infer:
     output:
         config=f"{RUN_DIR}/sc2ts.toml",
         trees=f"{RUN_DIR}/inferred.ts",
+        match_db=f"{RUN_DIR}/sc2ts/matches/{{pathogen}}_rep{{rep}}_p{{p}}_k{{k}}.matches.db",
     params:
         run_id="{pathogen}_rep{rep}_p{p}_k{k}",
         sc2ts_dir=f"{RUN_DIR}/sc2ts",
@@ -155,7 +178,7 @@ rule infer:
     shell:
         """
         rm -rf {params.sc2ts_dir}
-        python scripts/write_sc2ts_config.py {output.config} \
+        python pipeline.py write-sc2ts-config {output.config} \
             --dataset {input.dataset} \
             --reference {input.reference} \
             --run-id {params.run_id} \
@@ -171,19 +194,43 @@ rule infer:
         """
 
 
-rule evaluate:
+rule postprocess:
+    """
+    sc2ts doesn't add a node for a sample identical to one already in the ARG,
+    only counting it against that node. Add them from the match DB, as for the
+    published ARG, along with its other minor tidy-ups.
+    """
     input:
-        true=f"{SAMPLE_DIR}/true.trees",
-        inferred=f"{RUN_DIR}/inferred.ts",
-        truth=f"{SAMPLE_DIR}/truth.csv",
+        trees=f"{RUN_DIR}/inferred.ts",
+        match_db=f"{RUN_DIR}/sc2ts/matches/{{pathogen}}_rep{{rep}}_p{{p}}_k{{k}}.matches.db",
     output:
-        summary=f"{RUN_DIR}/evaluation.csv",
-        samples=f"{RUN_DIR}/samples.csv",
+        f"{RUN_DIR}/inferred_pp.ts",
     shell:
         """
-        python scripts/evaluate.py \
-            {input.true} {input.inferred} {input.truth} \
-            {output.summary} {output.samples} \
+        sc2ts postprocess {input.trees} {output} \
+            --match-db {input.match_db} --no-progress
+        """
+
+
+rule evaluate:
+    """
+    Per-sample results stay here; the rest are combined across runs.
+    """
+    input:
+        true=f"{SAMPLE_DIR}/true.trees",
+        inferred=f"{RUN_DIR}/inferred_pp.ts",
+        truth=f"{SAMPLE_DIR}/truth.csv",
+    output:
+        evaluation=f"{RUN_DIR}/evaluation.csv",
+        events=f"{RUN_DIR}/events.csv",
+        placement=f"{RUN_DIR}/placement.csv",
+        samples=f"{RUN_DIR}/samples.csv",
+    params:
+        output_dir=RUN_DIR,
+    shell:
+        """
+        python pipeline.py evaluate \
+            {input.true} {input.inferred} {input.truth} {params.output_dir} \
             --pathogen {wildcards.pathogen} --rep {wildcards.rep} \
             --p {wildcards.p} --k {wildcards.k}
         """
@@ -191,21 +238,41 @@ rule evaluate:
 
 rule combine:
     input:
-        expand(
-            f"{RUN_DIR}/evaluation.csv",
-            pathogen=PATHOGENS,
-            rep=REPLICATES,
-            p=P_VALUES,
-            k=K_VALUES,
-        ),
+        **{
+            name: lambda wildcards, name=name: expand(
+                f"{RUN_DIR}/{name}.csv",
+                pathogen=wildcards.pathogen,
+                rep=REPLICATES,
+                p=p_values(wildcards),
+                k=K_VALUES,
+            )
+            for name in ["evaluation", "events", "placement"]
+        },
     output:
-        "results/summary.csv",
+        evaluation="results/{pathogen}/summary.csv",
+        events="results/{pathogen}/events.csv",
+        placement="results/{pathogen}/placement.csv",
     run:
         import pandas as pd
 
-        pd.concat([pd.read_csv(path) for path in input]).to_csv(
-            output[0], index=False
-        )
+        for name in ["evaluation", "events", "placement"]:
+            df = pd.concat([pd.read_csv(path) for path in input[name]])
+            df.to_csv(output[name], index=False)
+
+
+rule copy_summary:
+    """
+    The combined results are small, so are kept in the repository for the
+    analysis notebook.
+    """
+    input:
+        "results/{pathogen}/{name}.csv",
+    output:
+        "summaries/{pathogen}/{name}.csv",
+    wildcard_constraints:
+        name="|".join(SUMMARIES),
+    shell:
+        "cp {input} {output}"
 
 
 rule clean:
