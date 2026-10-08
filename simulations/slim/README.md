@@ -2,11 +2,11 @@
 This Snakemake workflow measures how well sc2ts recovers recombinants and the
 overall ARG from simulated pathogen sequences, where the truth is known.
 
-For each pathogen parameter set and replicate, `santasim_like.slim` simulates a
-neutral, haploid Wright-Fisher population that grows from a single founder,
-recording the full pedigree and tree sequence. Individuals are sampled from every
-generation with probability `P`, and sc2ts is run on their sequences for each
-value of `k` (`num_mismatches`). The inferred ARG is then scored against:
+For each pathogen and replicate, `santasim_like.slim` simulates a neutral, haploid
+Wright-Fisher population that grows from a single founder, recording the full
+pedigree and tree sequence. Individuals are sampled from every generation with each
+of the pathogen's sampling probabilities `P`, and sc2ts is run on their sequences
+for each value of `k` (`num_mismatches`). The inferred ARG is then scored against:
 
 - the **pedigree**, for recombinant detection in each sample, and
 - the **true ARG**, the SLiM tree sequence simplified to the samples, with
@@ -24,32 +24,47 @@ mamba env create -f environment.yml
 conda activate sc2ts-slim
 snakemake --cores 8
 ```
-sc2ts 1.1 or later is needed for custom reference genomes.
-
-To run one pathogen, ask for its summary, overriding config values as needed.
-For example, the `coronavirus` pilot:
+sc2ts 1.1 or later is needed for custom reference genomes. This runs every pathogen
+in `config.yaml` and copies each one's combined results to `summaries/{pathogen}/`.
+To run one pathogen, ask for its summaries, e.g.:
 ```
-snakemake --cores 4 results/coronavirus/summary.csv --config 'p_values=[0.02,0.1]'
+snakemake --cores 4 summaries/coronavirus/summary.csv
 ```
 
 Tests run a small SLiM simulation, so need `slim` on the `PATH`:
 ```
 python -m pytest tests
 ```
-`tests/tiny_config.yaml` runs the whole pipeline for a `tiny` pathogen in under a minute:
+`tests/tiny_config.yaml` runs the whole pipeline for a `tiny` pathogen in under a
+minute. Config files are merged, so it adds `tiny` to the pathogens in
+`config.yaml`; ask for its results to run it alone:
 ```
 snakemake --cores 4 results/tiny/summary.csv --configfile tests/tiny_config.yaml
 ```
 
 
 ### Configuration
-`config.yaml` has a named set of SLiM parameters for each pathogen under
-`pathogens` (see `santasim_like.slim` for what they mean), the number of
-`replicates`, the sampling probabilities `P` (`p_values`), the `k_values`, and the
-other sc2ts `extend` parameters under `sc2ts`. Replicate `r` uses SLiM seed
-`seed + r`, and the same seed for sampling, so for a given replicate the samples
-are nested as `P` increases. The founder is always sampled and is used as the
-sc2ts reference.
+`config.yaml` lists the pathogens studied under `pathogens`, each with its SLiM
+parameters under `slim` (see `santasim_like.slim` for what they mean) and its
+sampling probabilities `P` under `p_values`. To add a pathogen, add an entry
+there. The rest of the config is shared: the number of `replicates`, the
+`k_values`, and the other sc2ts `extend` parameters under `sc2ts`. Replicate `r`
+uses SLiM seed `seed + r`, and the same seed for sampling, so for a given
+replicate the samples are nested as `P` increases. The founder is always sampled
+and is used as the sc2ts reference.
+
+Pathogens so far:
+- `coronavirus`: a generic coronavirus, with a 30 kb genome, 0.0008 substitutions per
+  site per year and a 5.5 day generation time (about 0.36 mutations per genome per
+  generation), growing to 1,000 cases per generation over 20 generations and
+  staying there for 80 more. 1% of transmissions are recombinant. Sampled with
+  P = 0.02 and 0.1.
+- `sars_like`: SARS-CoV-like, with a 30 kb genome, 5e-4 substitutions per site per year
+  and one generation per day, growing to 10,000 cases per generation over 6 months and
+  simulated for 2 years. Sampled with P = 0.02 and 0.1.
+- `flu_like`: pdm2009 H1N1-like, with a 13 kb genome, 2.75e-3 substitutions per site per
+  year and one generation per day, with the same demography as `sars_like`. Sampled with
+  P = 0.02 and 0.1.
 
 Each generation is one day, starting on 2026-01-01.
 
@@ -65,10 +80,10 @@ whose recorded date is badly wrong, and samples with many sequencing errors (see
 methods).
 
 Simulated samples have exact dates and no sequencing errors, so here the filter
-only costs us samples: in the coronavirus pilot with the Viridian settings
+only costs us samples: in the coronavirus simulation with the Viridian settings
 (threshold 7), 39% of samples at P = 0.02 and 3% at P = 0.1 were held back and
-never added to the ARG. So `hmm_cost_threshold` is set high enough (1,000,000) that every sample is
-added on its own day. It can't simply be left out, as sc2ts then defaults it to 5.
+never added to the ARG. So `hmm_cost_threshold` is set high enough (1,000,000) that
+every sample is added on its own day. It can't simply be left out, as sc2ts then defaults it to 5.
 With nothing held back the retrospective group parameters are never used, so they
 are left out and take sc2ts's defaults.
 
@@ -86,13 +101,14 @@ are left out and take sc2ts's defaults.
 | `postprocess` | `sc2ts postprocess` | `p{P}/k{k}/inferred_pp.ts`, with exact matches added |
 | `evaluate` | `pipeline.py evaluate` | `p{P}/k{k}/{evaluation,events,placement,samples}.csv` |
 | `combine` | | `results/{pathogen}/{summary,events,placement}.csv` |
+| `copy_summary` | | `summaries/{pathogen}/{summary,events,placement}.csv` |
 
 Everything else is written under `results/{pathogen}/rep{r}/`.
 
 Truth is made separately from the exported sequences so that scoring can be
 changed without re-running sc2ts, e.g.:
 ```
-snakemake --cores 4 results/coronavirus/summary.csv --config 'p_values=[0.02,0.1]' \
+snakemake --cores 4 summaries/coronavirus/summary.csv \
     --rerun-triggers mtime --forcerun make_truth
 ```
 
@@ -121,8 +137,9 @@ postprocess` adds these *exact matches* as sample nodes from the match DB, as fo
 the published ARG, so the post-processed ARG is the one scored. A sample is
 *placed* if it has a node in it; anything else was held back by sc2ts. Recombinant
 detection is scored over placed samples, where a sample is inferred to be a
-recombinant if its HMM match has more than one parent. Precision is per sample. Recall and breakpoint accuracy are per recombination event, as several samples
-can share an expected recombinant ancestor and once sc2ts has inferred the
+recombinant if its HMM match has more than one parent. Precision is per sample.
+Recall and breakpoint accuracy are per recombination event, as several samples can
+share an expected recombinant ancestor and once sc2ts has inferred the
 recombination in one of them the others correctly match it with a single parent.
 Breakpoints are taken from the earliest sample the event was found in.
 
@@ -153,11 +170,12 @@ run: how many samples carry it, whether the recombinant itself was sampled,
 whether it is detectable and detected, and the breakpoint interval width and
 error. `results/{pathogen}/placement.csv` has the number of samples, the number
 placed, and the number of those added as exact matches, per generation per run.
-Both stay small as runs are added, so are what to keep. The per-sample truth and inferred matches are in each run's `samples.csv`,
-which is not combined.
+Both stay small as runs are added, so are what to keep. The per-sample truth and
+inferred matches are in each run's `samples.csv`, which is not combined.
 
 
-### Pilot
-`pilot/coronavirus_{summary,events,placement}.csv` are the results of the
-`coronavirus` pilot, copied from `results/`. They are analysed in
-`notebooks/analysis_slim_coronavirus_pilot.ipynb`.
+### Summaries
+`summaries/{pathogen}/{summary,events,placement}.csv` are copies of each pathogen's
+combined results, kept in the repository (`results/` is not). They are analysed in
+`notebooks/analysis_slim_pathogen_simulations.ipynb`, which reads every pathogen
+found there.

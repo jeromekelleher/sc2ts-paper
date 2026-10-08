@@ -2,15 +2,16 @@
 #   snakemake --cores 4 results/tiny/summary.csv --configfile tests/tiny_config.yaml
 pathogens:
   tiny:
-    N: 20
-    GENS: 15
-    GROWTH_GENS: 5
-    L: 1000
-    MU: 2.0e-3
-    EFF_RECOMB: 0.2
+    slim:
+      N: 20
+      GENS: 15
+      GROWTH_GENS: 5
+      L: 1000
+      MU: 2.0e-3
+      EFF_RECOMB: 0.2
+    p_values: [0.5, 1.0]
 replicates: 1
 seed: 1
-p_values: [0.5, 1.0]
 k_values: [3]
 num_threads: 2
 sc2ts:

@@ -1,11 +1,12 @@
 """
 Evaluate sc2ts on SLiM simulations of pathogen-like epidemics.
 
-For each pathogen parameter set and replicate, a neutral haploid Wright-Fisher
-population is simulated with SLiM, keeping the full pedigree. Individuals are
-sampled from all generations with probability P, sc2ts is run on their
-sequences for each k, and the inferred ARG is scored against the true ARG
-(tscompare) and the true recombinants (the pedigree).
+For each pathogen and replicate, a neutral haploid Wright-Fisher population is
+simulated with SLiM, keeping the full pedigree. Individuals are sampled from
+all generations with each of the pathogen's sampling probabilities P, sc2ts is
+run on their sequences for each k, and the inferred ARG is scored against the
+true ARG (tscompare) and the true recombinants (the pedigree). Each pathogen's
+results are combined and copied to summaries/{pathogen}/, which is tracked.
 
 Run from simulations/slim/, e.g.:
     snakemake --cores 8
@@ -18,7 +19,6 @@ configfile: "config.yaml"
 
 PATHOGENS = config["pathogens"]
 REPLICATES = list(range(config["replicates"]))
-P_VALUES = [str(p) for p in config["p_values"]]
 K_VALUES = config["k_values"]
 
 DIR = "results/{pathogen}/rep{rep}"
@@ -30,17 +30,26 @@ RUN_DIR = f"{SAMPLE_DIR}/k{{k}}"
 wildcard_constraints:
     pathogen="|".join(re.escape(name) for name in PATHOGENS),
     rep=r"[0-9]+",
-    p="|".join(re.escape(p) for p in P_VALUES),
+    p="|".join(
+        re.escape(str(p)) for pathogen in PATHOGENS.values() for p in pathogen["p_values"]
+    ),
     k=r"[0-9]+",
+
+
+SUMMARIES = ["summary", "events", "placement"]
 
 
 def seed(wildcards):
     return config["seed"] + int(wildcards.rep)
 
 
+def p_values(wildcards):
+    return [str(p) for p in PATHOGENS[wildcards.pathogen]["p_values"]]
+
+
 rule all:
     input:
-        expand("results/{pathogen}/summary.csv", pathogen=PATHOGENS),
+        expand("summaries/{pathogen}/{name}.csv", pathogen=PATHOGENS, name=SUMMARIES),
 
 
 rule run_slim:
@@ -54,7 +63,7 @@ rule run_slim:
         seed=seed,
         args=lambda wildcards: " ".join(
             f"-d {name}={value}"
-            for name, value in PATHOGENS[wildcards.pathogen].items()
+            for name, value in PATHOGENS[wildcards.pathogen]["slim"].items()
         ),
         prefix=SIM,
     shell:
@@ -230,12 +239,12 @@ rule evaluate:
 rule combine:
     input:
         **{
-            name: expand(
+            name: lambda wildcards, name=name: expand(
                 f"{RUN_DIR}/{name}.csv",
+                pathogen=wildcards.pathogen,
                 rep=REPLICATES,
-                p=P_VALUES,
+                p=p_values(wildcards),
                 k=K_VALUES,
-                allow_missing=True,
             )
             for name in ["evaluation", "events", "placement"]
         },
@@ -249,6 +258,21 @@ rule combine:
         for name in ["evaluation", "events", "placement"]:
             df = pd.concat([pd.read_csv(path) for path in input[name]])
             df.to_csv(output[name], index=False)
+
+
+rule copy_summary:
+    """
+    The combined results are small, so are kept in the repository for the
+    analysis notebook.
+    """
+    input:
+        "results/{pathogen}/{name}.csv",
+    output:
+        "summaries/{pathogen}/{name}.csv",
+    wildcard_constraints:
+        name="|".join(SUMMARIES),
+    shell:
+        "cp {input} {output}"
 
 
 rule clean:
