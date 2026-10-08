@@ -2,7 +2,10 @@ N: 100
 GENS: 100
 GROWTH_GENS: 20
 L: 10000
-DUAL: 0.01
-MU: 1e-5
-RHO: 1e-5
+EFF_RECOMB: 0.01
+MU: 1e-3
+# Sampling probabilities across all generations; the founder is always sampled.
+P: [0.1, 0.5, 1.0]
+# Shared draws make samples nested as P increases for a given tree sequence.
+SAMPLING_SEED: 42
 OUT_PREFIX: "out"
