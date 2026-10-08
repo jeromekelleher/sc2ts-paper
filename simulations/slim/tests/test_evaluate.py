@@ -7,8 +7,10 @@ from sc2ts.core import NODE_IS_EXACT_MATCH
 
 from pipeline import (
     classify_samples,
+    collapse_unsupported,
     evaluate,
     event_table,
+    make_samples_leaves,
     num_recombinant_nodes,
     placement_table,
     prepare_for_comparison,
@@ -69,10 +71,18 @@ def to_sc2ts_style(true_ts, truth, recombinant=None, unplaced=(), exact=()):
     for edge in true_ts.edges():
         left = 0 if edge.left == 0 else edge.left + 1
         tables.edges.add_row(left, edge.right + 1, edge.parent, edge.child)
+    for site in true_ts.sites():
+        tables.sites.add_row(site.position + 1, site.ancestral_state)
+    for mutation in true_ts.mutations():
+        tables.mutations.add_row(
+            mutation.site, node=mutation.node, derived_state=mutation.derived_state
+        )
     tables.sort()
     # Put the samples in the reverse order.
     tables.subset(np.arange(tables.nodes.num_rows)[::-1])
     tables.sort()
+    tables.build_index()
+    tables.compute_mutation_parents()
     return tables.tree_sequence()
 
 
@@ -127,6 +137,283 @@ class TestPrepareForComparison:
     def test_bad_sequence_length(self, true_ts, truth):
         with pytest.raises(ValueError):
             prepare_for_comparison(true_ts, true_ts)
+
+
+def make_ts(L, times, edges, mutations=(), num_samples=None):
+    """
+    Return a tree sequence with nodes at the given times, the first
+    ``num_samples`` of which (by default those at time 0) are samples, the
+    given (left, right, parent, child) edges and a mutation on each of the
+    given (position, node) pairs.
+    """
+    tables = tskit.TableCollection(L)
+    for j, time in enumerate(times):
+        is_sample = time == 0 if num_samples is None else j < num_samples
+        tables.nodes.add_row(flags=tskit.NODE_IS_SAMPLE if is_sample else 0, time=time)
+    for left, right, parent, child in edges:
+        tables.edges.add_row(left, right, parent, child)
+    for position, node in mutations:
+        site = tables.sites.add_row(position, "A")
+        tables.mutations.add_row(site, node=node, derived_state="T")
+    tables.sort()
+    return tables.tree_sequence()
+
+
+# Four samples resolved as (((0, 1)4, 2)5, 3)6.
+CATERPILLAR = dict(
+    L=10,
+    times=[0, 0, 0, 0, 1, 2, 3],
+    edges=[
+        (0, 10, 4, 0), (0, 10, 4, 1), (0, 10, 5, 4), (0, 10, 5, 2),
+        (0, 10, 6, 5), (0, 10, 6, 3),
+    ],
+)
+
+
+def assert_same_haplotypes(ts1, ts2):
+    np.testing.assert_array_equal(ts1.samples(), ts2.samples())
+    for v1, v2 in zip(ts1.variants(), ts2.variants(), strict=True):
+        assert v1.site.position == v2.site.position
+        np.testing.assert_array_equal(v1.states(), v2.states())
+
+
+class TestCollapseUnsupported:
+
+    def test_unsupported_node_collapsed(self):
+        ts = make_ts(**CATERPILLAR, mutations=[(1, 5)])
+        collapsed = collapse_unsupported(ts)
+        assert collapsed.num_nodes == ts.num_nodes - 1
+        tree = collapsed.first()
+        assert tree.num_children(tree.parent(0)) == 3
+        assert_same_haplotypes(ts, collapsed)
+
+    def test_supported_nodes_kept(self):
+        ts = make_ts(**CATERPILLAR, mutations=[(1, 4), (2, 5), (3, 6)])
+        collapsed = collapse_unsupported(ts)
+        assert collapsed.tables.nodes == ts.tables.nodes
+        assert collapsed.tables.edges == ts.tables.edges
+
+    def test_chain_collapsed_to_root(self):
+        ts = make_ts(**CATERPILLAR)
+        collapsed = collapse_unsupported(ts)
+        # The unsupported root is kept, and all samples are its children.
+        assert collapsed.num_nodes == 5
+        tree = collapsed.first()
+        assert tree.num_roots == 1
+        assert tree.num_children(tree.root) == 4
+        assert collapsed.node(tree.root).time == 3
+        assert_same_haplotypes(ts, collapsed)
+
+    def test_sample_kept(self):
+        # Sample 2 at time 1 is the ancestor of samples 0 and 1, and has no
+        # mutations, but samples are never collapsed.
+        ts = make_ts(
+            L=10,
+            times=[0, 0, 1, 0, 2],
+            edges=[(0, 10, 2, 0), (0, 10, 2, 1), (0, 10, 4, 2), (0, 10, 4, 3)],
+            mutations=[(1, 4)],
+            num_samples=4,
+        )
+        collapsed = collapse_unsupported(ts)
+        assert collapsed.tables.edges == ts.tables.edges
+
+    def test_recombinant_kept(self):
+        # Node 3 is (0, 1), with parent 4 on [0, 5) and 5 on [5, 10), each
+        # with sample 2 as its other child.
+        ts = make_ts(
+            L=10,
+            times=[0, 0, 0, 1, 2, 2],
+            edges=[
+                (0, 10, 3, 0), (0, 10, 3, 1),
+                (0, 5, 4, 3), (0, 5, 4, 2), (5, 10, 5, 3), (5, 10, 5, 2),
+            ],
+            mutations=[(1, 4), (6, 5)],
+        )
+        collapsed = collapse_unsupported(ts)
+        assert collapsed.tables.nodes == ts.tables.nodes
+        assert collapsed.tables.edges == ts.tables.edges
+
+    def test_partial_parent(self):
+        # Node 3 is (0, 1) everywhere, but only has a parent (4) on [0, 5); on
+        # [5, 10) it's a root, so 0 and 1 stay attached to it there.
+        ts = make_ts(
+            L=10,
+            times=[0, 0, 0, 1, 2],
+            edges=[
+                (0, 10, 3, 0), (0, 10, 3, 1), (0, 5, 4, 3), (0, 5, 4, 2),
+            ],
+        )
+        collapsed = collapse_unsupported(ts)
+        assert collapsed.num_nodes == ts.num_nodes
+        left, right = collapsed.at(0), collapsed.at(5)
+        assert left.parent(0) == left.parent(1) == left.parent(2)
+        assert collapsed.node(left.parent(0)).time == 2
+        assert right.parent(0) == right.parent(1)
+        assert collapsed.node(right.parent(0)).time == 1
+        assert right.parent(2) == tskit.NULL
+        assert_same_haplotypes(ts, collapsed)
+
+    @pytest.mark.parametrize("last_gen_only", [False, True])
+    def test_slim(self, true_ts, last_gen_only):
+        # Every individual is sampled in the fixture; keeping only the last
+        # generation gives some non-sample nodes.
+        ts = true_ts
+        if last_gen_only:
+            samples = ts.samples()
+            ts = ts.simplify(samples[ts.nodes_time[samples] == 0])
+        collapsed = collapse_unsupported(ts)
+        assert_same_haplotypes(ts, collapsed)
+        has_mutation = np.zeros(collapsed.num_nodes, dtype=bool)
+        has_mutation[collapsed.mutations_node] = True
+        for u in np.unique(collapsed.edges_parent):
+            parents = set(collapsed.edges_parent[collapsed.edges_child == u])
+            assert (
+                collapsed.node(u).is_sample() or has_mutation[u] or len(parents) != 1
+            )
+
+
+class TestMakeSamplesLeaves:
+
+    def assert_samples_leaves(self, ts, leaves):
+        assert_same_haplotypes(ts, leaves)
+        assert not np.any(np.isin(leaves.samples(), leaves.edges_parent))
+        np.testing.assert_array_equal(
+            leaves.nodes_time[leaves.samples()], ts.nodes_time[ts.samples()]
+        )
+
+    def test_no_internal_samples(self):
+        ts = make_ts(**CATERPILLAR, mutations=[(1, 4), (2, 0)])
+        leaves = make_samples_leaves(ts)
+        assert leaves.tables.nodes == ts.tables.nodes
+        assert leaves.tables.edges == ts.tables.edges
+
+    def test_sample_ancestor(self):
+        # Sample 2 at time 1, with a mutation, is the ancestor of samples 0
+        # and 1, and a sibling of sample 3 under root 4.
+        ts = make_ts(
+            L=10,
+            times=[0, 0, 1, 0, 2],
+            edges=[(0, 10, 2, 0), (0, 10, 2, 1), (0, 10, 4, 2), (0, 10, 4, 3)],
+            mutations=[(1, 2), (2, 0)],
+            num_samples=4,
+        )
+        leaves = make_samples_leaves(ts)
+        self.assert_samples_leaves(ts, leaves)
+        assert leaves.num_nodes == ts.num_nodes + 1
+        tree = leaves.first()
+        new = tree.parent(2)
+        assert new == ts.num_nodes
+        assert leaves.node(new).time == pytest.approx(1)
+        assert leaves.node(new).time > 1
+        assert set(tree.children(new)) == {0, 1, 2}
+        assert tree.parent(new) == 4
+        assert leaves.site(0).mutations[0].node == new
+
+    def test_sample_root(self):
+        ts = make_ts(
+            L=10, times=[0, 0, 1], edges=[(0, 10, 2, 0), (0, 10, 2, 1)],
+            num_samples=3,
+        )
+        leaves = make_samples_leaves(ts)
+        self.assert_samples_leaves(ts, leaves)
+        tree = leaves.first()
+        assert tree.num_roots == 1
+        assert set(tree.children(tree.root)) == {0, 1, 2}
+
+    def test_recombinant_sample(self):
+        # Sample 3 has parent 4 on [0, 5) and 5 on [5, 10), and is the
+        # ancestor of samples 0 and 1.
+        ts = make_ts(
+            L=10,
+            times=[0, 0, 0, 1, 2, 2],
+            edges=[
+                (0, 10, 3, 0), (0, 10, 3, 1),
+                (0, 5, 4, 3), (0, 5, 4, 2), (5, 10, 5, 3), (5, 10, 5, 2),
+            ],
+            mutations=[(1, 4), (6, 5)],
+            num_samples=4,
+        )
+        leaves = make_samples_leaves(ts)
+        self.assert_samples_leaves(ts, leaves)
+        new = leaves.first().parent(3)
+        assert leaves.at(0).parent(new) == 4
+        assert leaves.at(5).parent(new) == 5
+
+    def test_chain_of_samples(self):
+        # Sample 2 is the parent of sample 1, which is the parent of sample 0.
+        ts = make_ts(
+            L=10, times=[0, 1, 2], edges=[(0, 10, 1, 0), (0, 10, 2, 1)],
+            mutations=[(1, 1), (2, 0)],
+            num_samples=3,
+        )
+        leaves = make_samples_leaves(ts)
+        self.assert_samples_leaves(ts, leaves)
+        assert leaves.num_nodes == 5
+
+    def test_slim(self, true_ts):
+        self.assert_samples_leaves(true_ts, make_samples_leaves(true_ts))
+
+
+class TestScoreArg:
+
+    def test_identical(self):
+        ts = make_ts(**CATERPILLAR)
+        result = score_arg(ts, ts)
+        assert result["arf"] == result["arf_internal"] == pytest.approx(0)
+        assert result["tpr"] == result["tpr_internal"] == pytest.approx(1)
+
+    def test_no_internal_nodes(self):
+        ts = make_ts(L=10, times=[0, 1], edges=[(0, 10, 1, 0)], num_samples=2)
+        result = score_arg(ts, ts)
+        assert np.isnan(result["arf_internal"])
+        assert np.isnan(result["tpr_internal"])
+
+    def test_star_inferred(self):
+        # Only the root of the caterpillar is in the star, so a third of the
+        # true internal span is matched. Without the unsupported nodes, the
+        # true ARG is the star.
+        true = make_ts(**CATERPILLAR)
+        inferred = make_ts(
+            L=10, times=[0, 0, 0, 0, 3], edges=[(0, 10, 4, j) for j in range(4)]
+        )
+        result = score_arg(true, inferred)
+        assert result["arf_internal"] == pytest.approx(0)
+        assert result["tpr_internal"] == pytest.approx(1 / 3)
+        # Samples: 4 * 10 of the 7 * 10 true span.
+        assert result["tpr"] == pytest.approx(5 / 7)
+        result = score_arg(
+            collapse_unsupported(true), collapse_unsupported(inferred)
+        )
+        assert result["tpr"] == result["tpr_internal"] == pytest.approx(1)
+        assert result["arf"] == result["arf_internal"] == pytest.approx(0)
+
+    def test_sample_identical_to_ancestor(self):
+        # In the true ARG, unsampled node 3 carries a mutation and has
+        # children sample 0, identical to it, and sample 1, with another
+        # mutation. sc2ts can't infer node 3, so puts sample 1 under sample 0.
+        # The two can't be told apart from the sequences.
+        true = make_ts(
+            L=10,
+            times=[0, 0, 0, 1, 2],
+            edges=[(0, 10, 3, 0), (0, 10, 3, 1), (0, 10, 4, 3), (0, 10, 4, 2)],
+            mutations=[(1, 3), (2, 1)],
+        )
+        inferred = make_ts(
+            L=10,
+            times=[1, 0, 0, 2],
+            edges=[(0, 10, 0, 1), (0, 10, 3, 0), (0, 10, 3, 2)],
+            mutations=[(1, 0), (2, 1)],
+            num_samples=3,
+        )
+        assert_same_haplotypes(true, inferred)
+        result = score_arg(true, inferred)
+        assert result["tpr"] < 1
+        assert result["arf"] > 0
+        result = score_arg(
+            *[collapse_unsupported(make_samples_leaves(ts)) for ts in (true, inferred)]
+        )
+        assert result["tpr"] == result["tpr_internal"] == pytest.approx(1)
+        assert result["arf"] == result["arf_internal"] == pytest.approx(0)
 
 
 def score(samples):
@@ -374,6 +661,9 @@ class TestCli:
         assert row.pathogen == "x"
         assert row.k == 4
         assert row.arf == pytest.approx(0)
+        assert row.tpr_resolved == pytest.approx(1)
+        # Every individual is sampled in this simulation.
+        assert np.isnan(row.tpr_internal)
         assert row.false_positives == 0
         assert row.median_interval_width == 5
         events = pd.read_csv(tmp_path / "events.csv")

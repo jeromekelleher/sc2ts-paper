@@ -179,12 +179,40 @@ Breakpoints are taken from the earliest sample the event was found in.
 | `median_interval_width` | Of those breakpoint intervals, in bases |
 | `num_recombinant_nodes` | Nodes with more than one parent in the inferred ARG |
 | `arf`, `tpr`, `rmse` | `tscompare.haplotype_arf(inferred, true)` |
+| `arf_internal`, `tpr_internal` | ARF and TPR over non-sample nodes only |
+| `*_resolved` | The above, with both ARGs reduced to what sequences can resolve (see below) |
 
 For tscompare, both ARGs are simplified to the placed samples in the same order,
 sc2ts's 1-based coordinates are shifted to SLiM's 0-based ones, and the inferred
 times are shifted to match the true ones. `arf` is the fraction of the inferred
 ARG's span not represented in the true ARG, `tpr` the fraction of the true ARG's
 span represented in the inferred one.
+
+Samples make up much of both ARGs, and tscompare matches each sample only to
+itself, which is always right for samples without descendants. `arf_internal`
+and `tpr_internal` leave samples out: each non-sample node is credited with the
+span it shares with its best match in the other ARG, weighted by its span. They
+are blank if an ARG has no non-sample nodes.
+
+The sequences can't resolve every part of an ARG, so the `_resolved` columns
+compare both ARGs after reducing them to the same canonical form:
+
+1. Every sample is made a leaf. A sample with children is replaced by a new
+   node just above it, which takes its parents, mutations and children, with
+   the sample as one more child. Whether a sample is the ancestor of others, or
+   their sibling under an identical ancestor, can't be told from sequences:
+   sc2ts often puts samples under an earlier sample where the true ancestor was
+   unsampled. tscompare only matches samples to themselves, so without this
+   these would count as errors.
+2. A non-sample node with no mutations and a single parent has the same
+   haplotype as its parent, so whether its children descend from it or from
+   the parent can't be told apart either. Many nodes in the true ARG are like
+   this. Their children are attached to their parent (where they have one) and
+   they are removed. Recombinant nodes are kept.
+
+After step 1 every sample matches itself exactly, so `arf_resolved` and
+`tpr_resolved` are dominated by samples; `arf_internal_resolved` and
+`tpr_internal_resolved` are the measures to look at.
 
 `results/{pathogen}/events.csv` has one row per expected recombination event per
 run: how many samples carry it, whether the recombinant itself was sampled,
