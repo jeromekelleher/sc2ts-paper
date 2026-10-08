@@ -1,392 +1,213 @@
-import csv
-import re
-from datetime import date, timedelta
-from pathlib import Path
+"""
+Evaluate sc2ts on SLiM simulations of pathogen-like epidemics.
 
-import numpy as np
-import pandas as pd
-import tskit
+For each pathogen parameter set and replicate, a neutral haploid Wright-Fisher
+population is simulated with SLiM, keeping the full pedigree. Individuals are
+sampled from all generations with probability P, sc2ts is run on their
+sequences for each k, and the inferred ARG is scored against the true ARG
+(tscompare) and the true recombinants (the pedigree).
+
+Run from simulations/slim/, e.g.:
+    snakemake --cores 8
+"""
+import json
+import re
 
 configfile: "config.yaml"
 
-PREFIX = config["OUT_PREFIX"]
-NUM_MISMATCHES = [3, 4, 5]
-P_VALUES = config["P"] if isinstance(config["P"], list) else [config["P"]]
-P_VALUES = [float(p) for p in P_VALUES]
-if not P_VALUES or any(not 0 <= p <= 1 for p in P_VALUES):
-    raise ValueError("P must contain probabilities in [0, 1].")
-PROBABILITIES = {str(p): p for p in P_VALUES}
-if len(PROBABILITIES) != len(P_VALUES):
-    raise ValueError("P values must be unique.")
+
+PATHOGENS = config["pathogens"]
+REPLICATES = list(range(config["replicates"]))
+P_VALUES = [str(p) for p in config["P"]]
+K_VALUES = config["k_values"]
+
+DIR = "results/{pathogen}/rep{rep}"
+SIM = f"{DIR}/sim"
+SAMPLE_DIR = f"{DIR}/p{{p}}"
+RUN_DIR = f"{SAMPLE_DIR}/k{{k}}"
+
 
 wildcard_constraints:
-    p="(?:" + "|".join(re.escape(p) for p in PROBABILITIES) + ")",
-    nm="[345]",
+    pathogen="|".join(re.escape(name) for name in PATHOGENS),
+    rep=r"[0-9]+",
+    p="|".join(re.escape(p) for p in P_VALUES),
+    k=r"[0-9]+",
 
 
-# Maximum number of threads per sc2ts inference job.
-# Snakemake will reduce this if fewer cores are available.
-SC2TS_THREADS = 8
+def seed(wildcards):
+    return config["seed"] + int(wildcards.rep)
 
-
-# ------------------------------------------------------------
-# Helper function for analysing inferred tree sequences
-# ------------------------------------------------------------
-
-def get_results(ts: tskit.TreeSequence) -> pd.DataFrame:
-    num_parents = np.bincount(
-        ts.edges_child,
-        minlength=ts.num_nodes,
-    )
-
-    return pd.DataFrame({
-        "node": np.arange(ts.num_nodes),
-        "num_parents": num_parents,
-    })
-
-
-# ------------------------------------------------------------
-# Final targets
-# ------------------------------------------------------------
 
 rule all:
     input:
-        f"{PREFIX}.slim.reference.fa",
-        f"{PREFIX}.recombination_summary.csv",
-        expand(f"{PREFIX}.p{{p}}.slim.sampled.ts", p=PROBABILITIES),
+        "results/summary.csv",
 
-
-# ------------------------------------------------------------
-# Run SLiM simulation
-# ------------------------------------------------------------
 
 rule run_slim:
     input:
-        slim="santasim_like.slim",
+        "santasim_like.slim",
     output:
-        pedigree=f"{PREFIX}.slim.pedigree.tsv",
-        fasta=f"{PREFIX}.slim.sequences.fa",
-        trees=f"{PREFIX}.slim.ts",
+        pedigree=f"{SIM}.slim.pedigree.tsv",
+        fasta=f"{SIM}.slim.sequences.fa",
+        trees=f"{SIM}.slim.ts",
+    params:
+        seed=seed,
+        args=lambda wildcards: " ".join(
+            f"-d {name}={value}"
+            for name, value in PATHOGENS[wildcards.pathogen].items()
+        ),
+        prefix=SIM,
     shell:
         """
-        slim \
-            -d N={config[N]} \
-            -d GENS={config[GENS]} \
-            -d GROWTH_GENS={config[GROWTH_GENS]} \
-            -d L={config[L]} \
-            -d EFF_RECOMB={config[EFF_RECOMB]} \
-            -d MU={config[MU]} \
-            -d 'OUT_PREFIX="{config[OUT_PREFIX]}"' \
-            {input.slim}
+        slim -s {params.seed} {params.args} \
+            -d 'OUT_PREFIX="{params.prefix}"' \
+            {input}
         """
 
-
-# ------------------------------------------------------------
-# Sample individuals from all generations and simplify their genealogy
-# ------------------------------------------------------------
-
-rule sample_slim:
-    input:
-        trees=f"{PREFIX}.slim.ts",
-    output:
-        trees=f"{PREFIX}.p{{p}}.slim.sampled.ts",
-    params:
-        probability=lambda wildcards: PROBABILITIES[wildcards.p],
-        seed=config["SAMPLING_SEED"],
-    run:
-        probability = float(params.probability)
-        if not 0 <= probability <= 1:
-            raise ValueError("P must be a probability in [0, 1].")
-
-        ts = tskit.load(input.trees)
-        rng = np.random.default_rng(params.seed)
-        # Identify the single founder by its missing pedigree parents.
-        founders = [
-            ind.id for ind in ts.individuals()
-            if ind.metadata["pedigree_p1"] == -1
-            and ind.metadata["pedigree_p2"] == -1
-        ]
-        if len(founders) != 1:
-            raise ValueError("Expected exactly one founder in the SLiM genealogy.")
-        selected_mask = rng.random(ts.num_individuals) < probability
-        selected_mask[founders[0]] = True
-        selected = np.flatnonzero(selected_mask)
-        samples = ts.samples()
-        samples = samples[np.isin(ts.nodes_individual[samples], selected)]
-        # Simplification assigns sample node IDs in this order: founder first.
-        is_founder = ts.nodes_individual[samples] == founders[0]
-        samples = np.concatenate((samples[is_founder], samples[~is_founder]))
-        # The founder remains a sample even when P=0.
-        ts.simplify(samples=samples, filter_individuals=True).dump(output.trees)
-
-
-# ------------------------------------------------------------
-# Extract first sequence as reference
-# ------------------------------------------------------------
 
 rule make_reference:
+    """
+    The founder is the first sequence, and is used as the reference.
+    """
     input:
-        fasta=f"{PREFIX}.slim.sequences.fa",
+        f"{SIM}.slim.sequences.fa",
     output:
-        reference=f"{PREFIX}.slim.reference.fa",
+        f"{DIR}/reference.fa",
     shell:
         r"""
-        awk '/^>/ {{if (n++) exit}} {{print}}' \
-            {input.fasta} > {output.reference}
+        awk '/^>/ {{if (n++) exit}} {{print}}' {input} > {output}
         """
 
 
-# ------------------------------------------------------------
-# Export the individuals sampled in each simplified tree sequence
-# ------------------------------------------------------------
-
-rule make_sample_inputs:
+rule sample:
     input:
-        trees=f"{PREFIX}.p{{p}}.slim.sampled.ts",
-        fasta=f"{PREFIX}.slim.sequences.fa",
-        pedigree=f"{PREFIX}.slim.pedigree.tsv",
+        f"{SIM}.slim.ts",
     output:
-        fasta=f"{PREFIX}.p{{p}}.slim.sequences.fa",
-        metadata=f"{PREFIX}.p{{p}}.metadata.tsv",
-    run:
-        ts = tskit.load(input.trees)
-        # Ancestral individuals may remain after simplification: export samples only.
-        names = {
-            f"seq_{ts.individual(ts.node(int(node)).individual).metadata['pedigree_id']}"
-            for node in ts.samples()
-        }
-        seen = set()
-        with open(input.fasta) as infile, open(output.fasta, "w") as outfile:
-            keep = False
-            for line in infile:
-                if line.startswith(">"):
-                    name = line[1:].strip()
-                    keep = name in names
-                    if keep:
-                        seen.add(name)
-                if keep:
-                    outfile.write(line)
-        if seen != names:
-            raise ValueError("Sampled individuals are missing from the SLiM FASTA.")
-
-        seen = set()
-        start_date = date(2026, 1, 1)
-        with open(input.pedigree, newline="") as infile, \
-             open(output.metadata, "w", newline="") as outfile:
-            reader = csv.DictReader(infile, delimiter="\t")
-            writer = csv.DictWriter(outfile, fieldnames=["Run", "date"], delimiter="\t")
-            writer.writeheader()
-            for row in reader:
-                name = f"seq_{row['child']}"
-                if name in names:
-                    seen.add(name)
-                    writer.writerow({
-                        "Run": name,
-                        "date": (start_date + timedelta(days=int(row["gen"]))).isoformat(),
-                    })
-        if seen != names:
-            raise ValueError("Sampled individuals are missing from the pedigree TSV.")
+        f"{SAMPLE_DIR}/true.trees",
+    params:
+        seed=seed,
+    shell:
+        """
+        python scripts/sample_slim.py {input} {output} \
+            --probability {wildcards.p} --seed {params.seed}
+        """
 
 
-# ------------------------------------------------------------
-# Import sequences and metadata into sc2ts
-# ------------------------------------------------------------
+rule export_samples:
+    input:
+        trees=f"{SAMPLE_DIR}/true.trees",
+        fasta=f"{SIM}.slim.sequences.fa",
+        pedigree=f"{SIM}.slim.pedigree.tsv",
+    output:
+        fasta=f"{SAMPLE_DIR}/sequences.fa",
+        metadata=f"{SAMPLE_DIR}/metadata.tsv",
+        truth=f"{SAMPLE_DIR}/truth.csv",
+    shell:
+        """
+        python scripts/export_samples.py \
+            {input.trees} {input.fasta} {input.pedigree} \
+            {output.fasta} {output.metadata} {output.truth}
+        """
+
 
 rule import_dataset:
     input:
-        fasta=f"{PREFIX}.p{{p}}.slim.sequences.fa",
-        metadata=f"{PREFIX}.p{{p}}.metadata.tsv",
-        reference=f"{PREFIX}.slim.reference.fa",
+        fasta=f"{SAMPLE_DIR}/sequences.fa",
+        metadata=f"{SAMPLE_DIR}/metadata.tsv",
+        reference=f"{DIR}/reference.fa",
     output:
-        dataset=directory(f"{PREFIX}.p{{p}}.vcz"),
+        directory(f"{SAMPLE_DIR}/dataset.vcz"),
     shell:
         """
-        sc2ts import-alignments \
-            -i \
-            {output.dataset} \
-            {input.fasta} \
+        sc2ts import-alignments -i {output} {input.fasta} \
             --reference {input.reference}
-
-        sc2ts import-metadata \
-            {output.dataset} \
-            {input.metadata}
+        sc2ts import-metadata {output} {input.metadata}
         """
 
-
-# ------------------------------------------------------------
-# Zip sc2ts dataset
-# ------------------------------------------------------------
 
 rule zip_dataset:
     input:
-        dataset=f"{PREFIX}.p{{p}}.vcz",
+        f"{SAMPLE_DIR}/dataset.vcz",
     output:
-        zip=f"{PREFIX}.p{{p}}.vcz.zip",
+        f"{SAMPLE_DIR}/dataset.vcz.zip",
     shell:
         """
-        python -c \
-            "import sc2ts, sys; sc2ts.Dataset.create_zip(sys.argv[1], sys.argv[2])" \
-            {input.dataset} \
-            {output.zip}
+        python -c "import sc2ts, sys; sc2ts.Dataset.create_zip(sys.argv[1], sys.argv[2])" \
+            {input} {output}
         """
 
-
-# ------------------------------------------------------------
-# Run sc2ts inference
-#
-# The config is generated immediately before each inference.
-#
-# Produces:
-#
-#   out.p0.1.k3.sc2ts.config.toml
-#   out.p0.1.k4.sc2ts.config.toml
-#   out.p0.1.k5.sc2ts.config.toml
-#
-# and:
-#
-#   out.p0.1.k3.infer.done
-#   out.p0.1.k4.infer.done
-#   out.p0.1.k5.infer.done
-#
-# {threads} is the number of threads actually allocated by
-# Snakemake and is written to num_threads in the TOML.
-# ------------------------------------------------------------
 
 rule infer:
+    """
+    sc2ts writes an ARG for each day; keep the last.
+    """
     input:
-        dataset=f"{PREFIX}.p{{p}}.vcz.zip",
-        reference=f"{PREFIX}.slim.reference.fa",
+        dataset=f"{SAMPLE_DIR}/dataset.vcz.zip",
+        reference=f"{DIR}/reference.fa",
     output:
-        config=f"{PREFIX}.p{{p}}.k{{nm}}.sc2ts.config.toml",
-        done=touch(f"{PREFIX}.p{{p}}.k{{nm}}.infer.done"),
+        config=f"{RUN_DIR}/sc2ts.toml",
+        trees=f"{RUN_DIR}/inferred.ts",
     params:
-        nm=lambda wildcards: int(wildcards.nm),
-    threads: SC2TS_THREADS
+        run_id="{pathogen}_rep{rep}_p{p}_k{k}",
+        sc2ts_dir=f"{RUN_DIR}/sc2ts",
+        extend_parameters=json.dumps(config["sc2ts"]),
+    threads: config["num_threads"]
     shell:
-        r"""
-        cat > {output.config} <<EOF
-dataset = "{input.dataset}"
-
-run_id = "{PREFIX}.p{wildcards.p}.k{params.nm}"
-results_dir = "results/p{wildcards.p}/k{params.nm}"
-log_dir = "logs/p{wildcards.p}/k{params.nm}"
-matches_dir = "{PREFIX}/matches/p{wildcards.p}/k{params.nm}"
-log_level = 2
-
-exclude_dates = []
-exclude_sites = []
-
-date_field = "date"
-
-reference_fasta = "{input.reference}"
-reference_date = "2025-12-31"
-
-[extend_parameters]
-num_mismatches = {params.nm}
-hmm_cost_threshold = 7
-max_missing_sites = 500
-deletions_as_missing = true
-
-# max_daily_samples = 1000
-
-# Knobs for tuning retro group insertion
-min_group_size = 10
-min_root_mutations = 2
-max_recurrent_mutations = 2
-max_mutations_per_sample = 5
-retrospective_window = 7
-max_pango_lineages = 3
-
-num_threads = {threads}
-memory_limit = 4
-
-seed_groups = []
-EOF
-
+        """
+        rm -rf {params.sc2ts_dir}
+        python scripts/write_sc2ts_config.py {output.config} \
+            --dataset {input.dataset} \
+            --reference {input.reference} \
+            --run-id {params.run_id} \
+            --results-dir {params.sc2ts_dir}/results \
+            --log-dir {params.sc2ts_dir}/logs \
+            --matches-dir {params.sc2ts_dir}/matches \
+            --num-mismatches {wildcards.k} \
+            --num-threads {threads} \
+            --extend-parameters '{params.extend_parameters}'
         sc2ts infer {output.config}
-
-        touch {output.done}
+        cp $(ls {params.sc2ts_dir}/results/{params.run_id}/{params.run_id}_*.ts \
+            | grep -v _init.ts | sort | tail -n 1) {output.trees}
         """
 
 
-# ------------------------------------------------------------
-# Summarise inferred recombination results
-#
-# Counts nodes with more than one parent for each P and k.
-#
-# Produces:
-#
-#   out.recombination_summary.csv
-# ------------------------------------------------------------
+rule evaluate:
+    input:
+        true=f"{SAMPLE_DIR}/true.trees",
+        inferred=f"{RUN_DIR}/inferred.ts",
+        truth=f"{SAMPLE_DIR}/truth.csv",
+    output:
+        summary=f"{RUN_DIR}/evaluation.csv",
+        samples=f"{RUN_DIR}/samples.csv",
+    shell:
+        """
+        python scripts/evaluate.py \
+            {input.true} {input.inferred} {input.truth} \
+            {output.summary} {output.samples} \
+            --pathogen {wildcards.pathogen} --rep {wildcards.rep} \
+            --p {wildcards.p} --k {wildcards.k}
+        """
 
-rule summarise_results:
+
+rule combine:
     input:
         expand(
-            f"{PREFIX}.p{{p}}.k{{nm}}.infer.done",
-            p=PROBABILITIES,
-            nm=NUM_MISMATCHES,
+            f"{RUN_DIR}/evaluation.csv",
+            pathogen=PATHOGENS,
+            rep=REPLICATES,
+            p=P_VALUES,
+            k=K_VALUES,
         ),
-        metadata=expand(f"{PREFIX}.p{{p}}.metadata.tsv", p=PROBABILITIES),
     output:
-        summary=f"{PREFIX}.recombination_summary.csv",
+        "results/summary.csv",
     run:
-        res_dir = Path("results")
+        import pandas as pd
 
-        summary = []
-        for p in PROBABILITIES:
-            # A sampled dataset may end before the final simulated generation.
-            metadata = pd.read_csv(f"{PREFIX}.p{p}.metadata.tsv", sep="\t")
-            final_date = metadata["date"].max()
-            for k in NUM_MISMATCHES:
-                run_id = f"{PREFIX}.p{p}.k{k}"
-                ts_path = res_dir / f"p{p}" / f"k{k}" / run_id / f"{run_id}_{final_date}.ts"
-                ts = tskit.load(ts_path)
-                df = get_results(ts)
-                summary.append({
-                    "P": PROBABILITIES[p],
-                    "k": k,
-                    "num_recombs": int(np.sum(df["num_parents"] > 1)),
-                })
-
-        pd.DataFrame(summary).to_csv(
-            output.summary,
-            index=False,
+        pd.concat([pd.read_csv(path) for path in input]).to_csv(
+            output[0], index=False
         )
 
 
-# ------------------------------------------------------------
-# Clean generated files
-#
-# Run:
-#
-#   snakemake clean --cores 1
-# ------------------------------------------------------------
-
 rule clean:
     shell:
-        """
-        rm -rf \
-            {PREFIX}.slim.pedigree.tsv \
-            {PREFIX}.slim.ts \
-            {PREFIX}.p*.slim.sampled.ts \
-            {PREFIX}.p*.slim.sequences.fa \
-            {PREFIX}.p*.slim.sequences.fa.fai \
-            {PREFIX}.p*.metadata.tsv \
-            {PREFIX}.p*.vcz \
-            {PREFIX}.p*.vcz.zip \
-            {PREFIX}.p*.k*.sc2ts.config.toml \
-            {PREFIX}.p*.k*.infer.done \
-            {PREFIX}.slim.sequences.fa \
-            {PREFIX}.slim.sequences.fa.fai \
-            {PREFIX}.slim.reference.fa \
-            {PREFIX}.slim.reference.fa.fai \
-            {PREFIX}.metadata.tsv \
-            {PREFIX}.vcz \
-            {PREFIX}.vcz.zip \
-            {PREFIX}.k*.sc2ts.config.toml \
-            {PREFIX}.k*.infer.done \
-            {PREFIX}.recombination_summary.csv \
-            {PREFIX}/ \
-            results \
-            logs
-        """
+        "rm -rf results"
