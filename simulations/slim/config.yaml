@@ -8,6 +8,24 @@ pathogens:
     L: 10000
     MU: 1.0e-3
     EFF_RECOMB: 0.01
+  sars_like:
+    # SARS-CoV-like
+    # https://pmc.ncbi.nlm.nih.gov/articles/PMC9297283/#CR30
+    N: 10000
+    GENS: 730 # 2 years
+    GROWTH_GENS: 180  # 6 months
+    L: 30000  # SARS-CoV-1/2
+    MU: 1.37e-6 # 5e-4 (/site/year) / 365 days
+    EFF_RECOMB: 1.64e-4 # 2e-6 (/site/year) x L / 365 days
+  flu_like:
+    # pdm2009-like H1N1
+    # https://www.pnas.org/doi/10.1073/pnas.1918304117#supplementary-materials
+    N: 10000
+    GENS: 730 # 2 years
+    GROWTH_GENS: 180  # 6 months
+    L: 13000  # pdm2009 H1N1
+    MU: 7.53e-6 # 2.75e-3 (/site/year) / 365 days
+    EFF_RECOMB: 6.85e-4 # 0.25 (/lineage/year) / 365 days
 
 # Independent SLiM runs per pathogen. Replicate r uses SLiM seed seed + r.
 replicates: 1
