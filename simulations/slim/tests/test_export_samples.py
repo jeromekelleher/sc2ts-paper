@@ -33,10 +33,10 @@ class TestExportSamples:
         assert metadata.date.tolist() == expected
         assert metadata.date[0] == str(START_DATE)
 
-    def test_sequences_match_slim(self, exported, slim_prefix):
+    def test_sequences_match_slim(self, exported, slim_all_prefix):
         names = fasta_names(exported / "sequences.fa")
         assert read_fasta(exported / "sequences.fa", names) == read_fasta(
-            f"{slim_prefix}.slim.sequences.fa", names
+            f"{slim_all_prefix}.slim.sequences.fa", names
         )
 
 

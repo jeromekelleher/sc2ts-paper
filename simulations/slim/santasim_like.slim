@@ -6,7 +6,7 @@
 //
 // Run SLiM, e.g.:
 // slim -d N=1000 -d GENS=100 -d GROWTH_GENS=20 -d L=10000 \
-//      -d EFF_RECOMB=0.2 -d MU=1e-4 \
+//      -d EFF_RECOMB=0.2 -d MU=1e-4 -d S_MAX=100 \
 //      -d 'OUT_PREFIX="out"' santasim_like.slim
 //
 // Parameters:
@@ -16,6 +16,8 @@
 //   L      Sequence length
 //   EFF_RECOMB   Probability of two-parent reproduction in [0, 1]
 //   MU     Mutation rate (per-site per generation) in [0, 1)
+//   S_MAX  Maximum number of samples per generation
+//   WRITE_ALL     Also write the full pedigree and every sequence (for testing)
 //   OUT_PREFIX    Output prefix
 //
 // Notes:
@@ -26,11 +28,34 @@
 // An individual can be a parent to multiple children.
 // For L > 1, every event has exactly one uniformly drawn breakpoint.
 //
+// Sampling:
+// Each generation, individuals are put in a uniformly random order, and the
+// first S_MAX (or all of them, if fewer) are candidate samples, with their rank
+// in that order. Taking the candidates with rank < S gives a uniform random
+// sample of S per generation, nested as S increases. The founder is the only
+// individual in generation 0, so is always a candidate. Only candidates are
+// remembered in the tree sequence and have their sequences written.
+//
+// Recombinant ancestry:
+// Rather than keep the full pedigree, each individual carries two values,
+// inherited at birth along its clonal line:
+//   tag    its nearest recombinant ancestor (itself, if it is a recombinant),
+//          or -1 if there is none;
+//   tagF   its nearest candidate ancestor since that recombinant (or since
+//          the founder, if there is none), or -1.
+//
 // Output:
-// In the sequence file, the header is formatted "seq_ID".
-// These IDs match the child and parent IDs in the pedigree file.
-// The tree sequence file keeps every simulated individual (including the founder),
-// their pedigree IDs and parents, and the ancestry.
+//   OUT_PREFIX.slim.ts: the tree sequence, remembering the candidates.
+//   OUT_PREFIX.slim.sequences.fa: candidate sequences, headed "seq_ID".
+//   OUT_PREFIX.slim.samples.tsv: one row per candidate: its generation, pedigree
+//     ID, rank, whether it is a recombinant, its recombinant ancestor and its
+//     previous candidate (tag and tagF above).
+//   OUT_PREFIX.slim.recombinants.tsv: one row per recombinant: its generation,
+//     pedigree ID, parents, breakpoint (the position at which copying switches
+//     from one parent to the other) and whether its sequence differs from both
+//     parents'.
+//   With WRITE_ALL, also OUT_PREFIX.slim.pedigree.tsv (every individual) and
+//     OUT_PREFIX.slim.all_sequences.fa.
 
 initialize() {
     initializeSLiMModelType("WF");
@@ -56,9 +81,16 @@ initialize() {
         defineConstant("MU", 1e-3);
     if (!exists("EFF_RECOMB"))
         defineConstant("EFF_RECOMB", 0.2);
+    if (!exists("S_MAX"))
+        defineConstant("S_MAX", 100);
+    if (!exists("WRITE_ALL"))
+        defineConstant("WRITE_ALL", F);
 
     defineConstant("OUT_FASTA", OUT_PREFIX + ".slim.sequences.fa");
+    defineConstant("OUT_SAMPLES", OUT_PREFIX + ".slim.samples.tsv");
+    defineConstant("OUT_RECOMBINANTS", OUT_PREFIX + ".slim.recombinants.tsv");
     defineConstant("OUT_PEDIGREE", OUT_PREFIX + ".slim.pedigree.tsv");
+    defineConstant("OUT_ALL_FASTA", OUT_PREFIX + ".slim.all_sequences.fa");
     defineConstant("OUT_TREES", OUT_PREFIX + ".slim.ts");
 
     if (!isInteger(N) | (N < 1))
@@ -75,6 +107,8 @@ initialize() {
         stop("MU must be in [0, 1).");
     if ((EFF_RECOMB < 0.0) | (EFF_RECOMB > 1.0))
         stop("EFF_RECOMB must be a probability in [0, 1].");
+    if (!isInteger(S_MAX) | (S_MAX < 1))
+        stop("S_MAX must be a positive integer.");
 
     defineConstant("END_TICK", GENS + 1);
 
@@ -98,27 +132,21 @@ initialize() {
 
 1 late() {
     sim.addSubpop("p1", 1);
-    sim.setValue("sequence_count", 0);
-
     p1.setCloningRate(1.0);
+    founder = p1.individuals;
+    founder.tag = -1;
+    founder.tagF = -1.0;
 
-    for (ind in p1.individuals) {
-        ind.setValue("breakpoints", integer(0));
-        ind.setValue("copy_parent", -1);
-        ind.setValue("is_clonal", F);
-    }
-
-    // copy_parent provides the initial genome.
-    // breakpoints indicate where switching to the other parent occurs.
-    // e.g.,
-    // In a 1000-base genome with parents a and b,
-    // parent a as the copy parent, and
-    // 0-based breakpoint at 500,
-    // the segment [0, 500) comes from parent a and [500, 1000) from parent b.
     writeFile(
-        OUT_PEDIGREE,
-        "gen\tchild\tparent1\tparent2\tis_clonal\tcopy_parent\tbreakpoints\tis_recombinant"
+        OUT_SAMPLES,
+        "gen\tid\trank\tis_recombinant\trecombinant_ancestor\tprev_candidate"
     );
+    writeFile(
+        OUT_RECOMBINANTS,
+        "gen\tid\tparent1\tparent2\tbreakpoint\tdetectable"
+    );
+    if (WRITE_ALL)
+        writeFile(OUT_PEDIGREE, "gen\tchild\tparent1\tparent2\tbreakpoint\tis_recombinant");
 }
 
 
@@ -140,86 +168,96 @@ first() {
 
 
 recombination() {
+    // Exactly one breakpoint: [0, breakpoint) is copied from the first parent's
+    // haplosome, [breakpoint, L) from the second's.
     breakpoints = integer(0);
-
     if (L > 1)
         breakpoints = rdunif(1, 1, sim.chromosome.lastPosition);
-
-    // Did this when there could be multiple breakpoints.
-    sim.setValue("pending_breakpoints", sort(unique(breakpoints)));
-    sim.setValue("pending_copy_parent", haplosome1.individual.pedigreeID);
-
+    sim.setValue("pending_breakpoints", breakpoints);
     return T;
 }
 
 
 modifyChild() {
-    breaks = integer(0);
-    copyParent = parent1.pedigreeID;
-
-    if (!isCloning) {
+    if (isCloning) {
+        child.tag = parent1.tag;
+        child.tagF = parent1.tagF;
+    } else {
         breaks = sim.getValue("pending_breakpoints");
-        copyParent = sim.getValue("pending_copy_parent");
-        if (isNULL(breaks) | isNULL(copyParent))
+        if (isNULL(breaks))
             stop("Missing recombination record for a two-parent event.");
+        sim.setValue("pending_breakpoints", NULL);
+        // A child identical to one of its parents carries no trace of the
+        // recombination.
+        sequence = child.haplosomes[0].nucleotides();
+        detectable = (sequence != parent1.haplosomes[0].nucleotides()) &
+            (sequence != parent2.haplosomes[0].nucleotides());
+        child.setValue("breakpoint", size(breaks) ? breaks[0] else -1);
+        child.setValue("detectable", detectable);
+        child.tag = child.pedigreeID;
+        child.tagF = -1.0;
     }
-
-    child.setValue("breakpoints", breaks);
-    child.setValue("copy_parent", copyParent);
-    // isCloning is supplied by modifyChild.
-    child.setValue("is_clonal", isCloning);
-    sim.setValue("pending_breakpoints", NULL);
-    sim.setValue("pending_copy_parent", NULL);
-
     return T;
 }
 
 
 late() {
     inds = p1.individuals;
-    // Keep the full pedigree, including individuals with no descendants at GEN.
-    sim.treeSeqRememberIndividuals(inds, permanent=T);
-    sim.setValue("sequence_count", sim.getValue("sequence_count") + size(inds));
-    records = string(size(inds));
-    sequences = string(size(inds));
+    gen = community.tick - 1;
 
-    for (i in seqLen(size(inds))) {
-        ind = inds[i];
-        sequences[i] = ">seq_" + ind.pedigreeID + "\n" +
-            ind.haplosomes[0].nucleotides();
-        parents = ind.pedigreeParentIDs;
-        breaks = ind.getValue("breakpoints");
-        breakText = ".";
-
-        if (size(breaks) > 0)
-            breakText = paste(breaks, sep=",");
-        isRecombinant = (size(breaks) > 0) & (parents[0] != parents[1]);
-
-        records[i] = paste(
-            c(
-                community.tick - 1,
-                ind.pedigreeID,
-                parents,
-                asInteger(ind.getValue("is_clonal")),
-                ind.getValue("copy_parent"),
-                breakText,
-                asInteger(isRecombinant)
-            ),
-            sep="\t"
-        );
+    recombinants = inds[inds.tag == inds.pedigreeID];
+    if (size(recombinants) > 0) {
+        parents = recombinants.pedigreeParentIDs;
+        rows = string(size(recombinants));
+        for (j in seqAlong(recombinants)) {
+            ind = recombinants[j];
+            rows[j] = paste(c(
+                gen, ind.pedigreeID, parents[2 * j], parents[2 * j + 1],
+                ind.getValue("breakpoint"), asInteger(ind.getValue("detectable"))
+            ), sep="\t");
+        }
+        writeFile(OUT_RECOMBINANTS, rows, append=T);
     }
 
-    writeFile(OUT_PEDIGREE, records, append=T);
-    // Overwrite at gen 0, then append each subsequent cohort once.
-    writeFile(OUT_FASTA, sequences, append=(community.tick != 1));
+    // The first S_MAX individuals in a uniformly random order are candidates.
+    order = order(runif(size(inds)));
+    num_candidates = min(S_MAX, size(inds));
+    candidates = inds[order[seqLen(num_candidates)]];
+    writeFile(
+        OUT_SAMPLES,
+        asString(gen) + "\t" + asString(candidates.pedigreeID) + "\t" +
+            asString(seqLen(num_candidates)) + "\t" +
+            asString(asInteger(candidates.tag == candidates.pedigreeID)) + "\t" +
+            asString(candidates.tag) + "\t" + asString(asInteger(candidates.tagF)),
+        append=T
+    );
+    sequences = sapply(candidates, '">seq_" + applyValue.pedigreeID + "\\n" + applyValue.haplosomes[0].nucleotides();');
+    // Overwrite at generation 0, then append.
+    writeFile(OUT_FASTA, sequences, append=(gen > 0));
+    sim.treeSeqRememberIndividuals(candidates, permanent=T);
+    // Children of a candidate have it as their nearest candidate ancestor.
+    candidates.tagF = asFloat(candidates.pedigreeID);
+
+    if (WRITE_ALL) {
+        parents = inds.pedigreeParentIDs;
+        rows = string(size(inds));
+        for (j in seqAlong(inds)) {
+            ind = inds[j];
+            isRecombinant = ind.tag == ind.pedigreeID;
+            rows[j] = paste(c(
+                gen, ind.pedigreeID, parents[2 * j], parents[2 * j + 1],
+                isRecombinant ? ind.getValue("breakpoint") else -1,
+                asInteger(isRecombinant)
+            ), sep="\t");
+        }
+        writeFile(OUT_PEDIGREE, rows, append=T);
+        sequences = sapply(inds, '">seq_" + applyValue.pedigreeID + "\\n" + applyValue.haplosomes[0].nucleotides();');
+        writeFile(OUT_ALL_FASTA, sequences, append=(gen > 0));
+    }
 }
 
 
 END_TICK late() {
     sim.treeSeqOutput(OUT_TREES);
-    catn("Write " + sim.getValue("sequence_count") + " sequences from gen 0.." + GENS + " to " + OUT_FASTA);
-    catn("Write pedigree records to " + OUT_PEDIGREE);
-    catn("Write tree sequence with the full pedigree to " + OUT_TREES);
-
     sim.simulationFinished();
 }

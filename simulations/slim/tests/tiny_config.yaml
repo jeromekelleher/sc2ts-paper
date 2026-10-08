@@ -9,7 +9,7 @@ pathogens:
       L: 1000
       MU: 2.0e-3
       EFF_RECOMB: 0.2
-    p_values: [0.5, 1.0]
+    samples_per_day: [10, 20]
 replicates: 1
 seed: 1
 k_values: [3]

@@ -3,12 +3,13 @@ This Snakemake workflow measures how well sc2ts recovers recombinants and the
 overall ARG from simulated pathogen sequences, where the truth is known.
 
 For each pathogen and replicate, `santasim_like.slim` simulates a neutral, haploid
-Wright-Fisher population that grows from a single founder, recording the full
-pedigree and tree sequence. Individuals are sampled from every generation with each
-of the pathogen's sampling probabilities `P`, and sc2ts is run on their sequences
-for each value of `k` (`num_mismatches`). The inferred ARG is then scored against:
+Wright-Fisher population that grows from a single founder. For each of the
+pathogen's numbers of samples per day `S`, `S` individuals are sampled from every
+generation, and sc2ts is run on their sequences for each value of `k`
+(`num_mismatches`). The inferred ARG is then scored against:
 
-- the **pedigree**, for recombinant detection in each sample, and
+- the **recombination history** SLiM records, for recombinant detection in each
+  sample, and
 - the **true ARG**, the SLiM tree sequence simplified to the samples, with
   [tscompare](https://github.com/tskit-dev/tscompare).
 
@@ -46,27 +47,45 @@ snakemake --cores 4 results/tiny/summary.csv --configfile tests/tiny_config.yaml
 ### Configuration
 `config.yaml` lists the pathogens studied under `pathogens`, each with its SLiM
 parameters under `slim` (see `santasim_like.slim` for what they mean) and its
-sampling probabilities `P` under `p_values`. To add a pathogen, add an entry
-there. The rest of the config is shared: the number of `replicates`, the
+numbers of samples per day under `samples_per_day`. To add a pathogen, add an
+entry there. The rest of the config is shared: the number of `replicates`, the
 `k_values`, and the other sc2ts `extend` parameters under `sc2ts`. Replicate `r`
-uses SLiM seed `seed + r`, and the same seed for sampling, so for a given
-replicate the samples are nested as `P` increases. The founder is always sampled
-and is used as the sc2ts reference.
+uses SLiM seed `seed + r`. The founder is always sampled and is used as the sc2ts
+reference.
 
 Pathogens so far:
 - `coronavirus`: a generic coronavirus, with a 30 kb genome, 0.0008 substitutions per
   site per year and a 5.5 day generation time (about 0.36 mutations per genome per
   generation), growing to 1,000 cases per generation over 20 generations and
-  staying there for 80 more. 1% of transmissions are recombinant. Sampled with
-  P = 0.02 and 0.1.
+  staying there for 80 more. 1% of transmissions are recombinant. 20 and 100
+  samples per day.
 - `sars_like`: SARS-CoV-like, with a 30 kb genome, 5e-4 substitutions per site per year
-  and one generation per day, growing to 10,000 cases per generation over 6 months and
-  simulated for 2 years. Sampled with P = 0.02 and 0.1.
+  and one generation per day, growing to 1,000,000 cases per generation over 50 days
+  and simulated for 100. 200 and 1,000 samples per day.
 - `flu_like`: pdm2009 H1N1-like, with a 13 kb genome, 2.75e-3 substitutions per site per
-  year and one generation per day, with the same demography as `sars_like`. Sampled with
-  P = 0.02 and 0.1.
+  year and one generation per day, with the same demography as `sars_like`. 200 and
+  1,000 samples per day.
 
 Each generation is one day, starting on 2026-01-01.
+
+#### Sampling and recombinant ancestry in SLiM
+With a million individuals per generation, keeping every individual's sequence and
+the full pedigree isn't feasible, so SLiM does the sampling and keeps track of what
+the truth needs as it goes (see the comments at the top of `santasim_like.slim`):
+
+- Each generation, SLiM puts the individuals in a random order and keeps the first
+  `S_MAX`, the largest of the pathogen's `samples_per_day`, as *candidates*, with
+  their rank. Sampling `S` per day takes the candidates of rank below `S`: a uniform
+  random sample of each generation (all of it, if smaller), nested as `S`
+  increases. Only candidates are remembered in the tree sequence and have their
+  sequences written.
+- Each individual inherits, along its clonal line, its nearest recombinant ancestor
+  and its nearest candidate ancestor since then, which SLiM writes for each
+  candidate. Recombinants (rare) are written with their breakpoint and whether they
+  differ from both parents.
+
+At N = 1,000,000 with 1,000 samples per day this takes about 2 minutes and 9 GB
+for `sars_like`.
 
 #### No time-traveller filtering
 On real data, sc2ts holds back any sample whose HMM cost (mismatches plus `k` times
@@ -81,8 +100,8 @@ methods).
 
 Simulated samples have exact dates and no sequencing errors, so here the filter
 only costs us samples: in the coronavirus simulation with the Viridian settings
-(threshold 7), 39% of samples at P = 0.02 and 3% at P = 0.1 were held back and
-never added to the ARG. So `hmm_cost_threshold` is set high enough (1,000,000) that
+(threshold 7) and about 20 and 100 samples per day, 39% and 3% of samples were
+held back and never added to the ARG. So `hmm_cost_threshold` is set high enough (1,000,000) that
 every sample is added on its own day. It can't simply be left out, as sc2ts then defaults it to 5.
 With nothing held back the retrospective group parameters are never used, so they
 are left out and take sc2ts's defaults.
@@ -91,15 +110,15 @@ are left out and take sc2ts's defaults.
 ### Steps
 | Rule | Command | Output |
 |---|---|---|
-| `run_slim` | `santasim_like.slim` | `sim.slim.{ts,sequences.fa,pedigree.tsv}` |
+| `run_slim` | `santasim_like.slim` | `sim.slim.{ts,sequences.fa,samples.tsv,recombinants.tsv}` |
 | `make_reference` | | `reference.fa`, the founder's sequence |
-| `sample` | `pipeline.py sample` | `p{P}/true.trees`, the true ARG of the samples |
-| `export_samples` | `pipeline.py export-samples` | `p{P}/{sequences.fa,metadata.tsv}` |
-| `make_truth` | `pipeline.py make-truth` | `p{P}/truth.csv` |
-| `import_dataset`, `zip_dataset` | `sc2ts import-*` | `p{P}/dataset.vcz.zip` |
-| `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `p{P}/k{k}/inferred.ts`, the final day's ARG, and the match DB |
-| `postprocess` | `sc2ts postprocess` | `p{P}/k{k}/inferred_pp.ts`, with exact matches added |
-| `evaluate` | `pipeline.py evaluate` | `p{P}/k{k}/{evaluation,events,placement,samples}.csv` |
+| `sample` | `pipeline.py sample` | `s{S}/true.trees`, the true ARG of the samples |
+| `export_samples` | `pipeline.py export-samples` | `s{S}/{sequences.fa,metadata.tsv}` |
+| `make_truth` | `pipeline.py make-truth` | `s{S}/truth.csv` |
+| `import_dataset`, `zip_dataset` | `sc2ts import-*` | `s{S}/dataset.vcz.zip` |
+| `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `s{S}/k{k}/inferred.ts`, the final day's ARG, and the match DB |
+| `postprocess` | `sc2ts postprocess` | `s{S}/k{k}/inferred_pp.ts`, with exact matches added |
+| `evaluate` | `pipeline.py evaluate` | `s{S}/k{k}/{evaluation,events,placement,samples}.csv` |
 | `combine` | | `results/{pathogen}/{summary,events,placement}.csv` |
 | `copy_summary` | | `summaries/{pathogen}/{summary,events,placement}.csv` |
 
@@ -114,13 +133,14 @@ snakemake --cores 4 summaries/coronavirus/summary.csv \
 
 
 ### Truth
-SLiM records which individuals were made from two parents, with a single
-breakpoint. But a sample can also carry a recombination it inherited: if the
-recombinant ancestor isn't in the inferred ARG, the sample is the first place
-sc2ts can see it. So `truth.csv` records, for each sample, its nearest
-`recombinant_ancestor` on its clonal line (itself, if it is a recombinant), that
-ancestor's breakpoint, whether the ancestor is `detectable` (its sequence differs
-from both of its parents'), and the sampled individuals in between.
+Recombinants are individuals made from two parents, with a single breakpoint. But
+a sample can also carry a recombination it inherited: if the recombinant ancestor
+isn't in the inferred ARG, the sample is the first place sc2ts can see it. So
+`truth.csv` records, for each sample, its nearest `recombinant_ancestor` on its
+clonal line (itself, if it is a recombinant), that ancestor's breakpoint, whether
+the ancestor is `detectable` (its sequence differs from both of its parents'), and
+the candidates in between, found by following each candidate's nearest candidate
+ancestor.
 
 A sample is then *expected* to be inferred to be a recombinant if it has a
 recombinant ancestor and none of the sampled individuals in between (including the
@@ -129,7 +149,8 @@ decided in `evaluate`.
 
 
 ### Output
-`results/{pathogen}/summary.csv` has one row per replicate, `P` and `k`.
+`results/{pathogen}/summary.csv` has one row per replicate, number of samples per
+day and `k`.
 
 During inference sc2ts doesn't add a node for a sample identical to one already in
 the ARG (an HMM cost of 0), but only counts it against that node. `sc2ts

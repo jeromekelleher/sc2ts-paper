@@ -1,8 +1,8 @@
 # The pathogens studied. Each has a set of SLiM parameters (see
-# santasim_like.slim for their meaning) and the probabilities with which
-# individuals are sampled across all generations. The founder is always
-# sampled, and the same draws are used for each sampling probability, so
-# samples are nested as it increases.
+# santasim_like.slim for their meaning) and the numbers of individuals sampled
+# from each generation (day). Samples are a uniform random subset of each
+# generation (all of it, if smaller), nested as the number increases, and the
+# founder is always sampled.
 pathogens:
   coronavirus:
     # A generic coronavirus: ~30 kb genome, 0.0008 substitutions/site/year
@@ -16,29 +16,29 @@ pathogens:
       L: 30000
       MU: 1.2e-5
       EFF_RECOMB: 0.01
-    p_values: [0.02, 0.1]
+    samples_per_day: [20, 100]
   sars_like:
     # SARS-CoV-like
     # https://pmc.ncbi.nlm.nih.gov/articles/PMC9297283/#CR30
     slim:
-      N: 10000
-      GENS: 730 # 2 years
-      GROWTH_GENS: 180  # 6 months
+      N: 1000000
+      GENS: 100  # days
+      GROWTH_GENS: 50  # days
       L: 30000  # SARS-CoV-1/2
       MU: 1.37e-6 # 5e-4 (/site/year) / 365 days
       EFF_RECOMB: 1.64e-4 # 2e-6 (/site/year) x L / 365 days
-    p_values: [0.02, 0.1]
+    samples_per_day: [200, 1000]
   flu_like:
     # pdm2009-like H1N1
     # https://www.pnas.org/doi/10.1073/pnas.1918304117#supplementary-materials
     slim:
-      N: 10000
-      GENS: 730 # 2 years
-      GROWTH_GENS: 180  # 6 months
+      N: 1000000
+      GENS: 100  # days
+      GROWTH_GENS: 50  # days
       L: 13000  # pdm2009 H1N1
       MU: 7.53e-6 # 2.75e-3 (/site/year) / 365 days
       EFF_RECOMB: 6.85e-4 # 0.25 (/lineage/year) / 365 days
-    p_values: [0.02, 0.1]
+    samples_per_day: [200, 1000]
 
 # Independent SLiM runs per pathogen. Replicate r uses SLiM seed seed + r.
 replicates: 1
