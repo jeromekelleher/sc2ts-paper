@@ -26,6 +26,17 @@ pathogens:
     L: 13000  # pdm2009 H1N1
     MU: 7.53e-6 # 2.75e-3 (/site/year) / 365 days
     EFF_RECOMB: 6.85e-4 # 0.25 (/lineage/year) / 365 days
+  coronavirus:
+    # A generic coronavirus: ~30 kb genome, 0.0008 substitutions/site/year
+    # and a 5.5 day generation time (as in synthetic_recombinants), so
+    # ~0.36 mutations per genome per generation. 1% of transmissions are
+    # recombinant.
+    N: 1000
+    GENS: 100
+    GROWTH_GENS: 20
+    L: 30000
+    MU: 1.2e-5
+    EFF_RECOMB: 0.01
 
 # Independent SLiM runs per pathogen. Replicate r uses SLiM seed seed + r.
 replicates: 1
@@ -33,7 +44,7 @@ seed: 42
 
 # Sampling probabilities across all generations; the founder is always sampled.
 # The same draws are used for each P, so samples are nested as P increases.
-P: [0.1, 0.5, 1.0]
+p_values: [0.1, 0.5, 1.0]
 
 # sc2ts num_mismatches values.
 k_values: [3, 4, 5]

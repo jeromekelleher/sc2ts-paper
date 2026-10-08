@@ -1,11 +1,10 @@
 """
-Export the sequences, sc2ts metadata and true recombination status of the
-individuals sampled in a simplified SLiM tree sequence.
+Export the sequences and sc2ts metadata of the individuals sampled in a
+simplified SLiM tree sequence.
 """
 import datetime
 
 import click
-import numpy as np
 import pandas as pd
 import tskit
 
@@ -46,48 +45,16 @@ def read_fasta(path, names):
     return sequences
 
 
-def truth_table(pedigree, sequences):
-    """
-    Return the pedigree rows for the sampled individuals, with a "detectable"
-    column: a recombinant is only detectable if its sequence differs from both
-    of its parents'.
-    """
-    df = pedigree.copy()
-    df.insert(0, "strain", [strain_name(c) for c in df.child])
-    df["is_recombinant"] = df.is_recombinant.astype(bool)
-    df["breakpoint"] = np.where(
-        df.is_recombinant, pd.to_numeric(df.breakpoints, errors="coerce"), -1
-    ).astype(int)
-    detectable = []
-    for row in df.itertuples():
-        child = sequences[row.strain]
-        detectable.append(
-            row.is_recombinant
-            and child != sequences[strain_name(row.parent1)]
-            and child != sequences[strain_name(row.parent2)]
-        )
-    df["detectable"] = detectable
-    return df[
-        ["strain", "gen", "parent1", "parent2", "is_recombinant", "breakpoint",
-         "detectable"]
-    ]
-
-
 @click.command()
 @click.argument("sampled_ts", type=click.Path(exists=True, dir_okay=False))
 @click.argument("fasta", type=click.Path(exists=True, dir_okay=False))
 @click.argument("pedigree", type=click.Path(exists=True, dir_okay=False))
 @click.argument("output_fasta", type=click.Path(dir_okay=False))
 @click.argument("output_metadata", type=click.Path(dir_okay=False))
-@click.argument("output_truth", type=click.Path(dir_okay=False))
-def run(sampled_ts, fasta, pedigree, output_fasta, output_metadata, output_truth):
-    ts = tskit.load(sampled_ts)
-    ids = sample_pedigree_ids(ts)
-    df = pd.read_csv(pedigree, sep="\t").set_index("child", drop=False).loc[ids]
-    # Parents are needed to tell whether a recombinant is detectable; the
-    # founder has none.
-    related = set(ids) | set(df.parent1[df.parent1 >= 0]) | set(df.parent2[df.parent2 >= 0])
-    sequences = read_fasta(fasta, [strain_name(x) for x in related])
+def run(sampled_ts, fasta, pedigree, output_fasta, output_metadata):
+    ids = sample_pedigree_ids(tskit.load(sampled_ts))
+    df = pd.read_csv(pedigree, sep="\t").set_index("child").loc[ids]
+    sequences = read_fasta(fasta, [strain_name(x) for x in ids])
 
     with open(output_fasta, "w") as f:
         for pedigree_id in ids:
@@ -95,11 +62,10 @@ def run(sampled_ts, fasta, pedigree, output_fasta, output_metadata, output_truth
             print(f">{name}\n{sequences[name]}", file=f)
 
     metadata = pd.DataFrame({
-        "Run": [strain_name(c) for c in df.child],
+        "Run": [strain_name(c) for c in ids],
         "date": [str(START_DATE + datetime.timedelta(days=int(g))) for g in df.gen],
     })
     metadata.to_csv(output_metadata, sep="\t", index=False)
-    truth_table(df, sequences).to_csv(output_truth, index=False)
 
 
 if __name__ == "__main__":

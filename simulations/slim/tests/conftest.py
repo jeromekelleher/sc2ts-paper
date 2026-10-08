@@ -6,7 +6,7 @@ import pytest
 import tskit
 from click.testing import CliRunner
 
-from scripts import export_samples, sample_slim
+from scripts import export_samples, make_truth, sample_slim
 
 
 SLIM_SCRIPT = pathlib.Path(__file__).parent.parent / "santasim_like.slim"
@@ -58,7 +58,13 @@ def exported(slim_prefix, tmp_path_factory):
         export_samples.run,
         [str(out / "true.trees"), f"{slim_prefix}.slim.sequences.fa",
          f"{slim_prefix}.slim.pedigree.tsv", str(out / "sequences.fa"),
-         str(out / "metadata.tsv"), str(out / "truth.csv")],
+         str(out / "metadata.tsv")],
+    )
+    assert result.exit_code == 0, result.output
+    result = runner.invoke(
+        make_truth.run,
+        [str(out / "true.trees"), f"{slim_prefix}.slim.sequences.fa",
+         f"{slim_prefix}.slim.pedigree.tsv", str(out / "truth.csv")],
     )
     assert result.exit_code == 0, result.output
     return out

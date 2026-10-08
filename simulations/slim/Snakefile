@@ -18,7 +18,7 @@ configfile: "config.yaml"
 
 PATHOGENS = config["pathogens"]
 REPLICATES = list(range(config["replicates"]))
-P_VALUES = [str(p) for p in config["P"]]
+P_VALUES = [str(p) for p in config["p_values"]]
 K_VALUES = config["k_values"]
 
 DIR = "results/{pathogen}/rep{rep}"
@@ -40,7 +40,7 @@ def seed(wildcards):
 
 rule all:
     input:
-        "results/summary.csv",
+        expand("results/{pathogen}/summary.csv", pathogen=PATHOGENS),
 
 
 rule run_slim:
@@ -88,7 +88,7 @@ rule sample:
         seed=seed,
     shell:
         """
-        python scripts/sample_slim.py {input} {output} \
+        python -m scripts.sample_slim {input} {output} \
             --probability {wildcards.p} --seed {params.seed}
         """
 
@@ -101,12 +101,25 @@ rule export_samples:
     output:
         fasta=f"{SAMPLE_DIR}/sequences.fa",
         metadata=f"{SAMPLE_DIR}/metadata.tsv",
-        truth=f"{SAMPLE_DIR}/truth.csv",
     shell:
         """
-        python scripts/export_samples.py \
+        python -m scripts.export_samples \
             {input.trees} {input.fasta} {input.pedigree} \
-            {output.fasta} {output.metadata} {output.truth}
+            {output.fasta} {output.metadata}
+        """
+
+
+rule make_truth:
+    input:
+        trees=f"{SAMPLE_DIR}/true.trees",
+        fasta=f"{SIM}.slim.sequences.fa",
+        pedigree=f"{SIM}.slim.pedigree.tsv",
+    output:
+        f"{SAMPLE_DIR}/truth.csv",
+    shell:
+        """
+        python -m scripts.make_truth \
+            {input.trees} {input.fasta} {input.pedigree} {output}
         """
 
 
@@ -155,7 +168,7 @@ rule infer:
     shell:
         """
         rm -rf {params.sc2ts_dir}
-        python scripts/write_sc2ts_config.py {output.config} \
+        python -m scripts.write_sc2ts_config {output.config} \
             --dataset {input.dataset} \
             --reference {input.reference} \
             --run-id {params.run_id} \
@@ -172,18 +185,24 @@ rule infer:
 
 
 rule evaluate:
+    """
+    Per-sample results stay here; the rest are combined across runs.
+    """
     input:
         true=f"{SAMPLE_DIR}/true.trees",
         inferred=f"{RUN_DIR}/inferred.ts",
         truth=f"{SAMPLE_DIR}/truth.csv",
     output:
-        summary=f"{RUN_DIR}/evaluation.csv",
+        evaluation=f"{RUN_DIR}/evaluation.csv",
+        events=f"{RUN_DIR}/events.csv",
+        placement=f"{RUN_DIR}/placement.csv",
         samples=f"{RUN_DIR}/samples.csv",
+    params:
+        output_dir=RUN_DIR,
     shell:
         """
-        python scripts/evaluate.py \
-            {input.true} {input.inferred} {input.truth} \
-            {output.summary} {output.samples} \
+        python -m scripts.evaluate \
+            {input.true} {input.inferred} {input.truth} {params.output_dir} \
             --pathogen {wildcards.pathogen} --rep {wildcards.rep} \
             --p {wildcards.p} --k {wildcards.k}
         """
@@ -191,21 +210,26 @@ rule evaluate:
 
 rule combine:
     input:
-        expand(
-            f"{RUN_DIR}/evaluation.csv",
-            pathogen=PATHOGENS,
-            rep=REPLICATES,
-            p=P_VALUES,
-            k=K_VALUES,
-        ),
+        **{
+            name: expand(
+                f"{RUN_DIR}/{name}.csv",
+                rep=REPLICATES,
+                p=P_VALUES,
+                k=K_VALUES,
+                allow_missing=True,
+            )
+            for name in ["evaluation", "events", "placement"]
+        },
     output:
-        "results/summary.csv",
+        evaluation="results/{pathogen}/summary.csv",
+        events="results/{pathogen}/events.csv",
+        placement="results/{pathogen}/placement.csv",
     run:
         import pandas as pd
 
-        pd.concat([pd.read_csv(path) for path in input]).to_csv(
-            output[0], index=False
-        )
+        for name in ["evaluation", "events", "placement"]:
+            df = pd.concat([pd.read_csv(path) for path in input[name]])
+            df.to_csv(output[name], index=False)
 
 
 rule clean:

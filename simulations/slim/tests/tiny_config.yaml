@@ -1,5 +1,5 @@
 # A small configuration for checking the whole pipeline runs, e.g.
-#   snakemake --cores 4 --configfile tests/tiny_config.yaml
+#   snakemake --cores 4 results/tiny/summary.csv --configfile tests/tiny_config.yaml
 pathogens:
   tiny:
     N: 20
@@ -10,7 +10,7 @@ pathogens:
     EFF_RECOMB: 0.2
 replicates: 1
 seed: 1
-P: [0.5, 1.0]
+p_values: [0.5, 1.0]
 k_values: [3]
 num_threads: 2
 sc2ts:
