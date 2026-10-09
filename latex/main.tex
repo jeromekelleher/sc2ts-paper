@@ -651,6 +651,19 @@ but only 40\% of Alpha$\times$Alpha recombinants,
 whose parents differ at few sites.
 Recombination between closely related viruses
 may therefore be substantially under-detected.
+
+To assess sc2ts more broadly, we also ran it on forward-time simulations
+of epidemics of a coronavirus-like and an influenza-like pathogen,
+in which the full ARG is known
+(Methods, \supref{sec:slim_simulations}).
+% TODO: provisional (pilot/rep0); update from final SLiM runs
+Inferred recombinants were almost always genuine (precision 0.89--1 with $k=4$),
+and the inferred breakpoint interval usually contained the true breakpoint.
+The fraction of recombination events detected depended mainly
+on how much genetic diversity had accumulated:
+with $k=4$, about 50--65\% of events were detected for the coronavirus-like pathogen,
+but fewer than 10\% in the first 100 days of an influenza-like epidemic,
+where the parents of most recombinants differ at only a handful of sites.
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -1083,6 +1096,14 @@ assumption that genetic diversity is gradually accumulating within
 the structure holds. Large changes (i.e, saltation events) present
 significant challenges, and the results of the algorithm should
 be regarded more critically in these situations.
+Simulations of other pathogens (\supref{sec:slim_simulations})
+suggest that the recombinants sc2ts infers are reliable
+across a range of mutation rates, population sizes and sampling densities,
+but that recombination early in an epidemic, or in a slowly evolving pathogen,
+leaves too few distinguishing mutations to be detected by sc2ts
+or any other sequence-based method.
+We have not considered reassortment in segmented genomes,
+which would require extensions to the model.
 Future methodological improvements may combine the strengths
 of sophisticated model-based inferences with the power
 of non-parametric inference~\cite{Bisschop2025likelihoods}.
@@ -1911,6 +1932,101 @@ Each multiple uses 500 recombinants per cross and all 338 controls.
 The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
 (\url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/synthetic_recombinants}).
 
+\subsubsection*{Simulation of pathogen epidemics}
+To evaluate sc2ts on data where the full ARG is known,
+we simulated epidemics of two pathogens forwards in time with
+SLiM~\cite{Haller2019}, using a nucleotide-based, neutral, haploid
+Wright--Fisher model inspired by SANTA-SIM~\cite{Jariani2019santasim}.
+The population starts from a single founder, grows exponentially to
+$N$ cases per generation, and then remains at that size.
+Mutations follow the Jukes--Cantor model, at rate $\mu$ per site per generation.
+A fraction $\rho$ of births are recombinant, with two distinct parents
+chosen uniformly from the previous generation
+and a single breakpoint uniform along the genome;
+all other births copy a single parent.
+The pathogens bracket the rates of evolution and epidemic sizes of plausible
+pandemic viruses (Table~\ref{tab:slim_parameters}). The coronavirus-like pathogen
+has a 30\,kb genome, a substitution rate of $8\times10^{-4}$ per site per year
+and a generation time of 5.5 days
+(as for the synthetic recombinants above),
+so that $\mu L \approx 0.36$ mutations per genome per generation.
+It grows to $N=1{,}000$ over 20 generations and is simulated for 200
+generations (about 3 years).
+We set $\rho=0.5\%$, several times higher than estimates for
+SARS-CoV-2, to give enough recombination events to measure.
+The influenza-like pathogen is modelled on pandemic 2009 H1N1,
+% TODO cite PNAS source for pdm2009 rates (https://www.pnas.org/doi/10.1073/pnas.1918304117)
+with a 13\,kb genome, a substitution rate of $2.75\times10^{-3}$ per site per year,
+one generation per day, and 0.25 recombinations per lineage per year.
+It grows to $N=10^6$ over 50 days and is simulated for 100 days.
+The genome is modelled as a single unsegmented sequence,
+so reassortment is not represented.
+A SARS-CoV-like pathogen (substitution rate $5\times10^{-4}$ per site per year,
+with the influenza-like demography) was also simulated,
+but accumulates too little diversity in 100 days
+(about 4 mutations along a lineage)
+for any recombinants to be detected.
+
+Each generation is treated as one day of sampling.
+For each number of samples per day $S$
+(20 and 100 for the coronavirus-like pathogen, 200 and 1,000 for the influenza-like),
+$S$ individuals are drawn uniformly at random from each generation
+(all of it, if smaller), with the smaller samples nested in the larger.
+Since keeping every individual's sequence at $N=10^6$ is not feasible,
+SLiM records only individuals that may be sampled, with tree-sequence
+recording~\cite{Haller2019,Gopalan2025bridging} giving the true ARG
+of the samples.
+Each individual also inherits, along its clonal line,
+its nearest recombinant ancestor and the nearest sampled individual since then,
+from which the recombinants each sample carries are reconstructed.
+The founder's sequence is used as the reference.
+
+Sc2ts was run on the samples for each value of $S$
+with $k$ set to 3, 4 and 5,
+using the parameters of the Viridian inference otherwise,
+except that filtering of time travellers was disabled
+(by setting the HMM cost threshold to $10^6$),
+since the simulated samples have exact dates and no sequencing errors,
+and every sample can then be added on its own day.
+The final ARG was run through \texttt{sc2ts postprocess}
+to add exact matches as sample nodes,
+without its mutation updates, so that the ARG is otherwise as inferred.
+
+A sample can carry a recombination that it inherited,
+and if no sampled individual on its clonal line since the recombinant
+ancestor (including the ancestor) is in the ARG,
+the sample is the first place sc2ts can see the event.
+We therefore counted a sample as an expected recombinant
+if it has such an unrepresented recombinant ancestor,
+and an event as detectable if the recombinant's sequence
+differs from both of its parents'.
+A sample was inferred to be recombinant if its HMM match has more than one parent.
+Precision is computed per sample.
+Recall is computed per recombination event,
+since once sc2ts has inferred an event in one sample,
+the others carrying it correctly match the resulting recombinant node
+with a single parent.
+For events detected with a single breakpoint, we recorded
+whether the true breakpoint lies in the breakpoint interval
+of the earliest sample in which it was found, and the interval's width.
+The accuracy of the ARG as a whole was measured with
+tscompare (\url{https://github.com/tskit-dev/tscompare}),
+% TODO cite tscompare / haplotype ARF
+as the ARG Robinson--Foulds (ARF) distance,
+the fraction of the inferred ARG's node span not represented in the true ARG,
+and the true positive rate (TPR),
+the fraction of the true ARG's span represented in the inferred ARG.
+Because sequences cannot resolve every part of an ARG,
+we computed these over non-sample nodes after reducing both ARGs
+to a common form: each sample with descendants
+is replaced by an unsampled node with the sample as a leaf child,
+and non-recombinant, non-sample nodes with no mutations
+(which have the same haplotype as their parent) are removed.
+% TODO: number of replicates may change
+We ran 5 replicates of each simulation.
+The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
+(\url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/slim}).
+
 \subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian
 UShER tree from MAT~\cite{McBroome2021} to tskit format.
@@ -2327,6 +2443,8 @@ publicly available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/ma
 available at \url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/Snakefile}.
 \item The Snakemake workflow for the synthetic recombinant simulations is publicly
 available at \url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/synthetic_recombinants}.
+\item The Snakemake workflow for the pathogen epidemic simulations is publicly
+available at \url{https://github.com/jeromekelleher/sc2ts-paper/tree/main/simulations/slim}.
 \item The original code of sc2ts is publicly available on
 GitHub at \url{https://github.com/tskit-dev/sc2ts}.
 \item The Jupyter notebooks and the Mathematica script to perform the analyses in this paper are publicly available on GitHub at \url{https://github.com/jeromekelleher/sc2ts-paper/}.
@@ -2976,6 +3094,118 @@ real data, as discussed in
 and the ``Recombinant rematching'' section (Methods).
 These are usually due to [TODO EXPLAIN].
 
+\subsection{Simulations of pathogen epidemics}\label{sec:slim_simulations}
+% TODO: all numbers in this section are provisional. Coronavirus-like numbers
+% are from a pilot (100 generations, 1% recombinant, one replicate) and
+% influenza-like from replicate 0 only. Update from the final SLiM runs
+% (simulations/slim/summaries, notebooks/analysis_slim_pathogen_simulations.ipynb).
+The synthetic recombinants above test how sc2ts matches individual recombinants
+against a real ARG. To evaluate inference of the whole ARG,
+for pathogens other than SARS-CoV-2, we ran sc2ts on forward-time
+simulations of epidemics of a coronavirus-like and an influenza-like pathogen
+(see Methods for details and Table~\ref{tab:slim_parameters} for parameters).
+The two differ mainly in how much diversity accumulates.
+The coronavirus-like pathogen gains about 0.36 mutations per genome per generation
+and about 70 along a lineage over the 200 simulated generations,
+whereas the influenza-like epidemic, simulated for its first 100 days,
+gains about 0.1 per genome per generation and about 10 along a lineage,
+despite its higher substitution rate.
+The influenza-like epidemic is, however, far larger ($10^6$ cases per day)
+and more densely sampled (200 or 1,000 samples per day).
+
+\subsubsection{Recombinant detection}
+Sc2ts rarely inferred recombinants that were not genuine.
+For the coronavirus-like pathogen, precision was 0.94--1 at every value of $k$
+and sampling density: almost every sample sc2ts reported as recombinant
+carries a recombination not otherwise represented in the ARG.
+For the influenza-like pathogen precision was 0.89--1,
+except with 1,000 samples per day and $k=3$,
+where 74 of the 267 samples inferred to be recombinant were false positives
+(precision 0.72).
+% TODO: characterise these false positives (and the few coronavirus-like ones)
+
+As for the synthetic recombinants, increasing $k$ trades recall for precision.
+For the coronavirus-like pathogen, the fraction of recombination events detected
+fell from 0.6--0.7 at $k=3$ to about 0.5 at $k=5$,
+and was a little higher with 100 samples per day than with 20.
+For the influenza-like pathogen recall was low and fell steeply with $k$:
+0.15 and 0.19 at $k=3$ (200 and 1,000 samples per day),
+0.03 and 0.07 at $k=4$, and 0.02 or less at $k=5$.
+The difference is the diversity available.
+With about 10 mutations along a lineage over the whole influenza-like simulation,
+the two parents of a recombinant usually differ at only a few sites,
+split between the two sides of the breakpoint.
+A single parent then explains the recombinant with fewer mismatches than
+the $k$ it costs to add a breakpoint,
+and many recombinants differ from neither parent at all:
+only about 80\% of influenza-like events were detectable in this sense,
+compared with 93\% for the coronavirus-like pathogen.
+This is a limit of what the sequences contain rather than of sc2ts.
+In the same way, a SARS-CoV-like pathogen simulated with the influenza-like
+demography (about 4 mutations along a lineage in 100 days)
+yielded essentially no detectable recombinants.
+
+Most recombinants are not themselves sampled,
+and are seen only through their sampled descendants.
+Sc2ts detected these events at least as often as recombinants that were sampled:
+for the coronavirus-like pathogen with $k=4$,
+58\% and 65\% of detectable events seen only through descendants were found
+(20 and 100 samples per day), compared with 41\% and 55\% of those
+whose recombinant was sampled.
+
+\subsubsection{Breakpoint intervals}
+For the coronavirus-like pathogen, the true breakpoint lay within
+the inferred breakpoint interval for 97--98\% of detected events
+with 100 samples per day and 90--92\% with 20.
+Median interval widths (about 1,250--1,550 bases) are of the same order
+as in the real ARG (2,018 bases), as expected for a similar per-genome mutation rate.
+For the influenza-like pathogen, median widths (about 1,650--1,950 bases)
+were similar in bases but a much larger fraction of the 13\,kb genome,
+and the true breakpoint was in the interval for 78--90\% of detected events.
+
+\subsubsection{Exact matches and ARG accuracy}
+Many samples are identical to an earlier sample:
+15\% and 30\% of coronavirus-like samples (20 and 100 per day)
+and 28--31\% of influenza-like samples.
+For the influenza-like pathogen, nearly every sample is an exact match
+during the early growth phase, falling to 2--6\% over the last 20 days.
+Identical sequences carry no information about how they are related,
+and sc2ts places them all directly beneath the node they match,
+whereas the true genealogy among them is resolved.
+Over all nodes, the ARF between the inferred and true ARGs was 0.20--0.24
+for the coronavirus-like and 0.19--0.21 for the influenza-like pathogen,
+with TPR of 0.59--0.62 and 0.52--0.53 respectively,
+and these barely changed with $k$.
+Recombination is rare enough that the clonal topology dominates these measures,
+and at high sampling densities they are dominated by the placement
+of exact matches.
+% TODO: report arf_internal_resolved / tpr_internal_resolved from the final
+% runs, which are the fairer measures (see Methods), and say how they compare.
+Restricting the comparison to non-sample nodes, after reducing
+both ARGs to what the sequences can resolve (Methods),
+gives ARF of [TODO] and TPR of [TODO].
+
+\subsubsection{Limitations}
+The simulations are neutral and panmictic,
+with uniform sampling, exact sampling dates,
+no sequencing or assembly errors,
+and at most one breakpoint per recombination event.
+They therefore do not test sc2ts's handling of time travellers
+(which was disabled; see Methods),
+or the artefacts that produce most of the QC-failing recombinants in the
+real ARG (\supref{sec:synthetic_recombinants}).
+The influenza-like genome is a single unsegmented sequence,
+so reassortment between segments is not represented.
+
+\subsubsection{Implications for other pathogens}
+When sc2ts infers a recombinant, it is almost always genuine,
+across a range of mutation rates, epidemic sizes and sampling densities.
+Whether recombination can be detected at all is determined mainly by how
+much diversity has accumulated between co-circulating lineages.
+In a new epidemic, recombination will become detectable only as lineages diverge,
+and with low diversity a smaller $k$ will detect more events
+at some cost in precision.
+
 
 \subsection{Pango X lineages not added to the ARG}
 \label{sec:supplement_rejected_pango_x_lineages}
@@ -3609,6 +3839,28 @@ and dotted lines the fraction with an HMM cost above the inclusion threshold of 
 \label{fig:synthetic_recombinants}
 \end{figure}
 
+% TODO: generate figures/slim_simulations.pdf (fig notebook) once the final
+% SLiM runs land, uncomment, and cite from \supref{sec:slim_simulations}.
+% \begin{figure}
+% \centering
+% \includegraphics[width=\linewidth]{slim_simulations}
+% \caption{
+% Sc2ts on simulated pathogen epidemics
+% (\supref{sec:slim_simulations}).
+% (A) Precision (per sample) and (B) recall (per recombination event)
+% of inferred recombinants as a function of the recombination penalty $k$,
+% for the coronavirus-like and influenza-like pathogens at each sampling density.
+% (C) Recall at $k=4$ for detectable events whose recombinant was sampled,
+% and those seen only through sampled descendants.
+% (D) Cumulative distribution of breakpoint interval widths for detected events;
+% the dashed line is the median width for recombinants in the real ARG.
+% (E) ARF and TPR between the inferred and true ARGs,
+% over non-sample nodes after reduction to what the sequences can resolve.
+% Points show the mean over replicates and bars the range.
+% }
+% \label{fig:slim_simulations}
+% \end{figure}
+
 \newcommand{\cprheight}{4.0em}
 
 \begin{figure}
@@ -3896,6 +4148,35 @@ Method & Total    & QC Pass & QC Fail \\
 3SEQ        & 876 & 619     & 257 \\
 CovRecomb   & 233 & 213     & 20 \\
 rebar       & 417 & 396     & 21 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{Parameters of the simulated pathogen epidemics
+(Methods, \supref{sec:slim_simulations}).
+$N$ is the number of cases per generation after growth from a single founder,
+$\mu$ the mutation rate per site per generation,
+$\rho$ the fraction of births that are recombinant,
+and $\mu L$ the expected number of mutations per genome per generation.
+From \texttt{simulations/slim/config.yaml}.
+}
+\label{tab:slim_parameters}
+\centering
+\begin{tabular}{lrr}
+\toprule
+ & Coronavirus-like & Influenza-like \\
+\midrule
+Genome length $L$ (bases)         & 30,000               & 13,000 \\
+Generation time (days)            & 5.5                  & 1 \\
+Substitutions per site per year   & $8\times10^{-4}$     & $2.75\times10^{-3}$ \\
+$\mu$                             & $1.2\times10^{-5}$   & $7.5\times10^{-6}$ \\
+$\mu L$                           & 0.36                 & 0.098 \\
+$\rho$                            & $5\times10^{-3}$     & $6.85\times10^{-4}$ \\
+$N$                               & 1,000                & 1,000,000 \\
+Growth generations                & 20                   & 50 \\
+Generations simulated             & 200                  & 100 \\
+Samples per generation            & 20, 100              & 200, 1,000 \\
 \bottomrule
 \end{tabular}
 \end{table}

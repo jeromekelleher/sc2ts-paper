@@ -26,6 +26,7 @@ SARS-CoV-2.''
   \item We have made particular efforts to capture the origins of Delta and Omicron more accurately, using groups of high-quality seed samples (B.1.617.1/Kappa and B.1.617.3, early B.1.617.2/Delta, AY.4 and AY.120.1; BA.1 and BA.2), and now include lesser-sampled Omicron lineages such as BA.3 and BA.4.
   \item All analyses updated to the new ARG: 1,323 recombination nodes, of which 647 of the 1,319 single-breakpoint events pass QC; 73 Pango X lineages placed.
   \item New simulation study quantifying false positive and detection rates of recombinant inference as a function of the recombination penalty $k$.
+  \item New forward-time simulation study (SLiM) of coronavirus-like and influenza-like epidemics, scoring recombinant detection, breakpoints and overall ARG accuracy against the true ARG.
   \item Language softened throughout (``validated'' $\to$ ``corroborated''), and clearer statement of intended users.
   \item \todo{sc2ts can now be applied to other species, but we have not yet done any analysis. Decide on pathogen(s) and dataset(s) and carry out the application.}
 \end{itemize}
@@ -52,7 +53,12 @@ address all referee comments as thoroughly as possible with appropriate
 revisions.''
 
 \begin{itemize}
-  \item \todo{sc2ts can now be applied to other species, but we have not yet done any analysis. }
+  \item Done: we have evaluated sc2ts on forward-time simulations of epidemics of two
+pathogens with very different evolutionary parameters, a coronavirus-like pathogen and an
+influenza-like pathogen modelled on pandemic 2009 H1N1, where the full ARG is known
+(Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'';
+\texttt{simulations/slim}). See the response to Reviewer \#1 below for details.
+  \item \todo{sc2ts can now be applied to other species, but we have not yet applied it to real data from another pathogen.}
   \item All referee comments addressed point by point below.
 \end{itemize}
 
@@ -121,10 +127,37 @@ with the limitations and recommendations clearly established.''
   \item Same as the editor's priority point.
   \item Done: sc2ts can now be run on other species;
 simulation study of recombinant detection (see below).
-  \item \todo{sc2ts can now be applied to other species, but we have not yet done any
-analysis. Do some simulations.}
-  \item \todo{State limitations and recommendations for applying sc2ts
-to other pathogens in the Discussion.}
+  \item Done: we simulated epidemics forwards in time with SLiM under a neutral
+Wright--Fisher model with recombination, for a coronavirus-like pathogen (30\,kb,
+$8\times10^{-4}$ substitutions/site/year, 5.5 day generations, $\sim$3 years) and an
+influenza-like pathogen modelled on pdm2009 H1N1 (13\,kb, $2.75\times10^{-3}$
+substitutions/site/year, daily generations, growing to $10^6$ cases per day over 100 days),
+each at two sampling densities. We ran sc2ts with $k = 3, 4, 5$ and scored the inferred
+recombinants, breakpoints and the overall ARG against the true ARG
+(Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'';
+\texttt{simulations/slim}, \texttt{notebooks/analysis\_slim\_pathogen\_simulations.ipynb}).
+  \item Results \todo{provisional numbers; update from final runs}:
+    \begin{itemize}
+      \item Inferred recombinants are almost always genuine: precision 0.94--1 for the
+coronavirus-like pathogen and 0.89--1 for the influenza-like pathogen (0.72 at $k=3$ with
+the densest sampling).
+      \item Detection is limited mainly by the diversity available: with $k = 4$, about
+50--65\% of recombination events are detected for the coronavirus-like pathogen, but fewer
+than 10\% in the first 100 days of the influenza-like epidemic, where the parents of most
+recombinants differ at only a few sites. A SARS-CoV-like pathogen with the same demography
+gave essentially no detectable recombinants. This is a limit of the information in the
+sequences rather than of sc2ts.
+      \item Events seen only through sampled descendants of an unsampled recombinant are
+detected at least as often as those whose recombinant was sampled.
+      \item The true breakpoint lies in the inferred interval for 90--98\% (coronavirus-like)
+and 78--90\% (influenza-like) of detected events.
+    \end{itemize}
+  \item Limitations and recommendations for other pathogens are stated in the SI and
+Discussion: sc2ts is reliable when it calls a recombinant, but recombination early in an
+epidemic or in a slowly evolving pathogen is largely undetectable; a smaller $k$ recovers
+more events at some cost in precision.
+  \item Done (first draft): the Discussion now states these limitations, with details in
+the SI. \todo{Expand into fuller recommendations once final simulation results are in.}
 \end{itemize}
 
 \medskip
@@ -208,9 +241,14 @@ many recombinants beyond the HMM cost threshold for inclusion.
 recombinants''), a new SI section (``Synthetic recombinant simulations'') with
 a new supplementary figure, a summary in the Results (``Quality control and validation
 of recombination events''), and a sentence in the Discussion.
-  \item \todo{Reassortment in segmented genomes: this is out of scope}
-  \item \todo{sc2ts can now be applied to other species, but we have not yet
-done any simulations.}
+  \item Done: the new SLiM simulations include an influenza-like pathogen, modelled on
+pandemic 2009 H1N1, covering the rates and epidemic sizes of an influenza pandemic
+(see the response to the previous point and SI ``Simulations of pathogen epidemics'').
+They also cover a coronavirus-like pathogen, and two sampling densities for each.
+  \item \todo{Reassortment in segmented genomes is out of scope: the influenza-like genome
+is simulated as a single unsegmented sequence, and the sc2ts HMM assumes a single linear
+genome. Explain that reassortment would need the model extended (e.g.\ free recombination
+between segments) and note this in the Discussion (now one sentence).}
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``In parts of the introduction and results,
@@ -372,7 +410,15 @@ real sequences, which quantifies false positive and detection rates as a functio
 the recombination penalty $k$, the divergence between the parents, and the number of
 mutations separating the parents from their closest sampled relatives (Methods,
 ``Simulation of synthetic recombinants''; SI ``Synthetic recombinant simulations'').
-  \item \todo{Other pathogens simulation}.
+  \item Done: we have also added a forward-time simulation study (SLiM) of epidemics of a
+coronavirus-like and an influenza-like pathogen, in which the true ARG is known. These vary
+the mutation rate, recombination rate, population size, generation time and sampling density
+(samples per day), as the reviewer suggests. sc2ts's inferred recombinants are almost always
+genuine throughout, and the regime in which detection becomes unreliable is identified as
+the one with little accumulated diversity, such as the early stages of an epidemic
+(Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'').
+\todo{Update with final numbers; consider varying the recombination rate and simulation
+length more systematically.}
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (1b):} ``Second (although following from 1a
@@ -395,6 +441,11 @@ while the fraction of detected recombinants passing QC rises (71\% $\to$
 the procedure as a playbook for other pathogens: simulate recombinants from real
 sequences spanning the parental divergences of interest, and choose the smallest $k$
 at which detected events are consistently supported on both sides of the breakpoint.
+  \item The SLiM simulations show the same trade-off on whole simulated epidemics: as $k$
+increases, recall falls and precision rises. They also show that the best $k$ depends on
+the diversity available: with little diversity, $k = 3$ recovers several times as many
+events as $k = 4$, at some cost in precision. \todo{Add to the playbook in ``Choice of k
+parameter'' once final numbers are in.}
   \item \todo{Describe how the other heuristic parameters (e.g.\ the HMM cost threshold)
 were chosen, in the same way.}
 \end{itemize}
