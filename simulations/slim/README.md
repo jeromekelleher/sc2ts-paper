@@ -14,8 +14,9 @@ generation, and sc2ts is run on their sequences for each value of `k`
   [tscompare](https://github.com/tskit-dev/tscompare).
 
 All the code after the SLiM simulation is in `pipeline.py`, as click subcommands:
-`sample`, `export-samples`, `make-truth`, `write-sc2ts-config`, `evaluate`,
-`rematch-recombinants` and `recombinant-table`.
+`sample`, `export-samples`, `make-truth`, `write-sc2ts-config`, `evaluate` and
+`recombinant-table`. Recombinants are rematched with the script used for the
+published ARG, `arg_postprocessing/scripts/rematch_recombinants.py`.
 Tests are in `tests/`.
 
 
@@ -127,7 +128,7 @@ are left out and take sc2ts's defaults.
 | `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `s{S}/k{k}/inferred.ts`, the final day's ARG, and the match DB |
 | `postprocess` | `sc2ts postprocess` | `s{S}/k{k}/inferred_pp.ts`, with exact matches added |
 | `evaluate` | `pipeline.py evaluate` | `s{S}/k{k}/{evaluation,events,placement,samples}.csv` |
-| `rematch_recombinants` | `pipeline.py rematch-recombinants` | `s{S}/k{k}/recombinants_rematch.json` |
+| `rematch_recombinants` | `arg_postprocessing/scripts/rematch_recombinants.py` | `s{S}/k{k}/recombinants_rematch.json` |
 | `recombinant_table` | `pipeline.py recombinant-table` | `s{S}/k{k}/recombinants.csv` |
 | `combine` | | `results/{pathogen}/{summary,events,placement,recombinants}.csv` |
 | `copy_summary` | | `summaries/{pathogen}/{summary,events,placement,recombinants}.csv` |
@@ -238,12 +239,12 @@ inferred matches are in each run's `samples.csv`, which is not combined.
 #### Recombinants and mutations averted
 `results/{pathogen}/recombinants.csv` has one row per recombinant node in the
 inferred ARG per run, to compare the evidence for each recombinant with the truth.
-As for the published ARG (`arg_postprocessing/scripts/rematch_recombinants.py`),
-each recombinant is rematched against sc2ts's ARG for the day before it was added,
-using `sc2ts.inference.rematch_recombinant` (as `sc2ts rematch-recombinant` does),
-once with recombination and once forced to a single parent. This is run on the
-ARG from `sc2ts infer` (`inferred.ts`), as it needs sc2ts's daily ARGs, which are
-kept in each run's `sc2ts/results`. `mutations_averted` is `k1000_muts`, the number
+Each recombinant is rematched against sc2ts's ARG for the day before it was added,
+once with recombination and once forced to a single parent, by the script used
+for the published ARG (`arg_postprocessing/scripts/rematch_recombinants.py`, which
+runs `sc2ts rematch-recombinant` for each recombinant node), with the run's `k`.
+This is run on the ARG from `sc2ts infer` (`inferred.ts`), as it needs sc2ts's daily
+ARGs, which are kept in each run's `sc2ts/results`. `mutations_averted` is `k1000_muts`, the number
 of mutations in the single-parent match, less `num_mutations`, the number in the
 recombinant match: the measure of support for recombinants used in the paper. A
 recombinant whose single-parent match costs the same as its recombinant match

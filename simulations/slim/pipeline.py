@@ -1,7 +1,7 @@
 """
 The steps of the SLiM simulation pipeline after running SLiM itself, as click
-subcommands: sample, export-samples, make-truth, write-sc2ts-config, evaluate,
-rematch-recombinants and recombinant-table. See README.md.
+subcommands: sample, export-samples, make-truth, write-sc2ts-config, evaluate
+and recombinant-table. See README.md.
 
 Run from simulations/slim/, e.g.:
     python pipeline.py sample sim.slim.ts sim.slim.samples.tsv true.trees \
@@ -16,9 +16,7 @@ import click
 import numpy as np
 import pandas as pd
 import pyslim
-import sc2ts.cli
 import sc2ts.core
-import sc2ts.inference
 import tscompare
 import tskit
 
@@ -544,31 +542,6 @@ def score_arg(true_ts, inferred_ts):
     }
 
 
-def rematch_recombinants(inferred_ts, pattern, k):
-    """
-    Rematch every recombinant node in the inferred ARG against the ARG for the
-    day before it was added, with and without recombination, as for the
-    published ARG (arg_postprocessing/scripts/rematch_recombinants.py). The
-    daily ARGs are found by formatting ``pattern`` with each date. Return the
-    list of sc2ts RematchRecombinantsResult dicts.
-    """
-    recombinants = np.where(inferred_ts.nodes_flags & sc2ts.core.NODE_IS_RECOMBINANT)[0]
-    by_date = collections.defaultdict(list)
-    for u in recombinants:
-        by_date[inferred_ts.node(u).metadata["sc2ts"]["date_added"]].append(int(u))
-    results = []
-    # Each day's ARGs are loaded once for all the recombinants added that day.
-    for date in sorted(by_date):
-        recomb_ts = tskit.load(pattern.format(date=date))
-        base_ts = tskit.load(sc2ts.cli.find_previous_date_path(date, pattern))
-        for u in by_date[date]:
-            result = sc2ts.inference.rematch_recombinant(
-                base_ts, recomb_ts, u, num_mismatches=k
-            )
-            results.append(result.asdict())
-    return results
-
-
 def relative_segments(true_ts, sample, earlier):
     """
     Return the (left, right, mrca) segments along the genome over which the
@@ -598,9 +571,9 @@ def recombinant_table(true_ts, inferred_ts, samples, rematches):
     recombinant.
 
     num_mutations is the number of mutations in the recombinant HMM match, and
-    k1000_muts the number in the best match to a single parent (from
-    rematch_recombinants), so mutations_averted = k1000_muts - num_mutations,
-    as for the published ARG. The causal samples are those added in the same
+    k1000_muts the number in the best match to a single parent, from the
+    rematches of arg_postprocessing/scripts/rematch_recombinants.py, so
+    mutations_averted = k1000_muts - num_mutations, as for the published ARG. The causal samples are those added in the same
     group whose HMM match has more than one parent, and the node is a true
     positive if any of them is expected to be a recombinant (see
     classify_samples). The breakpoint interval and truth columns are from the
@@ -836,24 +809,6 @@ def evaluate(
         df.to_csv(output_dir / f"{name}.csv", index=False)
 
 
-@cli.command(name="rematch-recombinants")
-@click.argument("inferred_ts", type=click.Path(exists=True, dir_okay=False))
-@click.argument("pattern")
-@click.argument("output", type=click.Path(dir_okay=False))
-@click.option("--k", type=int, required=True)
-def rematch_recombinants_command(inferred_ts, pattern, output, k):
-    """
-    Rematch each recombinant node in INFERRED_TS (the final ARG from sc2ts
-    infer) against the ARG for the day before it was added, with and without
-    recombination. PATTERN is the path of sc2ts's daily ARGs, with "{date}" in
-    place of the date. Write the results to OUTPUT as JSON, as
-    arg_postprocessing/scripts/rematch_recombinants.py does.
-    """
-    results = rematch_recombinants(tskit.load(inferred_ts), pattern, k)
-    with open(output, "w") as f:
-        json.dump(results, f, indent=4)
-
-
 @cli.command(name="recombinant-table")
 @click.argument("true_ts", type=click.Path(exists=True, dir_okay=False))
 @click.argument("inferred_ts", type=click.Path(exists=True, dir_okay=False))
@@ -870,10 +825,11 @@ def recombinant_table_command(
 ):
     """
     Write OUTPUT, with one row per recombinant node in INFERRED_TS (the final
-    ARG from sc2ts infer): the mutations it averts, from the REMATCHES of
-    rematch-recombinants, whether it is a true recombinant, from SAMPLES (from
-    evaluate), and for false positives, their category, from TRUE_TS. The
-    run's parameters come first, so it can be concatenated across runs.
+    ARG from sc2ts infer): the mutations it averts, from the REMATCHES JSON of
+    arg_postprocessing/scripts/rematch_recombinants.py, whether it is a true
+    recombinant, from SAMPLES (from evaluate), and for false positives, their
+    category, from TRUE_TS. The run's parameters come first, so it can be
+    concatenated across runs.
     """
     with open(rematches) as f:
         rematches = json.load(f)

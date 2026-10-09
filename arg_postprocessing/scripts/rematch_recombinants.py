@@ -18,6 +18,7 @@ class Work:
     node: int
     date: str
     path: str
+    num_mismatches: int = None
 
 
 def worker(work):
@@ -31,6 +32,8 @@ def worker(work):
             f"python -m sc2ts rematch-recombinant {work.node} "
             f"--path-pattern={work.pattern} --date={work.date} -vv"
         )
+    if work.num_mismatches is not None:
+        cmd += f" --num-mismatches={work.num_mismatches}"
     out = subprocess.check_output(cmd, shell=True)
     result = json.loads(out.decode())
     return result
@@ -45,7 +48,13 @@ def dump(json_data, path):
 @click.argument("ts")
 @click.argument("output")
 @click.option("--pattern", default=None)
-def run(ts, output, pattern):
+@click.option(
+    "--num-mismatches",
+    type=int,
+    default=None,
+    help="Passed to sc2ts as k; sc2ts's default if not given",
+)
+def run(ts, output, pattern, num_mismatches):
     ts_path = ts
     ts = tszip.load(ts)
 
@@ -59,7 +68,7 @@ def run(ts, output, pattern):
             continue
         md = ts.node(u).metadata
         date = md["sc2ts"]["date_added"]
-        all_work.append(Work(pattern, u, date, ts_path))
+        all_work.append(Work(pattern, u, date, ts_path, num_mismatches))
 
     del ts
 

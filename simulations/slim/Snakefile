@@ -242,11 +242,13 @@ rule evaluate:
 rule rematch_recombinants:
     """
     Rematch each recombinant against the ARG for the day before it was added,
-    with and without recombination, as for the published ARG. This needs
-    sc2ts's daily ARGs, which infer leaves in the run's sc2ts/results.
+    with and without recombination, with the script used for the published
+    ARG. This needs sc2ts's daily ARGs, which infer leaves in the run's
+    sc2ts/results.
     """
     input:
-        f"{RUN_DIR}/inferred.ts",
+        script="../../arg_postprocessing/scripts/rematch_recombinants.py",
+        trees=f"{RUN_DIR}/inferred.ts",
     output:
         f"{RUN_DIR}/recombinants_rematch.json",
     params:
@@ -256,10 +258,11 @@ rule rematch_recombinants:
                 run_id="{pathogen}_rep{rep}_s{s}_k{k}".format(**wildcards),
             )
         ),
+    threads: config["num_threads"]
     shell:
         """
-        python pipeline.py rematch-recombinants {input} '{params.pattern}' {output} \
-            --k {wildcards.k}
+        python {input.script} {input.trees} {output} \
+            --pattern='{params.pattern}' --num-mismatches={wildcards.k}
         """
 
 
