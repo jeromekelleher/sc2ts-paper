@@ -7,6 +7,7 @@ Run from simulations/slim/, e.g.:
     python pipeline.py sample sim.slim.ts sim.slim.samples.tsv true.trees \
         --samples-per-day 100
 """
+import collections
 import datetime
 import json
 import pathlib
@@ -410,9 +411,135 @@ def num_recombinant_nodes(ts):
     return int(np.sum(num_parents > 1))
 
 
+def make_samples_leaves(ts):
+    """
+    Return a copy of the ARG in which every sample is a leaf. Each sample with
+    children is replaced by a new non-sample node just above it, which takes
+    its parents, mutations and children, and the sample becomes the new node's
+    child over the whole sequence. Whether a sample is an ancestor, or a
+    sibling of its descendants under an identical ancestor, can't be told from
+    sequences, and tscompare matches samples only to themselves, so this
+    puts both ARGs on the same footing. Mutation times are dropped, as moved
+    mutations may no longer fit them. Sample IDs don't change.
+    """
+    tables = ts.dump_tables()
+    tables.mutations.time = np.full(tables.mutations.num_rows, tskit.UNKNOWN_TIME)
+    edges_parent = ts.edges_parent.copy()
+    edges_child = ts.edges_child.copy()
+    mutations_node = ts.mutations_node.copy()
+    has_children = np.zeros(ts.num_nodes, dtype=bool)
+    has_children[ts.edges_parent] = True
+    leaf_edges = []
+    for sample in ts.samples()[has_children[ts.samples()]]:
+        is_parent_edge = ts.edges_child == sample
+        time = ts.nodes_time[sample]
+        # The new node must be younger than all of the sample's parents.
+        offset = 1e-6
+        if np.any(is_parent_edge):
+            gap = np.min(ts.nodes_time[ts.edges_parent[is_parent_edge]]) - time
+            offset = min(offset, gap / 2)
+        node = tables.nodes.add_row(time=time + offset)
+        edges_child[is_parent_edge] = node
+        edges_parent[ts.edges_parent == sample] = node
+        mutations_node[ts.mutations_node == sample] = node
+        leaf_edges.append((0, ts.sequence_length, node, sample))
+    tables.edges.parent = edges_parent
+    tables.edges.child = edges_child
+    for edge in leaf_edges:
+        tables.edges.add_row(*edge)
+    tables.mutations.node = mutations_node
+    tables.sort()
+    tables.build_index()
+    tables.compute_mutation_parents()
+    return tables.tree_sequence()
+
+
+def collapse_unsupported(ts):
+    """
+    Return a copy of the ARG with the non-sample nodes that sequences can't
+    resolve removed. A node with no mutations and only one parent has the same
+    haplotype as its parent, so whether its children descend from it or from
+    the parent can't be told apart. The children of each such node are
+    attached to its parent over each interval where it has one, and left where
+    they are elsewhere (where the node is a root). Nodes with more than one
+    parent are kept, as their mosaic haplotypes differ from each parent's.
+    Samples are kept, so should first be made leaves with make_samples_leaves.
+    Sample IDs don't change.
+    """
+    num_mutations = np.bincount(ts.mutations_node, minlength=ts.num_nodes)
+    by_parent = collections.defaultdict(list)
+    by_child = collections.defaultdict(list)
+    for edge in ts.edges():
+        row = (edge.left, edge.right, edge.parent, edge.child)
+        by_parent[edge.parent].append(row)
+        by_child[edge.child].append(row)
+    num_parents = {u: len({e[2] for e in edges}) for u, edges in by_child.items()}
+
+    # Youngest first, so the children attached to a removed node's parent are
+    # moved again if it's removed too.
+    for u in np.argsort(ts.nodes_time, kind="stable"):
+        if (
+            ts.node(u).is_sample()
+            or num_mutations[u] > 0
+            or num_parents.get(u, 0) > 1
+        ):
+            continue
+        parent_edges = by_child[u]
+        for left, right, _, child in by_parent.pop(u, []):
+            by_child[child].remove((left, right, u, child))
+            new_edges = []
+            # Each piece of [left, right) is attached to u's parent there, if
+            # it has one, and otherwise stays on u.
+            for p_left, p_right, parent, _ in sorted(parent_edges):
+                if p_right <= left or p_left >= right:
+                    continue
+                if p_left > left:
+                    new_edges.append((left, p_left, u, child))
+                new_edges.append((max(left, p_left), min(right, p_right), parent, child))
+                left = min(right, p_right)
+            if left < right:
+                new_edges.append((left, right, u, child))
+            for edge in new_edges:
+                by_parent[edge[2]].append(edge)
+                by_child[child].append(edge)
+
+    tables = ts.dump_tables()
+    tables.edges.clear()
+    for edges in by_parent.values():
+        for left, right, parent, child in edges:
+            tables.edges.add_row(left, right, parent, child)
+    tables.edges.squash()
+    tables.sort()
+    tables.simplify(ts.samples())
+    return tables.tree_sequence()
+
+
 def score_arg(true_ts, inferred_ts):
+    """
+    Return tscompare's ARF, TPR and RMSE for the inferred ARG against the true
+    one, along with ARF and TPR over non-sample nodes only. tscompare matches
+    each sample only to itself, which for samples without descendants is
+    always correct, so samples inflate TPR and deflate ARF. For the "internal"
+    versions, each non-sample node is credited with the span it shares with
+    its best match in the other ARG (as tscompare does for ARF), weighted by
+    its span; they are NaN if an ARG has no non-sample nodes.
+    """
     result = tscompare.haplotype_arf(inferred_ts, true_ts)
-    return {"arf": result.arf, "tpr": result.tpr, "rmse": result.rmse}
+
+    def matched_fraction(ts, other):
+        is_internal = np.ones(ts.num_nodes, dtype=bool)
+        is_internal[ts.samples()] = False
+        span = tscompare.node_spans(ts, include_missing=True)[is_internal]
+        matched = tscompare.match_node_ages(ts, other)[1][is_internal]
+        return np.sum(matched) / np.sum(span) if np.sum(span) > 0 else np.nan
+
+    return {
+        "arf": result.arf,
+        "tpr": result.tpr,
+        "rmse": result.rmse,
+        "arf_internal": 1 - matched_fraction(inferred_ts, true_ts),
+        "tpr_internal": matched_fraction(true_ts, inferred_ts),
+    }
 
 
 @click.group()
@@ -553,7 +680,12 @@ def evaluate(
     row = dict(run_params)
     row.update(score_recombinants(samples, events))
     row["num_recombinant_nodes"] = num_recombinant_nodes(inferred_ts)
-    row.update(score_arg(*prepare_for_comparison(true_ts, inferred_ts)))
+    true_ts, inferred_ts = prepare_for_comparison(true_ts, inferred_ts)
+    row.update(score_arg(true_ts, inferred_ts))
+    resolved = score_arg(
+        *[collapse_unsupported(make_samples_leaves(ts)) for ts in (true_ts, inferred_ts)]
+    )
+    row.update({f"{key}_resolved": value for key, value in resolved.items()})
     pd.DataFrame([row]).to_csv(output_dir / "evaluation.csv", index=False)
     for name, df in [("events", events), ("placement", placement)]:
         for j, (column, value) in enumerate(run_params.items()):
