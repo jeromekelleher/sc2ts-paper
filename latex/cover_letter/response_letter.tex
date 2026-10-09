@@ -220,14 +220,40 @@ is useful to consider, the explanation and discussion could be more
 nuanced.''
 
 \begin{itemize}
-  \item Done (exploratory): for the 224 QC-passing recombinants whose left and right parents are both sampled genomes, we extracted the sampling dates and countries of the two parents (\texttt{notebooks/explore\_geographical\_structure.ipynb}).
-  \item \todo{Summarise this analysis (fraction of events with parents sampled in the same country; overlap of parental lineages in time) and add to Results/Supplement. Note geographic sampling bias (dominated by UK, USA, Denmark).}
+  \item Done: we now test co-circulation of the inferred parents directly, using the
+sampling dates and countries in the Viridian metadata
+(Results, ``Assessing evidence for recombination events'';
+Methods and SI, ``Co-circulation of recombinant parents'';
+\texttt{notebooks/fig\_recombinant\_parent\_proximity.ipynb}).
+  \item Because sampling is dominated by a few countries (UK, USA, Denmark), the raw
+fractions are uninformative on their own, so we compare them with a null in which parents
+are exchanged between recombinants of similar date, preserving the sampling composition of
+the dataset at that time.
+  \item For the 224 QC-passing recombinants whose two parents are both sampled genomes,
+the parents were sampled a median of 25 days apart and 134 (60\%) in the same country,
+against 41 days and 40\% under the null ($p < 0.001$ in both cases, 1,000 permutations).
+The inferred parents are therefore closer in time and space than chance expectation.
+The Results state this result in two sentences; the details are in the SI section.
+  \item Extending to parental Pango lineages, which also covers events with unsampled
+parents, both parent lineages were sampled in the recombinant's own country within 28 days
+of the inferred event for 538 (83\%) of all 647 QC-passing recombinants. We note in the SI
+that this measure discriminates weakly (79--81\% under the same null), because
+contemporaneous lineages co-circulate in most well-sampled countries.
+  \item We did not pursue sub-national resolution: location below country level is
+recorded for some countries only (e.g.\ state for the USA, nothing for the UK), and an ARG
+parent is the closest sampled relative of the lineage involved rather than the transmitted
+genome, so it is not expected to share the fine-scale location of the co-infected host
+(of the 70 recombinants with both parents sampled in the USA, the parents share a state in
+17\%). This is stated in the SI.
   \item We agree that the diversity--recombination relationship is partly expected from detectability.
   \item The new simulation study quantifies this: at $k=4$, 89\% of synthetic recombinants
 between Alpha and Delta parents are detected, but only 40\% of those between two Alpha
 parents (Results, ``Quality control and corroboration of recombination events''; SI
 ``Synthetic recombinant simulations'').
-  \item \todo{Nuance the text in the ``Emergence of recombinants over time'' section and the Discussion accordingly.}
+  \item Done: the ``Emergence of recombinants over time'' section now states explicitly
+that the diversity--recombination relationship is expected in part as a consequence of the
+inference procedure, cites these detection rates, and notes that the two explanations
+cannot be separated with the available data.
   \item \todo{This analysis must also be redone for the v2.2 ARG: JHU case data stop in March 2023 while the ARG runs to June 2024.}
 \end{itemize}
 

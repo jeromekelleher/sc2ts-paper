@@ -693,12 +693,16 @@ and associated with recently diverged parents
 
 The parents of a recombinant are expected to coincide in both time and geographical region.
 % v2.2 ARG
-We therefore examined 224 QC-passing recombinants for which both the parents
-are samples with available collection dates and locations
-(Figure~\ref{fig:recombinant_parent_proximity}).
-For half of these recombinants, the parents were sampled within 25 days of each other, and
-for 134 (60\%) the parents were sampled in the same country.
-The temporal and geographical proximity provides additional support
+For the 224 QC-passing recombinants whose two parents are both sampled genomes,
+the parents were sampled a median of 25 days apart
+and 134 (60\%) in the same country,
+compared with 41 days and 40\% when parents are exchanged
+between recombinants of similar date
+($p < 0.001$ in both cases, 1,000 permutations;
+Methods, \supref{sec:parent_cocirculation},
+Figure~\ref{fig:recombinant_parent_proximity}).
+The inferred parents are therefore closer in time and space
+than expected by chance, providing additional support
 for the recombination events inferred by sc2ts.
 
 
@@ -853,6 +857,10 @@ Inferred recombination events also rose with the diversity of lineages in each w
 $0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
 ($H$, referred to as the ``expected heterozygosity'').
+This second relationship is expected in part as a consequence of the inference
+procedure, since recombination between closely related viruses is
+difficult to detect (\supref{sec:synthetic_recombinants},
+\supref{sec:slim_simulations}).
 
 We then asked which single measure best explains
 the number of recombination events inferred each week,
@@ -2347,6 +2355,41 @@ and the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_ripples.ipynb}{analysis\_ripples.ipynb}
 notebook for full methodological details of the analysis.
 
+\subsubsection*{Co-circulation of recombinant parents}
+Sampling dates (the \texttt{Date\_tree} field) and locations
+(\texttt{Country} and, where available, \texttt{Region})
+were taken from the Viridian metadata for the 4.5 million runs
+with a complete date and a known country.
+A Pango lineage was taken to be circulating in a country on a given day
+if any sample of that lineage was collected in that country
+within 28 days of that day.
+For each of the 224 QC-passing recombinants
+whose two parents are both samples,
+we recorded the sampling locations of the parents
+and the difference between their node times,
+which for sample nodes are their sampling dates;
+for all 647 QC-passing recombinants we recorded whether
+both parental Pango lineages were circulating,
+by the above definition, in the country of the recombinant sample
+on the date inferred for the recombination event.
+Null distributions were obtained by exchanging parents between recombinants:
+events were sorted by inferred recombination date
+and the parent of each event was replaced by that of another event
+drawn at random from the same block of 20 consecutive events,
+so that the null retains the time of each event
+and hence the sampling composition of the dataset at that time.
+Reported values are the mean over 1,000 permutations,
+and p-values are the proportion of permutations
+at least as extreme as the observed value.
+The results are insensitive to the block size:
+the same-country fraction under the null is
+41\%, 40\% and 40\% for blocks of 10, 20 and 40 events
+(34\% when events are permuted without regard to date),
+and the median sampling time difference is
+34, 41 and 55 days (204 days unrestricted).
+These calculations are in
+\texttt{notebooks/fig\_recombinant\_parent\_proximity.ipynb}.
+
 \subsubsection*{Analysing global case counts}
 To explore the timing of emergence of recombination events,
 global case count data were downloaded from
@@ -3006,6 +3049,33 @@ See notebook
 {analysis\_jackson\_recombinants.ipynb}
 for details.
 
+\subsection{Co-circulation of recombinant parents}\label{sec:parent_cocirculation}
+The two parents of a recombinant must have co-circulated in space and time,
+so we compared the sampling dates and locations of the inferred parents
+with a null in which parents are exchanged between recombinants
+of similar date (Methods).
+For the 224 QC-passing recombinants whose two parents are both sampled genomes,
+the parents were sampled a median of 25 days apart,
+against 41 days under the null,
+and 134 (60\%) were sampled in the same country, against 40\%
+($p < 0.001$ in both cases, 1,000 permutations;
+Figure~\ref{fig:recombinant_parent_proximity}).
+Considering parental Pango lineages rather than individual genomes,
+which also covers events with unsampled parents,
+both parent lineages were sampled in the country of the recombinant itself
+within 28 days of the inferred event
+for 538 (83\%) of all 647 QC-passing recombinants.
+This measure discriminates weakly (79--81\% under the same permutation),
+because contemporaneous lineages co-circulate
+in most well-sampled countries.
+We did not attempt to resolve co-circulation below the country level.
+Sub-national location is recorded for some countries only,
+and because a parent in the ARG is the closest sampled relative
+of the lineage involved rather than the transmitted genome itself,
+it is not expected to share the fine-scale location of the co-infected host:
+of the 70 recombinants with both parents sampled in the USA,
+the parents share a state in 17\%.
+
 \subsection{Synthetic recombinant simulations}\label{sec:synthetic_recombinants}
 We matched synthetic single-breakpoint recombinants with known parents
 and breakpoints, and held-out real non-recombinant controls, against the ARG
@@ -3619,6 +3689,9 @@ way to rewire the final ARG.  It is therefore likely to be spurious.
 Temporal and geographical proximity of the parents of 224 QC-passing recombinants.
 (A) Distribution of sampling time difference between the parents.
 (B) Co-frequencies of the sampling locations of the parents.
+(C) Fraction of recombinants whose parents were sampled in the same country,
+compared with the null distribution obtained by exchanging parents
+between recombinants of similar date (1,000 permutations; Methods).
 }
 \label{fig:recombinant_parent_proximity}
 \end{figure}
