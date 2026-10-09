@@ -4,30 +4,20 @@
 # generation (all of it, if smaller), nested as the number increases, and the
 # founder is always sampled.
 pathogens:
-  coronavirus:
+  coronavirus_like:
     # A generic coronavirus: ~30 kb genome, 0.0008 substitutions/site/year
     # and a 5.5 day generation time (as in synthetic_recombinants), so
-    # ~0.36 mutations per genome per generation. 1% of transmissions are
-    # recombinant.
+    # ~0.36 mutations per genome per generation. 0.5% of transmissions are
+    # recombinant: several times higher than estimated for SARS-CoV-2, to
+    # give enough recombination events to measure.
     slim:
       N: 1000
-      GENS: 100
+      GENS: 200
       GROWTH_GENS: 20
       L: 30000
       MU: 1.2e-5
-      EFF_RECOMB: 0.01
+      EFF_RECOMB: 0.005
     samples_per_day: [20, 100]
-  sars_like:
-    # SARS-CoV-like
-    # https://pmc.ncbi.nlm.nih.gov/articles/PMC9297283/#CR30
-    slim:
-      N: 1000000
-      GENS: 100  # days
-      GROWTH_GENS: 50  # days
-      L: 30000  # SARS-CoV-1/2
-      MU: 1.37e-6 # 5e-4 (/site/year) / 365 days
-      EFF_RECOMB: 1.64e-4 # 2e-6 (/site/year) x L / 365 days
-    samples_per_day: [200, 1000]
   flu_like:
     # pdm2009-like H1N1
     # https://www.pnas.org/doi/10.1073/pnas.1918304117#supplementary-materials
@@ -41,7 +31,7 @@ pathogens:
     samples_per_day: [200, 1000]
 
 # Independent SLiM runs per pathogen. Replicate r uses SLiM seed seed + r.
-replicates: 1
+replicates: 5
 seed: 42
 
 # sc2ts num_mismatches values.
