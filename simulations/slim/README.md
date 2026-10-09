@@ -29,8 +29,11 @@ sc2ts 1.1 or later is needed for custom reference genomes. This runs every patho
 in `config.yaml` and copies each one's combined results to `summaries/{pathogen}/`.
 To run one pathogen, ask for its summaries, e.g.:
 ```
-snakemake --cores 4 summaries/coronavirus/summary.csv
+snakemake --cores 4 summaries/coronavirus_like/summary.csv
 ```
+As `results/` is not kept, Snakemake counts the summaries in the repository as up to
+date, and won't remake them after the config changes. Force them to be remade
+(along with the runs behind them) with `--forcerun copy_summary`.
 
 Tests run a small SLiM simulation, so need `slim` on the `PATH`:
 ```
@@ -54,17 +57,19 @@ uses SLiM seed `seed + r`. The founder is always sampled and is used as the sc2t
 reference.
 
 Pathogens so far:
-- `coronavirus`: a generic coronavirus, with a 30 kb genome, 0.0008 substitutions per
-  site per year and a 5.5 day generation time (about 0.36 mutations per genome per
-  generation), growing to 1,000 cases per generation over 20 generations and
-  staying there for 80 more. 1% of transmissions are recombinant. 20 and 100
-  samples per day.
-- `sars_like`: SARS-CoV-like, with a 30 kb genome, 5e-4 substitutions per site per year
-  and one generation per day, growing to 1,000,000 cases per generation over 50 days
-  and simulated for 100. 200 and 1,000 samples per day.
+- `coronavirus_like`: a generic coronavirus, with a 30 kb genome, 0.0008 substitutions
+  per site per year and a 5.5 day generation time (about 0.36 mutations per genome
+  per generation), growing to 1,000 cases per generation over 20 generations and
+  staying there for 180 more. 0.5% of transmissions are recombinant, several times
+  the rate estimated for SARS-CoV-2, to give enough recombination events to measure.
+  20 and 100 samples per day.
 - `flu_like`: pdm2009 H1N1-like, with a 13 kb genome, 2.75e-3 substitutions per site per
-  year and one generation per day, with the same demography as `sars_like`. 200 and
-  1,000 samples per day.
+  year and one generation per day, growing to 1,000,000 cases per generation over 50
+  days and simulated for 100. 200 and 1,000 samples per day.
+
+A SARS-CoV-like pathogen (5e-4 substitutions per site per year, with the same
+demography as `flu_like`) was also tried, but in 100 days builds up too little
+diversity (about 4 mutations along a lineage) for sc2ts to find any recombinants.
 
 Each generation is one day, starting on 2026-01-01.
 
@@ -85,7 +90,8 @@ the truth needs as it goes (see the comments at the top of `santasim_like.slim`)
   differ from both parents.
 
 At N = 1,000,000 with 1,000 samples per day this takes about 2 minutes and 9 GB
-for `sars_like`.
+per replicate (measured for the SARS-CoV-like pathogen, which has the same
+demography as `flu_like`).
 
 #### No time-traveller filtering
 On real data, sc2ts holds back any sample whose HMM cost (mismatches plus `k` times
@@ -99,7 +105,8 @@ whose recorded date is badly wrong, and samples with many sequencing errors (see
 methods).
 
 Simulated samples have exact dates and no sequencing errors, so here the filter
-only costs us samples: in the coronavirus simulation with the Viridian settings
+only costs us samples: in an earlier coronavirus simulation (100 generations, 1% of
+transmissions recombinant) with the Viridian settings
 (threshold 7) and about 20 and 100 samples per day, 39% and 3% of samples were
 held back and never added to the ARG. So `hmm_cost_threshold` is set high enough (1,000,000) that
 every sample is added on its own day. It can't simply be left out, as sc2ts then defaults it to 5.
@@ -127,7 +134,7 @@ Everything else is written under `results/{pathogen}/rep{r}/`.
 Truth is made separately from the exported sequences so that scoring can be
 changed without re-running sc2ts, e.g.:
 ```
-snakemake --cores 4 summaries/coronavirus/summary.csv \
+snakemake --cores 4 summaries/coronavirus_like/summary.csv \
     --rerun-triggers mtime --forcerun make_truth
 ```
 
