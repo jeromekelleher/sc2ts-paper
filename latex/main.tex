@@ -135,7 +135,7 @@ as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
 We infer an ARG for 3.11 million SARS-CoV-2 genomes,
 which leverages the widely used tskit software ecosystem to support further analyses and
 visualisation.
-This rich and validated resource clarifies
+This rich resource clarifies
 the relationships among recombinant lineages,
 quantifies the rate of recombination over time,
 and provides a
@@ -282,9 +282,9 @@ we present an ARG with 3.11 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
-The ARG also accurately captures evolutionary features such as mutational
+The ARG also captures evolutionary features such as mutational
 spectra~\cite{Bloom2023} and deletions\cite{Li2023indels}.
-We show that sc2ts automatically and accurately detects details about
+We show that sc2ts automatically recovers many details about
 known recombinant lineages that were painstakingly collated through
 a community effort and provides novel insights into the relationships between these
 recombinant lineages. We compare the recombination events detected by
@@ -414,9 +414,9 @@ with minimal hardware requirements, enabling diverse bespoke analyses.
 
 % NOTE: Trying to clarify that this of the pandemic period and
 % we're not trying to cover *all* history.
-The ARG is a comprehensive and deeply validated record of
+The ARG is a comprehensive record of
 the pandemic phase of SARS-CoV-2 evolutionary history,
-accurately depicting a range of results from the literature.
+consistent with a range of results from the literature.
 First, we compared the sc2ts ARG
 with the state-of-the-art UShER tree inferred from the same dataset
 and the same set of sites,
@@ -576,7 +576,7 @@ supporting evidence and alternative interpretations, are provided in
 along with copying patterns (Figure~\ref{fig:pango_x_copying_patterns})
 and detailed ARG visualisations (Document S1).
 
-\subsection*{Quality control and validation of recombination events}
+\subsection*{Quality control and corroboration of recombination events}
 Several different error modalities can cause short regions
 a sample genome to match more closely
 to an alternative genome rather than the true parent,
@@ -613,23 +613,23 @@ in 84 events),
 and discounting the MNS would move only 7 events below the QC threshold.
 In contrast, all 42 events involving the MNS at positions 27875--27883 fail QC.
 
-We validated the recombination events in the sc2ts ARG
+We sought corroboration of the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
 on the putative recombinant sequence trios (Methods).
 Of the 1319 recombination events identified by sc2ts,
-3SEQ verified 66\% of them,
-rising to 96\% verification among the 647 recombinants that passed our QC filter.
+3SEQ supported 66\% of them,
+rising to 96\% among the 647 recombinants that passed our QC filter.
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb}
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
 summarised in Table~\ref{tab:recombinant_validation}.
-CovRecomb has a substantially lower validation rate
+CovRecomb has a substantially lower corroboration rate
 at 33\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
 to detect inter-lineage recombinants
 and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
-Rebar validation is intermediate, at 61\% among QC-passing recombinants.
+Rebar corroboration is intermediate, at 61\% among QC-passing recombinants.
 
 To quantify detection directly, we simulated synthetic recombinants
 by splicing together real Alpha and Delta genomes
@@ -685,8 +685,8 @@ mutations. For example, the most parsimonious non-recombinant placement of XC
 would require 36 additional mutations, indicating strong support for
 recombination (Figure~\ref{fig:recombinant_evidence}A;
 Table~\ref{tab:pango_x_lineages}).
-Strongly supported events show high concordance with independent validation by
-3SEQ, whereas the 4\% of events that fail 3SEQ validation are
+Strongly supported events show high concordance with independent corroboration by
+3SEQ, whereas the 4\% of events not supported by 3SEQ are
 concentrated among the weakest-supported cases ($\leq 5$ averted mutations)
 and associated with recently diverged parents
 (Figure~\ref{fig:recombinant_evidence}B,C).
@@ -939,7 +939,7 @@ parameter to $p=4$ (rather than the more lenient default of 3),
 to match the equivalent $k=4$ setting used in sc2ts (Methods).
 Under this setting,
 RIPPLES reported 1498 recombination events of which
-781 were validated by 3SEQ (52\%; Methods).
+781 were supported by 3SEQ (52\%; Methods).
 % JK: There's no point in making a meal of the 3SEQ validation rate,
 % This is notably lower than the equivalent
 % concordance rate of 57\% among the 855 recombination events reported by sc2ts.
@@ -993,8 +993,8 @@ on the frequency of detectable recombination events in SARS-CoV-2.
 \section*{Discussion}
 There are two primary contributions of this work. The first is an
 ARG for 3.11 million SARS-CoV-2 genomes.
-Through multiple layers of validation against results from the
-literature, we have demonstrated that this ARG synthesises
+Through multiple corroborative comparisons with results from the
+literature, we have shown that this ARG synthesises
 the evolutionary features of genetic inheritance, point mutations,
 deletions and recombination in a single cohesive structure.
 The ARG is freely available and easily accessible using the
@@ -1029,8 +1029,8 @@ Muller2020bayesian,%
 Ignatieva2022,%
 Muller2022bayesian}.
 To ensure these innovations are well-founded, we have paid significant
-attention to methodological detail, carefully validating the ARG
-(and consequently the method) against known results.
+attention to methodological detail, carefully comparing the ARG
+against known results and testing the method on simulations.
 % Sc2ts is currently specialised to take advantage of unique features
 % of the SARS-CoV-2 dataset, but the methods may be readily adapted
 % to other pathogens.
@@ -1839,9 +1839,9 @@ See the notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_mns.ipynb}{analysis\_mns.ipynb}
 for details.
 
-\subsubsection*{Validation of recombination events}
+\subsubsection*{Corroboration of recombination events}
 
-We validated recombination events in the sc2ts ARG
+We assessed recombination events in the sc2ts ARG
 using 3SEQ~\cite{Lam2018improved} as follows.
 We first exported the alignments for the recombination node and both
 parents to FASTA format, and then ran 3SEQ in ``full mode''
@@ -2309,7 +2309,7 @@ to alignments in FASTA format, as recommended by
 the UShER documentation (\texttt{vcf2fasta -f NC\_045512v2.fa}).
 We then ran 3SEQ in ``full mode''
 independently for each trio, in the same manner as described
-when validating the sc2ts recombinants.
+when corroborating the sc2ts recombinants.
 
 The UShER tree is not dated, and so to obtain dates for
 parent nodes we used sample metadata
@@ -2811,7 +2811,7 @@ increased efficiency in cell entry \cite{Meng2021} and
 antibody escape \cite{McCarthy2021}, respectively.
 In addition, we found recurrent deletions in ORF8 and NSP3,
 which have been suggested to be indel hotspots\cite{Akaishi2022}.
-Together, these findings demonstrate that
+Together, these findings indicate that
 the ARG captures genuine deletion events in SARS-CoV-2 evolution.
 
 Detection of deletions and inference of deletion events
@@ -3483,7 +3483,7 @@ the Methods. We begin by describing the overall composition of events output
 by RIPPLES at the two parameter values used.
 
 At $p=4$, RIPPLES returned a total of 1498 events, and
-781 pass 3SEQ validation (52\%). 1327 events
+781 are supported by 3SEQ (52\%). 1327 events
 (88.6\%) were in close clade agreement with the sc2ts ARG,
 and 685 (46\%) corresponded to recombination events in the ARG.
 Several RIPPLES events can correspond to the same recombination event
@@ -3507,7 +3507,7 @@ to the finer details of the
 differences in tree building approaches between UShER and sc2ts.
 
 At $p=3$, RIPPLES returned a total of 5365 events, and
-1961 pass 3SEQ validation (37\%). 4856 events
+1961 are supported by 3SEQ (37\%). 4856 events
 (90.5\%) were in close clade agreement with the sc2ts ARG,
 and 909 (17\%) corresponded to recombination events in the ARG,
 representing 890 distinct sc2ts events
@@ -4133,7 +4133,7 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 
 
 \begin{table}
-\caption{Validation of sc2ts recombinants by 3SEQ, CovRecomb and rebar over
+\caption{Corroboration of sc2ts recombinants by 3SEQ, CovRecomb and rebar over
 all 1319 recombinants and the 647 passing and 672 failing QC.
 }
 \label{tab:recombinant_validation}
