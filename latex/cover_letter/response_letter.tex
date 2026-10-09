@@ -25,10 +25,11 @@ SARS-CoV-2.''
   \item We have made a major effort to make the resource as up to date and extensive as possible. The ARG now includes all of the latest Viridian data, running to 2024-06-06 with 3,114,609 samples (previously 2,482,157 samples to 2023-02-20).
   \item We have made particular efforts to capture the origins of Delta and Omicron more accurately, using groups of high-quality seed samples (B.1.617.1/Kappa and B.1.617.3, early B.1.617.2/Delta, AY.4 and AY.120.1; BA.1 and BA.2), and now include lesser-sampled Omicron lineages such as BA.3 and BA.4.
   \item All analyses updated to the new ARG: 1,323 recombination nodes, of which 647 of the 1,319 single-breakpoint events pass QC; 73 Pango X lineages placed.
-  \item New simulation study quantifying false positive and detection rates of recombinant inference as a function of the recombination penalty $k$.
-  \item New forward-time simulation study (SLiM) of coronavirus-like and influenza-like epidemics, scoring recombinant detection, breakpoints and overall ARG accuracy against the true ARG.
+  \item sc2ts generalised to other pathogens: the reference genome and its date are now configuration parameters, with nothing specific to SARS-CoV-2 built in.
+  \item New simulation study quantifying false positive and detection rates of recombinant inference as a function of the recombination penalty $k$ and the divergence between parents.
+  \item New forward-time simulation study (SLiM) of coronavirus-like and influenza-like epidemics, scoring recombinant detection, breakpoints and overall ARG accuracy against the true ARG across contrasting parameter regimes.
+  \item Together, the simulations catalogue the conditions under which false positive and false negative recombinants should be expected, giving limitations and recommendations for applying sc2ts to other pathogens.
   \item Language softened throughout (``validated'' $\to$ ``corroborated''), and clearer statement of intended users.
-  \item \todo{sc2ts can now be applied to other species, but we have not yet done any analysis. Decide on pathogen(s) and dataset(s) and carry out the application.}
 \end{itemize}
 
 We have included a copy of the manuscript in which all changes have been
@@ -53,12 +54,36 @@ address all referee comments as thoroughly as possible with appropriate
 revisions.''
 
 \begin{itemize}
+  \item Done: sc2ts has been generalised so that it can be applied to other pathogens.
+The reference genome and reference date are now configuration parameters, and nothing
+specific to SARS-CoV-2 (such as the Wuhan-Hu-1 reference) is built in.
   \item Done: we have evaluated sc2ts on forward-time simulations of epidemics of two
-pathogens with very different evolutionary parameters, a coronavirus-like pathogen and an
+pathogens in very different parameter regimes (genome length, substitution rate,
+generation time, epidemic size and sampling density): a coronavirus-like pathogen and an
 influenza-like pathogen modelled on pandemic 2009 H1N1, where the full ARG is known
 (Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'';
 \texttt{simulations/slim}). See the response to Reviewer \#1 below for details.
-  \item \todo{sc2ts can now be applied to other species, but we have not yet applied it to real data from another pathogen.}
+  \item Done: with these and the synthetic recombinant simulations, we have catalogued the
+conditions under which false positives and false negatives should be expected:
+    \begin{itemize}
+      \item False positives are rare: inferred recombinants are almost always genuine
+(precision about 0.9--1), with no false positives among held-out real non-recombinants.
+The exception is a small $k$ with dense sampling and little diversity
+(precision 0.72 for the influenza-like pathogen at $k=3$).
+      \item False negatives are driven by the divergence between parents: recombination
+between closely related lineages, early in an epidemic or in a slowly evolving pathogen,
+leaves too few distinguishing mutations to be detected (Alpha$\times$Alpha 40\% vs
+Alpha$\times$Delta 89\% at $k=4$; under 10\% early in the influenza-like epidemic).
+      \item Recombinants whose parents, or which themselves, were not sampled are detected
+about as often as those that were.
+      \item $k$ trades recall for precision, and the Methods (``Choice of k parameter'')
+give a procedure for choosing it for a new pathogen.
+    \end{itemize}
+  \item \todo{Draft, check wording: We have not applied sc2ts to real data from another
+pathogen. No other pathogen has a dataset approaching the density of SARS-CoV-2, and
+on real data the true ARG is unknown. Simulations, in which the truth is known and the
+parameters can be varied, are what is needed to establish the limitations and
+recommendations the reviewers ask for.}
   \item All referee comments addressed point by point below.
 \end{itemize}
 
@@ -125,8 +150,9 @@ with the limitations and recommendations clearly established.''
 
 \begin{itemize}
   \item Same as the editor's priority point.
-  \item Done: sc2ts can now be run on other species;
-simulation study of recombinant detection (see below).
+  \item Done: sc2ts has been generalised to other pathogens (reference genome and date
+are now configuration parameters), and we have evaluated it in contrasting parameter
+regimes with simulations where the truth is known (below).
   \item Done: we simulated epidemics forwards in time with SLiM under a neutral
 Wright--Fisher model with recombination, for a coronavirus-like pathogen (30\,kb,
 $8\times10^{-4}$ substitutions/site/year, 5.5 day generations, $\sim$3 years) and an
@@ -152,10 +178,24 @@ detected at least as often as those whose recombinant was sampled.
       \item The true breakpoint lies in the inferred interval for 90--98\% (coronavirus-like)
 and 78--90\% (influenza-like) of detected events.
     \end{itemize}
-  \item Limitations and recommendations for other pathogens are stated in the SI and
-Discussion: sc2ts is reliable when it calls a recombinant, but recombination early in an
-epidemic or in a slowly evolving pathogen is largely undetectable; a smaller $k$ recovers
-more events at some cost in precision.
+  \item Limitations and recommendations for other pathogens, from these and the synthetic
+recombinant simulations (SI ``Implications for other pathogens''; Discussion):
+    \begin{itemize}
+      \item When to trust calls: across all regimes, a recombinant inferred by sc2ts is
+almost always genuine. Precision drops only with a small $k$, dense sampling and little
+diversity.
+      \item When to expect misses: recombination between closely related parents, as early
+in an epidemic or in a slowly evolving pathogen, is largely undetectable by sc2ts or any
+sequence-based method. Detection improves as co-circulating lineages diverge.
+      \item Unsampled recombinants and parents: events seen only through sampled
+descendants are detected as often as sampled ones; mutations on unsampled parents barely
+affect detection.
+      \item Choosing $k$: a smaller $k$ recovers more events in low-diversity settings at
+some cost in precision; the Methods (``Choice of k parameter'') give a procedure for
+choosing $k$ for a new pathogen.
+      \item Not covered: reassortment in segmented genomes, and sequencing artefacts
+(the simulations are error-free).
+    \end{itemize}
   \item Done (first draft): the Discussion now states these limitations, with details in
 the SI. \todo{Expand into fuller recommendations once final simulation results are in.}
 \end{itemize}
@@ -241,7 +281,8 @@ many recombinants beyond the HMM cost threshold for inclusion.
 recombinants''), a new SI section (``Synthetic recombinant simulations'') with
 a new supplementary figure, a summary in the Results (``Quality control and validation
 of recombination events''), and a sentence in the Discussion.
-  \item Done: the new SLiM simulations include an influenza-like pathogen, modelled on
+  \item Done: sc2ts has been generalised to run on any (non-segmented) pathogen genome, and
+the new SLiM simulations include an influenza-like pathogen, modelled on
 pandemic 2009 H1N1, covering the rates and epidemic sizes of an influenza pandemic
 (see the response to the previous point and SI ``Simulations of pathogen epidemics'').
 They also cover a coronavirus-like pathogen, and two sampling densities for each.
@@ -413,9 +454,11 @@ mutations separating the parents from their closest sampled relatives (Methods,
   \item Done: we have also added a forward-time simulation study (SLiM) of epidemics of a
 coronavirus-like and an influenza-like pathogen, in which the true ARG is known. These vary
 the mutation rate, recombination rate, population size, generation time and sampling density
-(samples per day), as the reviewer suggests. sc2ts's inferred recombinants are almost always
-genuine throughout, and the regime in which detection becomes unreliable is identified as
-the one with little accumulated diversity, such as the early stages of an epidemic
+(samples per day), as the reviewer suggests. Together, the two studies identify the areas
+of parameter space where performance becomes unreliable. sc2ts's inferred recombinants are
+almost always genuine throughout; false positives appear only with a small $k$, dense
+sampling and little diversity. False negatives dominate when there is little accumulated
+diversity between parents, such as in the early stages of an epidemic
 (Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'').
 \todo{Update with final numbers; consider varying the recombination rate and simulation
 length more systematically.}
