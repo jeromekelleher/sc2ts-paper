@@ -533,9 +533,27 @@ but I think it would help demonstrate the power of this approach to a general
 audience.''
 
 \begin{itemize}
-  \item \todo{Thank the reviewer for the nice idea, but explain that capturing
- the full scale ARG is hard and also kind of pointless, as we already know
-what the SC2 tree looks like.}
+  \item We thank the reviewer for this suggestion, and agree that showing the inferred
+reticulations graphically is the best way to convey what an ARG adds.
+  \item We considered a whole-ARG figure, but do not think it would serve this purpose.
+The ARG has 3.41 million nodes, of which 1,323 are recombination nodes. Even with clades
+collapsed into triangles, a figure at this scale would be dominated by the clonal backbone.
+That backbone is already familiar from existing SARS-CoV-2 phylogenies, and is congruent
+with the UShER tree (Results, tanglegrams). The individual reticulations, most of which
+involve small clades, would not be legible.
+  \item We have therefore focused on subgraphs, where the reticulations can be shown in
+detail:
+    \begin{itemize}
+      \item Figure~2 shows the subgraphs around the recombination nodes for XA, and for XQ
+together with the six Pango X lineages descending from it. Clades are summarised by their
+sample counts, and the genome bars show the breakpoint intervals.
+      \item The Supplementary Figures show the subgraphs at the origins of Alpha, Delta and
+Omicron.
+      \item Document S1 gives detailed visualisations of the recombination events
+underlying the Pango X lineages.
+    \end{itemize}
+  \item Readers can also explore any part of the ARG interactively with tskit
+visualisation tools (now cited, including Lorax, as suggested by Reviewer \#1).
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3):} ``Writing. I had some minor
