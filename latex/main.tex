@@ -1936,7 +1936,7 @@ The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
 To evaluate sc2ts on data where the full ARG is known,
 we simulated epidemics of two pathogens forwards in time with
 SLiM~\cite{Haller2026slim}, using a nucleotide-based, neutral, haploid
-Wright--Fisher model inspired by SANTA-SIM~\cite{Jariani2019santasim}.
+Wright--Fisher model inspired by SANTA-SIM~\cite{Jariani2019santa}.
 The population starts from a single founder, grows exponentially to
 $N$ cases per generation, and then remains at that size.
 Mutations follow the Jukes--Cantor model, at rate $\mu$ per site per generation.
@@ -1953,11 +1953,14 @@ so that $\mu L \approx 0.36$ mutations per genome per generation.
 It grows to $N=1{,}000$ over 20 generations and is simulated for 200
 generations (about 3 years).
 We set $r=0.5\%$, several times higher than estimates for
-SARS-CoV-2, to give enough recombination events to measure.
+SARS-CoV-2~\cite{Muller2022bayesian}, to give enough recombination events to measure.
+% TODO check that the Muller2022bayesian SARS-CoV-2 recombination rate
+% estimate supports "several times higher" for r = 0.5% per transmission.
 The influenza-like pathogen is modelled on pandemic 2009 H1N1,
-% TODO cite PNAS source for pdm2009 rates (https://www.pnas.org/doi/10.1073/pnas.1918304117)
-with a 13\,kb genome, a substitution rate of $2.75\times10^{-3}$ per site per year,
-one generation per day, and 0.25 recombinations per lineage per year.
+with parameters based on estimates by M\"uller et al.~\cite{Muller2020bayesian}:
+a 13\,kb genome, a substitution rate of $2.75\times10^{-3}$ per site per year,
+one generation per day, and 0.25 recombinations per lineage per year
+(their estimated reassortment rate, applied here as a recombination rate).
 It grows to $N=10^6$ over 50 days and is simulated for a total of 100 days.
 The genome is modelled as a single unsegmented sequence,
 so reassortment is not represented.
