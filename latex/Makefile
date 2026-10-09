@@ -18,6 +18,16 @@ main_text.pdf: main.tex references.bib ${DATA} ${FIGURES}
 	qpdf split_tmp.pdf --pages . 1-34 -- main_text.pdf
 	qpdf split_tmp.pdf --pages . 35-z -- supplementary.pdf
 
+# Changes relative to the version submitted to Nature Genetics.
+latexdiff: diff.pdf
+
+diff.tex: submitted_version.tex main.tex
+	latexdiff --config="PICTUREENV=(?:picture|DIFnomarkup|tabular|longtable)[\w\d*@]*" \
+		submitted_version.tex main.tex > diff.tex
+
+diff.pdf: diff.tex references.bib ${DATA} ${FIGURES}
+	latexmk -pdf -interaction=nonstopmode diff.tex
+
 # The generated tables. The CSVs are written by the notebooks.
 pango_x_table/table.tex: pango_x_table/make_table.py $(wildcard pango_x_table/*.csv)
 	python3 pango_x_table/make_table.py
@@ -39,7 +49,7 @@ pango_x_table.pdf: pango_x_table.tex pango_x_table/table.tex
 	pdflatex pango_x_table.tex
 
 
-.PHONY: all split spellcheck clean mrproper
+.PHONY: all split latexdiff spellcheck clean mrproper
 spellcheck: aspell.conf
 	aspell --conf ./aspell.conf --check main.tex
 
@@ -51,6 +61,7 @@ clean:
 	rm -f *.blg *.bbl
 	rm -f *.fdb_latexmk *.fls *.out
 	rm -f split_tmp*
+	rm -f diff.tex
 
 mrproper: clean
 	rm -f *.ps *.pdf
