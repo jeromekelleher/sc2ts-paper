@@ -1465,11 +1465,20 @@ of diversity expected with dense sampling.
 The HMM cost for the Viterbi solution for a sample under the LS model
 is $k$ times the number of recombination events plus the number of
 mismatches, where $k$ is the recombination penalty (here, $k=4$).
-After some experimentation, we set the HMM cost threshold to 7,
+We set the HMM cost threshold to 7,
 disallowing samples that require 8 or more mutations (or, e.g., 1 recombination
 and 4 mutations, or 2 recombinations) from immediate inclusion (see next
 section) in the ARG. This approach has the benefit of filtering
 samples enriched for errors as well as time-travellers.
+With dense daily sampling, most samples should differ from a close relative
+already in the ARG by only a few mutations:
+at about $8\times10^{-4}$ substitutions per site per year,
+a lineage accumulates about two mutations per month,
+so a cost of 7 corresponds to several months of unsampled evolution.
+Because samples above the threshold can still be added retrospectively (next section),
+we chose a low threshold, at the cost of delaying the inclusion of saltational lineages
+and of some recombinants whose parents were not sampled
+(\supref{sec:synthetic_recombinants}).
 
 \subsubsection*{Inserting saltational lineages}
 The HMM cost threshold approach outlined in the previous section is

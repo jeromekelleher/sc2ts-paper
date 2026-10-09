@@ -507,8 +507,12 @@ increases, recall falls and precision rises. They also show that the best $k$ de
 the diversity available: with little diversity, $k = 3$ recovers several times as many
 events as $k = 4$, at some cost in precision. \todo{Add to the playbook in ``Choice of k
 parameter'' once final numbers are in.}
-  \item \todo{Describe how the other heuristic parameters (e.g.\ the HMM cost threshold)
-were chosen, in the same way.}
+  \item Done: the Methods (``Filtering time travellers'') now explain the choice of the HMM
+cost threshold. With dense daily sampling, a sample should differ from a close relative
+already in the ARG by only a few mutations, and a cost of 7 corresponds to several months
+of unsampled evolution. Because samples above the threshold can still be added
+retrospectively, we chose a low threshold. The synthetic recombinant simulations quantify
+the cost: recombinants whose parents were not sampled are more often held back.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (2):} ``Main Figure: ARGs are often difficult to
