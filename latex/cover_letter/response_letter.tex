@@ -376,8 +376,22 @@ application. One way that this resource could be made much more accessible
 would be to present this ARG on the platform.''
 
 \begin{itemize}
-  \item We now cite Lorax along with tsbrowse, tskit\_arg\_visualizer and ARGscape
-  \item Say something about how well Lorax handles the sc2ts ARG.
+  \item We thank the reviewer for pointing us to Lorax, which has since been published in
+\textit{Bioinformatics}. We agree that interactive visualisation is a good way to make the ARG
+more accessible.
+  \item Done: we now cite Lorax alongside the other interactive tools for visualising tskit
+ARGs (tsbrowse, tskit\_arg\_visualizer and ARGscape) in the Methods
+(``Ancestral Recombination Graphs'').
+  \item We tried loading the sc2ts ARG into Lorax, but it did not perform well enough to be
+useful. Lorax is designed for ``biobank-scale'' ARGs, which are in fact much smaller than
+the sc2ts ARG in number of samples (3.1 million). We hope that the sc2ts ARG will motivate
+the development of new tools, or updates to Lorax, that make interactive exploration at
+this scale feasible.
+  \item In the meantime, we have used tskit\_arg\_visualizer extensively to examine small
+sections of the ARG, such as the subgraphs around individual recombination events, and this
+has been instrumental in our analysis. All of the ARG visualisations in the paper were made
+with it: the Supplementary subgraph figures and Document S1 directly, and Figure~2 using
+initial layouts from it. The figure captions now say so.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``One element that may be worth mentioning is
@@ -552,8 +566,9 @@ Omicron.
       \item Document S1 gives detailed visualisations of the recombination events
 underlying the Pango X lineages.
     \end{itemize}
-  \item Readers can also explore any part of the ARG interactively with tskit
-visualisation tools (now cited, including Lorax, as suggested by Reviewer \#1).
+  \item Readers can also extract subgraphs of interest and explore them interactively with
+tskit visualisation tools such as tskit\_arg\_visualizer, which we have used extensively
+for this purpose (see also our response to Reviewer \#1 on Lorax).
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3):} ``Writing. I had some minor
