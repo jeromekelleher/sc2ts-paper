@@ -166,9 +166,8 @@ day and `k`.
 During inference sc2ts doesn't add a node for a sample identical to one already in
 the ARG (an HMM cost of 0), but only counts it against that node. `sc2ts
 postprocess` adds these *exact matches* as sample nodes from the match DB, as for
-the published ARG, so the post-processed ARG is the one scored. Its other tidy-ups
-(pushing up unary recombinant mutations and reversions) are turned off with
-`--no-mutation-updates`, so the ARG is otherwise as sc2ts inferred it. A sample is
+the published ARG, along with its other tidy-ups (pushing up unary recombinant
+mutations and reversions), and the post-processed ARG is the one scored. A sample is
 *placed* if it has a node in it; anything else was held back by sc2ts. Recombinant
 detection is scored over placed samples, where a sample is inferred to be a
 recombinant if its HMM match has more than one parent. Precision is per sample.
