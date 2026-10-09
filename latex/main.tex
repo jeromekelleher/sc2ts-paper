@@ -693,28 +693,17 @@ and associated with recently diverged parents
 
 The parents of a recombinant are expected to coincide in both time and geographical region.
 % v2.2 ARG
-We therefore examined 224 QC-passing recombinants for which both the parents
-are samples with available collection dates and locations
-(Figure~\ref{fig:recombinant_parent_proximity}).
-For half of these recombinants, the parents were sampled within 25 days of each other, and
-for 134 (60\%) the parents were sampled in the same country.
-Because sampling is dominated by a few countries, we compared these values with a null
-distribution in which parents are exchanged between recombinants of similar date
-(Methods): the median sampling time difference is then 41 days and only 40\% of
-pairs share a country ($p < 0.001$ in both cases, 1,000 permutations;
-Figure~\ref{fig:recombinant_parent_proximity}A,C).
-Considering parental Pango lineages rather than individual genomes, which also covers
-events with unsampled parents, both parent lineages were sampled in the country of the
-recombinant itself within 28 days of the inferred event for 538 (83\%) of all 647
-QC-passing recombinants.
-This measure is a weaker discriminator (79--81\% under the same permutation),
-because contemporaneous lineages co-circulate in most well-sampled countries.
-The inferred parents are therefore closer in time and space than expected by chance,
-providing additional support for the recombination events inferred by sc2ts.
-We did not attempt to resolve co-circulation below the country level: sub-national
-location is recorded for some countries only, and because a parent in the ARG is the
-closest sampled relative of the lineage involved rather than the transmitted genome
-itself, it is not expected to share the fine-scale location of the co-infected host.
+For the 224 QC-passing recombinants whose two parents are both sampled genomes,
+the parents were sampled a median of 25 days apart
+and 134 (60\%) in the same country,
+compared with 41 days and 40\% when parents are exchanged
+between recombinants of similar date
+($p < 0.001$ in both cases, 1,000 permutations;
+Methods, \supref{sec:parent_cocirculation},
+Figure~\ref{fig:recombinant_parent_proximity}).
+The inferred parents are therefore closer in time and space
+than expected by chance, providing additional support
+for the recombination events inferred by sc2ts.
 
 
 \begin{figure}[h]
@@ -3061,6 +3050,33 @@ See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
 {analysis\_jackson\_recombinants.ipynb}
 for details.
+
+\subsection{Co-circulation of recombinant parents}\label{sec:parent_cocirculation}
+The two parents of a recombinant must have co-circulated in space and time,
+so we compared the sampling dates and locations of the inferred parents
+with a null in which parents are exchanged between recombinants
+of similar date (Methods).
+For the 224 QC-passing recombinants whose two parents are both sampled genomes,
+the parents were sampled a median of 25 days apart,
+against 41 days under the null,
+and 134 (60\%) were sampled in the same country, against 40\%
+($p < 0.001$ in both cases, 1,000 permutations;
+Figure~\ref{fig:recombinant_parent_proximity}).
+Considering parental Pango lineages rather than individual genomes,
+which also covers events with unsampled parents,
+both parent lineages were sampled in the country of the recombinant itself
+within 28 days of the inferred event
+for 538 (83\%) of all 647 QC-passing recombinants.
+This measure discriminates weakly (79--81\% under the same permutation),
+because contemporaneous lineages co-circulate
+in most well-sampled countries.
+We did not attempt to resolve co-circulation below the country level.
+Sub-national location is recorded for some countries only,
+and because a parent in the ARG is the closest sampled relative
+of the lineage involved rather than the transmitted genome itself,
+it is not expected to share the fine-scale location of the co-infected host:
+of the 70 recombinants with both parents sampled in the USA,
+the parents share a state in 17\%.
 
 \subsection{Synthetic recombinant simulations}\label{sec:synthetic_recombinants}
 We matched synthetic single-breakpoint recombinants with known parents
