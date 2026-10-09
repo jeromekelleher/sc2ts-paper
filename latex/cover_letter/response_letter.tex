@@ -223,7 +223,7 @@ nuanced.''
   \item We agree that the diversity--recombination relationship is partly expected from detectability.
   \item The new simulation study quantifies this: at $k=4$, 89\% of synthetic recombinants
 between Alpha and Delta parents are detected, but only 40\% of those between two Alpha
-parents (Results, ``Quality control and validation of recombination events''; SI
+parents (Results, ``Quality control and corroboration of recombination events''; SI
 ``Synthetic recombinant simulations'').
   \item \todo{Nuance the text in the ``Emergence of recombinants over time'' section and the Discussion accordingly.}
   \item \todo{This analysis must also be redone for the v2.2 ARG: JHU case data stop in March 2023 while the ARG runs to June 2024.}
@@ -279,7 +279,7 @@ the real ARG; and mutations in unsampled parents barely affect detection but pus
 many recombinants beyond the HMM cost threshold for inclusion.
   \item Added to the manuscript: a new Methods section (``Simulation of synthetic
 recombinants''), a new SI section (``Synthetic recombinant simulations'') with
-a new supplementary figure, a summary in the Results (``Quality control and validation
+a new supplementary figure, a summary in the Results (``Quality control and corroboration
 of recombination events''), and a sentence in the Discussion.
   \item Done: sc2ts has been generalised to run on any (non-segmented) pathogen genome, and
 the new SLiM simulations include an influenza-like pathogen, modelled on
@@ -303,10 +303,17 @@ throughout.''
 
 \begin{itemize}
   \item We agree, and have adopted more circumspect phrasing.
-  \item \todo{Pass through the Introduction and Results replacing
-``validated''/``validation'' (28 occurrences of ``validat*'' in \texttt{main.tex})
-with ``corroborated''/``consistent with'', and rephrasing
-``The ARG is a comprehensive and deeply validated record'' (main.tex:417).}
+  \item Done: comparisons against real data and other inference methods (3SEQ,
+CovRecomb, rebar, UShER, results from the literature) are now described as corroboration
+or as being ``consistent with'' those results. ``Validation'' is kept only where the truth
+is known (the simulations, and re-dating samples with known collection dates).
+  \item Done: ``accurately'' claims are removed from the Abstract, Introduction and Results
+where they rested on comparisons with real data, e.g.\ ``sc2ts automatically and accurately
+detects details about known recombinant lineages'' $\to$ ``sc2ts automatically recovers
+many details about known recombinant lineages''.
+  \item Done: the Discussion now describes ``multiple corroborative comparisons with results
+from the literature'' rather than ``multiple layers of validation'', and the new simulation
+studies set out the conditions under which inference is unreliable (see above).
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``Some recommendations should be provided for
@@ -339,10 +346,13 @@ overstatement for similar reasons (see also above).''
 
 \begin{itemize}
   \item Agreed.
-  \item \todo{Pass through the Introduction and Results replacing
-``validated''/``validation'' (28 occurrences of ``validat*'' in \texttt{main.tex})
-with ``corroborated''/``consistent with'', and rephrasing
-``The ARG is a comprehensive and deeply validated record'' (main.tex:417).}
+  \item Done: the 3SEQ, CovRecomb and rebar comparisons are now described as
+corroboration throughout (Results, Methods, Supplementary tables), and the section is
+renamed ``Quality control and corroboration of recombination events''.
+  \item Done: ``The ARG is a comprehensive and deeply validated record of the pandemic
+phase \ldots\ accurately depicting a range of results from the literature'' is now
+``The ARG is a comprehensive record of the pandemic phase \ldots\ consistent with a range
+of results from the literature''.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``I am not sure if the authors will have seen
