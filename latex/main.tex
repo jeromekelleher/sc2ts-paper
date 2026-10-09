@@ -272,8 +272,8 @@ rich data structure representing recombinant
 ancestry\cite{Minichiello2006mapping,Wong2024}.
 
 Here we present sc2ts, a new method to infer ARGs for pathogens like SARS-CoV-2
-that sequentially adds samples over time in a similar manner
-to UShER, while automatically detecting and incorporating recombination
+that sequentially adds samples as they are collected over the course of an epidemic,
+in a similar manner to UShER, while automatically detecting and incorporating recombination
 in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
@@ -578,7 +578,7 @@ and detailed ARG visualisations (Document S1).
 
 \subsection*{Quality control and corroboration of recombination events}
 Several different error modalities can cause short regions
-a sample genome to match more closely
+of a sample genome to match more closely
 to an alternative genome rather than the true parent,
 which can be mistaken for evidence of recombination.
 We use a simple quality control (QC) measure
@@ -590,7 +590,7 @@ including multiple simultaneous nucleotide substitutions
 suggested to cause false positive recombinants~\cite{DeMaio2024}.
 Figure~\ref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
-for the 1319 single-breakpoint recombination events.
+for the 1319 inferred single-breakpoint recombination events.
 The 672 recombinants having fewer than 4 net loci supporting each parent
 are highly enriched for samples sequenced using the AmpliSeq V1 protocol
 % https://github.com/jeromekelleher/sc2ts-paper/issues/808
@@ -844,11 +844,11 @@ inferred within each week along the ARG,
 focusing on the 354 events passing QC filters.
 Recombination events were inferred more often
 during the Delta and Omicron waves, when case counts were high.
-Overall, the number of recombination events rose with the global case count
+Overall, the number of inferred recombination events rose with the global case count
 (Figure~\ref{fig:recombinants_over_time}B;
 % JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
 linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
-Recombination events also rose with the diversity of lineages in each week
+Inferred recombination events also rose with the diversity of lineages in each week
 (Figure~\ref{fig:recombinants_over_time}C; linear regression:
 $0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
@@ -1018,6 +1018,9 @@ We envisage the ARG as a long-term stable resource---building on the
 high-quality, freely available reassemblies of
 the Viridian dataset~\cite{Hunt2026}---to facilitate the study
 of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
+Its primary users will be researchers, such as evolutionary biologists,
+epidemiologists, lineage curators and methods developers,
+rather than routine public health surveillance.
 
 The other primary contribution of this work is the method used to
 infer the ARG, sc2ts.
@@ -1462,11 +1465,20 @@ of diversity expected with dense sampling.
 The HMM cost for the Viterbi solution for a sample under the LS model
 is $k$ times the number of recombination events plus the number of
 mismatches, where $k$ is the recombination penalty (here, $k=4$).
-After some experimentation, we set the HMM cost threshold to 7,
+We set the HMM cost threshold to 7,
 disallowing samples that require 8 or more mutations (or, e.g., 1 recombination
 and 4 mutations, or 2 recombinations) from immediate inclusion (see next
 section) in the ARG. This approach has the benefit of filtering
 samples enriched for errors as well as time-travellers.
+With dense daily sampling, most samples should differ from a close relative
+already in the ARG by only a few mutations:
+at about $8\times10^{-4}$ substitutions per site per year,
+a lineage accumulates about two mutations per month,
+so a cost of 7 corresponds to several months of unsampled evolution.
+Because samples above the threshold can still be added retrospectively (next section),
+we chose a low threshold, at the cost of delaying the inclusion of saltational lineages
+and of some recombinants whose parents were not sampled
+(\supref{sec:synthetic_recombinants}).
 
 \subsubsection*{Inserting saltational lineages}
 The HMM cost threshold approach outlined in the previous section is
@@ -1494,6 +1506,10 @@ Firstly, we require at least 10 samples in the
 group, collected on at least 3 different dates,
 to ensure there is sufficient support over a time window of
 seven days.
+A week is long enough for a genuinely emerging lineage to accumulate
+this support under dense sampling, while keeping the delay before it is added
+to the ARG short, and making it unlikely that sporadic time travellers
+form a coherent group.
 We also require that the samples are assigned to at most 3
 different Pango lineages in the Viridian metadata.
 Then, we build a local tree of the samples and consider
@@ -2274,6 +2290,9 @@ $\sim2$ x $10^{-6}$ per site per day
 
 \subsubsection*{Comparison with UShER+RIPPLES}
 We began with the Viridian UShER tree downloaded from Figshare.
+Unlike the public UShER tree used in the original RIPPLES analysis~\cite{Turakhia2022},
+this tree has not been subject to extensive community inspection and manual curation,
+which may affect the initial placement of putative recombinants.
 To simplify the comparison with sc2ts, we subset this
 file down to the 3,107,392 samples shared with the sc2ts ARG
 by running \texttt{matUtils extract}.
@@ -3715,7 +3734,8 @@ Heat map showing differences (in days) between actual and re-estimated sample da
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Alpha.pdf}
 \caption{
-Subgraph illustrating the saltational origin of B.1.1.7 (Alpha).
+Subgraph illustrating the saltational origin of B.1.1.7 (Alpha),
+drawn with tskit\_arg\_visualizer~\cite{Kitchens2025tskit}.
 Squares represent sample nodes,
 circles represent reconstructed internal nodes;
 nodes classified as B.1.1.7 by Pangolin v4.3.1 are in pink.

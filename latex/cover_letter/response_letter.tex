@@ -138,9 +138,11 @@ samples arrive), not a commitment to maintain the resource indefinitely.
 \item We have made a major effort to make the resource as up to date and extensive as
 possible. The ARG now includes all of the latest Viridian data, running to
 2024-06-06 with 3,114,609 samples (previously 2,482,157 samples to 2023-02-20).
-  \item \todo{Add a Discussion paragraph on intended users and how they access
-the ARG (tskit Python API, visualisation tools, Zenodo download), and soften
-``real-time'' claims about the resource.}
+  \item Done: the Discussion now states that the primary users will be researchers
+(evolutionary biologists, epidemiologists, lineage curators and methods developers)
+rather than routine public health surveillance. It already described the ARG as a stable
+resource for studying the pandemic phase, and ``real time'' in the manuscript refers only
+to the inference method.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``If this is intended as a method suitable for
@@ -286,10 +288,16 @@ the new SLiM simulations include an influenza-like pathogen, modelled on
 pandemic 2009 H1N1, covering the rates and epidemic sizes of an influenza pandemic
 (see the response to the previous point and SI ``Simulations of pathogen epidemics'').
 They also cover a coronavirus-like pathogen, and two sampling densities for each.
-  \item \todo{Reassortment in segmented genomes is out of scope: the influenza-like genome
-is simulated as a single unsegmented sequence, and the sc2ts HMM assumes a single linear
-genome. Explain that reassortment would need the model extended (e.g.\ free recombination
-between segments) and note this in the Discussion (now one sentence).}
+  \item Not as it stands. The sc2ts HMM treats the genome as a single linear sequence, and
+switching parents anywhere costs the same penalty $k$. Reassortment differs in that
+segments are inherited independently, so a switch of parent between segments should cost
+little or nothing, while a switch within a segment remains rare. The ARG representation
+can already describe this: concatenated segments and a parent switch at each segment
+boundary. Supporting reassortment would therefore mean extending the HMM to allow
+breakpoints at segment boundaries at little or no cost. We think this is a promising
+direction, but it is beyond the scope of this work. The influenza-like genome in our
+simulations is accordingly a single unsegmented sequence, and the Discussion now notes
+that reassortment would require extending the model.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``In parts of the introduction and results,
@@ -331,7 +339,11 @@ address their concerns.''
 biologists, population geneticists, epidemiologists studying the pandemic
 phase, methods developers, lineage curators) rather than routine applied public
 health, and will say so explicitly.
-  \item \todo{Add recommendations for practical use cases to the Discussion (see above).}
+  \item Done: the Discussion now names the intended users (see above). The Results
+describe how they access the ARG (tskit Python API, tabular node summaries with Pango
+assignments, minimal hardware), and the Discussion gives example use cases
+(annotating the ARG with fitness estimates, detecting saltational variants,
+developing ARG-aware methods).
 \end{itemize}
 
 \medskip
@@ -364,8 +376,22 @@ application. One way that this resource could be made much more accessible
 would be to present this ARG on the platform.''
 
 \begin{itemize}
-  \item We now cite Lorax along with tsbrowse, tskit\_arg\_visualizer and ARGscape
-  \item Say something about how well Lorax handles the sc2ts ARG.
+  \item We thank the reviewer for pointing us to Lorax, which has since been published in
+\textit{Bioinformatics}. We agree that interactive visualisation is a good way to make the ARG
+more accessible.
+  \item Done: we now cite Lorax alongside the other interactive tools for visualising tskit
+ARGs (tsbrowse, tskit\_arg\_visualizer and ARGscape) in the Methods
+(``Ancestral Recombination Graphs'').
+  \item We tried loading the sc2ts ARG into Lorax, but it did not perform well enough to be
+useful. Lorax is designed for ``biobank-scale'' ARGs, which are in fact much smaller than
+the sc2ts ARG in number of samples (3.1 million). We hope that the sc2ts ARG will motivate
+the development of new tools, or updates to Lorax, that make interactive exploration at
+this scale feasible.
+  \item In the meantime, we have used tskit\_arg\_visualizer extensively to examine small
+sections of the ARG, such as the subgraphs around individual recombination events, and this
+has been instrumental in our analysis. All of the ARG visualisations in the paper were made
+with it: the Supplementary subgraph figures and Document S1 directly, and Figure~2 using
+initial layouts from it. The figure captions now say so.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``One element that may be worth mentioning is
@@ -378,8 +404,10 @@ distinction might be worth addressing briefly.''
 
 \begin{itemize}
   \item Agreed.
-  \item \todo{Add a sentence to the RIPPLES Methods/Supplement noting that the original RIPPLES
-analysis used the curated UShER tree, whereas we compare against the Viridian UShER tree.}
+  \item Done: the Methods (``Comparison with UShER+RIPPLES'') now note that, unlike the public
+UShER tree used in the original RIPPLES analysis, the Viridian UShER tree has not been
+subject to extensive community inspection and manual curation, which may affect the
+initial placement of putative recombinants.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``Is there a plan to update the ARG with newly
@@ -499,8 +527,16 @@ increases, recall falls and precision rises. They also show that the best $k$ de
 the diversity available: with little diversity, $k = 3$ recovers several times as many
 events as $k = 4$, at some cost in precision. \todo{Add to the playbook in ``Choice of k
 parameter'' once final numbers are in.}
-  \item \todo{Describe how the other heuristic parameters (e.g.\ the HMM cost threshold)
-were chosen, in the same way.}
+  \item Done: the Methods (``Filtering time travellers'') now explain the choice of the HMM
+cost threshold. With dense daily sampling, a sample should differ from a close relative
+already in the ARG by only a few mutations, and a cost of 7 corresponds to several months
+of unsampled evolution. Because samples above the threshold can still be added
+retrospectively, we chose a low threshold. The synthetic recombinant simulations quantify
+the cost: recombinants whose parents were not sampled are more often held back.
+  \item Done: the Methods (``Inserting saltational lineages'') now also explain the
+seven-day window for retrospective inclusion. It is long enough for a genuinely emerging
+lineage to accumulate support under dense sampling, while keeping the delay before it is
+added short, and making it unlikely that sporadic time travellers form a coherent group.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (2):} ``Main Figure: ARGs are often difficult to
@@ -515,9 +551,28 @@ but I think it would help demonstrate the power of this approach to a general
 audience.''
 
 \begin{itemize}
-  \item \todo{Thank the reviewer for the nice idea, but explain that capturing
- the full scale ARG is hard and also kind of pointless, as we already know
-what the SC2 tree looks like.}
+  \item We thank the reviewer for this suggestion, and agree that showing the inferred
+reticulations graphically is the best way to convey what an ARG adds.
+  \item We considered a whole-ARG figure, but do not think it would serve this purpose.
+The ARG has 3.41 million nodes, of which 1,323 are recombination nodes. Even with clades
+collapsed into triangles, a figure at this scale would be dominated by the clonal backbone.
+That backbone is already familiar from existing SARS-CoV-2 phylogenies, and is congruent
+with the UShER tree (Results, tanglegrams). The individual reticulations, most of which
+involve small clades, would not be legible.
+  \item We have therefore focused on subgraphs, where the reticulations can be shown in
+detail:
+    \begin{itemize}
+      \item Figure~2 shows the subgraphs around the recombination nodes for XA, and for XQ
+together with the six Pango X lineages descending from it. Clades are summarised by their
+sample counts, and the genome bars show the breakpoint intervals.
+      \item The Supplementary Figures show the subgraphs at the origins of Alpha, Delta and
+Omicron.
+      \item Document S1 gives detailed visualisations of the recombination events
+underlying the Pango X lineages.
+    \end{itemize}
+  \item Readers can also extract subgraphs of interest and explore them interactively with
+tskit visualisation tools such as tskit\_arg\_visualizer, which we have used extensively
+for this purpose (see also our response to Reviewer \#1 on Lorax).
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3):} ``Writing. I had some minor
@@ -528,20 +583,22 @@ the course of a pandemic or over computer time in the algorithm of the
 method.''
 
 \begin{itemize}
-  \item \todo{Clarify ``over time'' means over the course of the pandemic (now main.tex:140).}
+  \item Done: we meant over the course of the pandemic. The sentence now reads ``sequentially
+adds samples as they are collected over the course of an epidemic''.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3b):} ``L161: missing word.''
 
 \begin{itemize}
-  \item \todo{Map submitted L161 to current text and fix the missing word.}
+  \item Done: ``short regions of a sample genome''.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3c):} ``L166: should be `855 inferred
 recombination events' right?''
 
 \begin{itemize}
-  \item \todo{Fix; the count is now 1,323 inferred recombination nodes.}
+  \item Done: yes. With the updated ARG this sentence now refers to ``the 1319 inferred
+single-breakpoint recombination events''.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3d):} ``L236: it might be useful to define
@@ -553,7 +610,7 @@ We have added a citation to the Scorpio paper on first usage.
 events' right?''
 
 \begin{itemize}
-  \item \todo{Fix wording to ``inferred recombination events''.}
+  \item Done: this and the following sentence now refer to ``inferred recombination events''.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#2 (3f):} ``Throughout, it seems like sometimes the
@@ -561,7 +618,7 @@ quotations marks were facing the wrong direction (i.e., closing when they
 should be opening, or vice versa), so I'd recommend the authors do a careful
 proofread for this.''
 
-We have fixed all occurances of the issue.
+We have fixed all occurrences of the issue.
 
 \closing{Sincerely,}
 
