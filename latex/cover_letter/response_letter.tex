@@ -288,10 +288,16 @@ the new SLiM simulations include an influenza-like pathogen, modelled on
 pandemic 2009 H1N1, covering the rates and epidemic sizes of an influenza pandemic
 (see the response to the previous point and SI ``Simulations of pathogen epidemics'').
 They also cover a coronavirus-like pathogen, and two sampling densities for each.
-  \item \todo{Reassortment in segmented genomes is out of scope: the influenza-like genome
-is simulated as a single unsegmented sequence, and the sc2ts HMM assumes a single linear
-genome. Explain that reassortment would need the model extended (e.g.\ free recombination
-between segments) and note this in the Discussion (now one sentence).}
+  \item Not as it stands. The sc2ts HMM treats the genome as a single linear sequence, and
+switching parents anywhere costs the same penalty $k$. Reassortment differs in that
+segments are inherited independently, so a switch of parent between segments should cost
+little or nothing, while a switch within a segment remains rare. The ARG representation
+can already describe this: concatenated segments and a parent switch at each segment
+boundary. Supporting reassortment would therefore mean extending the HMM to allow
+breakpoints at segment boundaries at little or no cost. We think this is a promising
+direction, but it is beyond the scope of this work. The influenza-like genome in our
+simulations is accordingly a single unsegmented sequence, and the Discussion now notes
+that reassortment would require extending the model.
 \end{itemize}
 
 \noindent \textbf{Reviewer \#1:} ``In parts of the introduction and results,
