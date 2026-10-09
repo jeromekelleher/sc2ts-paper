@@ -35,7 +35,7 @@ wildcard_constraints:
     k=r"[0-9]+",
 
 
-SUMMARIES = ["summary", "events", "placement"]
+SUMMARIES = ["summary", "events", "placement", "recombinants"]
 
 
 def seed(wildcards):
@@ -239,6 +239,50 @@ rule evaluate:
         """
 
 
+rule rematch_recombinants:
+    """
+    Rematch each recombinant against the ARG for the day before it was added,
+    with and without recombination, with the script used for the published
+    ARG. This needs sc2ts's daily ARGs, which infer leaves in the run's
+    sc2ts/results.
+    """
+    input:
+        script="../../arg_postprocessing/scripts/rematch_recombinants.py",
+        trees=f"{RUN_DIR}/inferred.ts",
+    output:
+        f"{RUN_DIR}/recombinants_rematch.json",
+    params:
+        pattern=lambda wildcards: (
+            "{dir}/sc2ts/results/{run_id}/{run_id}_{{date}}.ts".format(
+                dir=RUN_DIR.format(**wildcards),
+                run_id="{pathogen}_rep{rep}_s{s}_k{k}".format(**wildcards),
+            )
+        ),
+    threads: config["num_threads"]
+    shell:
+        """
+        python {input.script} {input.trees} {output} \
+            --pattern='{params.pattern}' --num-mismatches={wildcards.k}
+        """
+
+
+rule recombinant_table:
+    input:
+        true=f"{SAMPLE_DIR}/true.trees",
+        inferred=f"{RUN_DIR}/inferred.ts",
+        samples=f"{RUN_DIR}/samples.csv",
+        rematches=f"{RUN_DIR}/recombinants_rematch.json",
+    output:
+        f"{RUN_DIR}/recombinants.csv",
+    shell:
+        """
+        python pipeline.py recombinant-table \
+            {input.true} {input.inferred} {input.samples} {input.rematches} {output} \
+            --pathogen {wildcards.pathogen} --rep {wildcards.rep} \
+            --samples-per-day {wildcards.s} --k {wildcards.k}
+        """
+
+
 rule combine:
     input:
         **{
@@ -249,16 +293,17 @@ rule combine:
                 s=samples_per_day(wildcards),
                 k=K_VALUES,
             )
-            for name in ["evaluation", "events", "placement"]
+            for name in ["evaluation", "events", "placement", "recombinants"]
         },
     output:
         evaluation="results/{pathogen}/summary.csv",
         events="results/{pathogen}/events.csv",
         placement="results/{pathogen}/placement.csv",
+        recombinants="results/{pathogen}/recombinants.csv",
     run:
         import pandas as pd
 
-        for name in ["evaluation", "events", "placement"]:
+        for name in ["evaluation", "events", "placement", "recombinants"]:
             df = pd.concat([pd.read_csv(path) for path in input[name]])
             df.to_csv(output[name], index=False)
 
