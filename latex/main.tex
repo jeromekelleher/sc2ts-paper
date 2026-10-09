@@ -1935,12 +1935,12 @@ The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
 \subsubsection*{Simulation of pathogen epidemics}
 To evaluate sc2ts on data where the full ARG is known,
 we simulated epidemics of two pathogens forwards in time with
-SLiM~\cite{Haller2019}, using a nucleotide-based, neutral, haploid
+SLiM~\cite{Haller2026slim}, using a nucleotide-based, neutral, haploid
 Wright--Fisher model inspired by SANTA-SIM~\cite{Jariani2019santasim}.
 The population starts from a single founder, grows exponentially to
 $N$ cases per generation, and then remains at that size.
 Mutations follow the Jukes--Cantor model, at rate $\mu$ per site per generation.
-A fraction $\rho$ of births are recombinant, with two distinct parents
+A fraction $r$ of births are recombinant, with two distinct parents
 chosen uniformly from the previous generation
 and a single breakpoint uniform along the genome;
 all other births copy a single parent.
@@ -1952,20 +1952,15 @@ and a generation time of 5.5 days
 so that $\mu L \approx 0.36$ mutations per genome per generation.
 It grows to $N=1{,}000$ over 20 generations and is simulated for 200
 generations (about 3 years).
-We set $\rho=0.5\%$, several times higher than estimates for
+We set $r=0.5\%$, several times higher than estimates for
 SARS-CoV-2, to give enough recombination events to measure.
 The influenza-like pathogen is modelled on pandemic 2009 H1N1,
 % TODO cite PNAS source for pdm2009 rates (https://www.pnas.org/doi/10.1073/pnas.1918304117)
 with a 13\,kb genome, a substitution rate of $2.75\times10^{-3}$ per site per year,
 one generation per day, and 0.25 recombinations per lineage per year.
-It grows to $N=10^6$ over 50 days and is simulated for 100 days.
+It grows to $N=10^6$ over 50 days and is simulated for a total of 100 days.
 The genome is modelled as a single unsegmented sequence,
 so reassortment is not represented.
-A SARS-CoV-like pathogen (substitution rate $5\times10^{-4}$ per site per year,
-with the influenza-like demography) was also simulated,
-but accumulates too little diversity in 100 days
-(about 4 mutations along a lineage)
-for any recombinants to be detected.
 
 Each generation is treated as one day of sampling.
 For each number of samples per day $S$
@@ -1974,7 +1969,7 @@ $S$ individuals are drawn uniformly at random from each generation
 (all of it, if smaller), with the smaller samples nested in the larger.
 Since keeping every individual's sequence at $N=10^6$ is not feasible,
 SLiM records only individuals that may be sampled, with tree-sequence
-recording~\cite{Haller2019,Gopalan2025bridging} giving the true ARG
+recording~\cite{Kelleher2018efficient,Haller2019tree} giving the true ARG
 of the samples.
 Each individual also inherits, along its clonal line,
 its nearest recombinant ancestor and the nearest sampled individual since then,
@@ -1989,8 +1984,7 @@ except that filtering of time travellers was disabled
 since the simulated samples have exact dates and no sequencing errors,
 and every sample can then be added on its own day.
 The final ARG was run through \texttt{sc2ts postprocess}
-to add exact matches as sample nodes,
-without its mutation updates, so that the ARG is otherwise as inferred.
+to add exact matches as sample nodes.
 
 A sample can carry a recombination that it inherited,
 and if no sampled individual on its clonal line since the recombinant
@@ -2010,8 +2004,7 @@ For events detected with a single breakpoint, we recorded
 whether the true breakpoint lies in the breakpoint interval
 of the earliest sample in which it was found, and the interval's width.
 The accuracy of the ARG as a whole was measured with
-tscompare (\url{https://github.com/tskit-dev/tscompare}),
-% TODO cite tscompare / haplotype ARF
+tscompare\cite{Fritze2024forest}
 as the ARG Robinson--Foulds (ARF) distance,
 the fraction of the inferred ARG's node span not represented in the true ARG,
 and the true positive rate (TPR),
@@ -3141,9 +3134,6 @@ and many recombinants differ from neither parent at all:
 only about 80\% of influenza-like events were detectable in this sense,
 compared with 93\% for the coronavirus-like pathogen.
 This is a limit of what the sequences contain rather than of sc2ts.
-In the same way, a SARS-CoV-like pathogen simulated with the influenza-like
-demography (about 4 mutations along a lineage in 100 days)
-yielded essentially no detectable recombinants.
 
 Most recombinants are not themselves sampled,
 and are seen only through their sampled descendants.
@@ -3196,6 +3186,10 @@ or the artefacts that produce most of the QC-failing recombinants in the
 real ARG (\supref{sec:synthetic_recombinants}).
 The influenza-like genome is a single unsegmented sequence,
 so reassortment between segments is not represented.
+
+[TODO: Add a note that these simulations are not intended to be realistic
+representaations of other pathogens, but to explore the properties of the
+method under plausible pathogen parameter regimes.]
 
 \subsubsection{Implications for other pathogens}
 When sc2ts infers a recombinant, it is almost always genuine,
