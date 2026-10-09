@@ -1,7 +1,7 @@
 """
 The steps of the SLiM simulation pipeline after running SLiM itself, as click
-subcommands: sample, export-samples, make-truth, write-sc2ts-config and
-evaluate. See README.md.
+subcommands: sample, export-samples, make-truth, write-sc2ts-config, evaluate,
+rematch-recombinants and recombinant-table. See README.md.
 
 Run from simulations/slim/, e.g.:
     python pipeline.py sample sim.slim.ts sim.slim.samples.tsv true.trees \
@@ -16,7 +16,9 @@ import click
 import numpy as np
 import pandas as pd
 import pyslim
+import sc2ts.cli
 import sc2ts.core
+import sc2ts.inference
 import tscompare
 import tskit
 
@@ -542,6 +544,147 @@ def score_arg(true_ts, inferred_ts):
     }
 
 
+def rematch_recombinants(inferred_ts, pattern, k):
+    """
+    Rematch every recombinant node in the inferred ARG against the ARG for the
+    day before it was added, with and without recombination, as for the
+    published ARG (arg_postprocessing/scripts/rematch_recombinants.py). The
+    daily ARGs are found by formatting ``pattern`` with each date. Return the
+    list of sc2ts RematchRecombinantsResult dicts.
+    """
+    recombinants = np.where(inferred_ts.nodes_flags & sc2ts.core.NODE_IS_RECOMBINANT)[0]
+    by_date = collections.defaultdict(list)
+    for u in recombinants:
+        by_date[inferred_ts.node(u).metadata["sc2ts"]["date_added"]].append(int(u))
+    results = []
+    # Each day's ARGs are loaded once for all the recombinants added that day.
+    for date in sorted(by_date):
+        recomb_ts = tskit.load(pattern.format(date=date))
+        base_ts = tskit.load(sc2ts.cli.find_previous_date_path(date, pattern))
+        for u in by_date[date]:
+            result = sc2ts.inference.rematch_recombinant(
+                base_ts, recomb_ts, u, num_mismatches=k
+            )
+            results.append(result.asdict())
+    return results
+
+
+def relative_segments(true_ts, sample, earlier):
+    """
+    Return the (left, right, mrca) segments along the genome over which the
+    sample's nearest relatives among the ``earlier`` sample nodes share the
+    same MRCA with it, in the true ARG. The MRCA is -1 where none of them are
+    related to the sample. A sample whose own ancestry has no unrepresented
+    recombination has a single segment, unless a relative's recombination
+    makes its nearest relatives change along the genome.
+    """
+    segments = []
+    for tree in true_ts.trees(tracked_samples=earlier):
+        v = tree.parent(sample)
+        while v != tskit.NULL and tree.num_tracked_samples(v) == 0:
+            v = tree.parent(v)
+        left, right = tree.interval
+        if len(segments) > 0 and segments[-1][2] == v:
+            segments[-1][1] = right
+        else:
+            segments.append([left, right, v])
+    return [tuple(segment) for segment in segments]
+
+
+def recombinant_table(true_ts, inferred_ts, samples, rematches):
+    """
+    Return one row for each recombinant node in the inferred ARG, with the
+    number of mutations averted by recombination and whether it is a true
+    recombinant.
+
+    num_mutations is the number of mutations in the recombinant HMM match, and
+    k1000_muts the number in the best match to a single parent (from
+    rematch_recombinants), so mutations_averted = k1000_muts - num_mutations,
+    as for the published ARG. The causal samples are those added in the same
+    group whose HMM match has more than one parent, and the node is a true
+    positive if any of them is expected to be a recombinant (see
+    classify_samples). The breakpoint interval and truth columns are from the
+    earliest causal sample that is expected to be a recombinant, or for a false
+    positive the earliest causal sample.
+
+    False positives are put into one of two categories, from the nearest
+    relatives of that sample among the placed samples of
+    earlier generations, in the true ARG (see relative_segments). If they change
+    along the genome, the false positive is a "relative_recombinant": the
+    recombination is real, but in a relative's ancestry rather than the
+    sample's. Otherwise it is an "unresolved_branch", where the ARG has no
+    node close enough to the sample's true ancestor. relative_breakpoints are
+    the positions where the nearest relatives change.
+    """
+    rematches = {r["recombinant"]: r for r in rematches}
+    samples = samples.set_index("strain", drop=False)
+    true_nodes = dict(zip(true_strains(true_ts), true_ts.samples()))
+    placed = samples[samples.placed]
+
+    groups = collections.defaultdict(list)
+    for u in inferred_ts.samples():
+        md = inferred_ts.node(u).metadata
+        if len(md["sc2ts"]["hmm_match"]["path"]) > 1:
+            groups[md["sc2ts"]["group_id"]].append(md["strain"])
+
+    rows = []
+    for u in np.where(inferred_ts.nodes_flags & sc2ts.core.NODE_IS_RECOMBINANT)[0]:
+        md = inferred_ts.node(u).metadata["sc2ts"]
+        rematch = rematches[u]
+        causal = samples.loc[groups[md["group_id"]]].sort_values("gen", kind="stable")
+        true_positive = bool(causal.expected_recombinant.any())
+        if true_positive:
+            first = causal[causal.expected_recombinant].iloc[0]
+        else:
+            first = causal.iloc[0]
+        num_mutations = len(rematch["original_match"]["mutations"])
+        k1000_muts = len(rematch["no_recomb_match"]["mutations"])
+        row = {
+            "recombinant": int(u),
+            "date_added": md["date_added"],
+            "num_parents": len(rematch["original_match"]["path"]),
+            "causal_strains": " ".join(causal.strain),
+            "gen": first.gen,
+            "num_mutations": num_mutations,
+            "k1000_muts": k1000_muts,
+            "mutations_averted": k1000_muts - num_mutations,
+            "true_positive": true_positive,
+            "breakpoint_interval_left": first.breakpoint_interval_left,
+            "breakpoint_interval_right": first.breakpoint_interval_right,
+        }
+        if true_positive:
+            row["recombinant_ancestor"] = first.recombinant_ancestor
+            row["ancestor_breakpoint"] = first.ancestor_breakpoint
+            row["ancestor_detectable"] = first.ancestor_detectable
+            row["breakpoint_in_interval"] = bool(
+                first.breakpoint_interval_left
+                <= first.ancestor_breakpoint
+                <= first.breakpoint_interval_right
+            )
+        else:
+            earlier = [true_nodes[s] for s in placed.strain[placed.gen < first.gen]]
+            segments = relative_segments(true_ts, true_nodes[first.strain], earlier)
+            breakpoints = [int(left) for left, _, _ in segments[1:]]
+            row["category"] = (
+                "relative_recombinant" if len(breakpoints) > 0 else "unresolved_branch"
+            )
+            row["relative_breakpoints"] = " ".join(map(str, breakpoints))
+            row["relative_breakpoint_in_interval"] = any(
+                first.breakpoint_interval_left <= bp <= first.breakpoint_interval_right
+                for bp in breakpoints
+            )
+        rows.append(row)
+    columns = [
+        "recombinant", "date_added", "num_parents", "causal_strains", "gen",
+        "num_mutations", "k1000_muts", "mutations_averted", "true_positive",
+        "breakpoint_interval_left", "breakpoint_interval_right",
+        "recombinant_ancestor", "ancestor_breakpoint", "ancestor_detectable",
+        "breakpoint_in_interval", "category", "relative_breakpoints",
+        "relative_breakpoint_in_interval",
+    ]
+    return pd.DataFrame(rows, columns=columns)
+
+
 @click.group()
 def cli():
     pass
@@ -691,6 +834,61 @@ def evaluate(
         for j, (column, value) in enumerate(run_params.items()):
             df.insert(j, column, value)
         df.to_csv(output_dir / f"{name}.csv", index=False)
+
+
+@cli.command(name="rematch-recombinants")
+@click.argument("inferred_ts", type=click.Path(exists=True, dir_okay=False))
+@click.argument("pattern")
+@click.argument("output", type=click.Path(dir_okay=False))
+@click.option("--k", type=int, required=True)
+def rematch_recombinants_command(inferred_ts, pattern, output, k):
+    """
+    Rematch each recombinant node in INFERRED_TS (the final ARG from sc2ts
+    infer) against the ARG for the day before it was added, with and without
+    recombination. PATTERN is the path of sc2ts's daily ARGs, with "{date}" in
+    place of the date. Write the results to OUTPUT as JSON, as
+    arg_postprocessing/scripts/rematch_recombinants.py does.
+    """
+    results = rematch_recombinants(tskit.load(inferred_ts), pattern, k)
+    with open(output, "w") as f:
+        json.dump(results, f, indent=4)
+
+
+@cli.command(name="recombinant-table")
+@click.argument("true_ts", type=click.Path(exists=True, dir_okay=False))
+@click.argument("inferred_ts", type=click.Path(exists=True, dir_okay=False))
+@click.argument("samples", type=click.Path(exists=True, dir_okay=False))
+@click.argument("rematches", type=click.Path(exists=True, dir_okay=False))
+@click.argument("output", type=click.Path(dir_okay=False))
+@click.option("--pathogen", required=True)
+@click.option("--rep", type=int, required=True)
+@click.option("--samples-per-day", type=int, required=True)
+@click.option("--k", type=int, required=True)
+def recombinant_table_command(
+    true_ts, inferred_ts, samples, rematches, output, pathogen, rep,
+    samples_per_day, k,
+):
+    """
+    Write OUTPUT, with one row per recombinant node in INFERRED_TS (the final
+    ARG from sc2ts infer): the mutations it averts, from the REMATCHES of
+    rematch-recombinants, whether it is a true recombinant, from SAMPLES (from
+    evaluate), and for false positives, their category, from TRUE_TS. The
+    run's parameters come first, so it can be concatenated across runs.
+    """
+    with open(rematches) as f:
+        rematches = json.load(f)
+    df = recombinant_table(
+        tskit.load(true_ts), tskit.load(inferred_ts), pd.read_csv(samples), rematches
+    )
+    run_params = {
+        "pathogen": pathogen,
+        "rep": rep,
+        "samples_per_day": samples_per_day,
+        "k": k,
+    }
+    for j, (column, value) in enumerate(run_params.items()):
+        df.insert(j, column, value)
+    df.to_csv(output, index=False)
 
 
 if __name__ == "__main__":

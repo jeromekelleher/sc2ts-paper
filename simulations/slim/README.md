@@ -14,7 +14,8 @@ generation, and sc2ts is run on their sequences for each value of `k`
   [tscompare](https://github.com/tskit-dev/tscompare).
 
 All the code after the SLiM simulation is in `pipeline.py`, as click subcommands:
-`sample`, `export-samples`, `make-truth`, `write-sc2ts-config` and `evaluate`.
+`sample`, `export-samples`, `make-truth`, `write-sc2ts-config`, `evaluate`,
+`rematch-recombinants` and `recombinant-table`.
 Tests are in `tests/`.
 
 
@@ -126,8 +127,10 @@ are left out and take sc2ts's defaults.
 | `infer` | `pipeline.py write-sc2ts-config`, `sc2ts infer` | `s{S}/k{k}/inferred.ts`, the final day's ARG, and the match DB |
 | `postprocess` | `sc2ts postprocess` | `s{S}/k{k}/inferred_pp.ts`, with exact matches added |
 | `evaluate` | `pipeline.py evaluate` | `s{S}/k{k}/{evaluation,events,placement,samples}.csv` |
-| `combine` | | `results/{pathogen}/{summary,events,placement}.csv` |
-| `copy_summary` | | `summaries/{pathogen}/{summary,events,placement}.csv` |
+| `rematch_recombinants` | `pipeline.py rematch-recombinants` | `s{S}/k{k}/recombinants_rematch.json` |
+| `recombinant_table` | `pipeline.py recombinant-table` | `s{S}/k{k}/recombinants.csv` |
+| `combine` | | `results/{pathogen}/{summary,events,placement,recombinants}.csv` |
+| `copy_summary` | | `summaries/{pathogen}/{summary,events,placement,recombinants}.csv` |
 
 Everything else is written under `results/{pathogen}/rep{r}/`.
 
@@ -232,8 +235,54 @@ Both stay small as runs are added, so are what to keep. The per-sample truth and
 inferred matches are in each run's `samples.csv`, which is not combined.
 
 
+#### Recombinants and mutations averted
+`results/{pathogen}/recombinants.csv` has one row per recombinant node in the
+inferred ARG per run, to compare the evidence for each recombinant with the truth.
+As for the published ARG (`arg_postprocessing/scripts/rematch_recombinants.py`),
+each recombinant is rematched against sc2ts's ARG for the day before it was added,
+using `sc2ts.inference.rematch_recombinant` (as `sc2ts rematch-recombinant` does),
+once with recombination and once forced to a single parent. This is run on the
+ARG from `sc2ts infer` (`inferred.ts`), as it needs sc2ts's daily ARGs, which are
+kept in each run's `sc2ts/results`. `mutations_averted` is `k1000_muts`, the number
+of mutations in the single-parent match, less `num_mutations`, the number in the
+recombinant match: the measure of support for recombinants used in the paper. A
+recombinant whose single-parent match costs the same as its recombinant match
+(for one breakpoint, `mutations_averted` equal to `k`) is a tie that sc2ts resolved
+in favour of recombination.
+
+The causal samples of a recombinant node are the samples added with it (in the
+same group) whose HMM match has more than one parent. The node is a
+`true_positive` if any of them is an expected recombinant, and the truth columns
+(`recombinant_ancestor`, `ancestor_breakpoint`, `ancestor_detectable` and whether
+the true breakpoint is in the inferred interval) are from the earliest such sample.
+Being per node, these counts differ slightly from the per-sample precision in
+`summary.csv`.
+
+False positives are put into one of two categories, from the true ARG. For the
+earliest causal sample, the MRCA with its nearest relatives among the placed
+samples of earlier generations is found along the genome:
+
+- `relative_recombinant`: the MRCA changes along the genome. The sample has no
+  unrepresented recombination of its own, but a relative is (or descends from)
+  a recombinant, and was the first sample carrying the new mutations of one of
+  its parental lineages. Those mutations are on the relative's node in the ARG,
+  so a later, non-recombinant member of that lineage is matched to the relative
+  over the segment it inherited from the lineage, and to another node over the
+  rest. The recombination is real, but placed on the wrong lineage, usually with
+  the relative's breakpoint. `relative_breakpoints` are the positions where the
+  MRCA changes, and `relative_breakpoint_in_interval` whether one of them is in
+  the inferred breakpoint interval.
+- `unresolved_branch`: the MRCA is the same along the genome. The ARG has no
+  node close to the sample's true ancestor, typically because a long branch
+  carries both mutations the sample shares and mutations it doesn't, and those
+  it doesn't are concentrated on one side of the genome.
+
+The rematches are not combined, as they are larger. Summaries from before this
+step was added don't have `recombinants.csv`, and need the runs redone.
+
+
 ### Summaries
-`summaries/{pathogen}/{summary,events,placement}.csv` are copies of each pathogen's
+`summaries/{pathogen}/{summary,events,placement,recombinants}.csv` are copies of each pathogen's
 combined results, kept in the repository (`results/` is not). They are analysed in
 `notebooks/analysis_slim_pathogen_simulations.ipynb`, which reads every pathogen
 found there.
