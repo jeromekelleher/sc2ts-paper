@@ -11,8 +11,11 @@ dependencies:
   - pandas
   - pytest
   - pip
+  # To install sc2ts from GitHub.
+  - git
   - pip:
       - pyslim
       - tscompare
-      # 1.1 adds custom reference genomes (reference_fasta).
-      - sc2ts[inference]>=1.1
+      # The development version from GitHub (custom reference genomes need 1.1
+      # or later).
+      - sc2ts[inference] @ git+https://github.com/tskit-dev/sc2ts.git

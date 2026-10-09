@@ -200,7 +200,8 @@ rule postprocess:
     """
     sc2ts doesn't add a node for a sample identical to one already in the ARG,
     only counting it against that node. Add them from the match DB, as for the
-    published ARG, along with its other minor tidy-ups.
+    published ARG, but skip the other tidy-ups (pushing up unary recombinant
+    mutations and reversions), so the ARG is otherwise as sc2ts inferred it.
     """
     input:
         trees=f"{RUN_DIR}/inferred.ts",
@@ -210,7 +211,7 @@ rule postprocess:
     shell:
         """
         sc2ts postprocess {input.trees} {output} \
-            --match-db {input.match_db} --no-progress
+            --match-db {input.match_db} --no-mutation-updates --no-progress
         """
 
 
