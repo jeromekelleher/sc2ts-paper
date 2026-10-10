@@ -106,6 +106,8 @@ def run(ts, output, pattern, num_mismatches):
                 json_data.append(result)
                 dump(json_data, output)
 
+    # Ensure output exists even when there was no work.
+    dump(json_data, output)
 
 if __name__ == "__main__":
     run()
