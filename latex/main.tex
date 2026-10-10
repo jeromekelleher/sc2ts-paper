@@ -666,7 +666,7 @@ but only 3--6\% in the first 100 days of an influenza-like epidemic,
 where the parents of most recombinants differ at only a handful of sites.
 Genuine coronavirus-like recombinants averted a median of 15--19 mutations,
 whereas false positives averted at most 11, and usually only $k$
-(Figure~\ref{fig:slim_simulations}E).
+(Figure~\ref{fig:slim_simulations}D).
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -3245,7 +3245,7 @@ whose recombinant was sampled.
 For the coronavirus-like pathogen, genuine recombination nodes
 averted a median of 15--19 mutations (up to about 120),
 whereas false positives averted a median of $k$ and never more than 11
-(Figure~\ref{fig:slim_simulations}E).
+(Figure~\ref{fig:slim_simulations}D).
 At $k=4$, requiring one more mutation averted than a tie
 raised the precision of recombination nodes from 0.984 to 0.992
 and kept 93\% of true positives.
@@ -3271,7 +3271,7 @@ For the coronavirus-like pathogen, the true breakpoint lay within
 the inferred breakpoint interval for 99\% of detected events
 with 100 samples per day and 96\% with 20, at every value of $k$.
 Median interval widths (740--800 bases) were narrower than
-in the real ARG (2,018 bases; Figure~\ref{fig:slim_simulations}D).
+in the real ARG (2,018 bases).
 For the influenza-like pathogen, median widths (1,300--1,900 bases)
 were 10--15\% of the 13\,kb genome,
 and the true breakpoint was in the interval for 83--92\% of detected events.
@@ -3285,6 +3285,18 @@ during the early growth phase, falling to 2--6\% over the last 20 days.
 Identical sequences carry no information about how they are related,
 and sc2ts places them all directly beneath the node they match,
 whereas the true genealogy among them is resolved.
+
+To compare the inferred and true ARGs as a whole we use two measures from tscompare
+(Methods), both computed over the genome.
+A node in one ARG is represented in the other along the stretches of genome
+where some node there has the same set of descendant samples,
+and so the same subtree.
+The ARF is the fraction of the inferred ARG's nodes (weighted by the length of genome
+they span) that are not represented in the true ARG,
+analogous to a false discovery rate,
+and the TPR is the fraction of the true ARG's nodes that are represented
+in the inferred ARG, analogous to recall.
+A perfect inference has an ARF of 0 and a TPR of 1.
 Over all nodes, the ARF between the inferred and true ARGs was 0.18--0.22
 for the coronavirus-like and 0.19--0.21 for the influenza-like pathogen,
 with TPR of 0.59--0.63 and 0.52--0.54 respectively,
@@ -3294,9 +3306,11 @@ and at high sampling densities they are dominated by the placement
 of exact matches.
 Restricting the comparison to non-sample nodes, after reducing
 both ARGs to what the sequences can resolve (Methods),
-gives ARF of 0.04--0.07 and TPR of 0.91--0.94 for the coronavirus-like pathogen,
-and ARF of 0.08--0.11 and TPR of 0.88--0.92 for the influenza-like pathogen
-(Figure~\ref{fig:slim_simulations}F).
+gives TPR of 0.91--0.94 and ARF of 0.04--0.07 for the coronavirus-like pathogen,
+and TPR of 0.88--0.92 and ARF of 0.08--0.11 for the influenza-like pathogen
+(Figure~\ref{fig:slim_simulations}E,F).
+That is, 88--94\% of the ancestral nodes in the true ARG are recovered,
+and 89--96\% of the ancestral nodes sc2ts infers correspond to a true ancestor.
 
 \subsubsection{Limitations}
 These simulations are not intended as realistic models of particular pathogens,
@@ -3970,16 +3984,16 @@ Solid and dashed lines show the higher and lower number of samples per day.
 of inferred recombinants as a function of the recombination penalty $k$.
 (C) Recall at $k=4$ of detectable events whose recombinant was sampled (open)
 and those seen only through sampled descendants (filled).
-(D) Cumulative distribution of breakpoint interval widths for events detected at $k=4$;
-the dashed line is the median width for recombinants in the real ARG.
-(E) Fraction of true- and false-positive recombination nodes inferred at $k=4$
+(D) Fraction of true- and false-positive recombination nodes inferred at $k=4$
 averting at least a given number of mutations
 (solid: true positives, dotted: false positives;
-both sampling densities combined).
-(F) ARF and TPR between the inferred and true ARGs at $k=4$,
-over non-sample nodes after reduction to what the sequences can resolve.
-Points show the mean over 5 replicates and bars the range;
-distributions combine replicates.
+both sampling densities and all replicates combined).
+(E) True positive rate (TPR) and (F) ARG Robinson--Foulds distance (ARF)
+between the inferred and true ARGs at $k=4$,
+over non-sample nodes after reduction to what the sequences can resolve
+(note the different scales).
+In A--C, points show the mean over 5 replicates and bars the range;
+in E and F, points are replicates.
 }
 \label{fig:slim_simulations}
 \end{figure}
