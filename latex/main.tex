@@ -667,32 +667,6 @@ where the parents of most recombinants differ at only a handful of sites.
 Genuine coronavirus-like recombinants averted a median of 15--19 mutations,
 whereas false positives averted at most 11, and usually only $k$
 (Figure~\ref{fig:slim_simulations}E).
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\linewidth]{slim_simulations.pdf}
-\caption{
-Sc2ts on simulated epidemics of a coronavirus-like (blue)
-and an influenza-like (orange) pathogen
-(Methods, \supref{sec:slim_simulations}).
-Solid and dashed lines show the higher and lower number of samples per day.
-(A) Precision (per sample) and (B) recall (per recombination event)
-of inferred recombinants as a function of the recombination penalty $k$.
-(C) Recall at $k=4$ of detectable events whose recombinant was sampled (open)
-and those seen only through sampled descendants (filled).
-(D) Cumulative distribution of breakpoint interval widths for events detected at $k=4$;
-the dashed line is the median width for recombinants in the real ARG.
-(E) Fraction of true- and false-positive recombination nodes inferred at $k=4$
-averting at least a given number of mutations
-(solid: true positives, dotted: false positives;
-both sampling densities combined).
-(F) ARF and TPR between the inferred and true ARGs at $k=4$,
-over non-sample nodes after reduction to what the sequences can resolve.
-Points show the mean over 5 replicates and bars the range;
-distributions combine replicates.
-}
-\label{fig:slim_simulations}
-\end{figure}
 % We don't talk about RIPPLES results yet as we haven't discussed it, a
 % and that would be confusing.
 
@@ -3982,6 +3956,32 @@ Solid lines show the fraction matched to more than one parent,
 and dotted lines the fraction with an HMM cost above the inclusion threshold of 7.
 }
 \label{fig:synthetic_recombinants}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{slim_simulations.pdf}
+\caption{
+Sc2ts on simulated epidemics of a coronavirus-like (blue)
+and an influenza-like (orange) pathogen
+(Methods, \supref{sec:slim_simulations}).
+Solid and dashed lines show the higher and lower number of samples per day.
+(A) Precision (per sample) and (B) recall (per recombination event)
+of inferred recombinants as a function of the recombination penalty $k$.
+(C) Recall at $k=4$ of detectable events whose recombinant was sampled (open)
+and those seen only through sampled descendants (filled).
+(D) Cumulative distribution of breakpoint interval widths for events detected at $k=4$;
+the dashed line is the median width for recombinants in the real ARG.
+(E) Fraction of true- and false-positive recombination nodes inferred at $k=4$
+averting at least a given number of mutations
+(solid: true positives, dotted: false positives;
+both sampling densities combined).
+(F) ARF and TPR between the inferred and true ARGs at $k=4$,
+over non-sample nodes after reduction to what the sequences can resolve.
+Points show the mean over 5 replicates and bars the range;
+distributions combine replicates.
+}
+\label{fig:slim_simulations}
 \end{figure}
 
 \newcommand{\cprheight}{4.0em}
