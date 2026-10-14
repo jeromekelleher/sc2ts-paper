@@ -631,45 +631,26 @@ and has previously been shown to be
 less sensitive than other methods~\cite{Li2024CovRecomb}.
 Rebar corroboration is intermediate, at 61\% among QC-passing recombinants.
 
-To quantify detection directly, we simulated synthetic recombinants
-by splicing together real Alpha and Delta genomes
-and matched them against the ARG,
-along with real non-recombinant controls
-(Methods, \supref{sec:synthetic_recombinants},
-Figure~\ref{fig:synthetic_recombinants}).
-No control was inferred to be recombinant,
-and with $k=4$ the true breakpoint lay within the inferred breakpoint interval
-for 99\% of detected recombinants.
-Sc2ts also accurately placed the parents of detected recombinants:
-with $k=4$, both assigned parents were of the correct Pango lineage
-in all Alpha$\times$Alpha and 89\% of Alpha$\times$Delta recombinants,
-the errors being closely related Delta lineages,
-and in 86--87\% of recombinants both were identical to the true parents
-at every site within their matched segments, never differing at more than 4 sites.
-With $k=4$, 89\% of Alpha$\times$Delta recombinants were detected,
-but only 40\% of Alpha$\times$Alpha recombinants,
-whose parents differ at few sites.
-Recombination between closely related viruses
-may therefore be substantially under-detected.
-
-To assess sc2ts more broadly, we also ran it on forward-time simulations
-of epidemics of a coronavirus-like and an influenza-like pathogen,
-in which the full ARG is known
+To quantify performance where the true recombinant ancestry is known, we
+generated synthetic recombinants from real SARS-CoV-2 genomes and matched them,
+together with non-recombinant controls, against the ARG (Methods,
+\supref{sec:synthetic_recombinants}, Figure~\ref{fig:synthetic_recombinants}).
+No control was inferred to be recombinant, while at \(k=4\)
+detection fell from 89\% for Alpha$\times$Delta to 40\% for Alpha$\times$Alpha
+recombinants, showing that recombination between closely related viruses
+is substantially under-detected.
+To test end-to-end inference in contrasting epidemic regimes,
+we ran sc2ts on forward-time simulations of coronavirus-like and influenza-like
+pathogens for which the full ARG was known
 (Methods, \supref{sec:slim_simulations}, Figure~\ref{fig:slim_simulations}).
-Inferred recombinants were almost always genuine (precision 0.94--0.99 with $k=4$),
-and the inferred breakpoint interval contained the true breakpoint
-for 87--99\% of detected events.
-The fraction of recombination events detected depended mainly
-on how much genetic diversity had accumulated:
-with $k=4$, 75--78\% of events were detected for the coronavirus-like pathogen,
-but only 3--6\% in the first 100 days of an influenza-like epidemic,
-where the parents of most recombinants differ at only a handful of sites.
-Genuine coronavirus-like recombinants averted a median of 15--19 mutations,
-whereas false positives averted at most 11, and usually only $k$
-(Figure~\ref{fig:slim_simulations}D).
-% We don't talk about RIPPLES results yet as we haven't discussed it, a
-% and that would be confusing.
-
+At \(k=4\), recombinant calls had high precision (0.94--0.99), but recall was
+75--78\% in the coronavirus-like simulations and only 3--6\% during the first 100
+days of the influenza-like epidemic, where little genetic diversity had
+accumulated. After accounting for relationships not resolvable from the
+sequences, 88--94\% of true ancestral nodes were recovered and 89--96\% of inferred
+ancestral nodes corresponded to true ancestors. These simulations therefore
+identify low genetic divergence between co-circulating lineages as the
+principal limitation on detecting recombination.
 
 \subsection*{Assessing evidence for recombination events}
 
