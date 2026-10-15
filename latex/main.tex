@@ -65,6 +65,7 @@
 
 \newcommand{\supref}[1]{SI~\S\ref{#1}}
 \newcommand{\edref}[1]{Extended Data~\ref{#1}}
+\newcommand{\siref}[1]{Supplementary~\ref{#1}}
 
 \graphicspath{{../figures}}
 
@@ -386,7 +387,7 @@ Inference took 19 days on a server with
 % 800 GB memory limit; peak memory 841 GiB)
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
 ($\sim$8 CPU years;
-Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}).
+\siref{fig:inference_resources} and~\ref{fig:samples_per_day}).
 After post-processing, the ARG contains
 3,409,262 nodes,  % Note the estimated dates ?
 3,410,592 edges, and
@@ -428,9 +429,8 @@ we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
 for a set of representative samples from 814 well-sampled lineages
 (Methods; \edref{fig:tanglegram_base};
-Supplementary Figures~\ref{fig:tanglegram_delta},
-\ref{fig:tanglegram_ba2},
-\ref{fig:tanglegram_ba5}).
+\siref{fig:tanglegram_delta},
+\ref{fig:tanglegram_ba2} and~\ref{fig:tanglegram_ba5}).
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 Overall, we also found close similarity between the ARG
@@ -440,7 +440,7 @@ and imputation of missing and ambiguous bases
 (\supref{sec:supplement_sc2ts_usher_imputation}).
 We compared the mutational spectra of major Variants of Concern (VOCs) in the ARG
 against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
-finding close agreement (Figure~\ref{fig:mutational_spectra}).
+finding close agreement (\siref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
 by computing Pango assignments for all 3.41 million nodes in the ARG
@@ -459,7 +459,7 @@ for multiple sibling origination nodes
 The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (Methods).
 We show that the dates agree well with
-Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times}),
+Nextstrain estimates (\siref{fig:pango_vs_nextstrain_node_times}),
 and overall accuracy is comparable to
 Chronumental~\cite{sanderson2021chronumental} applied to
 an UShER tree (\edref{fig:node_time_testing},
@@ -490,8 +490,8 @@ during post-processing (Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known
-high-frequency (Table~\ref{tab:major_dels}) and
-recurrent (Table~\ref{tab:rec_dels}) deletions.
+high-frequency (\siref{tab:major_dels}) and
+recurrent (\siref{tab:rec_dels}) deletions.
 For example,
 the three defining deletions of Alpha~\cite{RambautAlpha2020}
 (11288:9, 21765:6, 21991:3)
@@ -549,7 +549,7 @@ For these
 lineages, the inferred parental lineages and breakpoint intervals show strong
 agreement with community consensus and with results from specialised
 recombination detection methods
-(Methods, Table~\ref{tab:method_concordance}).
+(Methods, \siref{tab:method_concordance}).
 Early well-characterised recombinants\cite{Jackson2021} are also captured
 with high fidelity in the ARG
 (\supref{tab:jackson}),
@@ -558,7 +558,7 @@ In addition, several complex recombinants with multiple
 breakpoints were excluded from the ARG under the conservative thresholds used
 here but were nonetheless detected by the HMM
 (\supref{sec:supplement_rejected_pango_x_lineages};
-Table~\ref{tab:extra_hmm_results}).
+\siref{tab:extra_hmm_results}).
 
 In contrast, the ARG indicates that multiple named recombinant lineages descend
 from shared ancestral recombination events rather than representing independent
@@ -574,7 +574,7 @@ the reconstruction is constrained by the absence of sufficient parental
 diversity in the dataset. Extended analyses of selected Pango X lineages, including
 supporting evidence and alternative interpretations, are provided in
 \supref{sec:supplement_indepth_pango_x_lineages},
-along with copying patterns (Figure~\ref{fig:pango_x_copying_patterns})
+along with copying patterns (\siref{fig:pango_x_copying_patterns})
 and detailed ARG visualisations (Document S1).
 
 \subsection*{Quality control and corroboration of recombination events}
@@ -623,7 +623,7 @@ rising to 96\% among the 647 recombinants that passed our QC filter.
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb}
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
-summarised in Table~\ref{tab:recombinant_validation}.
+summarised in \siref{tab:recombinant_validation}.
 CovRecomb has a substantially lower corroboration rate
 at 33\% among the QC-passing recombinants.
 This is expected, as CovRecomb is specifically intended
@@ -939,7 +939,7 @@ RIPPLES reported 1498 recombination events of which
 We then compared
 the specific events reported by both methods by aligning them
 using sets of descendant samples (Methods),
-giving 680 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
+giving 680 events shared between RIPPLES and sc2ts (\siref{fig:ripples_sc2ts_events}).
 The 818 recombination events detected by RIPPLES that do not
 correspond to a recombination event in the sc2ts ARG can partly
 be explained by the strict time ordering imposed by sc2ts
@@ -947,14 +947,14 @@ be explained by the strict time ordering imposed by sc2ts
 \supref{sec:detailed_ripples}).
 The 643 events detected by sc2ts and not by UShER+RIPPLES
  include some of the well characterised Pango X lineages.
-Table~\ref{tab:ripples_x_lineages} shows the events detected
+\siref{tab:ripples_x_lineages} shows the events detected
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages, showing that at $p=4$
 only 15 of the 42 Type I events in \edref{tab:pango_x_lineages}
 have an equivalent RIPPLES recombination event.
 We therefore reran RIPPLES with $p=3$, resulting in 5365 events overall
 and increasing the intersection of events with sc2ts to 890
-(Figure~\ref{fig:ripples_sc2ts_events}).
+(\siref{fig:ripples_sc2ts_events}).
 At this more lenient threshold, 23 of the 42 Type I events
 and 4 of the 10 Type II events
 have an equivalent RIPPLES recombination event
@@ -1262,7 +1262,7 @@ It is a Hidden Markov Model (HMM) in which a focal genome
 is modelled as a
 sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
-(Figure~\ref{fig:ls_diagram}).
+(\siref{fig:ls_diagram}).
 % TODO improve wording, lots of "model" here.
 The process of switching between the genomes in the reference panel
 is governed by a transition matrix,
@@ -1308,7 +1308,7 @@ are found very quickly using this approach, and it is only
 samples that are more distant from the current ARG that require
 significant processing time and memory. This is reflected in
 the computational resources reported in
-Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}.
+\siref{fig:inference_resources} and~\ref{fig:samples_per_day}.
 
 
 % A Viterbi algorithm can be used
@@ -1417,7 +1417,7 @@ is therefore to perform some local updates that target specific
 types of parsimony violations in the just-updated regions of the
 ARG. There are currently two parsimony-increasing operations
 applied, which we refer to as ``mutation collapsing'' and ``reversion
-pushing'' (Figure~\ref{fig:parsimony_ops}).
+pushing'' (\siref{fig:parsimony_ops}).
 
 Given a newly attached node, mutation collapsing inspects its siblings from
 previous sample days to check if any of them share (a subset of) the mutations
@@ -1587,7 +1587,7 @@ otherwise were not added to the ARG due to high HMM costs
 With the combination of these mechanisms---gradual accumulation
 of diversity through daily sample groups, retrospective group
 inclusion and seed groups---we successfully incorporated all major
-lineages in the dataset into the ARG (Figure~\ref{fig:samples_per_day}).
+lineages in the dataset into the ARG (\siref{fig:samples_per_day}).
 
 
 \subsubsection*{Primary ARG inference}
@@ -1599,7 +1599,7 @@ described in the preceding sections and documented in the configuration file.
 % (see \nameref{sec:data_and_code_availability}).
 As discussed above,
 computational resources are dominated by the LS model
-(Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}) with all
+(\siref{fig:inference_resources} and~\ref{fig:samples_per_day}) with all
 other aspects contributing negligibly.
 
 \subsubsection*{Recombinant rematching}
@@ -1779,7 +1779,7 @@ the left (upper row, coloured green)
 or right parent (lower row, coloured blue),
 or where the recombination event requires
 a de novo mutation (gold, with mutational change below).
-Figure~\ref{fig:pango_x_copying_patterns}
+\siref{fig:pango_x_copying_patterns}
 shows copying patterns for Pango X lineages in the ARG,
 illustrating a spectrum of plausibility.
 XA is an example of a highly plausible recombinant,
@@ -1790,7 +1790,7 @@ observed in the copying patterns suggests the existence of
 many genetically distinct, unsampled ancestors
 and some caution should be exercised when interpreting them
 (see \supref{sec:dd_xbb} for more details).
-See also Figure~\ref{fig:copying_pattern_examples} for copying patterns
+See also \siref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
 and more details on the visualisations.
 
@@ -1832,7 +1832,7 @@ for which there is less support and which may be artefactual (shaded quadrants).
 Inspection of the copying patterns for all the recombination events
 identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
-Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
+\siref{fig:copying_pattern_examples} shows illustrative copying patterns
 (Q1 to Q4 correspond to the labelled quadrants in \edref{fig:recombinant_qc}).
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
 having a net number of supporting loci of 4 on both sides of the breakpoint.
@@ -1971,7 +1971,7 @@ chosen uniformly from the previous generation
 and a single breakpoint uniform along the genome;
 all other births copy a single parent.
 The pathogens bracket the rates of evolution and epidemic sizes of plausible
-pandemic viruses (Table~\ref{tab:slim_parameters}). The coronavirus-like pathogen
+pandemic viruses (\siref{tab:slim_parameters}). The coronavirus-like pathogen
 has a 30\,kb genome, a substitution rate of $8\times10^{-4}$ per site per year
 and a generation time of 5.5 days
 (as for the synthetic recombinants above),
@@ -2128,9 +2128,9 @@ positions 1-26858; the majority of the genome). To reduce plot density, we consi
 only those Pango lineages with greater than 10 samples.
 \edref{fig:tanglegram_base} shows the resulting tree compared with
 the equivalent dated UShER tree as a tanglegram.
-We also show subtrees for Delta (Figure~\ref{fig:tanglegram_delta}),
-BA.2 (Figure~\ref{fig:tanglegram_ba2}),
-and BA.5 (Figure~\ref{fig:tanglegram_ba5}).
+We also show subtrees for Delta (\siref{fig:tanglegram_delta}),
+BA.2 (\siref{fig:tanglegram_ba2}),
+and BA.5 (\siref{fig:tanglegram_ba5}).
 
 The order of tips in each plot was chosen to reduce tangling,
 as calculated using the NeighborNet algorithm from
@@ -2185,7 +2185,7 @@ results on the Pango X lineages were reported and made available
 in the original publications. We do not compare here with
 UShER+RIPPLES+RIVET because curated data on the X lineages is
 not available for this pipeline (see \supref{sec:detailed_ripples}
-and Table~\ref{tab:ripples_x_lineages}, however).
+and \siref{tab:ripples_x_lineages}, however).
 We use the data from the Pango designation community
 (\url{https://github.com/cov-lineages/pango-designation/})
 as the ``truth'' when comparing performance in identifying
@@ -2235,7 +2235,7 @@ that are at least as specific as those proposed by the Pango designation communi
 The breakpoint interval of a Pango X inferred using a method is deemed concordant
 if it overlaps with that proposed by the community by at least one base.
 
-The results are reported in Table~\ref{tab:method_concordance}.
+The results are reported in \siref{tab:method_concordance}.
 See the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_methods\_concordance.ipynb}{tab\_methods\_concordance.ipynb}
 notebook for details.
@@ -2324,7 +2324,7 @@ descendant samples, we find the MRCA of
 that set of samples in the first tree of the sc2ts ARG.
 The clades are then said to agree if the number of additional
 samples descending from the sc2ts node is $<2$
-(Figure~\ref{fig:ripples_sc2ts_events}).
+(\siref{fig:ripples_sc2ts_events}).
 
 We ran 3SEQ on the RIPPLES recombinants by extracting the
 alignments for the child and parent sequences for each
@@ -2742,10 +2742,10 @@ between recombinants of similar date (1,000 permutations; Methods).
 
 \setcounter{table}{0}
 \setcounter{figure}{0}
-\renewcommand{\thetable}{S\arabic{table}}
-\renewcommand{\thefigure}{S\arabic{figure}}
-\renewcommand{\figurename}{Figure}
-\renewcommand{\tablename}{Table}
+\renewcommand{\figurename}{Supplementary}
+\renewcommand{\thefigure}{Figure~\arabic{figure}}
+\renewcommand{\tablename}{Supplementary}
+\renewcommand{\thetable}{Table~\arabic{table}}
 \renewcommand{\thesubsection}{\arabic{subsection}}
 
 \subsection{Parsimony comparison of sc2ts and UShER}
@@ -2850,7 +2850,7 @@ inserted into the ARG (inferred using tsdate),
 we compared the dates of first emergence of
 Nextstrain clades against the Nextstrain SARS-CoV-2 tree
 (downloaded on 2023-01-21).
-Figure~\ref{fig:pango_vs_nextstrain_node_times} shows
+\siref{fig:pango_vs_nextstrain_node_times} shows
 relatively close agreement for most clades,
 with only three disagreeing by more than 28 days:
 20C (an early lineage from 2020),
@@ -3026,10 +3026,10 @@ Using the ARG, we identified major deletion events
 (which are propagated to many descendants)
 as well as recurrent deletions
 (which occur on at least two branches) in the ARG.
-In Table~\ref{tab:major_dels},
+In \siref{tab:major_dels},
 we list the major deletion events in the ARG
 which are each inherited by at least 10,000 descendant samples; and
-in Table~\ref{tab:rec_dels},
+in \siref{tab:rec_dels},
 we list the recurrent deletions in the ARG
 % In v2.2 ARG, 10000 / 3114609 = 0.0032
 which are each observed in at least 10,000 (0.3\%) samples.
@@ -3069,17 +3069,17 @@ the Omicron subgraph in \edref{fig:subgraph_omicron}),
 %except the 1-base deletion at 28,271 on node 1436808
 % The 693 del is broken up from the other 8 sites.
 %and the 9-base deletion at 686 on the BA.4-labeled node 2698748
-(Table~\ref{tab:major_dels}).
+(\siref{tab:major_dels}).
 Many of these deletions have been identified
 as characteristic mutations of the major VOCs
-in the studies or analysis cited in Table~\ref{tab:major_dels}.
+in the studies or analysis cited in \siref{tab:major_dels}.
 % In v2.2 ARG
 Notably, 12 of the major deletion events occur
 in the N-terminal domain of the S1 unit of Spike
 (a known hotspot of recurrent deletions \cite{McCarthy2021}
 that plays a substantial role in antigenicity \cite{Harvey2021}),
 which are all highly recurrent in the ARG
-(Table~\ref{tab:rec_dels}).
+(\siref{tab:rec_dels}).
 These include known recurrent deletions:
 the 6-base deletion at 21,765 and
 the 3-base deletion at 21,991,
@@ -3103,7 +3103,7 @@ The three contiguous out-of-frame deletions in NSP6
 (5-base at 11,283, 4-base at 11,288, and 5-base at 11,292) and
 the three contiguous out-of-frame deletions in NSP1
 (7-base at 686, 1-base at 694, and 1-base at 693)
-are examples of such artefacts (Table~\ref{tab:major_dels}).
+are examples of such artefacts (\siref{tab:major_dels}).
 The 9-base deletions at 11,283 and 11,288
 are found in the sequence alignments of
 84,012 BA.1 samples and 255,419 BA.2 samples, respectively.
@@ -3200,11 +3200,10 @@ are absent from the ARG,
 either because their samples did not pass quality control,
 or because the HMM cost exceeded the inclusion threshold
 and there was insufficient support for retrospective inclusion (Methods);
-see \supref{sec:supplement_rejected_pango_x_lineages} and Table
-\ref{tab:extra_hmm_results} for details.
+see \supref{sec:supplement_rejected_pango_x_lineages} and \siref{tab:extra_hmm_results} for details.
 See \supref{sec:supplement_indepth_pango_x_lineages}
 for extended analyses of selected Pango X lineages in the ARG;
-Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
+\siref{fig:pango_x_copying_patterns} for copying patterns
 associated with \edref{tab:pango_x_lineages};
 and Document S1 for ARG visualisations of the Pango X lineages.
 
@@ -3231,7 +3230,7 @@ Of the 16 samples analysed by Jackson et al., 12 were included in the ARG;
 the remaining 4 were excluded
 because the sequences did not pass the QC filtering criteria or
 because of a high HMM cost.
-Groups A-D are summarized in Table~\ref{tab:jackson} and
+Groups A-D are summarized in \siref{tab:jackson} and
 show excellent concordance
 in terms of the parental Pango lineages and breakpoint intervals.
 All four groups are directly associated with
@@ -3399,7 +3398,7 @@ The synthetic recombinants above test how sc2ts matches individual recombinants
 against a real ARG. To evaluate inference of the whole ARG,
 for pathogens other than SARS-CoV-2, we ran sc2ts on forward-time
 simulations of epidemics of a coronavirus-like and an influenza-like pathogen
-(see Methods for details and Table~\ref{tab:slim_parameters} for parameters).
+(see Methods for details and \siref{tab:slim_parameters} for parameters).
 Results are summarised in \edref{fig:slim_simulations};
 we give the mean over 5 replicates,
 and the analysis is in \texttt{notebooks/analysis\_slim\_pathogen\_simulations.ipynb}.
@@ -3550,7 +3549,7 @@ at some cost in precision.
 
 Twenty-nine Pango X lineages (grouped with their sublineages)
 have samples in the dataset but are absent from the ARG
-(Table~\ref{tab:extra_hmm_results}).
+(\siref{tab:extra_hmm_results}).
 % https://github.com/jeromekelleher/sc2ts-paper/issues/366
 Of their 211 samples, 190 passed sample quality control and
 were matched against the ARG by the HMM during inference,
@@ -3829,7 +3828,7 @@ At $p=4$, RIPPLES returned a total of 1498 events, and
 and 685 (46\%) corresponded to recombination events in the ARG.
 Several RIPPLES events can correspond to the same recombination event
 in the ARG, so these represent 680 distinct sc2ts events
-(Figure~\ref{fig:ripples_sc2ts_events}A).
+(\siref{fig:ripples_sc2ts_events}A).
 We investigated the 813 RIPPLES events that did not correspond
 to a recombination event in the ARG
 to determine why they were not found by sc2ts.
@@ -3852,14 +3851,14 @@ At $p=3$, RIPPLES returned a total of 5365 events, and
 (90.5\%) were in close clade agreement with the sc2ts ARG,
 and 909 (17\%) corresponded to recombination events in the ARG,
 representing 890 distinct sc2ts events
-(Figure~\ref{fig:ripples_sc2ts_events}B).
+(\siref{fig:ripples_sc2ts_events}B).
 We did not investigate the $p=3$ events any further as the additional
 events detected at the lower threshold are not expected to be detected
 by sc2ts at the parameter value used ($k=4$).
 
 Next we considered the overall distribution of the numbers of descendants
 of the events returned by sc2ts and RIPPLES
-(Table~\ref{tab:ripples_sc2ts_event_descendants}).
+(\siref{tab:ripples_sc2ts_event_descendants}).
 Overall, the distributions were similar, with the majority having
 very few descendants and being dominated by singletons.
 The events subtending $>$ 100,000 samples
@@ -3869,7 +3868,7 @@ for analysis of the BA.2 and BA.5 sc2ts events; the third is XBB).
 
 
 We next examined the RIPPLES events referencing Pango X lineages.
-Table~\ref{tab:ripples_x_lineages} shows a summary of all
+\siref{tab:ripples_x_lineages} shows a summary of all
 recombination events associated with Pango X lineages detected by RIPPLES
 at $p=3$ and their relationship with the sc2ts ARG.
 Of the 64 events, 31 are equivalent to a recombination event in the ARG:
@@ -4192,7 +4191,7 @@ in the Viridian dataset.
 For each deletion, the number of occurrences in the ARG and
 the number of samples where it is observed are shown.
 For further explanation,
-see the caption of Table~\ref{tab:major_dels}.
+see the caption of \siref{tab:major_dels}.
 Abbreviations:
 NSP, non-structural protein;
 ORF, open reading frame;

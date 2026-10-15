@@ -31,7 +31,7 @@ X_LINEAGES_CAPTION = r"""
 RIPPLES events associated with Pango X lineages.
 Each row is a recombination event identified by RIPPLES (at $p=3$) in which
 Pango X lineages appear, along with the corresponding sc2ts event and its type
-from Table~\ref{tab:pango_x_lineages}, where applicable.
+from \edref{tab:pango_x_lineages}, where applicable.
 Events also present at $p=4$ are indicated.
 Clades are matched by finding the most recent common ancestor of the samples
 associated with each UShER+RIPPLES event in the sc2ts ARG.
