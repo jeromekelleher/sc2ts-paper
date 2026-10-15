@@ -1743,6 +1743,23 @@ file requires 38MiB of storage.
 % and frequency of recombination in SARS-CoV-2 in order to
 % create simulations models that would inform this.
 
+\subsubsection*{ARG visualisation}
+All ARG visualisations in this paper were produced using
+tskit\_arg\_visualizer~\cite{Kitchens2025tskit} (v0.1.1), which renders
+tskit ARGs as interactive D3.js graphs in a web browser or Jupyter notebook.
+Because the full ARG is far too large to draw, we plot subgraphs, obtained by
+selecting a set of focal nodes (e.g.\ samples of a given Pango lineage) and
+including a fixed number of ancestral and descendant generations.
+Vertical node positions are determined by node times, while horizontal
+positions can be adjusted interactively by dragging nodes; we saved these
+layouts as JSON files so that figures can be regenerated reproducibly.
+The code and saved layouts for all
+figures are available in the paper's repository
+(see Data and code availability).
+We also inspected the ARG for artefacts
+using tsbrowse~\cite{Karthikeyan2025tsbrowse}, an interactive browser
+for exploring large tskit ARGs.
+
 \subsubsection*{Visualising recombinant copying patterns}
 
 Detectable recombination is rare in SARS-CoV-2, and
@@ -3831,8 +3848,7 @@ Heat map showing differences (in days) between actual and re-estimated sample da
 \centering
 \includegraphics[width=0.85\linewidth]{subgraph-Alpha.pdf}
 \caption{
-Subgraph illustrating the saltational origin of B.1.1.7 (Alpha),
-drawn with tskit\_arg\_visualizer~\cite{Kitchens2025tskit}.
+Subgraph illustrating the saltational origin of B.1.1.7 (Alpha).
 Squares represent sample nodes,
 circles represent reconstructed internal nodes;
 nodes classified as B.1.1.7 by Pangolin v4.3.1 are in pink.
