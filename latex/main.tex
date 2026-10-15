@@ -549,7 +549,7 @@ By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides a systematic framework for evaluating these origins.
 Of the 73 Pango X lineages present in the ARG
 (\supref{sec:supplement_x_pango_lineages};
-\edref{tab:pango_x_lineages}),
+\siref{tab:pango_x_lineages}),
 42 map precisely to
 recombination nodes in the ARG that are ancestral to all samples assigned to
 the lineage, indicating fully concordant recombinant origins.
@@ -557,7 +557,7 @@ For these
 lineages, the inferred parental lineages and breakpoint intervals show strong
 agreement with community consensus and with results from specialised
 recombination detection methods
-(Methods, \siref{tab:method_concordance}).
+(Methods, \edref{tab:method_concordance}).
 Early well-characterised recombinants\cite{Jackson2021} are also captured
 with high fidelity in the ARG
 (\siref{tab:jackson}),
@@ -609,7 +609,7 @@ known to be affected by amplicon dropout~\cite{Sanderson2021}.
 The 647 remaining recombination events that pass this QC filter
 contain those identified by Jackson et al.\ (\supref{sec:jackson_recombs})
 and all of the single-breakpoint recombinants associated with Pango X lineages
-(\edref{tab:pango_x_lineages}), with the exception of XCF,
+(\siref{tab:pango_x_lineages}), with the exception of XCF,
 which has only one net supporting locus for its right parent.
 Checking explicitly for the 19 highly recurrent
 multi-nucleotide substitutions (MNS) catalogued by De Maio et al.~\cite{DeMaio2024}
@@ -677,7 +677,7 @@ events for which a non-recombinant placement would require dozens of additional
 mutations. For example, the most parsimonious non-recombinant placement of XC
 would require 36 additional mutations, indicating strong support for
 recombination (\figref{fig:recombinant_evidence}A;
-\edref{tab:pango_x_lineages}).
+\siref{tab:pango_x_lineages}).
 Strongly supported events show high concordance with independent corroboration by
 3SEQ, whereas the 4\% of events not supported by 3SEQ are
 concentrated among the weakest-supported cases ($\leq 5$ averted mutations)
@@ -710,7 +710,7 @@ coloured by 3SEQ classification (recombinant: purple, non-recombinant: grey).
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
 recombination nodes associated with Pango X lineages
-(\edref{tab:pango_x_lineages})
+(\siref{tab:pango_x_lineages})
 are labelled starting with `X' and
 those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
 e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
@@ -958,7 +958,7 @@ The 643 events detected by sc2ts and not by UShER+RIPPLES
 \siref{tab:ripples_x_lineages} shows the events detected
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages, showing that at $p=4$
-only 15 of the 42 Type I events in \edref{tab:pango_x_lineages}
+only 15 of the 42 Type I events in \siref{tab:pango_x_lineages}
 have an equivalent RIPPLES recombination event.
 We therefore reran RIPPLES with $p=3$, resulting in 5365 events overall
 and increasing the intersection of events with sc2ts to 890
@@ -1822,7 +1822,7 @@ This simple QC measure effectively differentiates
 artefactual recombination events from those that are well supported.
 With the exception of XCF,
 all the single-breakpoint recombination events
-associated with the Pango X lineages (\edref{tab:pango_x_lineages})
+associated with the Pango X lineages (\siref{tab:pango_x_lineages})
 occur in the upper right of \edref{fig:recombinant_qc},
 with high numbers of net supporting loci on both the right and left parents.
 In contrast, the other regions of the plot,
@@ -2199,7 +2199,7 @@ We use the data from the Pango designation community
 as the ``truth'' when comparing performance in identifying
 parent Pango lineages and breakpoints between the methods.
 We focus on the 42 Type I recombination events
-(\edref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
+(\siref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
 Seven of these (XAY, XAZ, XBC, XCH, XCT, XDD and XDV) are designated
 as having multiple breakpoints and are excluded, and
 no breakpoint interval is given in the designation for a further three
@@ -2243,7 +2243,7 @@ that are at least as specific as those proposed by the Pango designation communi
 The breakpoint interval of a Pango X inferred using a method is deemed concordant
 if it overlaps with that proposed by the community by at least one base.
 
-The results are reported in \siref{tab:method_concordance}.
+The results are reported in \edref{tab:method_concordance}.
 See the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_methods\_concordance.ipynb}{tab\_methods\_concordance.ipynb}
 notebook for details.
@@ -2736,15 +2736,39 @@ between recombinants of similar date (1,000 permutations; Methods).
 \end{figure}
 \clearpage
 
-% Change the geometry so it fits on the page
-\newgeometry{left=2cm, right=2cm, top=1cm, bottom=2cm}
+\begin{table}
+\caption{
+Concordance among methods in characterizing Pango X lineages.
+These comparisons focus on the Pango X lineages associated with
+those of the 42 Type I recombination events (\siref{tab:pango_x_lineages})
+which have a single breakpoint according to the Pango designation.
+For each method, we calculated the number of Pango X lineages
+which have inferred parent Pango lineages and breakpoint intervals
+concordant with those proposed by the community.
+The denominators indicate the number of Pango X lineages
+for which detection results are available from the original
+studies\cite{Alfonsi2024,Li2024CovRecomb},
+which do not cover lineages designated after early 2023.
+For the Pango X lineages with non-overlapping breakpoint intervals,
+the distances between the inferred breakpoint intervals and
+those proposed by the community are shown (median and range).
+}
+\label{tab:method_concordance}
+\centering
+\begin{tabular}{lccl}
+\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-4}
+Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
+\midrule
+Sc2ts & 27 / 35 (77.1) & 31 / 32 (96.9) & 315.0 (315, 315)\\
+RecombinHunt-GISAID & 15 / 19 (78.9) & 11 / 19 (57.9) & 1202.0 (2, 7955)\\
+RecombinHunt-Nextstrain & 20 / 23 (87.0) & 15 / 22 (68.2) & 2785.0 (559, 7955)\\
+CovRecomb & 8 / 11 (72.7) & 6 / 11 (54.5) & 2059.0 (217, 13208)\\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\nolinenumbers % a longtable is not a float, so lineno would number its pages
-\input{pango_x_table/table.tex} % generated by make_table.py -- do not edit
-\linenumbers
-\restoregeometry % Restore original geometry
-
-\newpage
+\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supplementary
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3145,7 +3169,7 @@ should remove such artefactual deletions.
 
 Most of the Pango X lineages had straightforward origination events
 as defined in Section~\ref{sec:supplement_pango_lineages}
-and are represented in \edref{tab:pango_x_lineages}.
+and are represented in \siref{tab:pango_x_lineages}.
 XDV, XAY and XBC have no samples assigned to the lineage itself in the ARG,
 only to sublineages (XDV.1, XAY.2 and XBC.1.2.1),
 and so we name their origin nodes after the Pango X lineage.
@@ -3156,7 +3180,7 @@ and so we omit the 12 origin nodes of XBB sublineages
 (XBB.1, XBB.1.5, XBB.1.5.16, XBB.1.16.4 and XBB.2.3; 30 samples).
 XM has 3 separate origins, 2 singletons and one dominant node
 with 31 samples. We include the dominant node in
-\edref{tab:pango_x_lineages} and omit the singletons. See
+\siref{tab:pango_x_lineages} and omit the singletons. See
 \supref{sec:dd_xm} for further details.
 Similarly, XDB has two origins, and we omit the singleton.
 Several other lineages have multiple origin nodes descending from shared
@@ -3166,7 +3190,7 @@ the 2 origins of XAP descend from the recombination node shared with XZ,
 and XDP and XEB each have origins descending from two distinct
 recombination nodes (denoted XDP/XEB1 and XDP/XEB2).
 
-\edref{tab:pango_x_lineages} summarises
+\siref{tab:pango_x_lineages} summarises
 the 73 Pango X lineages present in the ARG.
 For 42 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node and
@@ -3177,7 +3201,7 @@ where the ARG reflects the
 hierarchical structure of Pango designation.
 
 There are ten partially concordant events (Type II)
-in \edref{tab:pango_x_lineages}, which
+in \siref{tab:pango_x_lineages}, which
 are recombination events closely associated with Pango X lineages
 that do not meet the strict origination criteria for Type I.
 These include recombination nodes that are ancestral to more than one
@@ -3201,7 +3225,7 @@ than de novo recombinant lineages (\supref{sec:dd_xq}).
 Similarly, XZ and both origins of XAP descend from a single
 recombination event, along with 218 samples assigned to BA.2.
 
-The final class of events (Type IV) in \edref{tab:pango_x_lineages}
+The final class of events (Type IV) in \siref{tab:pango_x_lineages}
 corresponds to 12 Pango X lineages whose origin nodes are not associated
 with a recombination event in the ARG.
 These vary in their plausibility of being non-recombinant.
@@ -3221,7 +3245,7 @@ see \supref{sec:supplement_rejected_pango_x_lineages} and \siref{tab:extra_hmm_r
 See \supref{sec:supplement_indepth_pango_x_lineages}
 for extended analyses of selected Pango X lineages in the ARG;
 \siref{fig:pango_x_copying_patterns} for copying patterns
-associated with \edref{tab:pango_x_lineages};
+associated with \siref{tab:pango_x_lineages};
 and Supplementary Data 1 for ARG visualisations of the Pango X lineages.
 
 See notebook
@@ -3891,13 +3915,13 @@ at $p=3$ and their relationship with the sc2ts ARG.
 Of the 64 events, 31 are equivalent to a recombination event in the ARG:
 the clades agree and the sc2ts node is within one edge of a recombination node.
 These cover 23 of the 42 Type I events (X lineages unequivocally associated with
-a recombination node in the sc2ts ARG) in \edref{tab:pango_x_lineages}
+a recombination node in the sc2ts ARG) in \siref{tab:pango_x_lineages}
 (15, at $p=4$) and
 4 of the 10 Type II events
 (recombination nodes with more complex association with X lineages):
 XAC, XB, XC and XE/XH (all four also at $p=4$).
 The remaining equivalent events are at recombination nodes in the ARG
-that are not among the named events in \edref{tab:pango_x_lineages}.
+that are not among the named events in \siref{tab:pango_x_lineages}.
 In a further 11 events the clades agree, but the sc2ts node is a more distant
 descendant of a recombination node.
 For example, UShER and sc2ts agree on creating two separate XAM clades, but while sc2ts
@@ -3913,7 +3937,7 @@ Nine of these are clades of X lineages descending from XBB
 whose most recent common ancestor in the ARG is within the much larger XBB clade.
 XAJ is an outlier for sc2ts, being the Pango X lineage identified as a
 non-recombinant with the largest number of mutations
-(\edref{tab:pango_x_lineages}), and a likely false negative.
+(\siref{tab:pango_x_lineages}), and a likely false negative.
 Most of the others are mixtures of multiple lineages that are
 difficult to reconcile with either the other events in the table
 or the sc2ts ARG.
@@ -4238,37 +4262,15 @@ Start & Length & Region & Occurrences & Samples\\
 \end{tabular}
 \end{table}
 
-\begin{table}
-\caption{
-Concordance among methods in characterizing Pango X lineages.
-These comparisons focus on the Pango X lineages associated with
-those of the 42 Type I recombination events (\edref{tab:pango_x_lineages})
-which have a single breakpoint according to the Pango designation.
-For each method, we calculated the number of Pango X lineages
-which have inferred parent Pango lineages and breakpoint intervals
-concordant with those proposed by the community.
-The denominators indicate the number of Pango X lineages
-for which detection results are available from the original
-studies\cite{Alfonsi2024,Li2024CovRecomb},
-which do not cover lineages designated after early 2023.
-For the Pango X lineages with non-overlapping breakpoint intervals,
-the distances between the inferred breakpoint intervals and
-those proposed by the community are shown (median and range).
-}
-\label{tab:method_concordance}
-\centering
-\begin{tabular}{lccl}
-\toprule & \multicolumn{1}{c}{Parent lineages} & \multicolumn{2}{c}{Breakpoint intervals} \\
-\cmidrule(lr){2-2} \cmidrule(lr){3-4}
-Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
-\midrule
-Sc2ts & 27 / 35 (77.1) & 31 / 32 (96.9) & 315.0 (315, 315)\\
-RecombinHunt-GISAID & 15 / 19 (78.9) & 11 / 19 (57.9) & 1202.0 (2, 7955)\\
-RecombinHunt-Nextstrain & 20 / 23 (87.0) & 15 / 22 (68.2) & 2785.0 (559, 7955)\\
-CovRecomb & 8 / 11 (72.7) & 6 / 11 (54.5) & 2059.0 (217, 13208)\\
-\bottomrule
-\end{tabular}
-\end{table}
+\clearpage % Make sure this table is on its own page
+
+% Change the geometry so it fits on the page
+\newgeometry{left=2cm, right=2cm, top=1cm, bottom=2cm}
+
+\nolinenumbers % a longtable is not a float, so lineno would number its pages
+\input{pango_x_table/table.tex} % generated by make_table.py -- do not edit
+\linenumbers
+\restoregeometry % Restore original geometry
 
 \begin{table}
 \centering
@@ -4326,6 +4328,12 @@ rebar       & 417 & 396     & 21 \\
 \end{tabular}
 \end{table}
 
+\clearpage % flush the floats above so that the tables stay in order
+\nolinenumbers % a longtable is not a float, so lineno would number its pages
+\input{ripples_tables/x_lineages.tex} % generated by make_tables.py -- do not edit
+\linenumbers
+\clearpage
+
 \begin{table}
 \caption{Parameters of the simulated pathogen epidemics
 (Methods, \supref{sec:slim_simulations}).
@@ -4354,14 +4362,6 @@ Samples per generation            & 20, 100              & 200, 1,000 \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-
-
-\clearpage % flush the floats above so that the tables stay in order
-\nolinenumbers % a longtable is not a float, so lineno would number its pages
-\input{ripples_tables/x_lineages.tex} % generated by make_tables.py -- do not edit
-\linenumbers
-\clearpage
 
 \input{ripples_tables/event_descendants.tex} % generated by make_tables.py -- do not edit
 

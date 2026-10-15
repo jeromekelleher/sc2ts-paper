@@ -63,7 +63,7 @@ def image_name(name):
 def make_caption(num_shown, omitted):
     caption = (
         f"Copying patterns for the {num_shown} recombination events associated "
-        r"with Pango X lineages listed in \edref{tab:pango_x_lineages}, "
+        r"with Pango X lineages listed in \siref{tab:pango_x_lineages}, "
         "ordered by label within each event type. "
         "The ID of the recombination node is shown to the right of each "
         "copying pattern."
