@@ -76,7 +76,7 @@ def make_caption(num_shown, omitted):
             f" Events with more than {MAX_PARENTS} parents are not shown: "
             f"{names}."
         )
-    caption += " See also Document S2 for exact positions and nucleotide bases."
+    caption += " See also Supplementary Data 2 for exact positions and nucleotide bases."
     return caption
 
 
@@ -105,12 +105,12 @@ def make_figure():
         "%",
         "% longtable numbers a long table with the table counter, so within",
         "% this group the table counter and names are aliased to the figure",
-        "% ones. The \\refstepcounter is global and so advances the figure",
+        "% ones (as is the reference prefix). The \\refstepcounter is global and so advances the figure",
         "% counter, and the real table counter is back in place after the group.",
         "% \\cpimage centres an image on the label beside it, with some space",
         "% above and below.",
         r"\begingroup",
-        r"\makeatletter\let\c@table\c@figure\makeatother",
+        r"\makeatletter\let\c@table\c@figure\let\p@table\p@figure\makeatother",
         r"\let\thetable\thefigure",
         r"\let\tablename\figurename",
         r"\newcommand{\cpimage}[1]{\raisebox{\dimexpr0.5ex-0.5\height\relax}"

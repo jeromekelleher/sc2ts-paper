@@ -3,18 +3,18 @@
 %
 % longtable numbers a long table with the table counter, so within
 % this group the table counter and names are aliased to the figure
-% ones. The \refstepcounter is global and so advances the figure
+% ones (as is the reference prefix). The \refstepcounter is global and so advances the figure
 % counter, and the real table counter is back in place after the group.
 % \cpimage centres an image on the label beside it, with some space
 % above and below.
 \begingroup
-\makeatletter\let\c@table\c@figure\makeatother
+\makeatletter\let\c@table\c@figure\let\p@table\p@figure\makeatother
 \let\thetable\thefigure
 \let\tablename\figurename
 \newcommand{\cpimage}[1]{\raisebox{\dimexpr0.5ex-0.5\height\relax}[\dimexpr0.5\height+0.5ex+3pt\relax][\dimexpr0.5\height-0.5ex+3pt\relax]{\includegraphics[height=1.5em]{#1}}}
 \begin{longtable}{cl}
 \caption[]{%
-Copying patterns for the 51 recombination events associated with Pango X lineages listed in \edref{tab:pango_x_lineages}, ordered by label within each event type. The ID of the recombination node is shown to the right of each copying pattern. Events with more than 4 parents are not shown: XAY (7 parents). See also Document S2 for exact positions and nucleotide bases.}
+Copying patterns for the 51 recombination events associated with Pango X lineages listed in \edref{tab:pango_x_lineages}, ordered by label within each event type. The ID of the recombination node is shown to the right of each copying pattern. Events with more than 4 parents are not shown: XAY (7 parents). See also Supplementary Data 2 for exact positions and nucleotide bases.}
 \label{fig:pango_x_copying_patterns} \\
 \endfirsthead
 \LTcontinuedhead{2} \\
