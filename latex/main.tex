@@ -63,7 +63,7 @@
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \fi
 
-\newcommand{\supref}[1]{Supplementary Note~\ref{#1}}
+\newcommand{\supref}[1]{Supplementary Information~\S\ref{#1}}
 \renewcommand{\figurename}{Fig.}
 \newcommand{\figref}[1]{Fig.~\ref{#1}}
 \newcommand{\edref}[1]{Extended Data~\ref{#1}}
@@ -2782,11 +2782,6 @@ CovRecomb & 8 / 11 (72.7) & 6 / 11 (54.5) & 2059.0 (217, 13208)\\
 \renewcommand{\thefigure}{\arabic{figure}}
 \renewcommand{\tablename}{Supplementary Table}
 \renewcommand{\thetable}{\arabic{table}}
-% Number the subsection headings as Supplementary Notes
-\makeatletter
-\def\@seccntformat@subsection{Supplementary Note~}
-\renewcommand{\@seccntformat}[1]{\csname @seccntformat@#1\endcsname\csname the#1\endcsname\quad}
-\makeatother
 \renewcommand{\thesubsection}{\arabic{subsection}}
 
 \subsection{Parsimony comparison of sc2ts and UShER}
