@@ -15,8 +15,8 @@ split: main_text.pdf
 main_text.pdf: main.tex references.bib ${DATA} ${FIGURES}
 	latexmk -pdf -interaction=nonstopmode -jobname=split_tmp \
 		-pdflatex='pdflatex %O "\def\SPLITBUILD{1}\input{%S}"' main.tex
-	qpdf split_tmp.pdf --pages . 1-34 -- main_text.pdf
-	qpdf split_tmp.pdf --pages . 35-z -- supplementary.pdf
+	qpdf split_tmp.pdf --pages . 1-56 -- main_text.pdf
+	qpdf split_tmp.pdf --pages . 57-z -- supplementary.pdf
 
 # Changes relative to the version submitted to Nature Genetics.
 latexdiff: diff.pdf
