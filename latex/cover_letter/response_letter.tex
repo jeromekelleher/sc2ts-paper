@@ -18,24 +18,37 @@
 \opening{Dear Dr Li,}
 
 We thank you and the reviewers for the careful and constructive evaluation of
-our Article, ``A Pandemic-Scale Ancestral Recombination Graph for
-SARS-CoV-2.''
+our Article, ``A Pandemic-Scale Ancestral Recombination Graph for SARS-CoV-2''.
+We have substantially revised the manuscript in response, with major updates
+both to the SARS-CoV-2 ARG itself and to the evaluation of sc2ts as a method
+for future pathogen genomic datasets.
 
-\begin{itemize}
-  \item We have made a major effort to make the resource as up to date and extensive as possible. The ARG now includes all of the latest Viridian data, running to 2024-06-06 with 3,114,609 samples (previously 2,482,157 samples to 2023-02-20).
-  \item We have made particular efforts to capture the origins of Delta and Omicron more accurately, using groups of high-quality seed samples (B.1.617.1/Kappa and B.1.617.3, early B.1.617.2/Delta, AY.4 and AY.120.1; BA.1 and BA.2), and now include lesser-sampled Omicron lineages such as BA.3 and BA.4.
-  \item All analyses updated to the new ARG: 1,323 recombination nodes, of which 647 of the 1,319 single-breakpoint events pass QC; 73 Pango X lineages placed.
-  \item sc2ts generalised to other pathogens: the reference genome and its date are now configuration parameters, with nothing specific to SARS-CoV-2 built in.
-  \item New simulation study quantifying false positive and detection rates of recombinant inference as a function of the recombination penalty $k$ and the divergence between parents.
-  \item New forward-time simulation study (SLiM) of coronavirus-like and influenza-like epidemics, scoring recombinant detection, breakpoints and overall ARG accuracy against the true ARG across contrasting parameter regimes.
-  \item Together, the simulations catalogue the conditions under which false positive and false negative recombinants should be expected, giving limitations and recommendations for applying sc2ts to other pathogens.
-  \item Language softened throughout (``validated'' $\to$ ``corroborated''), and clearer statement of intended users.
-\end{itemize}
+First, we have rebuilt the ARG using all of the latest Viridian data, extending
+the resource to 3,114,609 genomes sampled through 6 June 2024, and have updated
+all analyses accordingly. We also made particular efforts to improve the
+reconstruction of the early histories of Delta and Omicron. Second, addressing
+the editors' and Reviewer \#1's request to establish the applicability and
+limitations of sc2ts beyond SARS-CoV-2, we have generalised the method so that
+it is no longer specific to the SARS-CoV-2 reference genome, and added two
+complementary simulation studies. These quantify recombinant detection under
+controlled SARS-CoV-2 sequence backgrounds and evaluate end-to-end ARG
+inference in forward-time simulations of contrasting coronavirus-like and
+influenza-like epidemic regimes, where the true ARG is known.
+
+Together, these analyses allow us to state more clearly where sc2ts performs
+well and where its limitations lie. In particular, inferred recombinants are
+generally reliable, whereas sensitivity is strongly limited when little genetic
+diversity has accumulated between co-circulating lineages; the simulations also
+provide an empirical basis for choosing the recombination penalty for new
+pathogens. We have correspondingly revised the manuscript to make its intended
+users and scope more explicit, to distinguish corroboration from validation
+where the truth is unknown, and to address the reviewers' specific concerns
+throughout.
 
 We have included a copy of the manuscript in which all changes have been
 highlighted.
 
-Below we respond point by point.
+We respond to each point in turn below.
 
 \medskip
 \hrule
@@ -43,7 +56,7 @@ Below we respond point by point.
 
 \noindent \textbf{Response to the editor}
 
-\noindent \textbf{Editor:} ``To guide the scope of the revisions, the editors
+\noindent \textbf{Editor:} \textit{``To guide the scope of the revisions, the editors
 discuss the referee reports in detail within the team with a view to
 identifying key priorities that should be addressed in revision. In this case,
 we think both referees have provided constructive reviews aimed at
@@ -51,47 +64,31 @@ strengthening the analyses and improving the presentation. We particularly ask
 that you demonstrate the practical utility of this method by expanding its
 application to a broader range of plausible pandemic-causing pathogens, and
 address all referee comments as thoroughly as possible with appropriate
-revisions.''
+revisions.''}
 
-\begin{itemize}
-  \item Done: sc2ts has been generalised so that it can be applied to other pathogens.
-The reference genome and reference date are now configuration parameters, and nothing
-specific to SARS-CoV-2 (such as the Wuhan-Hu-1 reference) is built in.
-  \item Done: we have evaluated sc2ts on forward-time simulations of epidemics of two
-pathogens in very different parameter regimes (genome length, substitution rate,
-generation time, epidemic size and sampling density): a coronavirus-like pathogen and an
-influenza-like pathogen modelled on pandemic 2009 H1N1, where the full ARG is known
-(Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'';
-\texttt{simulations/slim}). See the response to Reviewer \#1 below for details.
-  \item Done: with these and the synthetic recombinant simulations, we have catalogued the
-conditions under which false positives and false negatives should be expected:
-    \begin{itemize}
-      \item False positives are rare: inferred recombinants are almost always genuine
-(precision about 0.9--1), with no false positives among held-out real non-recombinants.
-The exception is a small $k$ with dense sampling and little diversity
-(precision 0.72 for the influenza-like pathogen at $k=3$).
-      \item False negatives are driven by the divergence between parents: recombination
-between closely related lineages, early in an epidemic or in a slowly evolving pathogen,
-leaves too few distinguishing mutations to be detected (Alpha$\times$Alpha 40\% vs
-Alpha$\times$Delta 89\% at $k=4$; under 10\% early in the influenza-like epidemic).
-      \item Recombinants whose parents, or which themselves, were not sampled are detected
-about as often as those that were.
-      \item $k$ trades recall for precision, and the Methods (``Choice of k parameter'')
-give a procedure for choosing it for a new pathogen.
-    \end{itemize}
-  \item \todo{Draft, check wording: We have not applied sc2ts to real data from another
-pathogen. No other pathogen has a dataset approaching the density of SARS-CoV-2, and
-on real data the true ARG is unknown. Simulations, in which the truth is known and the
-parameters can be varied, are what is needed to establish the limitations and
-recommendations the reviewers ask for.}
-  \item All referee comments addressed point by point below.
-\end{itemize}
+We have addressed this in several ways. We have generalised sc2ts so that the
+reference genome and reference date are configurable and the method is no
+longer specific to SARS-CoV-2. We have also added forward-time simulations of
+coronavirus-like and influenza-like epidemics, spanning contrasting genome
+lengths, mutation rates, generation times, epidemic sizes and sampling
+densities, in which the true ARG is known. These are complemented by synthetic
+recombinant simulations using real SARS-CoV-2 genomes. Together, the
+simulations establish the conditions under which recombinant inference is
+reliable, identify low parental divergence as the main limitation on detection,
+and provide practical guidance for choosing the recombination penalty for a new
+pathogen. The relevant limitations and recommendations are now stated
+explicitly in the manuscript.
 
-\noindent \textbf{Editor:} ``When re-submitting your manuscript, please ensure
+We chose simulation for this broader evaluation because it allows sc2ts to be
+compared directly with the true ARG while varying the features of the epidemic
+and pathogen that determine performance.
+
+
+\noindent \textbf{Editor:} \textit{``When re-submitting your manuscript, please ensure
 that any supplementary figures and tables that are crucial to the manuscript's
 conclusions are converted into Extended Data figures and tables to increase
 visibility of these data. [\ldots] A maximum of ten Extended Data display items
-(figures and tables) is permitted.''
+(figures and tables) is permitted.''}
 
 \begin{itemize}
   \item \todo{Decide which supplementary figures/tables are crucial to the conclusions and convert them to Extended Data (maximum 10 items).}
@@ -103,7 +100,7 @@ visibility of these data. [\ldots] A maximum of ten Extended Data display items
 
 \noindent \textbf{Response to Reviewer \#1}
 
-\noindent \textbf{Reviewer \#1:} ``This manuscript introduces a method for
+\noindent \textbf{Reviewer \#1:} \textit{``This manuscript introduces a method for
 constructing an ARG from millions of viral genome sequences sampled during the
 pandemic. They show that a `real-time' ARG can be constructed at scale and is
 similarly or more accurate than existing methods for incorporating
@@ -111,101 +108,73 @@ recombination into genealogical inference. Overall, the method is well
 described and the analyses are clearly documented and largely appropriate for
 the purpose of evaluating the results. I have a few specific analyses that I
 suggest below and consider to be essential for investigating the quality of
-the resulting ARG and method.''
+the resulting ARG and method.''}
 
-\begin{itemize}
-  \item Thank the reviewer for the positive assessment of the method and documentation.
-\end{itemize}
+We thank the reviewer for their careful and constructive assessment. We
+particularly appreciate their positive view that the method is well described,
+that the analyses are clearly documented and largely appropriate for evaluating
+the ARG, and that the accompanying documentation makes the work reproducible.
+At the same time, the reviewer's well-founded critiques identified several important
+ways in which the manuscript could be strengthened. In response, we have
+substantially revised both the resource and the methodological evaluation: we
+have rebuilt the ARG using all available Viridian data, clarified the intended
+users and scope of the resource, and added extensive simulations in which the
+true ancestry is known. These changes allow us to quantify more directly both
+the strengths and limitations of sc2ts across contrasting epidemic regimes. We
+have also adopted more circumspect language throughout and addressed the
+reviewer’s specific concerns about co-circulation, recurrent multi-nucleotide
+substitutions, reassortment, accessibility, and comparison with existing
+methods. We believe these changes have significantly improved the manuscript.
 
-\noindent \textbf{Reviewer \#1:} ``Most critically, I wonder who this is for
+\noindent \textbf{Reviewer \#1:} \textit{``Most critically, I wonder who this is for
 exactly? As a resource, I have substantial misgivings about whether applied
 public health would have any interest or practical ability to use it.
 Phylogenetic trees are already challenging in many public health
 applications. Furthermore, the ARG provided is not real time because there is
 no included plan to update as new data are deposited. It's already far behind
-the evolution of SARS-CoV-2 so won't be used soon in this regard.''
+the evolution of SARS-CoV-2 so won't be used soon in this regard.''}
 
-\begin{itemize}
-  \item We agree that the primary users are researchers (evolutionary
-biologists, population geneticists, epidemiologists studying the pandemic
-phase, methods developers, lineage curators) rather than routine applied public
-health, and will say so explicitly.
+We agree with the reviewer that the primary users of this resource are likely
+to be researchers---including evolutionary biologists, epidemiologists, lineage
+curators and methods developers---rather than routine applied public-health
+surveillance. We have revised the Discussion to make this intended user base
+explicit and to give concrete examples of how the ARG could be used. We have
+also clarified our use of ``real time''. This refers to the inference method,
+which incrementally incorporates samples as they are collected, rather than to
+a commitment to maintain the SARS-CoV-2 resource indefinitely. We now frame the
+ARG as a stable record of the pandemic phase of SARS-CoV-2. Nevertheless, we
+agreed that the resource should be made as current and complete as possible,
+and have therefore rebuilt the ARG using all available Viridian data, extending
+it to 3,114,609 genomes sampled through 6 June 2024. All analyses in the
+manuscript have been updated to this new ARG.
 
-  \item We now frame the ARG as a stable, comprehensive record of the pandemic
-phase of SARS-CoV-2, extending to the end of the available Viridian data.
-``Real time'' refers to the method (incremental, daily inference of the ARG as
-samples arrive), not a commitment to maintain the resource indefinitely.
-\item We have made a major effort to make the resource as up to date and extensive as
-possible. The ARG now includes all of the latest Viridian data, running to
-2024-06-06 with 3,114,609 samples (previously 2,482,157 samples to 2023-02-20).
-  \item Done: the Discussion now states that the primary users will be researchers
-(evolutionary biologists, epidemiologists, lineage curators and methods developers)
-rather than routine public health surveillance. It already described the ARG as a stable
-resource for studying the pandemic phase, and ``real time'' in the manuscript refers only
-to the inference method.
-\end{itemize}
-
-\noindent \textbf{Reviewer \#1:} ``If this is intended as a method suitable for
+\noindent \textbf{Reviewer \#1:} \textit{``If this is intended as a method suitable for
 genomic epidemiology applications in future pandemics, it needs to be
 evaluated against a much broader range of plausible pandemic-causing pathogens
-with the limitations and recommendations clearly established.''
+with the limitations and recommendations clearly established.''}
 
-\begin{itemize}
-  \item Same as the editor's priority point.
-  \item Done: sc2ts has been generalised to other pathogens (reference genome and date
-are now configuration parameters), and we have evaluated it in contrasting parameter
-regimes with simulations where the truth is known (below).
-  \item Done: we simulated epidemics forwards in time with SLiM under a neutral
-Wright--Fisher model with recombination, for a coronavirus-like pathogen (30\,kb,
-$8\times10^{-4}$ substitutions/site/year, 5.5 day generations, $\sim$3 years) and an
-influenza-like pathogen modelled on pdm2009 H1N1 (13\,kb, $2.75\times10^{-3}$
-substitutions/site/year, daily generations, growing to $10^6$ cases per day over 100 days),
-each at two sampling densities. We ran sc2ts with $k = 3, 4, 5$ and scored the inferred
-recombinants, breakpoints and the overall ARG against the true ARG
-(Methods, ``Simulation of pathogen epidemics''; SI ``Simulations of pathogen epidemics'';
-\texttt{simulations/slim}, \texttt{notebooks/analysis\_slim\_pathogen\_simulations.ipynb}).
-  \item Results \todo{provisional numbers; update from final runs}:
-    \begin{itemize}
-      \item Inferred recombinants are almost always genuine: precision 0.94--1 for the
-coronavirus-like pathogen and 0.89--1 for the influenza-like pathogen (0.72 at $k=3$ with
-the densest sampling).
-      \item Detection is limited mainly by the diversity available: with $k = 4$, about
-50--65\% of recombination events are detected for the coronavirus-like pathogen, but fewer
-than 10\% in the first 100 days of the influenza-like epidemic, where the parents of most
-recombinants differ at only a few sites. A SARS-CoV-like pathogen with the same demography
-gave essentially no detectable recombinants. This is a limit of the information in the
-sequences rather than of sc2ts.
-      \item Events seen only through sampled descendants of an unsampled recombinant are
-detected at least as often as those whose recombinant was sampled.
-      \item The true breakpoint lies in the inferred interval for 90--98\% (coronavirus-like)
-and 78--90\% (influenza-like) of detected events.
-    \end{itemize}
-  \item Limitations and recommendations for other pathogens, from these and the synthetic
-recombinant simulations (SI ``Implications for other pathogens''; Discussion):
-    \begin{itemize}
-      \item When to trust calls: across all regimes, a recombinant inferred by sc2ts is
-almost always genuine. Precision drops only with a small $k$, dense sampling and little
-diversity.
-      \item When to expect misses: recombination between closely related parents, as early
-in an epidemic or in a slowly evolving pathogen, is largely undetectable by sc2ts or any
-sequence-based method. Detection improves as co-circulating lineages diverge.
-      \item Unsampled recombinants and parents: events seen only through sampled
-descendants are detected as often as sampled ones; mutations on unsampled parents barely
-affect detection.
-      \item Choosing $k$: a smaller $k$ recovers more events in low-diversity settings at
-some cost in precision; the Methods (``Choice of k parameter'') give a procedure for
-choosing $k$ for a new pathogen.
-      \item Not covered: reassortment in segmented genomes, and sequencing artefacts
-(the simulations are error-free).
-    \end{itemize}
-  \item Done (first draft): the Discussion now states these limitations, with details in
-the SI. \todo{Expand into fuller recommendations once final simulation results are in.}
-\end{itemize}
+We agree, and this comment motivated one of the major additions to the revised
+manuscript. We have first generalised sc2ts so that the reference genome and
+reference date are configurable and the method is no longer specific to
+SARS-CoV-2. We have then added two complementary simulation studies. Synthetic
+recombinants constructed from real SARS-CoV-2 genomes allow us to quantify how
+performance depends on parental divergence, the recombination penalty $k$, and
+divergence from the closest sampled parents. In addition, we ran sc2ts on
+forward-time simulations of coronavirus-like and influenza-like epidemics
+spanning contrasting genome lengths, mutation rates, generation times, epidemic
+sizes and sampling densities, with the true ARG known. Together, these
+simulations establish the principal strengths and limitations of the method.
+Recombinants inferred by sc2ts are generally reliable, while sensitivity is
+strongly reduced when little genetic diversity has accumulated between parental
+lineages, particularly early in an epidemic. The simulations also quantify the
+precision--recall trade-off controlled by $k$ and provide a practical procedure
+for selecting $k$ for a new pathogen. We now state these limitations and
+recommendations explicitly in the manuscript.
 
 \medskip
-\noindent \textit{Major}
+\noindent \large{\textbf{Major}}
 
-\noindent \textbf{Reviewer \#1:} ``The post hoc examination of factors
+\noindent \textbf{Reviewer \#1:} \textit{``The post hoc examination of factors
 consistent with increased recombination rates (case rates and viral genetic
 diversity) seems reasonable, but should be much more precise. Specifically,
 recombination requires that viral lineages co-circulate in space and time.
@@ -217,66 +186,59 @@ samples will likely not be detectable by this and other methods, the
 relationship between lineage diversity and recombination rates might be
 expected as a consequence of the inference procedure. While I still think this
 is useful to consider, the explanation and discussion could be more
-nuanced.''
+nuanced.''}
 
-\begin{itemize}
-  \item Done: we now test co-circulation of the inferred parents directly, using the
-sampling dates and countries in the Viridian metadata
-(Results, ``Assessing evidence for recombination events'';
-Methods and SI, ``Co-circulation of recombinant parents'';
-\texttt{notebooks/fig\_recombinant\_parent\_proximity.ipynb}).
-  \item Because sampling is dominated by a few countries (UK, USA, Denmark), the raw
-fractions are uninformative on their own, so we compare them with a null in which parents
-are exchanged between recombinants of similar date, preserving the sampling composition of
-the dataset at that time.
-  \item For the 224 QC-passing recombinants whose two parents are both sampled genomes,
-the parents were sampled a median of 25 days apart and 134 (60\%) in the same country,
-against 41 days and 40\% under the null ($p < 0.001$ in both cases, 1,000 permutations).
-The inferred parents are therefore closer in time and space than chance expectation.
-The Results state this result in two sentences; the details are in the SI section.
-  \item Extending to parental Pango lineages, which also covers events with unsampled
-parents, both parent lineages were sampled in the recombinant's own country within 28 days
-of the inferred event for 538 (83\%) of all 647 QC-passing recombinants. We note in the SI
-that this measure discriminates weakly (79--81\% under the same null), because
-contemporaneous lineages co-circulate in most well-sampled countries.
-  \item We did not pursue sub-national resolution: location below country level is
-recorded for some countries only (e.g.\ state for the USA, nothing for the UK), and an ARG
-parent is the closest sampled relative of the lineage involved rather than the transmitted
-genome, so it is not expected to share the fine-scale location of the co-infected host
-(of the 70 recombinants with both parents sampled in the USA, the parents share a state in
-17\%). This is stated in the SI.
-  \item We agree that the diversity--recombination relationship is partly expected from detectability.
-  \item The new simulation study quantifies this: at $k=4$, 89\% of synthetic recombinants
-between Alpha and Delta parents are detected, but only 40\% of those between two Alpha
-parents (Results, ``Quality control and corroboration of recombination events''; SI
-``Synthetic recombinant simulations'').
-  \item Done: the ``Emergence of recombinants over time'' section now states explicitly
-that the diversity--recombination relationship is expected in part as a consequence of the
-inference procedure, cites these detection rates, and notes that the two explanations
-cannot be separated with the available data.
-  \item \todo{This analysis must also be redone for the v2.2 ARG: JHU case data stop in March 2023 while the ARG runs to June 2024.}
-\end{itemize}
+We agree with both aspects of this comment and have added analyses to address
+them directly.
 
-\noindent \textbf{Reviewer \#1:} ``There has been some research in the effect
+First, we now test whether the inferred parents of recombinant events
+co-circulate in time and space. For the 224 QC-passing recombinants for which
+both inferred parents are sampled genomes, the parents were sampled a median of
+25 days apart and 60\% were sampled in the same country. Because the dataset is
+strongly geographically structured, we compared these values with a null in
+which parents were exchanged between recombinants of similar date, preserving
+the sampling composition through time. Under this null, parents were sampled a
+median of 41 days apart and 40\% were from the same country; both differences
+were significant in 1,000 permutations ($p < 0.001$). We have added this analysis
+to the Results, Methods and Supplementary Information.
+
+Second, we agree that the observed association between lineage diversity and
+inferred recombination is expected in part from the inference procedure itself.
+The new simulations now quantify this directly: with $k = 4$, 89\% of synthetic
+Alpha$\times$Delta recombinants were detected, compared with only 40\% of
+Alpha$\times$Alpha recombinants whose parents differ at relatively few sites.
+The forward-time simulations show the same effect across whole epidemics. We
+have therefore revised the relevant Results section to state explicitly that
+the relationship between diversity and inferred recombination reflects both
+biological opportunity for recombination and variation in our ability to detect
+it, and that these effects cannot be cleanly separated in the empirical data.
+
+\noindent \textbf{Reviewer \#1:} \textit{``There has been some research in the effect
 of recurrent mutli-nucleotide mutations with convincing examples at quite a
 few sites (see de Maio et al.
 \url{https://academic.oup.com/mbe/article/42/11/msaf272/8301027}). I would
 expect that sc2ts could be impacted by these events resulting in elevated
 rates of inferred recombination. This should be addressed and if possible
-mitigated.''
+mitigated.''}
 
-\begin{itemize}
-  \item Done: the QC text now states that the supporting-loci measure (sites within 3 bases clustered
-into a single locus) identifies multiple simultaneous nucleotide substitutions suggested to
-cause false positive recombinants, citing de Maio et al.
-  \item Recombinants with insufficient support (672 of 1,319) are flagged as failing QC, mitigating this effect.
-  \item Done: we checked every single-breakpoint recombinant against the 19 highly recurrent
-MNS in Table~1 of de Maio et al. We found that recurrent MNS do produce some spurious
-recombinants, but the existing QC already removes them, and the effect on
-the QC-passing set is small. The Results text now reports these numbers.
-\end{itemize}
+We thank the reviewer for drawing our attention to this issue. We have now
+examined explicitly whether recurrent multi-nucleotide substitutions (MNS) can
+generate spurious recombination signals.
 
-\noindent \textbf{Reviewer \#1:} ``The SARS-CoV-2 pandemic has largely come and
+Our existing QC measure already reduces this problem by grouping closely spaced
+supporting sites into a single locus, so that clustered substitutions do not
+contribute multiple independent units of support. We additionally checked all
+single-breakpoint recombination events against the 19 highly recurrent MNS
+catalogued by De Maio et al. Recurrent MNS can indeed produce apparent
+recombinant matches, but these events are largely removed by the existing QC
+procedure. Among the 647 QC-passing recombination events, discounting recurrent
+MNS would cause only seven additional events to fall below the QC threshold,
+whereas all 42 events involving the particularly recurrent MNS at positions
+27875--27883 fail QC. We have added these results to the manuscript and now
+cite De Maio et al. in the discussion of this QC measure.
+
+
+\noindent \textbf{Reviewer \#1:} \textit{``The SARS-CoV-2 pandemic has largely come and
 gone and global sequencing efforts are in free-fall (note that this resource
 is not updated with the most recently produced data). While I appreciate the
 tool could be `real time' in a new pandemic, there's no telling exactly what
@@ -284,73 +246,56 @@ the next pandemic will resemble. If this is going to be a meaningful method
 going forward, I suggest this should be evaluated across simulations
 encompassing varied plausible parameters. E.g., a flu pandemic is thought to
 be likely, could this be used to handle the kinds of reassortment that we see
-with segmented genomes?''
+with segmented genomes?''}
 
-\begin{itemize}
-  \item Done: new simulation study of synthetic recombinants spliced from real UK Alpha and
-Delta sequences (2021-05-16) and matched against the ARG for the previous day
-with \texttt{sc2ts run-hmm} at $k = 3, 4, 5$ (\texttt{simulations/synthetic\_recombinants},
-\texttt{notebooks/analysis\_synthetic\_recombinants.ipynb}).
-Two crosses bracket the parent divergence in the real ARG: Alpha$\times$Alpha
-(pangonet distance 0, like 31\% of real recombinants) and Alpha$\times$Delta (distance 4--5).
-  \item Each parent is also given random mutations before splicing, at 0, 1, 5 and
-10 times the number expected in one transmission generation, to model recombinants
-whose parents were not themselves sampled.
-  \item Results: no false positives among the 338 held-out non-recombinant controls at
-any $k$ (95\% upper bound 0.9\%); detection at $k=4$ is 40\% (Alpha$\times$Alpha) and
-89\% (Alpha$\times$Delta); the true breakpoint lies within the inferred interval for 99\% of
-detected recombinants; both assigned parents are of the correct Pango lineage in all
-Alpha$\times$Alpha and 89\% of Alpha$\times$Delta recombinants (the errors being closely
-related Delta lineages), and in most cases are identical to the true parents over the matched
-segment; interval widths reproduce the negative relationship with parent divergence seen in
-the real ARG; and mutations in unsampled parents barely affect detection but push
-many recombinants beyond the HMM cost threshold for inclusion.
-  \item Added to the manuscript: a new Methods section (``Simulation of synthetic
-recombinants''), a new SI section (``Synthetic recombinant simulations'') with
-a new supplementary figure, a summary in the Results (``Quality control and corroboration
-of recombination events''), and a sentence in the Discussion.
-  \item Done: sc2ts has been generalised to run on any (non-segmented) pathogen genome, and
-the new SLiM simulations include an influenza-like pathogen, modelled on
-pandemic 2009 H1N1, covering the rates and epidemic sizes of an influenza pandemic
-(see the response to the previous point and SI ``Simulations of pathogen epidemics'').
-They also cover a coronavirus-like pathogen, and two sampling densities for each.
-  \item Not as it stands. The sc2ts HMM treats the genome as a single linear sequence, and
-switching parents anywhere costs the same penalty $k$. Reassortment differs in that
-segments are inherited independently, so a switch of parent between segments should cost
-little or nothing, while a switch within a segment remains rare. The ARG representation
-can already describe this: concatenated segments and a parent switch at each segment
-boundary. Supporting reassortment would therefore mean extending the HMM to allow
-breakpoints at segment boundaries at little or no cost. We think this is a promising
-direction, but it is beyond the scope of this work. The influenza-like genome in our
-simulations is accordingly a single unsegmented sequence, and the Discussion now notes
-that reassortment would require extending the model.
-\end{itemize}
+As described in response to the reviewer’s earlier comment, this concern
+motivated the new simulation studies. In particular, the forward-time
+simulations include an influenza-like epidemic regime modelled on pandemic H1N1
+parameters as well as a coronavirus-like regime, with two sampling densities
+and several values of $k$. Because the true ARG is known, these simulations allow
+us to evaluate recombinant detection, breakpoint inference and the ARG as a
+whole under conditions very different from those of SARS-CoV-2. The
+influenza-like simulations also make an important limitation clear: during the
+early stages of a rapidly growing epidemic, relatively little sequence
+diversity may have accumulated even when the annual substitution rate is high.
+Under these conditions, recombinant parents often differ at too few sites for
+their ancestry to be distinguished confidently, and recall is correspondingly
+low. The current implementation of sc2ts does not, however, model reassortment
+in segmented genomes. The HMM currently treats the genome as a single linear
+sequence and applies the same recombination penalty to a change of parent at
+any position. Reassortment would require an extension in which switches at
+segment boundaries are assigned little or no penalty while switches within a
+segment remain rare. The ARG representation itself can accommodate such
+ancestry, but the inference model would need to be modified. We now state this
+explicitly as a limitation and direction for future work.
 
-\noindent \textbf{Reviewer \#1:} ``In parts of the introduction and results,
+
+\noindent \textbf{Reviewer \#1:} \textit{``In parts of the introduction and results,
 the overall tone is one that suggests this method has solved genealogical
 inference for SARS-CoV-2 and to a casual reader might indicate very accurate
 genealogical inference. While I do think some aspects are improved by this
 work, the uncertainty is still enormous, all `validations' applied to real
 data are `corroborative analyses' in reality. This work would benefit from a
 substantive effort to soften and inject more circumspect phrasing
-throughout.''
+throughout.''}
 
-\begin{itemize}
-  \item We agree, and have adopted more circumspect phrasing.
-  \item Done: comparisons against real data and other inference methods (3SEQ,
-CovRecomb, rebar, UShER, results from the literature) are now described as corroboration
-or as being ``consistent with'' those results. ``Validation'' is kept only where the truth
-is known (the simulations, and re-dating samples with known collection dates).
-  \item Done: ``accurately'' claims are removed from the Abstract, Introduction and Results
-where they rested on comparisons with real data, e.g.\ ``sc2ts automatically and accurately
-detects details about known recombinant lineages'' $\to$ ``sc2ts automatically recovers
-many details about known recombinant lineages''.
-  \item Done: the Discussion now describes ``multiple corroborative comparisons with results
-from the literature'' rather than ``multiple layers of validation'', and the new simulation
-studies set out the conditions under which inference is unreliable (see above).
-\end{itemize}
+We agree with this criticism and have adopted more circumspect language
+throughout the manuscript.
 
-\noindent \textbf{Reviewer \#1:} ``Some recommendations should be provided for
+In particular, comparisons against real data, other inference methods and
+results from the literature are now described as corroboration or as being
+consistent with previous results, rather than as validation. We reserve
+``validation'' for settings in which the truth is known,
+principally the new simulations. We have similarly
+removed claims of accuracy where these were supported only by comparisons
+between alternative inferences.
+
+The new simulation studies also help address the underlying concern directly,
+because they allow us to quantify both where sc2ts performs well and where
+inference becomes unreliable when compared with known truth.
+
+
+\noindent \textbf{Reviewer \#1:} \textit{``Some recommendations should be provided for
 the expected practical use cases. Much of the text suggests this will be used
 by researchers -- certainly I would expect population geneticists and the like
 to be interested. I don't think this has much practical utility in applied
@@ -358,40 +303,39 @@ public health where it is already a struggle to incorporate single phylogenies
 and instead we use broad-scale categories for analysis and reporting concerns.
 If this is a new method and resource, it is critical that we establish who the
 intended user-base is in reality and how they would interact with it to
-address their concerns.''
+address their concerns.''}
 
-\begin{itemize}
-  \item We agree that the primary users are researchers (evolutionary
-biologists, population geneticists, epidemiologists studying the pandemic
-phase, methods developers, lineage curators) rather than routine applied public
-health, and will say so explicitly.
-  \item Done: the Discussion now names the intended users (see above). The Results
-describe how they access the ARG (tskit Python API, tabular node summaries with Pango
-assignments, minimal hardware), and the Discussion gives example use cases
-(annotating the ARG with fitness estimates, detecting saltational variants,
-developing ARG-aware methods).
-\end{itemize}
+As noted above, we agree that the main users of the ARG are likely to be
+researchers rather than routine public-health surveillance teams, and we now
+state this explicitly.
+
+We have also made clearer how researchers can interact with the resource. The
+ARG can be loaded and queried through the tskit Python API on modest hardware,
+and tabular summaries of nodes, samples and Pango assignments can be generated
+efficiently for downstream analyses. In the Discussion we give examples of
+potential applications, including combining the ARG with experimentally derived
+fitness estimates, identifying saltational lineages, and developing
+recombination-aware methods for pathogen genomic analysis.
 
 \medskip
-\noindent \textit{Minor}
+\noindent \large{\textbf{Minor}}
 
-\noindent \textbf{Reviewer \#1:} ``The word `validated' (for example, when
+\noindent \textbf{Reviewer \#1:} \textit{``The word `validated' (for example, when
 considering 3seq agreement) is an overstatement. It is a comparison against an
 inference method using the same underlying data. These events are
 `corroborated' or something more along those lines. The phrasing `The ARG is a
 comprehensive and deeply validated record of the pandemic phase' is a
-overstatement for similar reasons (see also above).''
+overstatement for similar reasons (see also above).''}
 
-\begin{itemize}
-  \item Agreed.
-  \item Done: the 3SEQ, CovRecomb and rebar comparisons are now described as
-corroboration throughout (Results, Methods, Supplementary tables), and the section is
-renamed ``Quality control and corroboration of recombination events''.
-  \item Done: ``The ARG is a comprehensive and deeply validated record of the pandemic
-phase \ldots\ accurately depicting a range of results from the literature'' is now
-``The ARG is a comprehensive record of the pandemic phase \ldots\ consistent with a range
-of results from the literature''.
-\end{itemize}
+Agreed. We have replaced ``validated'' with ``corroborated'' or equivalent language
+wherever the comparison is between alternative inferences from real data. The
+relevant Results section is now titled ``Quality control and corroboration of
+recombination events'', and statements describing the ARG as ``deeply
+validated''
+or ``accurately depicting'' previous results have been replaced with more
+appropriately qualified wording. As noted above, we now reserve validation
+terminology for analyses in which the truth is known.
+
 
 \noindent \textbf{Reviewer \#1:} ``I am not sure if the authors will have seen
 this preprint,
@@ -401,65 +345,61 @@ was published very recently, so it may not be ready for this specific
 application. One way that this resource could be made much more accessible
 would be to present this ARG on the platform.''
 
-\begin{itemize}
-  \item We thank the reviewer for pointing us to Lorax, which has since been published in
-\textit{Bioinformatics}. We agree that interactive visualisation is a good way to make the ARG
-more accessible.
-  \item Done: we now cite Lorax alongside the other interactive tools for visualising tskit
-ARGs (tsbrowse, tskit\_arg\_visualizer and ARGscape) in the Methods
-(``Ancestral Recombination Graphs'').
-  \item We tried loading the sc2ts ARG into Lorax, but it did not perform well enough to be
-useful. Lorax is designed for ``biobank-scale'' ARGs, which are in fact much smaller than
-the sc2ts ARG in number of samples (3.1 million). We hope that the sc2ts ARG will motivate
-the development of new tools, or updates to Lorax, that make interactive exploration at
-this scale feasible.
-  \item In the meantime, we have used tskit\_arg\_visualizer extensively to examine small
-sections of the ARG, such as the subgraphs around individual recombination events, and this
-has been instrumental in our analysis. All of the ARG visualisations in the paper were made
-with it: the Supplementary subgraph figures and Document S1 directly, and Figure~2 using
-initial layouts from it. The figure captions now say so.
-\end{itemize}
+We thank the reviewer for pointing us to Lorax, which has since been published
+in Bioinformatics. We agree that interactive visualisation would be an
+attractive way to make a resource of this kind more accessible, and we now cite
+Lorax alongside other tools for visualising tskit ARGs.
 
-\noindent \textbf{Reviewer \#1:} ``One element that may be worth mentioning is
+We also tested the sc2ts ARG with Lorax. At its current scale of 3.1 million
+samples, however, performance was not sufficient for useful interactive
+exploration. We have therefore not deployed the full ARG through Lorax. For
+local exploration, we have used the ``tskit\_arg\_visualizer'' tool extensively to
+inspect subgraphs around individual recombination events, and the ARG
+visualisations in the manuscript were generated using these tools.
+We have added a Methods section ``ARG visualisations'' to clarify this point.
+We hope that resources at this scale will help motivate further development of interactive
+ARG visualisation methods.
+
+\noindent \textbf{Reviewer \#1:} \textit{``One element that may be worth mentioning is
 that the original RIPPLES analysis was run on the `real' UShER tree. While the
 viridian tree is similar, it has not had anywhere near the same level of
 community inspection and manual curation. Whether that curation impacts the
 initial placements of plausible recombinants is anyone's guess, and I
 certainly don't expect the authors to take on that problem, but this
-distinction might be worth addressing briefly.''
+distinction might be worth addressing briefly.''}
 
-\begin{itemize}
-  \item Agreed.
-  \item Done: the Methods (``Comparison with UShER+RIPPLES'') now note that, unlike the public
-UShER tree used in the original RIPPLES analysis, the Viridian UShER tree has not been
-subject to extensive community inspection and manual curation, which may affect the
-initial placement of putative recombinants.
-\end{itemize}
+We agree that this is an important distinction. We now note in the Methods that
+the Viridian UShER tree used in our comparison has not been subject to the same
+extensive community inspection and manual curation as the public UShER tree
+used in the original RIPPLES analysis. This difference may affect the initial
+placement of putative recombinant sequences and should therefore be kept in
+mind when interpreting the comparison.
 
-\noindent \textbf{Reviewer \#1:} ``Is there a plan to update the ARG with newly
+\noindent \textbf{Reviewer \#1:} \textit{``Is there a plan to update the ARG with newly
 produced data? This would certainly help establish this as a `real time'
-resource.''
+resource.''}
 
-\begin{itemize}
-  \item We frame the ARG as a stable, comprehensive record of the pandemic phase of SARS-CoV-2,
-extending to the end of the available Viridian data.
-``Real time'' refers to the method (incremental, daily inference of the ARG as samples arrive),
-not a commitment to maintain the resource indefinitely.
-  \item We have made a major effort to make the resource as up to date and extensive as possible.
-The ARG now includes all of the latest Viridian data, running to 2024-06-06 with 3,114,609 samples
-(previously 2,482,157 samples to 2023-02-20).
-\end{itemize}
+As noted above, we now frame the ARG as a stable resource describing the
+pandemic phase of SARS-CoV-2, rather than as a resource that we commit to
+maintain indefinitely. The ``real-time'' aspect of sc2ts refers to its ability to
+update an ARG incrementally as new samples arrive.
+
+Nevertheless, in response to the reviewer’s concern we have made a major effort
+to bring the resource as close to the end of the available dataset as possible.
+The revised ARG now contains all available Viridian data, comprising 3,114,609
+genomes sampled through 6 June 2024, and all analyses in the manuscript have
+been updated accordingly. As descibed in the Discussion, incorporating data
+from GISAID would require substantial additional effort to address data quality
+issues and would hamper our ability to freely distribute the ARG.
 
 \medskip
-\noindent \textit{Code availability}
+\noindent \Large{\textbf{Code availability}}
 
-\noindent \textbf{Reviewer \#1:} ``The documentation is excellent. While I have
+\noindent \textbf{Reviewer \#1:} \textit{``The documentation is excellent. While I have
 not gone through everything myself, I am confident that I could reproduce the
-analyses presented in the manuscript with sufficient effort.''
+analyses presented in the manuscript with sufficient effort.''}
 
-\begin{itemize}
-  \item Thank the reviewer.
-\end{itemize}
+We thank the reviewer for this positive assessment of the documentation and reproducibility of the work.
 
 \medskip
 \hrule
