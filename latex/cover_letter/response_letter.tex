@@ -80,10 +80,11 @@ and provide practical guidance for choosing the recombination penalty for a new
 pathogen. The relevant limitations and recommendations are now stated
 explicitly in the manuscript.
 
-We chose simulation for this broader evaluation because it allows sc2ts to be
-compared directly with the true ARG while varying the features of the epidemic
-and pathogen that determine performance.
-
+We chose simulation for this broader evaluation because it provides known truth
+against which performance can be measured directly. In the forward-time
+simulations the full ARG is known, allowing end-to-end comparison under
+contrasting epidemic regimes, while the synthetic recombinant simulations
+isolate the effects of parental divergence and the recombination penalty.
 
 \noindent \textbf{Editor:} \textit{``When re-submitting your manuscript, please ensure
 that any supplementary figures and tables that are crucial to the manuscript's
@@ -263,7 +264,8 @@ early stages of a rapidly growing epidemic, relatively little sequence
 diversity may have accumulated even when the annual substitution rate is high.
 Under these conditions, recombinant parents often differ at too few sites for
 their ancestry to be distinguished confidently, and recall is correspondingly
-low. The current implementation of sc2ts does not, however, model reassortment
+low.
+The current implementation of sc2ts does not, however, model reassortment
 in segmented genomes. The HMM currently treats the genome as a single linear
 sequence and applies the same recombination penalty to a change of parent at
 any position. Reassortment would require an extension in which switches at
@@ -294,9 +296,8 @@ removed claims of accuracy where these were supported only by comparisons
 between alternative inferences.
 
 The new simulation studies also help address the underlying concern directly,
-because they allow us to quantify both where sc2ts performs well and where
-inference becomes unreliable when compared with known truth.
-
+because they allow us to quantify performance against known truth and identify
+the conditions under which sensitivity is limited.
 
 \noindent \textbf{Reviewer \#1:} \textit{``Some recommendations should be provided for
 the expected practical use cases. Much of the text suggests this will be used
@@ -391,7 +392,7 @@ Nevertheless, in response to the reviewer’s concern we have made a major effor
 to bring the resource as close to the end of the available dataset as possible.
 The revised ARG now contains all available Viridian data, comprising 3,114,609
 genomes sampled through 6 June 2024, and all analyses in the manuscript have
-been updated accordingly. As descibed in the Discussion, incorporating data
+been updated accordingly. As described in the Discussion, incorporating data
 from GISAID would require substantial additional effort to address data quality
 issues and would hamper our ability to freely distribute the ARG.
 
@@ -603,7 +604,7 @@ should be opening, or vice versa), so I'd recommend the authors do a careful
 proofread for this.''}
 
 Thank you for noticing this. We have carefully proofread the manuscript and
-corrected the quotation-mark formatting throughout
+corrected the quotation-mark formatting throughout.
 
 \closing{Sincerely,}
 
