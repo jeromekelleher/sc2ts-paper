@@ -26,8 +26,9 @@ for future pathogen genomic datasets.
 First, we have rebuilt the ARG using all of the latest Viridian data, extending
 the resource to 3,114,609 genomes sampled through 6 June 2024, and have updated
 all analyses accordingly. We also made particular efforts to improve the
-reconstruction of the early histories of Delta and Omicron. Second, addressing
-the editors' and Reviewer \#1's request to establish the applicability and
+reconstruction of the early histories of Delta and Omicron. Second,
+addressing the editor’s priority and related comments from both reviewers
+to establish the applicability and
 limitations of sc2ts beyond SARS-CoV-2, we have generalised the method so that
 it is no longer specific to the SARS-CoV-2 reference genome, and added two
 complementary simulation studies. These quantify recombinant detection under
@@ -191,16 +192,18 @@ nuanced.''}
 We agree with both aspects of this comment and have added analyses to address
 them directly.
 
-First, we now test whether the inferred parents of recombinant events
-co-circulate in time and space. For the 224 QC-passing recombinants for which
-both inferred parents are sampled genomes, the parents were sampled a median of
-25 days apart and 60\% were sampled in the same country. Because the dataset is
-strongly geographically structured, we compared these values with a null in
-which parents were exchanged between recombinants of similar date, preserving
-the sampling composition through time. Under this null, parents were sampled a
-median of 41 days apart and 40\% were from the same country; both differences
-were significant in 1,000 permutations ($p < 0.001$). We have added this analysis
-to the Results, Methods and Supplementary Information.
+First, we now test whether the inferred parents of recombinant events are
+closer in time and space than expected by chance. For the 224 QC-passing
+recombinants for which both inferred parents are sampled genomes, the parents
+were sampled a median of 25 days apart and 60\% were sampled in the same
+country. Because the dataset is strongly geographically structured, we compared
+these values with a null in which parents were exchanged between recombinants
+of similar date, preserving the sampling composition through time. Under this
+null, parents were sampled a median of 41 days apart and 40\% were from the same
+country; both differences were significant in 1,000 permutations ($p < 0.001$).
+The inferred parents are therefore closer in time and space than expected by
+chance, consistent with co-circulation of the parental lineages. We have added
+this analysis to the Results, Methods and Supplementary Information.
 
 Second, we agree that the observed association between lineage diversity and
 inferred recombination is expected in part from the inference procedure itself.
@@ -229,14 +232,14 @@ Our existing QC measure already reduces this problem by grouping closely spaced
 supporting sites into a single locus, so that clustered substitutions do not
 contribute multiple independent units of support. We additionally checked all
 single-breakpoint recombination events against the 19 highly recurrent MNS
-catalogued by De Maio et al. Recurrent MNS can indeed produce apparent
-recombinant matches, but these events are largely removed by the existing QC
-procedure. Among the 647 QC-passing recombination events, discounting recurrent
-MNS would cause only seven additional events to fall below the QC threshold,
-whereas all 42 events involving the particularly recurrent MNS at positions
-27875--27883 fail QC. We have added these results to the manuscript and now
-cite De Maio et al. in the discussion of this QC measure.
-
+catalogued by De Maio et al. Recurrent MNS can contribute apparent support for
+recombination, but the QC procedure largely prevents them from being sufficient
+to support a recombinant call. Among the 647 QC-passing recombination events,
+discounting recurrent MNS would cause only seven additional events to fall
+below the QC threshold, whereas all 42 events involving the particularly
+recurrent MNS at positions 27875--27883 fail QC. We have added these results to
+the manuscript and now cite De Maio et al. in the discussion of this QC
+measure.
 
 \noindent \textbf{Reviewer \#1:} \textit{``The SARS-CoV-2 pandemic has largely come and
 gone and global sequencing efforts are in free-fall (note that this resource
@@ -469,18 +472,22 @@ recombination penalty k, while also testing the effects of divergence between
 the true parents and their closest sampled relatives.
 
 Second, we ran sc2ts on forward-time simulations of complete epidemics under
-contrasting coronavirus-like and influenza-like parameter regimes, varying
-features including mutation rate, epidemic size, generation time and sampling
-density. Because the full ARG is known in these simulations, we can evaluate
-recombinant detection, breakpoint inference and overall ARG reconstruction
-directly against the truth.
+contrasting coronavirus-like and influenza-like parameter regimes, which differ
+in genome length, mutation rate, generation time and epidemic size; for each
+regime we also considered two sampling densities and several values of $k$.
+Because the full ARG is known in these simulations, we can evaluate recombinant
+detection, breakpoint inference and overall ARG reconstruction directly against
+the truth. After restricting the comparison to ancestral relationships that can
+be resolved from the sequences, 88--94\% of true ancestral nodes are recovered,
+and 89--96\% of inferred ancestral nodes correspond to true ancestors.
 
-Together, these studies identify the principal regime in which inference
-becomes unreliable: when little genetic diversity has accumulated between
-co-circulating lineages, recombinant ancestry may leave too little sequence
-signal to be detected. In contrast, recombinant calls are generally reliable
-once sufficient diversity is present. We now describe these limitations
-explicitly in the Results, Discussion and Supplementary Information.
+Together, these studies identify low accumulated diversity between
+co-circulating lineages as the principal limitation on recombination detection.
+In the forward-time simulations, recombinant calls at $k$ = 4 have high
+precision, but many genuine events are missed when parental lineages differ at
+only a few sites. We now describe this limitation, and its implications for
+applying sc2ts to other pathogens, explicitly in the Results, Discussion and
+Supplementary Information.
 
 \noindent \textbf{Reviewer \#2 (1b):} \textit{``Second (although following from 1a
 above), it seems like much of the inference done by sc2ts relies on
