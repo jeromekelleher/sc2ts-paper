@@ -2,11 +2,15 @@
 # and most rules require either the sc2ts or pangolin environments.
 # The base conda environment that snakemake is run from requires
 # snakemake, tszip, pandas and tqdm in order to run the "run"
-# rules (which cannot be used with "conda")
+# rules (which cannot be used with "conda"). Internet access is 
+# required to install conda envs and software, which can be done via
 #
-# It's not entirely automated in terms of parallelism. Running pangolin
-# needs a lot of cores, so in practise you need to do something like this
-# first to get the bit needing parallelism (and lots of memory) done
+# snakemake --sdm conda --conda-create-envs-only --cores 1
+# snakemake --sdm conda build_3seq --cores 1
+#
+# The main tasks are not entirely automated in terms of parallelism.
+# Running pangolin needs a lot of cores, so in practise you need to do something
+# like this first to get the bit needing parallelism (and lots of memory) done
 #
 # snakemake sc2ts_viridian_v2.3.trees.tsz --cores=40
 # 
@@ -683,14 +687,17 @@ rule usher_sc2ts_comparison:
 ################
 rule gitlab_3seq:
     output: 
-        directory("3seq")
+        "3seq/.cloned"
     shell: 
         """
         git clone https://gitlab.com/lamhm/3seq.git;
         cd 3seq && git checkout e45ee3b4365d2e9d1bcad62b47ce1a62ea6e21ba
+        touch 3seq/.cloned
         """
 
 rule build_3seq:
+    input:
+        "3seq/.cloned"
     output: 
         "3seq/3seq",
     shell: 
