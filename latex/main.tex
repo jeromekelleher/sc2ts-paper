@@ -599,12 +599,16 @@ including multiple simultaneous nucleotide substitutions
 suggested to cause false positive recombinants~\cite{DeMaio2024}.
 \edref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
-for the 1319 inferred single-breakpoint recombination events.
-The 672 recombinants having fewer than 4 net loci supporting each parent
+% In v2.3 ARG
+for the 1320 inferred single-breakpoint recombination events.
+% https://github.com/jeromekelleher/sc2ts-paper/issues/1274
+The 673 recombinants having fewer than 4 net loci supporting each parent
 are highly enriched for samples sequenced using the AmpliSeq V1 protocol
+(60\% of the QC-failing recombinants
 % https://github.com/jeromekelleher/sc2ts-paper/issues/808
-(60\% of the recombinants despite making up 2\% of the Viridian dataset), and
-86 (13\%) are associated with 6-base deletion in the Delta lineage,
+despite making up 2.4\% of the Viridian dataset), and
+% https://github.com/jeromekelleher/sc2ts-paper/issues/1274
+84 (12.5\%) are associated with 6-base deletion in the Delta lineage,
 known to be affected by amplicon dropout~\cite{Sanderson2021}.
 The 647 remaining recombination events that pass this QC filter
 contain those identified by Jackson et al.\ (\supref{sec:jackson_recombs})
