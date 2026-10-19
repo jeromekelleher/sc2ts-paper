@@ -1640,21 +1640,20 @@ creates additional nodes which are available for recombinant rematching.
 
 % Data from
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v2_2024-06-06_rewire-recombinants-report.ipynb
-% TODO v2.3: the committed report (2026-09-30) predates the v2.3 run; regenerate it.
 Using recombinant-rematching,
-98 recombinants were identified as being more parsimoniously
+97 recombinants were identified as being more parsimoniously
 explained by matching to existing nodes in the ARG (inserted by
 subsequent parsimony improving heuristics) and 30 by long branch
 splitting.
-We then updated the ARG to remove these 128 artefactual
+We then updated the ARG to remove these 127 artefactual
 recombinants by ``rewiring'' the recombination node to the
 more parsimonious non-recombinant solution. This
 resulted in 30 additional nodes and reduced
-the number of trees along the genome from 556 to 509.
+the number of trees along the genome from 556 to 510.
 Because each recombination event contributes $k=4$ to the HMM cost,
 a non-recombinant solution requiring up to 3 additional mutations
 is more parsimonious under our model, and so rewiring
-increased the total number of mutations in the ARG by 334.
+increased the total number of mutations in the ARG by 331.
 
 % and requires a lot of off-topic explanation.
 % It is also noteworthy that the origin of the BA.5
