@@ -27,17 +27,15 @@ HEADER = [
 
 CAPTION = r"""
 Sc2ts HMM results for Pango X lineages absent from the ARG.
-Lineages are grouped with their sublineages using the updated (v1.29) Pango
+Lineages are grouped with their sublineages using the v1.29 Pango
 assignments in the Viridian metadata, and are included if no sample in the ARG
 is assigned to the lineage or any of its sublineages.
-For each lineage we show the number of samples in the dataset within the
-inference date range; the number of these that passed sample quality control
+For each lineage we show the number of samples in the dataset;
+the number of these that passed sample quality control
 and were matched by the HMM during primary inference; the number of
 breakpoints and the HMM cost of these matches; and the most common combination
 of parent lineages in the matches (with the number of samples, if not all).
 Ranges are shown where samples differ.
-All matched samples had HMM costs above the threshold of 7 required for
-inclusion in the ARG.
 """
 
 
