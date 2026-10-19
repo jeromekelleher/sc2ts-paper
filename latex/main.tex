@@ -945,7 +945,7 @@ parameter to $p=4$ (rather than the more lenient default of 3),
 to match the equivalent $k=4$ setting used in sc2ts (Methods).
 Under this setting,
 RIPPLES reported 1498 recombination events of which
-781 were supported by 3SEQ (52\%; Methods).
+782 were supported by 3SEQ (52\%; Methods).
 % JK: There's no point in making a meal of the 3SEQ validation rate,
 % This is notably lower than the equivalent
 % concordance rate of 57\% among the 855 recombination events reported by sc2ts.
@@ -958,18 +958,18 @@ correspond to a recombination event in the sc2ts ARG can partly
 be explained by the strict time ordering imposed by sc2ts
 (parents must precede recombinant offspring;
 \supref{sec:detailed_ripples}).
-The 643 events detected by sc2ts and not by UShER+RIPPLES
+The 644 events detected by sc2ts and not by UShER+RIPPLES
  include some of the well characterised Pango X lineages.
 \siref{tab:ripples_x_lineages} shows the events detected
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages, showing that at $p=4$
-only 15 of the 42 Type I events in \siref{tab:pango_x_lineages}
+only 13 of the 39 Type I events in \siref{tab:pango_x_lineages}
 have an equivalent RIPPLES recombination event.
 We therefore reran RIPPLES with $p=3$, resulting in 5365 events overall
 and increasing the intersection of events with sc2ts to 890
 (\siref{fig:ripples_sc2ts_events}).
-At this more lenient threshold, 23 of the 42 Type I events
-and 4 of the 10 Type II events
+At this more lenient threshold, 20 of the 39 Type I events
+and 7 of the 13 Type II events
 have an equivalent RIPPLES recombination event
 (\supref{sec:detailed_ripples}).
 Thus, even at the more lenient threshold ($p=3$) UShER+RIPPLES detects
@@ -3868,7 +3868,7 @@ the Methods. We begin by describing the overall composition of events output
 by RIPPLES at the two parameter values used.
 
 At $p=4$, RIPPLES returned a total of 1498 events, and
-781 are supported by 3SEQ (52\%). 1327 events
+782 are supported by 3SEQ (52\%). 1327 events
 (88.6\%) were in close clade agreement with the sc2ts ARG,
 and 685 (46\%) corresponded to recombination events in the ARG.
 Several RIPPLES events can correspond to the same recombination event
@@ -3882,7 +3882,7 @@ one or more parents were \emph{not older} than the
 recombinant sequence based on metadata,
 and therefore impossible under the strict time ordering
 enforced by sc2ts.
-This is also the case, however, for 279 (41\%) of the 685 events
+This is also the case, however, for 280 (41\%) of the 685 events
 that do correspond to a recombination event in the ARG,
 so time ordering is only a partial explanation.
 Of the 306 remaining events, 264 have matching clades,
@@ -3892,7 +3892,7 @@ to the finer details of the
 differences in tree building approaches between UShER and sc2ts.
 
 At $p=3$, RIPPLES returned a total of 5365 events, and
-1961 are supported by 3SEQ (37\%). 4856 events
+1954 are supported by 3SEQ (36\%). 4855 events
 (90.5\%) were in close clade agreement with the sc2ts ARG,
 and 909 (17\%) corresponded to recombination events in the ARG,
 representing 890 distinct sc2ts events
@@ -3918,12 +3918,12 @@ recombination events associated with Pango X lineages detected by RIPPLES
 at $p=3$ and their relationship with the sc2ts ARG.
 Of the 64 events, 31 are equivalent to a recombination event in the ARG:
 the clades agree and the sc2ts node is within one edge of a recombination node.
-These cover 23 of the 42 Type I events (X lineages unequivocally associated with
+These cover 20 of the 39 Type I events (X lineages unequivocally associated with
 a recombination node in the sc2ts ARG) in \siref{tab:pango_x_lineages}
-(15, at $p=4$) and
-4 of the 10 Type II events
+(13, at $p=4$) and
+7 of the 13 Type II events
 (recombination nodes with more complex association with X lineages):
-XAC, XB, XC and XE/XH (all four also at $p=4$).
+XAC, XB, XBV, XC, XCR, XE/XH and XW (all but XW also at $p=4$).
 The remaining equivalent events are at recombination nodes in the ARG
 that are not among the named events in \siref{tab:pango_x_lineages}.
 In a further 11 events the clades agree, but the sc2ts node is a more distant
