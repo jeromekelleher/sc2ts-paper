@@ -143,7 +143,7 @@ and simple tree representations are therefore
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies
 as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
-We infer an ARG for 3.11 million SARS-CoV-2 genomes,
+We infer an ARG for 3.13 million SARS-CoV-2 genomes,
 which leverages the widely used tskit software ecosystem to support further analyses and
 visualisation.
 This rich resource clarifies
@@ -289,7 +289,7 @@ in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
 and artifacts~\cite{Hunt2026},
-we present an ARG with 3.11 million high-quality genomes.
+we present an ARG with 3.13 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
@@ -388,23 +388,23 @@ See Methods for details.
 
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
-Using sc2ts, we built an ARG from 3,114,609 samples
+Using sc2ts, we built an ARG from 3,128,941 samples
 from the Viridian dataset~\cite{Hunt2026},
 collected between 2020-01-01 and 2024-06-06.
 Inference took 19 days on a server with
-% TODO update the hardware description for the v2.2 run (config: 192 threads,
-% 800 GB memory limit; peak memory 841 GiB)
+% TODO update the hardware description for the v2.3 run (config: 192 threads,
+% 800 GB memory limit; peak memory 843 GiB)
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
 ($\sim$8 CPU years;
 Supplementary Figs.~\numref{fig:inference_resources} and~\numref{fig:samples_per_day}).
 After post-processing, the ARG contains
-3,409,262 nodes,  % Note the estimated dates ?
-3,410,592 edges, and
-2,755,961 mutations
+3,423,603 nodes,  % Note the estimated dates ?
+3,424,934 edges, and
+2,756,055 mutations
 at 29,640 sites
 and is stored in a 38 MiB file.
-Of the nodes, 1323 represent recombination events,
-resulting in 510 distinct trees along the genome
+Of the nodes, 1324 represent recombination events,
+resulting in 511 distinct trees along the genome
 (some events occurred at the same breakpoints).
 Using the tskit Python API,
 % NOTE: numbers from Yan's laptop are:
@@ -413,7 +413,7 @@ Using the tskit Python API,
 the ARG can be loaded into memory in half a second,
 and the vectorised representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
-For example, a tabular summary of the 3.41 million nodes
+For example, a tabular summary of the 3.42 million nodes
 including sample IDs and Pango assignments
 can be derived in less than half a second.
 The ARG can therefore be easily accessed using familiar tools
@@ -451,12 +451,12 @@ against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
 finding close agreement (\siref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
-by computing Pango assignments for all 3.41 million nodes in the ARG
+by computing Pango assignments for all 3.42 million nodes in the ARG
 using Pangolin~\cite{OToole2021assignment} (Methods).
-Only a small minority of the exported sample alignments (28,817; 0.93\%) disagreed
+Only a small minority of the exported sample alignments (28,823; 0.92\%) disagreed
 % NOTE Sally pointed out as potentially needing clarification.
 with the source consensus sequences in terms of Pango lineage assignment
-(lower than the 2.39\% disagreement between pangolin-data
+(lower than the 2.38\% disagreement between pangolin-data
 versions 1.21 and 1.29 in the source Viridian metadata).
 A majority of the Pango lineages (2037 of 3032)
 % SO: Not "these" as that seemed to refer to the conflicting nodes.
@@ -551,7 +551,7 @@ sc2ts provides a systematic framework for evaluating these origins.
 Of the 73 Pango X lineages present in the ARG
 (\supref{sec:supplement_x_pango_lineages};
 \siref{tab:pango_x_lineages}),
-42 map precisely to
+39 map precisely to
 recombination nodes in the ARG that are ancestral to all samples assigned to
 the lineage, indicating fully concordant recombinant origins.
 For these
@@ -572,7 +572,7 @@ here but were nonetheless detected by the HMM
 In contrast, the ARG indicates that multiple named recombinant lineages descend
 from shared ancestral recombination events rather than representing independent
 origins.
-Specifically, 19 Pango X lineages are close descendants of 11 distinct
+Specifically, 22 Pango X lineages are close descendants of 14 distinct
 recombination events, with up to 6 lineages descending from a
 single recombination event (XQ; \figref{fig:subgraphs}B).
 The remaining designated recombinant lineages show limited or ambiguous support for
@@ -630,7 +630,7 @@ In contrast, all 42 events involving the MNS at positions 27875--27883 fail QC.
 We sought corroboration of the recombination events in the sc2ts ARG
 by running 3SEQ~\cite{Lam2018improved}
 on the putative recombinant sequence trios (Methods).
-Of the 1319 recombination events identified by sc2ts,
+Of the 1320 recombination events identified by sc2ts,
 3SEQ supported 66\% of them,
 rising to 96\% among the 647 recombinants that passed our QC filter.
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb}
@@ -998,7 +998,7 @@ on the frequency of detectable recombination events in SARS-CoV-2.
 
 \section*{Discussion}
 There are two primary contributions of this work. The first is an
-ARG for 3.11 million SARS-CoV-2 genomes.
+ARG for 3.13 million SARS-CoV-2 genomes.
 Through multiple corroborative comparisons with results from the
 literature, we have shown that this ARG synthesises
 the evolutionary features of genetic inheritance, point mutations,
@@ -1711,7 +1711,7 @@ heuristics in sc2ts until there were no further reductions in
 the numbers of mutations.
 
 % Shifting breakpoints is a minor point, not worth mentioning?
-We computed Pango assignments for all 3,409,262 nodes in the ARG by first
+We computed Pango assignments for all 3,423,603 nodes in the ARG by first
 exporting their aligned sequences to a 95GiB FASTA file and
 then running pangolin (version 4.3.1; pangolin-data version 1.29).
 Note that this version of pangolin uses UShER placement
@@ -1817,7 +1817,7 @@ For each genomic region identified by the HMM as having a single parent,
 we calculated the ``net number of supporting loci''
 by counting the number of loci in the region
 that supported the suggested parent minus the number that did not support it.
-Finally, for the 1319 recombination events in the ARG having a single breakpoint,
+Finally, for the 1320 recombination events in the ARG having a single breakpoint,
 we calculated the net number of supporting loci
 on the left and right sides of each breakpoint, and
 used this to plot these events in \edref{fig:recombinant_qc}.
@@ -2844,7 +2844,7 @@ that can be easily performed using the combination of tskit and VCF Zarr.
 The entire analysis is performed in a short Jupyter
 notebook~\cite{kluyver2016jupyter},
 with the core calculation requiring about 30 lines of Python code.
-Retrieving data from the base alignments and ARGs for 3.11 million samples
+Retrieving data from the base alignments and ARGs for 3.13 million samples
 at the same time over all 27,963 sites took a little under 5 minutes,
 with a peak memory usage of about 4.5GiB of RAM
 on a standard laptop.
@@ -2866,14 +2866,14 @@ with the maximum number of descendant samples and the earliest time (if there
 is a tie).
 
 Of the 3032 distinct Pango lineages in the ARG, 2037 of these (comprising
-898542 samples) match perfectly, with unique origination events in the ARG
+912188 samples) match perfectly, with unique origination events in the ARG
 where all samples assigned a given lineage descend from the first node assigned
-that lineage. A further 420 lineages (730289 samples) match perfectly when we
+that lineage. A further 420 lineages (730631 samples) match perfectly when we
 count the descendants of the parent of the first node (accounting for
 polytomies in which multiple originating nodes for a given lineage are
-siblings). We then have 541 lineages (522442 samples) where the difference in
+siblings). We then have 541 lineages (522785 samples) where the difference in
 the number descendants of the first node's parent is $<$ 100. The remaining 34
-lineages (963336 samples) are dominated by a few large lineages such as AY.4
+lineages (963337 samples) are dominated by a few large lineages such as AY.4
 (552697 samples) and BA.1.1 (177608 samples) which have multiple non-sibling
 origins within the ARG.
 
@@ -3177,10 +3177,10 @@ XDV, XAY and XBC have no samples assigned to the lineage itself in the ARG,
 only to sublineages (XDV.1, XAY.2 and XBC.1.2.1),
 and so we name their origin nodes after the Pango X lineage.
 A few origin nodes were omitted from the table,
-corresponding to 33 samples in total.
+corresponding to 36 samples in total.
 The table is restricted to top-level Pango X lineages,
-and so we omit the 12 origin nodes of XBB sublineages
-(XBB.1, XBB.1.5, XBB.1.5.16, XBB.1.16.4 and XBB.2.3; 30 samples).
+and so we omit the 13 origin nodes of XBB sublineages
+(XBB.1, XBB.1.5, XBB.1.5.16, XBB.1.16.4 and XBB.2.3; 33 samples).
 XM has 3 separate origins, 2 singletons and one dominant node
 with 31 samples. We include the dominant node in
 \siref{tab:pango_x_lineages} and omit the singletons. See
@@ -3195,7 +3195,7 @@ recombination nodes (denoted XDP/XEB1 and XDP/XEB2).
 
 \siref{tab:pango_x_lineages} summarises
 the 73 Pango X lineages present in the ARG.
-For 42 Pango X lineages, the oldest node
+For 39 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node and
 that node is the ancestor of all samples
 assigned to that (or a descendant) Pango lineage.
@@ -3203,7 +3203,7 @@ We consider these to be fully concordant (Type I) events,
 where the ARG reflects the
 hierarchical structure of Pango designation.
 
-There are ten partially concordant events (Type II)
+There are 13 partially concordant events (Type II)
 in \siref{tab:pango_x_lineages}, which
 are recombination events closely associated with Pango X lineages
 that do not meet the strict origination criteria for Type I.
@@ -3212,13 +3212,15 @@ Pango X lineage (XE/XH, XM/XAL and XAP/XZ),
 to multiple origins of the same lineage (XAC),
 and two distinct recombination events each ancestral to both XDP and XEB.
 The XB origin node lies two edges below a recombination node
-with three parents.
+with three parents,
+and the XBV, XW and XCR origin nodes are samples one edge below
+a recombination node that carries no mutations.
 Type III events are Pango origin nodes in the ARG that are
 derived from Type I or Type II recombination events.
 There is significant
 nesting among the Pango X lineage origin nodes within the ARG:
-25 origin nodes for 19 Pango X lineages descend from
-11 recombination events.
+28 origin nodes for 22 Pango X lineages descend from
+14 recombination events.
 The largest cluster is associated with XQ
 (\figref{fig:subgraphs}B). Although XQ is
 directly associated with a recombination event in the ARG,
@@ -4326,7 +4328,7 @@ D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
 
 \begin{table}
 \caption{Corroboration of sc2ts recombinants by 3SEQ, CovRecomb and rebar over
-all 1319 recombinants and the 647 passing and 672 failing QC.
+all 1320 recombinants and the 647 passing and 673 failing QC.
 }
 \label{tab:recombinant_validation}
 \centering
@@ -4334,8 +4336,8 @@ all 1319 recombinants and the 647 passing and 672 failing QC.
 \toprule
 Method & Total    & QC Pass & QC Fail \\
 \midrule
-3SEQ        & 876 & 619     & 257 \\
-CovRecomb   & 233 & 213     & 20 \\
+3SEQ        & 877 & 619     & 258 \\
+CovRecomb   & 232 & 212     & 20 \\
 rebar       & 417 & 396     & 21 \\
 \bottomrule
 \end{tabular}
