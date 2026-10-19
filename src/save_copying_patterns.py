@@ -86,10 +86,10 @@ def main_quadrants():
     ####
     rec = pd.read_csv(data_dir / "recombinants.csv", index_col=0)
     for u, lab in tqdm([
-        (366701, "RE_node-QCpass-366701"),  # Q1
-        (420981, "RE_node-QCfail-420981"),  # Q2
-        (1876313, "RE_node-QCfail-1876313"),  # Q3
-        (374005, "RE_node-QCfail-374005"),  # Q4
+        (360603, "RE_node-QCpass-360603"),  # Q1
+        (420996, "RE_node-QCfail-420996"),  # Q2
+        (1876328, "RE_node-QCfail-1876328"),  # Q3
+        (374020, "RE_node-QCfail-374020"),  # Q4
     ]):
         row = rec.loc[u]
         save_copying_table_image(
@@ -174,8 +174,8 @@ def main():
 
     main_pangoX(args.pango)
     if args.pango is None:
-        main_quadrants()
         main_all()
+        main_quadrants()
 
 if __name__ == "__main__":
     main()
