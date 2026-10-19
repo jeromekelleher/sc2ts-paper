@@ -3983,16 +3983,16 @@ way to rewire the final ARG.  It is therefore likely to be spurious.
 \includegraphics[width=\linewidth]{inference-resources}
 \caption{
 Computational resources used during the ARG inference process.
+Days from 2020-05-01 onwards are shown.
 (A) The amount of time to process a daily batch of samples
 and the number of samples processed per day.
-(B) Mean time to process a sample is less than 5s except
-when the number of samples is small.
+(B) Mean time to process a sample, and the mean HMM cost per sample.
+Mean time per sample is less than 5s except on a few days,
+almost all of which have fewer than 60 samples.
 (C) RAM usage is the most difficult resource to manage, and depends
-on the sample composition. The sharp drop in 2022-01 corresponds to the
+on the sample composition. The sharp drop in late December 2021 corresponds to the
 sweep in which Omicron BA.1 replaced Delta and there was very little sample
-diversity. The drop in RAM usage around 2022-02 corresponds to a change
-in configuration where we reduced the number of HMM threads from 128 to 80
-to better fit into available memory.
+diversity.
 }
 \label{fig:inference_resources}
 \end{figure}
@@ -4013,8 +4013,12 @@ the fraction of samples added to the ARG
 mirror each other.
 The fraction of exact matches is a function of
 both sampling depth and composition of the global population.
-(C) The mean HMM cost per sample is a useful metric.
-(D) Proportion of samples classified by (simplified) Scorpio designation.
+(C) The fraction of processed samples excluded from the ARG,
+and the mean HMM cost per sample.
+(D) Proportion of processed samples classified by Scorpio designation
+(``.'' denotes no designation),
+showing designations that reach at least 5\% on some day.
+Days from 2020-05-01 onwards are shown.
 }\label{fig:samples_per_day}
 \end{figure}
 
