@@ -15,7 +15,7 @@ data_dir = Path(__file__).resolve().parent.parent / "data"
 png_dir = Path(__file__).resolve().parent.parent / "figures/static"
 
 
-ts = tszip.load(data_dir / "sc2ts_viridian_v2.2.trees.tsz")
+ts = tszip.load(data_dir / "sc2ts_viridian_v2.3.trees.tsz")
 
 def pangoX_RE_node_labels():
     """
