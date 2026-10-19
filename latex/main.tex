@@ -2203,16 +2203,15 @@ We use the data from the Pango designation community
 (\url{https://github.com/cov-lineages/pango-designation/})
 as the ``truth'' when comparing performance in identifying
 parent Pango lineages and breakpoints between the methods.
-We focus on the 42 Type I recombination events
+We focus on the 39 Type I recombination events
 (\siref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
 Seven of these (XAY, XAZ, XBC, XCH, XCT, XDD and XDV) are designated
 as having multiple breakpoints and are excluded, and
-no breakpoint interval is given in the designation for a further three
-(XBS, XBV and XCE), which are included only in the comparison of parent lineages.
+no breakpoint interval is given in the designation for a further two
+(XBS and XCE), which are included only in the comparison of parent lineages.
 The published RecombinHunt and CovRecomb results are based on data
 collected up to early 2023, and so are not available for
-the 16 Type I lineages from XCC onwards
-(XBV is present only in the RecombinHunt Nextstrain results).
+the 15 Type I lineages from XCC onwards.
 While this is certainly biased in favour of sc2ts (i.e., by
 ignoring likely sc2ts false negatives such as XB), it helps to
 understand the probable accuracy of sc2ts on the true positives.
@@ -2745,7 +2744,7 @@ between recombinants of similar date (1,000 permutations; Methods).
 \caption{
 Concordance among methods in characterizing Pango X lineages.
 These comparisons focus on the Pango X lineages associated with
-those of the 42 Type I recombination events (\siref{tab:pango_x_lineages})
+those of the 39 Type I recombination events (\siref{tab:pango_x_lineages})
 which have a single breakpoint according to the Pango designation.
 For each method, we calculated the number of Pango X lineages
 which have inferred parent Pango lineages and breakpoint intervals
@@ -2765,9 +2764,9 @@ those proposed by the community are shown (median and range).
 \cmidrule(lr){2-2} \cmidrule(lr){3-4}
 Method & Concordant (\%) & Concordant (\%) & Distance (bases) \\
 \midrule
-Sc2ts & 27 / 35 (77.1) & 31 / 32 (96.9) & 315.0 (315, 315)\\
-RecombinHunt-GISAID & 15 / 19 (78.9) & 11 / 19 (57.9) & 1202.0 (2, 7955)\\
-RecombinHunt-Nextstrain & 20 / 23 (87.0) & 15 / 22 (68.2) & 2785.0 (559, 7955)\\
+Sc2ts & 25 / 32 (78.1) & 29 / 30 (96.7) & 315.0 (315, 315)\\
+RecombinHunt-GISAID & 14 / 18 (77.8) & 10 / 18 (55.6) & 1202.0 (2, 7955)\\
+RecombinHunt-Nextstrain & 18 / 21 (85.7) & 14 / 21 (66.7) & 2785.0 (559, 7955)\\
 CovRecomb & 8 / 11 (72.7) & 6 / 11 (54.5) & 2059.0 (217, 13208)\\
 \bottomrule
 \end{tabular}
