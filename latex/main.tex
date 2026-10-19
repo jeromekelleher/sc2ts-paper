@@ -2827,14 +2827,12 @@ In doing so, we impute the missing and ambiguous data for these samples.
 We evaluate the imputation performance of sc2ts and UShER by comparing their
 outputs on the Viridian alignments.
 
-% TODO v2.3: numbers in this paragraph are from the v2.2 intersection ARGs;
-% rerun example_data_processing.ipynb on usher_viridian_inter_v2.3.
-The total aligned dataset for 3,107,392 samples and 27,963 sites
+The total aligned dataset for 3,121,706 samples and 27,963 sites
 in the sc2ts and UShER intersection ARGs represents
-80.92 GiB of nucleotide calls.
-Of the 345,666,540 missing data calls (Ns) in the alignments,
-sc2ts and UShER disagreed in their imputed values for only 265,081 (0.077\%).
-Additionally, 1,508,971 calls made use of the IUPAC uncertainty codes.
+81.30 GiB of nucleotide calls.
+Of the 346,234,155 missing data calls (Ns) in the alignments,
+sc2ts and UShER disagreed in their imputed values for only 265,259 (0.077\%).
+Additionally, 1,512,443 calls made use of the IUPAC uncertainty codes.
 Of these sc2ts imputed 566 (0.04\%) incorrectly
 (i.e., with a base that is not compatible with the ambiguity code).
 UShER imputed only 13 calls (0.0009\%) from this set incorrectly,
