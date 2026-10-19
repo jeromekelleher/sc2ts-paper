@@ -143,7 +143,7 @@ and simple tree representations are therefore
 incomplete and potentially misleading.
 We present sc2ts, a method to infer reticulate genealogies
 as an Ancestral Recombination Graph (ARG) in real time at pandemic scale.
-We infer an ARG for 3.11 million SARS-CoV-2 genomes,
+We infer an ARG for 3.13 million SARS-CoV-2 genomes,
 which leverages the widely used tskit software ecosystem to support further analyses and
 visualisation.
 This rich resource clarifies
@@ -289,7 +289,7 @@ in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
 and artifacts~\cite{Hunt2026},
-we present an ARG with 3.11 million high-quality genomes.
+we present an ARG with 3.13 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
 from the same dataset as well as the Pango nomenclature system~\cite{Rambaut2020}.
@@ -388,23 +388,23 @@ See Methods for details.
 
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
-Using sc2ts, we built an ARG from 3,114,609 samples
+Using sc2ts, we built an ARG from 3,128,941 samples
 from the Viridian dataset~\cite{Hunt2026},
 collected between 2020-01-01 and 2024-06-06.
 Inference took 19 days on a server with
-% TODO update the hardware description for the v2.2 run (config: 192 threads,
-% 800 GB memory limit; peak memory 841 GiB)
+% TODO update the hardware description for the v2.3 run (config: 192 threads,
+% 800 GB memory limit; peak memory 843 GiB)
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
 ($\sim$8 CPU years;
 Supplementary Figs.~\numref{fig:inference_resources} and~\numref{fig:samples_per_day}).
 After post-processing, the ARG contains
-3,409,262 nodes,  % Note the estimated dates ?
-3,410,592 edges, and
-2,755,961 mutations
+3,423,603 nodes,  % Note the estimated dates ?
+3,424,934 edges, and
+2,756,055 mutations
 at 29,640 sites
 and is stored in a 38 MiB file.
-Of the nodes, 1323 represent recombination events,
-resulting in 510 distinct trees along the genome
+Of the nodes, 1324 represent recombination events,
+resulting in 511 distinct trees along the genome
 (some events occurred at the same breakpoints).
 Using the tskit Python API,
 % NOTE: numbers from Yan's laptop are:
@@ -413,7 +413,7 @@ Using the tskit Python API,
 the ARG can be loaded into memory in half a second,
 and the vectorised representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
-For example, a tabular summary of the 3.41 million nodes
+For example, a tabular summary of the 3.42 million nodes
 including sample IDs and Pango assignments
 can be derived in less than half a second.
 The ARG can therefore be easily accessed using familiar tools
@@ -451,7 +451,7 @@ against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
 finding close agreement (\siref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
-by computing Pango assignments for all 3.41 million nodes in the ARG
+by computing Pango assignments for all 3.42 million nodes in the ARG
 using Pangolin~\cite{OToole2021assignment} (Methods).
 Only a small minority of the exported sample alignments (28,817; 0.93\%) disagreed
 % NOTE Sally pointed out as potentially needing clarification.
@@ -998,7 +998,7 @@ on the frequency of detectable recombination events in SARS-CoV-2.
 
 \section*{Discussion}
 There are two primary contributions of this work. The first is an
-ARG for 3.11 million SARS-CoV-2 genomes.
+ARG for 3.13 million SARS-CoV-2 genomes.
 Through multiple corroborative comparisons with results from the
 literature, we have shown that this ARG synthesises
 the evolutionary features of genetic inheritance, point mutations,
@@ -1711,7 +1711,7 @@ heuristics in sc2ts until there were no further reductions in
 the numbers of mutations.
 
 % Shifting breakpoints is a minor point, not worth mentioning?
-We computed Pango assignments for all 3,409,262 nodes in the ARG by first
+We computed Pango assignments for all 3,423,603 nodes in the ARG by first
 exporting their aligned sequences to a 95GiB FASTA file and
 then running pangolin (version 4.3.1; pangolin-data version 1.29).
 Note that this version of pangolin uses UShER placement
@@ -2844,7 +2844,7 @@ that can be easily performed using the combination of tskit and VCF Zarr.
 The entire analysis is performed in a short Jupyter
 notebook~\cite{kluyver2016jupyter},
 with the core calculation requiring about 30 lines of Python code.
-Retrieving data from the base alignments and ARGs for 3.11 million samples
+Retrieving data from the base alignments and ARGs for 3.13 million samples
 at the same time over all 27,963 sites took a little under 5 minutes,
 with a peak memory usage of about 4.5GiB of RAM
 on a standard laptop.
