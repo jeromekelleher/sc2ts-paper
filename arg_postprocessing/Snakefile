@@ -27,8 +27,11 @@
 # pango_x_absent_in_arg.csv -> sc2ts_viridian_v2.3_absent_pango_x_matches.csv
 #
 # The rematch_recombinants rule is expensive and needs the per-day inference
-# ARGs, so its k1000 mutation counts are saved in git in this directory as
+# ARGs, so its mutation counts with (k=4) and without (k=1000) recombination
+# are saved in git in this directory as
 # sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_k1000_muts.json
+# This covers all recombinants, and is the only source of mutations averted
+# for the multi-parent recombinants that are not in recombinants.csv.
 rule all:
     input:
         # Base debug report
@@ -333,8 +336,8 @@ rule add_net_supporting_loci_to_csv:
         python scripts/add_recombinant_minlength_to_csv.py -v {input} {output}
         """
 
-# Extract the number of mutations in the no-recombination (k=1000) match
-# for each recombinant. The output is small and is kept in git.
+# Extract the number of mutations in the original (k=4) and no-recombination
+# (k=1000) matches for each recombinant. The output is small and is kept in git.
 rule extract_k1000_muts:
     conda:
         "sc2ts.yml"
