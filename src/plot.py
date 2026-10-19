@@ -63,8 +63,7 @@ def inference_resources():
     ax_twin.legend(loc="upper left")
     ax_twin.set_ylabel("Samples processed")
     ax[0].set_ylabel("Elapsed time (mins)")
-    ax[0].legend()
-    ax_twin.legend()
+    ax[0].legend(loc="upper right")
     ax[1].plot(x, df.elapsed_time / df.samples_processed, label="Mean time per sample")
     ax[1].set_ylabel("Elapsed time per sample (s)")
     ax[1].legend(loc="upper right")
@@ -76,9 +75,9 @@ def inference_resources():
     ax[2].plot(x, df.max_memory / 1024**3)
     ax[2].set_ylabel("Max memory (GiB)")
 
-    ax[0].text(x=-0.02, y=1.0, s="A", size=20, transform=ax[0].transAxes)
-    ax[1].text(x=-0.02, y=1.0, s="B", size=20, transform=ax[1].transAxes)
-    ax[2].text(x=-0.02, y=1.0, s="C", size=20, transform=ax[2].transAxes)
+    ax[0].text(x=0, y=1.02, ha="right", va="bottom", s="A", size=20, transform=ax[0].transAxes)
+    ax[1].text(x=0, y=1.02, ha="right", va="bottom", s="B", size=20, transform=ax[1].transAxes)
+    ax[2].text(x=0, y=1.02, ha="right", va="bottom", s="C", size=20, transform=ax[2].transAxes)
 
     for a in ax:
         a.grid()
@@ -90,7 +89,6 @@ def samples_per_day():
 
     start_date = "2020-05-01"
     end_date = "3000-01-01"
-    scorpio_fraction = 0.05
 
     df = samples_csv()
     df = df[(df.date >= start_date) & (df.date < end_date)]
@@ -134,6 +132,26 @@ def samples_per_day():
     for ax in [ax1, ax2, ax3]:
         ax.grid()
 
+    # Collapse Scorpio calls into the major lineages; everything else
+    # (including no designation) is "Other"
+    groups = {
+        "Alpha": ["Alpha", "B.1.1.7"],
+        "Delta": ["Delta"],
+        "Omicron BA.1": ["Omicron (BA.1"],
+        "Omicron BA.2": ["Omicron (BA.2"],
+        "Omicron BA.4": ["Omicron (BA.4"],
+        "Omicron BA.5": ["Omicron (BA.5"],
+        "Omicron XBB": ["Omicron (XBB"],
+    }
+
+    def scorpio_group(s):
+        s = s.removeprefix("Probable ")
+        for group, prefixes in groups.items():
+            if any(s.startswith(p) for p in prefixes):
+                return group
+        return "Other"
+
+    df = df.assign(scorpio=df.scorpio.map(scorpio_group))
     df_scorpio = df.pivot_table(
         columns="scorpio", index="date", values="total", aggfunc="sum", fill_value=0
     ).reset_index()
@@ -141,25 +159,18 @@ def samples_per_day():
     df_scorpio = df_scorpio.astype({"date": "datetime64[s]"}).set_index("date")
     # convert to fractions
     df_scorpio = df_scorpio.divide(df_scorpio.sum(axis="columns"), axis="index")
-    # Remove columns that don't have more than the threshold
-    keep_cols = []
-    for col in df_scorpio:
-        if np.any(df_scorpio[col] >= scorpio_fraction):
-            keep_cols.append(col)
-
-    df_scorpio = df_scorpio[keep_cols]
-    ax4.set_title("Scorpio composition of processed samples")
+    df_scorpio = df_scorpio[["Other", *groups]]
     ax4.stackplot(
         df_scorpio.index,
         *[df_scorpio[s] for s in df_scorpio],
-        labels=[" ".join(s.split("_")) for s in df_scorpio],
+        labels=df_scorpio.columns,
     )
-    ax4.legend(loc="upper left", ncol=2)
+    ax4.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=8, frameon=False)
 
-    ax1.text(x=-0.02, y=1.0, s="A", size=20, transform=ax1.transAxes)
-    ax2.text(x=-0.02, y=1.0, s="B", size=20, transform=ax2.transAxes)
-    ax3.text(x=-0.02, y=1.0, s="C", size=20, transform=ax3.transAxes)
-    ax4.text(x=-0.02, y=1.0, s="D", size=20, transform=ax4.transAxes)
+    ax1.text(x=0, y=1.02, ha="right", va="bottom", s="A", size=20, transform=ax1.transAxes)
+    ax2.text(x=0, y=1.02, ha="right", va="bottom", s="B", size=20, transform=ax2.transAxes)
+    ax3.text(x=0, y=1.02, ha="right", va="bottom", s="C", size=20, transform=ax3.transAxes)
+    ax4.text(x=0, y=1.02, ha="right", va="bottom", s="D", size=20, transform=ax4.transAxes)
 
     savefig("samples-per-day")
 
