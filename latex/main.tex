@@ -431,7 +431,7 @@ consistent with a range of results from the literature.
 First, we compared the sc2ts ARG
 with the state-of-the-art UShER tree inferred from the same dataset
 and the same set of sites,
-by pruning both to the 3,107,392 samples that they share
+by pruning both to the 3,121,706 samples that they share
 and the 27,963 sites at which the UShER tree has mutations (Methods).
 Eliminating recombination nodes and their descendants (which we expected to differ),
 we found very similar relationships among lineages in
@@ -938,7 +938,7 @@ may break up the artefactually long branches used to detect recombination.
 
 We compared the performance of sc2ts to detect recombination
 against RIPPLES run on the Viridian UShER phylogeny,
-subset to the 3,107,392 samples shared with the ARG (Methods).
+subset to the 3,121,706 samples shared with the ARG (Methods).
 To enable exact comparison, we omitted the QC filtering steps from both
 methods, and initially set the RIPPLES ``parsimony improvement''
 parameter to $p=4$ (rather than the more lenient default of 3),
@@ -1641,6 +1641,7 @@ creates additional nodes which are available for recombinant rematching.
 
 % Data from
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v2_2024-06-06_rewire-recombinants-report.ipynb
+% TODO v2.3: the committed report (2026-09-30) predates the v2.3 run; regenerate it.
 Using recombinant-rematching,
 98 recombinants were identified as being more parsimoniously
 explained by matching to existing nodes in the ARG (inserted by
@@ -2090,10 +2091,10 @@ See the notebook
 for details.
 
 We then computed intersection ARGs for
-sc2ts (sc2ts\_viridian\_inter\_v2.2.trees.tsz) and
-UShER (usher\_viridian\_inter\_v2.2.trees.tsz)
+sc2ts (sc2ts\_viridian\_inter\_v2.3.trees.tsz) and
+UShER (usher\_viridian\_inter\_v2.3.trees.tsz)
 by simplifying \cite{Kelleher2018efficient,Wong2024}
-both to the 3,107,392 samples that they share.
+both to the 3,121,706 samples that they share.
 Because the sc2ts ARG and the UShER tree were inferred from
 the same set of sites, no sites are specific to either;
 we retain the 27,963 sites at which the UShER tree has mutations
@@ -2319,7 +2320,7 @@ Unlike the public UShER tree used in the original RIPPLES analysis~\cite{Turakhi
 this tree has not been subject to extensive community inspection and manual curation,
 which may affect the initial placement of putative recombinants.
 To simplify the comparison with sc2ts, we subset this
-file down to the 3,107,392 samples shared with the sc2ts ARG
+file down to the 3,121,706 samples shared with the sc2ts ARG
 by running \texttt{matUtils extract}.
 We then ran \texttt{ripples-fast}~\cite{Smith2023tracking}
 on this file, using \texttt{-n1} so that all detected
@@ -2804,6 +2805,8 @@ we therefore compare it with the sc2ts ARG before the post-hoc
 parsimony mapping of deletions, so that only
 nucleotide substitutions are counted in both.
 
+% TODO v2.3: numbers in this paragraph are from the v2.2 run of
+% usher_sc2ts_comparison_2024-06-06.ipynb; rerun the pipeline log.
 Over the 3,107,392 samples shared between them and the 27,963 sites
 at which the UShER tree has mutations, the sc2ts ARG has 47,874 (1.9\%) more
 mutations than the UShER tree (2,600,828 vs 2,552,954).
@@ -2825,6 +2828,8 @@ In doing so, we impute the missing and ambiguous data for these samples.
 We evaluate the imputation performance of sc2ts and UShER by comparing their
 outputs on the Viridian alignments.
 
+% TODO v2.3: numbers in this paragraph are from the v2.2 intersection ARGs;
+% rerun example_data_processing.ipynb on usher_viridian_inter_v2.3.
 The total aligned dataset for 3,107,392 samples and 27,963 sites
 in the sc2ts and UShER intersection ARGs represents
 80.92 GiB of nucleotide calls.
