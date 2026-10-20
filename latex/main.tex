@@ -2054,6 +2054,8 @@ Each recombination node in the inferred ARG was rematched
 as for the real ARG (``Recombinant rematching'' above)
 to count the mutations it averts,
 and counted as a true positive if any sample added with it is an expected recombinant.
+The simulated ARGs were not rewired,
+so the false positives reported are those before this step.
 The accuracy of the ARG as a whole was measured with
 tscompare\cite{Fritze2024forest}
 as the ARG Robinson--Foulds (ARF) distance,
@@ -3471,7 +3473,16 @@ It is worth noting that false positives do occur during sc2ts inference on
 real data, as discussed in
 \supref{sec:spurious-ancestrally-important-recombinants}
 and the ``Recombinant rematching'' section (Methods).
-These are usually due to [TODO EXPLAIN].
+These have two main causes.
+Sequencing and assembly artefacts, which these simulations do not model,
+account for most recombinants failing QC
+(Methods, Quality control of recombination events).
+Otherwise, the ARG at the time of matching may have no node close to
+the sample's true ancestor, so that parts of the genome match nodes
+on either side of a mutation-rich branch;
+recombinant rematching and long branch splitting remove 127 such events (Methods).
+The second cause is what produces most false positives in the epidemic simulations
+(\supref{sec:slim_simulations}).
 
 \subsection{Simulations of pathogen epidemics}\label{sec:slim_simulations}
 The synthetic recombinants above test how sc2ts matches individual recombinants
@@ -3553,6 +3564,10 @@ and nearly all false positives (412 of 461, mostly at $k=3$ with 1,000 samples p
 were ties where the ARG had no node close to the sample's true ancestor.
 Mutations averted therefore separates genuine from spurious recombinants
 when lineages have diverged enough for recombination to be detected at all.
+In the real ARG, 574 of the 1320 recombination events
+(193 of the 647 passing QC) are ties,
+and those not corroborated by 3SEQ are concentrated among events
+averting few mutations (\figref{fig:recombinant_evidence}).
 
 \subsubsection{Breakpoint intervals}
 For the coronavirus-like pathogen, the true breakpoint lay within
