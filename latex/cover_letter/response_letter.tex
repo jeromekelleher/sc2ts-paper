@@ -24,7 +24,7 @@ both to the SARS-CoV-2 ARG itself and to the evaluation of sc2ts as a method
 for future pathogen genomic datasets.
 
 First, we have rebuilt the ARG using all of the latest Viridian data, extending
-the resource to 3,114,609 genomes sampled through 6 June 2024, and have updated
+the resource to 3,128,941 genomes sampled through 6 June 2024, and have updated
 all analyses accordingly. We also made particular efforts to improve the
 reconstruction of the early histories of Delta and Omicron. Second,
 addressing the editor’s priority and related comments from both reviewers
@@ -159,7 +159,7 @@ a commitment to maintain the SARS-CoV-2 resource indefinitely. We now frame the
 ARG as a stable record of the pandemic phase of SARS-CoV-2. Nevertheless, we
 agreed that the resource should be made as current and complete as possible,
 and have therefore rebuilt the ARG using all available Viridian data, extending
-it to 3,114,609 genomes sampled through 6 June 2024. All analyses in the
+it to 3,128,941 genomes sampled through 6 June 2024. All analyses in the
 manuscript have been updated to this new ARG.
 
 \noindent \textbf{Reviewer \#1:} \textit{``If this is intended as a method suitable for
@@ -206,13 +206,13 @@ We agree with both aspects of this comment and have added analyses to address
 them directly.
 
 First, we now test whether the inferred parents of recombinant events are
-closer in time and space than expected by chance. For the 224 QC-passing
+closer in time and space than expected by chance. For the 225 QC-passing
 recombinants for which both inferred parents are sampled genomes, the parents
 were sampled a median of 25 days apart and 60\% were sampled in the same
 country. Because the dataset is strongly geographically structured, we compared
 these values with a null in which parents were exchanged between recombinants
 of similar date, preserving the sampling composition through time. Under this
-null, parents were sampled a median of 41 days apart and 40\% were from the same
+null, parents were sampled a median of 39 days apart and 40\% were from the same
 country; both differences were significant in 1,000 permutations ($p < 0.001$).
 The inferred parents are therefore closer in time and space than expected by
 chance, consistent with co-circulation of the parental lineages. We have added
@@ -372,7 +372,7 @@ exploration. We have therefore not deployed the full ARG through Lorax. For
 local exploration, we have used the ``tskit\_arg\_visualizer'' tool extensively to
 inspect subgraphs around individual recombination events, and the ARG
 visualisations in the manuscript were generated using these tools.
-We have added a Methods section ``ARG visualisations'' to clarify this point.
+We have added a Methods section ``ARG visualisation'' to clarify this point.
 We hope that resources at this scale will help motivate further development of interactive
 ARG visualisation methods.
 
@@ -402,7 +402,7 @@ update an ARG incrementally as new samples arrive.
 
 Nevertheless, in response to the reviewer’s concern we have made a major effort
 to bring the resource as close to the end of the available dataset as possible.
-The revised ARG now contains all available Viridian data, comprising 3,114,609
+The revised ARG now contains all available Viridian data, comprising 3,128,941
 genomes sampled through 6 June 2024, and all analyses in the manuscript have
 been updated accordingly. As described in the Discussion, incorporating data
 from GISAID would require substantial additional effort to address data quality
@@ -555,8 +555,8 @@ representations of the inferred reticulations are important for conveying what
 an ARG adds beyond a conventional phylogeny.
 
 We considered whether the full SARS-CoV-2 ARG could be represented in a single
-figure using collapsed clades. However, the revised ARG contains 3.41 million
-nodes, of which 1,323 are recombination nodes. Even with extensive collapsing,
+figure using collapsed clades. However, the revised ARG contains 3.42 million
+nodes, of which 1,324 are recombination nodes. Even with extensive collapsing,
 a whole-ARG representation would therefore be dominated by the clonal backbone,
 while the individual reticulations that distinguish the ARG would be too small
 to interpret.
@@ -571,7 +571,7 @@ detailed visualisations for recombinant Pango lineages. We think these local
 views make the reticulate relationships substantially more interpretable than a
 whole-ARG overview would.
 
-We have added a Methods section ``ARG visualisations'' to the revised
+We have added a Methods section ``ARG visualisation'' to the revised
 manuscript to describe our use of the ``tskit\_arg\_visualizer'' tool
 to generate the ARG diagrams presented.
 
@@ -596,7 +596,7 @@ recombination events' right?''}
 
 Yes. We have corrected this wording. Because the ARG has also been rebuilt
 using the updated Viridian dataset, the corresponding sentence now refers to
-the 1,319 inferred single-breakpoint recombination events.
+the 1,320 inferred single-breakpoint recombination events.
 
 \noindent \textbf{Reviewer \#2 (3d):} \textit{``L236: it might be useful to define
 `Scorpio' for the audience of a general journal like this''}
