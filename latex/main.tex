@@ -720,7 +720,8 @@ those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
 e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
 Point sizes reflect number of descendants.
 Recombination nodes with more than two parents associated with
-Pango X lineages are shown in orange (no QC filter or 3SEQ classification applies).
+Pango X lineages are shown in orange (no QC filter or 3SEQ classification applies;
+\supref{sec:multi_parent_recombinants}).
 Lower: recombination nodes classified by number of mutations averted
 by allowing recombination (i.e., $x-y$).
 (B) Distribution of time to the MRCA of the parents of each QC-passing recombination node.
@@ -1822,7 +1823,8 @@ Finally, for the 1320 recombination events in the ARG having a single breakpoint
 we calculated the net number of supporting loci
 on the left and right sides of each breakpoint, and
 used this to plot these events in \edref{fig:recombinant_qc}.
-The four recombination nodes with multiple breakpoints are not included.
+The four recombination nodes with multiple breakpoints are not included
+(\supref{sec:multi_parent_recombinants}).
 
 This simple QC measure effectively differentiates
 artefactual recombination events from those that are well supported.
@@ -3211,7 +3213,7 @@ Pango X lineage (XE/XH, XM/XAL and XAP/XZ),
 to multiple origins of the same lineage (XAC),
 and two distinct recombination events each ancestral to both XDP and XEB.
 The XB origin node lies two edges below a recombination node
-with three parents,
+with three parents (\supref{sec:multi_parent_recombinants}),
 and the XBV, XW and XCR origin nodes are samples one edge below
 a recombination node that carries no mutations.
 Type III events are Pango origin nodes in the ARG that are
@@ -3255,6 +3257,37 @@ and Supplementary Data 1 for ARG visualisations of the Pango X lineages.
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_pango\_x\_events.ipynb}
 {tab\_pango\_x\_events.ipynb} for details.
+
+\subsection{Recombination nodes with more than two parents}
+\label{sec:multi_parent_recombinants}
+% v2.3 ARG
+Of the 1324 recombination nodes in the ARG, four have more than two parents
+(\siref{tab:multi_parent}): three are associated with the Pango X lineages
+XB, XAY and XBC, and one is the origin of BA.2.86.1.
+These nodes are excluded from the analyses of the 1320 single-breakpoint
+recombinants, because the breakpoint interval and supporting loci
+calculations (Methods) assume a single breakpoint.
+We computed the number of mutations averted for them in the same way,
+by rematching each node without recombination ($k=1000$).
+
+XAY and XBC are designated as recombinants of BA.2 and Delta with multiple
+breakpoints, and sc2ts infers both as mosaics alternating between Omicron and
+Delta parents, strongly supported by 30 and 28 averted mutations, respectively.
+XB was designated as a recombinant of B.1.634 and B.1.631 \cite{Gutierrez2022}.
+The recombination node above the XB origin copies from a B.1.634 sample in the
+middle of the genome and from B.1 nodes on either side, and is weakly
+supported (7 averted mutations; \supref{sec:dd_xb}).
+
+The fourth node is the origin of BA.2.86.1 in the ARG, and all 701 BA.2.86
+and 21,908 JN.1 samples descend from it.
+It copies from a CM.8.1 sample between positions 22,898 and 24,990, and from
+BA.2 nodes on either side.
+The match requires 47 mutations with recombination, and only one more
+without it, so this recombination is likely spurious, reflecting the long
+branch leading to BA.2.86 \cite{Planas2024}.
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_multi\_parent\_recombinants.ipynb}
+{analysis\_multi\_parent\_recombinants.ipynb} for details.
 
 \subsection{Analysis of the Jackson et al. recombinants}
 \label{sec:jackson_recombs}
@@ -3635,13 +3668,11 @@ The displayed subgraph shows a small selection of the 192 XB samples.
 XB was originally defined as a recombinant between
 the closely related lineages B.1.634 (left parent) and B.1.631 (right parent)
 from North and Central America \cite{Gutierrez2022}.
-However, these parent lineages were not added to the ARG due to high HMM costs.
-Together with other lineages such as B.1.627
-(sister to B.1.631 \cite{Gutierrez2022}),
-they are likely to attach somewhere along the long branch
-in the subgraph visualisation (with $> 30$ mutations).
-If samples from these parental lineages were available for attachment,
-then XB would likely be detected as a recombinant by sc2ts.
+In the ARG, the XB origin node lies two edges below a weakly supported
+(7 mutations averted) recombination node with three parents,
+which copies from a B.1.634 sample between positions 6,633 and 23,012
+and from B.1 nodes elsewhere, so that B.1.631 is not identified as a parent
+(\supref{sec:multi_parent_recombinants}).
 % which also contains the key ``R2'' deletion
 % associated with XB / B.1.634 \cite{Gutierrez2022}.
 
@@ -3953,8 +3984,8 @@ for details.
 
 \subsection{Likely spurious recombinants with many descendants}
 \label{sec:spurious-ancestrally-important-recombinants}
-In the sc2ts ARG, there are two recombination events which have a large number of
-descendants. The first of these
+In the sc2ts ARG, there are two single-breakpoint recombination events which have a large number of
+descendants (see \supref{sec:multi_parent_recombinants} for the BA.2.86.1 origin). The first of these
 corresponds to recombination event within BA.2 whose breakpoint is at position 27382
 on the far right of the genome.
 % JK not sure what this is referring to?
@@ -4318,6 +4349,36 @@ C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221.1/B.1.22
 \cmidrule{3-7}
 D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
              &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{
+Recombination nodes in the ARG with more than two parents.
+Parent lineages are listed from left to right along the genome,
+separated by the breakpoint positions.
+Mutations are the number required to match the node with ($k=4$)
+and without ($k=1000$) recombination, and averted is their difference.
+Descendants is the number of descendant samples.
+See \supref{sec:multi_parent_recombinants} for details.
+}
+\label{tab:multi_parent}
+% v2.3 ARG; notebooks/analysis_multi_parent_recombinants.ipynb
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{ll>{\raggedright\arraybackslash}p{6cm}rrrr}
+\toprule
+& & & \multicolumn{2}{c}{Mutations} & & \\
+\cmidrule{4-5}
+Node & Date & Parent lineages & $k=4$ & $k=1000$ & Averted & Descendants \\
+\midrule
+XB & 2021-03-03 & B.1 \textbar{} 6,633 \textbar{} B.1.634 \textbar{} 23,012 \textbar{} B.1 & 18 & 25 & 7 & 426 \\
+XAY & 2022-12-06 & BA.2 \textbar{} 4,456 \textbar{} AY.46 \textbar{} 10,198 \textbar{} XBB.1.5.21 \textbar{} 15,714 \textbar{} AY.4 \textbar{}
+22,118 \textbar{} BA.5.2.1 \textbar{} 25,000 \textbar{} AY.4 \textbar{} 27,575 \textbar{} BA.2 & 22 & 52 & 30 & 371 \\
+XBC & 2022-10-09 & BA.2 \textbar{} 4,184 \textbar{} AY.38 \textbar{} 22,674 \textbar{} BM.1.1 \textbar{} 25,584 \textbar{} AY.9 & 31 & 59 & 28 & 98 \\
+BA.2.86.1 & 2023-05-24 & BA.2 \textbar{} 22,898 \textbar{} CM.8.1 \textbar{} 24,990 \textbar{} BA.2 & 47 & 48 & 1 & 25,701 \\
 \bottomrule
 \end{tabular}
 \end{table}
