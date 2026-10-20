@@ -845,16 +845,15 @@ of related lineages within a major VOC in the Viridian dataset.
 Alongside the case numbers,
 the black curve shows the number of recombinants
 inferred within each week along the ARG,
-focusing on the 354 events passing QC filters.
+focusing on the 647 events passing QC filters.
 Recombination events were inferred more often
 during the Delta and Omicron waves, when case counts were high.
 Overall, the number of inferred recombination events rose with the global case count
 (\figref{fig:recombinants_over_time}B;
-% JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
-linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
+linear regression: $1.4 + 4.8\times 10^{-7} x$, $p = 2.2\times10^{-12}$).
 Inferred recombination events also rose with the diversity of lineages in each week
 (\figref{fig:recombinants_over_time}C; linear regression:
-$0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
+$1.7 + 6.1 x$, $p = 6.6\times10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
 ($H$, referred to as the ``expected heterozygosity'').
 This second relationship is expected in part as a consequence of the inference
@@ -869,10 +868,10 @@ We included the squared number of cases each week
 thinking that it might better predict co-infections.
 The best single predictor of recombination events involved
 the product of cases and expected heterozygosity ($n H$),
-with an adjusted $R^2$ of 23.7\%.
+with an adjusted $R^2$ of 34.4\%.
 This measure of case diversity ($n H$)
-explained 49\% more of the variation in recombination events per week
-than the next best predictor ($H$, adjusted $R^2$ of 15.9\%).
+explained 32\% more of the variation in recombination events per week
+than the next best predictor ($n$, adjusted $R^2$ of 26.0\%).
 While consistent with the hypotheses
 that recombination events occur more often when infection rates are common
 and are detected more often when viral diversity is high,
@@ -886,7 +885,7 @@ with substantial delays before onward cases are detected.
 Finally, the filters that we applied removed all
 but the most strongly supported recombination events,
 although similar conclusions were obtained
-when all 855 recombinants detected by sc2ts were considered (Methods).
+when all 1,320 recombinants detected by sc2ts were considered (Methods).
 
 \begin{figure}[h]
 \centering
@@ -2439,26 +2438,24 @@ explained the most variation in recombination events by week.
 These statistical tests and graphics were conducted
 in \textit{Mathematica} 14.2 (Wolfram 2024) and
 available at
-\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/TemporalTrends\_RecEvent25August2025.nb}.
+\url{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/TemporalTrends\_RecEvent19October2026.nb}.
 
-% TODO: the numbers in this paragraph are from the v1.2 ARG and need the
-% Mathematica notebook rerunning on v2.2 (JHU case data end in March 2023).
-In addition to the analysis of the 354 recombination events that pass QC,
-we analyzed the relationship between the full set of 855 recombinants and case numbers.
+In addition to the analysis of the 647 recombination events that pass QC,
+we analyzed the relationship between the full set of 1,320 recombinants and case numbers.
 These additional recombinants occurred disproportionately
 during the Delta and first Omicron wave (July, 2021 to February, 2022).
 Again, the number of recombinant events rose with the global case count
-(linear regression: $3.1 + 5.3 \; 10^{-7} x$, $p = 0.0006$)
+(linear regression: $3.4 + 9.0\times10^{-7} x$, $p = 5.0\times10^{-7}$)
 and with the diversity of lineages in each week
-(linear regression: $0.42 + 18.3 x$, $p = 2 \; 10^{-12}$).
+(linear regression: $1.2 + 21.4 x$, $p = 1.1\times10^{-12}$).
 The single best predictor of recombination events
 among the predictors tested ($n$, $H$, $n \; H$, $n^2$, $n^2 H$)
 was again the product of cases and diversity ($n \; H$),
-with an adjusted $R^2$ of 26.9\%,
-although this was now followed closely by expected heterozygosity on its own ($H$),
-with an adjusted $R^2$ of 26.5\%.
+with an adjusted $R^2$ of 34.3\%,
+followed by expected heterozygosity on its own ($H$),
+with an adjusted $R^2$ of 26.6\%.
 Thus, similar conclusions are reached with either dataset,
-although filtering the recombination events to the 354
+although filtering the recombination events to the 647
 with better support revealed a stronger relationship with case numbers.
 
 
