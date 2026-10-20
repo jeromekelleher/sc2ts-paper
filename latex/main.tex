@@ -1851,14 +1851,16 @@ known problematic loci in the SARS-CoV-2 genome.
 \siref{fig:copying_pattern_examples} shows illustrative copying patterns
 (Q1 to Q4 correspond to the labelled quadrants in \edref{fig:recombinant_qc}).
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
-having a net number of supporting loci of 4 on both sides of the breakpoint.
+having a net number of supporting loci of 4 on the left of the breakpoint
+and 6 on the right.
 Q2 shows an artefactual recombination event
 caused by a 6-base Delta lineage-defining deletion.
 There are 86 (13\%) QC-failing recombination events involving this deletion, and
 many cases are affected by a known amplicon dropout
 caused by this particular deletion \cite{Sanderson2021}.
-Q3 shows an artefactual recombination event caused by
-a combination of this Delta deletion and a known MNS (see below).
+Q3 shows an artefactual recombination event between two JN.1 nodes,
+caused by a dense cluster of near-adjacent sites next to
+the BA.2-lineage Spike deletion at positions 21633--21641.
 Finally, Q4 shows an artefactual recombination event
 associated with the A507T-T508C-G509A MNS,
 which has been identified as a sequencing error
@@ -4136,11 +4138,12 @@ Illustrative copying patterns
 drawn from the quadrants labelled in \edref{fig:recombinant_qc}.
 Each copying pattern shows the positions
 where the allelic state in a recombinant
-(middle row, labelled by node ID)
-matches that of the left (P0: upper row, coloured green)
-or right parent (P1: lower row, coloured blue),
+(middle row, with its node ID shown to the right)
+matches that of the left (upper row, coloured green)
+or right parent (lower row, coloured blue),
 or where the recombination event requires a de-novo mutation
 (gold, with mutational change below).
+Rows are labelled by Pango lineage.
 Parental states that correspond to the reference but are not
 inherited by the recombinant are shown with a gray background.
 Genome position (``pos'') and reference allele (``ref'') are
