@@ -2138,7 +2138,7 @@ each sample from a different Pango lineage.
 The simplified ARG contains only two recombination nodes, which
 are the two likely artefactual events discussed in
 \supref{sec:spurious-ancestrally-important-recombinants},
-both of which have breakpoints near the 5' end of genome.
+both of which have breakpoints near the 3' end of genome.
 We therefore compare the UShER topology against the first tree in the ARG (covering
 positions 1-26858; the majority of the genome). To reduce plot density, we consider
 only those Pango lineages with greater than 10 samples.
@@ -3984,25 +3984,31 @@ for details.
 
 \subsection{Likely spurious recombinants with many descendants}
 \label{sec:spurious-ancestrally-important-recombinants}
-In the sc2ts ARG, there are two single-breakpoint recombination events which have a large number of
-descendants (see \supref{sec:multi_parent_recombinants} for the BA.2.86.1 origin). The first of these
-corresponds to recombination event within BA.2 whose breakpoint is at position 27382
-on the far right of the genome.
-% JK not sure what this is referring to?
-% (see supplementary document S3, node 1030562).
-Although
-supported by 5 sites, three of them are adjacent so that they only represent 3 loci,
-meaning that this event does not pass our QC filter.
+% v2.3 ARG
+Apart from the XBB origin, two single-breakpoint recombination nodes in the
+ARG have more than 10,000 descendant samples
+(see \supref{sec:multi_parent_recombinants} for the BA.2.86.1 origin).
+The first is the origin of BA.5 (244,601 descendants),
+with a BA.4 left parent and a BA.2 right parent and a breakpoint at
+position 26858 (interval 23041--26858).
+It requires 4 mutations with recombination and 9 without (5 averted),
+and has net supporting loci of 6 and 5 on the left and right, and so passes QC.
+The second is a BA.2 node (244,192 descendants),
+with a BA.2.10 left parent and a BA.1.1 right parent and a breakpoint
+at position 27382 (interval 26859--27382).
+It requires no mutations with recombination and 5 without (5 averted),
+and has only 3 net supporting loci on the right, and so fails QC.
 
-The second of these involves a single breakpoint at position 26858, and is the origin
-of the BA.5 lineage in the ARG.
-% (see supplementary document S3, node 1189192).
-Although supported by 5 loci on the right, this recombinant also requires 3 de-novo mutations,
-some of which are adjacent to the supporting loci. Furthermore, when the first BA.5
-sample is added to the ARG, it is possible to construct a more parsimonious
-non-recombinant origin by long branch splitting,
-although subsequent tree building does not make this a parsimonious
-way to rewire the final ARG.  It is therefore likely to be spurious.
+These two events are nested: to the right of position 26858,
+the BA.5 origin descends from the BA.2 node through its right parent,
+and the two nodes share 243,642 descendants
+(mostly BA.5 and its descendant lineages, such as BQ.1, BE and BF).
+Both events are detected by 3SEQ, but neither by rebar or CovRecomb.
+Neither BA.5 nor BA.2 is designated as a recombinant, and both events
+are weakly supported, so they are likely to be spurious.
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_recombinants\_many\_descendants.ipynb}
+{analysis\_recombinants\_many\_descendants.ipynb} for details.
 
 % \FloatBarrier
 
