@@ -1,0 +1,21 @@
+name: sc2ts-slim
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - slim>=5
+  - snakemake-minimal
+  - click
+  - numpy
+  - pandas
+  - pytest
+  - pip
+  # To install sc2ts from GitHub.
+  - git
+  - pip:
+      - pyslim
+      - tscompare
+      # The development version from GitHub (custom reference genomes need 1.1
+      # or later).
+      - sc2ts[inference] @ git+https://github.com/tskit-dev/sc2ts.git

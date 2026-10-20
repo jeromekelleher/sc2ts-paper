@@ -1,0 +1,29 @@
+# A small configuration for checking the whole pipeline runs, e.g.
+#   snakemake --cores 4 results/tiny/summary.csv --configfile tests/tiny_config.yaml
+pathogens:
+  tiny:
+    slim:
+      N: 20
+      GENS: 15
+      GROWTH_GENS: 5
+      L: 1000
+      MU: 2.0e-3
+      EFF_RECOMB: 0.2
+    samples_per_day: [10, 20]
+replicates: 1
+seed: 1
+k_values: [3]
+num_threads: 2
+sc2ts:
+  # No time-traveller filtering. On real data, samples whose HMM cost is above
+  # hmm_cost_threshold are held back, and only added later if enough of them
+  # form a plausible retrospective group, to keep out samples with wrong dates
+  # ("time travellers") and sequencing errors. Simulated samples have neither,
+  # so the threshold is set high enough that every sample is added on its own
+  # day. It can't just be left out: sc2ts then defaults it to 5. With nothing
+  # held back, the retrospective group parameters (min_group_size,
+  # retrospective_window, etc.) are never used, so are left at their defaults.
+  hmm_cost_threshold: 1000000
+  max_missing_sites: 500
+  deletions_as_missing: true
+  memory_limit: 4

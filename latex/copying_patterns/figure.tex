@@ -3,18 +3,18 @@
 %
 % longtable numbers a long table with the table counter, so within
 % this group the table counter and names are aliased to the figure
-% ones. The \refstepcounter is global and so advances the figure
+% ones (as is the reference prefix). The \refstepcounter is global and so advances the figure
 % counter, and the real table counter is back in place after the group.
 % \cpimage centres an image on the label beside it, with some space
 % above and below.
 \begingroup
-\makeatletter\let\c@table\c@figure\makeatother
+\makeatletter\let\c@table\c@figure\let\p@table\p@figure\makeatother
 \let\thetable\thefigure
 \let\tablename\figurename
 \newcommand{\cpimage}[1]{\raisebox{\dimexpr0.5ex-0.5\height\relax}[\dimexpr0.5\height+0.5ex+3pt\relax][\dimexpr0.5\height-0.5ex+3pt\relax]{\includegraphics[height=1.5em]{#1}}}
 \begin{longtable}{cl}
 \caption[]{%
-Copying patterns for the 51 recombination events associated with Pango X lineages listed in Table~\ref{tab:pango_x_lineages}, ordered by label within each event type. The ID of the recombination node is shown to the right of each copying pattern. Events with more than 4 parents are not shown: XAY (7 parents). See also Document S2 for exact positions and nucleotide bases.}
+Copying patterns for the 51 recombination events associated with Pango X lineages listed in \siref{tab:pango_x_lineages}, ordered by label within each event type. The ID of the recombination node is shown to the right of each copying pattern. Events with more than 4 parents are not shown: XAY (7 parents). See also Supplementary Data 2 for exact positions and nucleotide bases.}
 \label{fig:pango_x_copying_patterns} \\
 \endfirsthead
 \LTcontinuedhead{2} \\
@@ -31,7 +31,6 @@ XL & \cpimage{static/XL.png} \\
 XQ & \cpimage{static/XQ.png} \\
 XS & \cpimage{static/XS.png} \\
 XV & \cpimage{static/XV.png} \\
-XW & \cpimage{static/XW.png} \\
 XY & \cpimage{static/XY.png} \\
 XAD & \cpimage{static/XAD.png} \\
 XAE & \cpimage{static/XAE.png} \\
@@ -47,7 +46,6 @@ XBH & \cpimage{static/XBH.png} \\
 XBM & \cpimage{static/XBM.png} \\
 XBR & \cpimage{static/XBR.png} \\
 XBS & \cpimage{static/XBS.png} \\
-XBV & \cpimage{static/XBV.png} \\
 XBW & \cpimage{static/XBW.png} \\
 XCC & \cpimage{static/XCC.png} \\
 XCE & \cpimage{static/XCE.png} \\
@@ -55,7 +53,6 @@ XCH & \cpimage{static/XCH.png} \\
 XCL & \cpimage{static/XCL.png} \\
 XCP & \cpimage{static/XCP.png} \\
 XCQ & \cpimage{static/XCQ.png} \\
-XCR & \cpimage{static/XCR.png} \\
 XCT & \cpimage{static/XCT.png} \\
 XCY & \cpimage{static/XCY.png} \\
 XCZ & \cpimage{static/XCZ.png} \\
@@ -71,9 +68,12 @@ XC & \cpimage{static/XC.png} \\
 XE/XH & \cpimage{static/XE+XH.png} \\
 XG & \cpimage{static/XG.png} \\
 XM/XAL & \cpimage{static/XM+XAL.png} \\
+XW & \cpimage{static/XW.png} \\
 XAC & \cpimage{static/XAC.png} \\
 XAP/XZ & \cpimage{static/XAP+XZ.png} \\
+XBV & \cpimage{static/XBV.png} \\
 XCF & \cpimage{static/XCF.png} \\
+XCR & \cpimage{static/XCR.png} \\
 XDP/XEB1 & \cpimage{static/XDP+XEB1.png} \\
 XDP/XEB2 & \cpimage{static/XDP+XEB2.png} \\
 \bottomrule

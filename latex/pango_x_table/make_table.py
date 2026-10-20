@@ -45,8 +45,9 @@ III and IV, see text) or associated recombination event (Type II). For origin
 nodes that are recombinant (Type I) or near a recombination event (Type II),
 the ``averted'' column shows the number of additional mutations required
 without recombination, as well as the position of informative sites to the
-left and right of the breakpoint. These are not available (NA) for
-recombination nodes with more than two parents. Parent lineages shown in
+left and right of the breakpoint. Parent lineages and intervals are not
+available (NA) for recombination nodes with more than two parents
+(\supref{sec:multi_parent_recombinants}). Parent lineages shown in
 boldface are nodes exactly matched by sampled sequences. The descendants column shows the number
 of descendants by Pango lineage. Type II events are named for the Pango X
 lineage (or lineages) associated with them. For Pango lineages (Type III)

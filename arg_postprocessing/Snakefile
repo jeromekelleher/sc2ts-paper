@@ -2,13 +2,17 @@
 # and most rules require either the sc2ts or pangolin environments.
 # The base conda environment that snakemake is run from requires
 # snakemake, tszip, pandas and tqdm in order to run the "run"
-# rules (which cannot be used with "conda")
+# rules (which cannot be used with "conda"). Internet access is 
+# required to install conda envs and software, which can be done via
 #
-# It's not entirely automated in terms of parallelism. Running pangolin
-# needs a lot of cores, so in practise you need to do something like this
-# first to get the bit needing parallelism (and lots of memory) done
+# snakemake --sdm conda --conda-create-envs-only --cores 1
+# snakemake --sdm conda build_3seq --cores 1
 #
-# snakemake sc2ts_viridian_v2.2.trees.tsz --cores=40
+# The main tasks are not entirely automated in terms of parallelism.
+# Running pangolin needs a lot of cores, so in practise you need to do something
+# like this first to get the bit needing parallelism (and lots of memory) done
+#
+# snakemake sc2ts_viridian_v2.3.trees.tsz --cores=40
 # 
 # Then, the rest should just run like
 #
@@ -17,14 +21,17 @@
 
 # Notes on saved files in the data directory
 #
-# recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv
+# recombinants.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm_mns.csv
 # pango_x_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
 # deletion_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
-# pango_x_absent_in_arg.csv -> sc2ts_viridian_v2.2_absent_pango_x_matches.csv
+# pango_x_absent_in_arg.csv -> sc2ts_viridian_v2.3_absent_pango_x_matches.csv
 #
 # The rematch_recombinants rule is expensive and needs the per-day inference
-# ARGs, so its k1000 mutation counts are saved in git in this directory as
+# ARGs, so its mutation counts with (k=4) and without (k=1000) recombination
+# are saved in git in this directory as
 # sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_k1000_muts.json
+# This covers all recombinants, and is the only source of mutations averted
+# for the multi-parent recombinants that are not in recombinants.csv.
 rule all:
     input:
         # Base debug report
@@ -38,7 +45,7 @@ rule all:
         # Recombinant data. Suffixes after _recombinants denote the operations
         # that are applied to. This file is the source for the "recombinants.csv"
         # file in the top-level data directory.
-        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm.csv",
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_recombinants_rebar_pangonet_nsl_akm_mns.csv",
         # CovRecomb output is left in its own file
         "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_CovRecomb_output.csv",
         # 3SEQ output
@@ -48,13 +55,13 @@ rule all:
         "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv",
         # Pango X lineages absent from the ARG, with their samples' HMM matches.
         # This is the pango_x_absent_in_arg.csv file in the top-level data directory
-        "sc2ts_viridian_v2.2_absent_pango_x_matches.csv",
+        "sc2ts_viridian_v2.3_absent_pango_x_matches.csv",
         "logs/final_arg_report_2024-06-06.ipynb",
         # Intersection file needed for ripples analyses
         "usher_intersection_2024-06-06.pb",
         # These will run ripples and do the data processing
-        "sc2ts_viridian_v2.2_ripples_p4.csv",
-        "sc2ts_viridian_v2.2_ripples_p3.csv",
+        "sc2ts_viridian_v2.3_ripples_p4.csv",
+        "sc2ts_viridian_v2.3_ripples_p3.csv",
 
 rule final_arg_report:
     conda:
@@ -105,7 +112,7 @@ rule usher_viridian:
 # Version numbers - mainly driven by the sc2ts_viridian_v1 version
 # as the others except usher_viridian are derived from this. These
 # are major.minor, with major versions meaning significant changes,
-# minor being relatively minor tweaks to the ARG. sc2ts v2.2 and the
+# minor being relatively minor tweaks to the ARG. sc2ts v2.3 and the
 # original usher v1.0 correspond to the 2024-06-06 data; usher v1.1 is 
 # a rebuild of the usher tree adding missing non-coding mutations from v1.0.
 rule release_args:
@@ -115,10 +122,10 @@ rule release_args:
         "sc2ts_viridian_inter_2024-06-06.trees.tsz",
         "usher_viridian_inter_2024-06-06.trees.tsz",
     output:
-        "sc2ts_viridian_v2.2.trees.tsz",
+        "sc2ts_viridian_v2.3.trees.tsz",
         "usher_viridian_v1.1.trees.tsz",
-        "sc2ts_viridian_inter_v2.2.trees.tsz",
-        "usher_viridian_inter_v2.2.trees.tsz",
+        "sc2ts_viridian_inter_v2.3.trees.tsz",
+        "usher_viridian_inter_v2.3.trees.tsz",
     shell:
         """
         cp {input[0]} {output[0]}
@@ -129,7 +136,7 @@ rule release_args:
 
 rule initialise:
     input:
-        "../inference/results/v2_2026-08-23/v2_2026-08-23_{DATE}.ts.tsz",
+        "../inference/results/v2_2026-09-22/v2_2026-09-22_{DATE}.ts.tsz",
     output:
         "sc2ts_v2_{DATE}.trees",
     shell:
@@ -197,7 +204,7 @@ rule rematch_recombinants:
     shell:
         """
         python scripts/rematch_recombinants.py {input} \
-            --pattern=../inference/results/v2_2026-08-23/v2_2026-08-23_{{date}}.ts.tsz \
+            --pattern=../inference/results/v2_2026-09-22/v2_2026-09-22_{{date}}.ts.tsz \
             {output}
         """
 
@@ -214,7 +221,7 @@ rule postprocess:
     shell:
         """
         python -m sc2ts postprocess {input} {output} \
-            --match-db=../inference/results/v2_2026-08-23.matches.db
+            --match-db=../inference/results/v2_2026-09-22.matches.db
         """
 
 rule map_parsimony:
@@ -286,9 +293,7 @@ rule pango_x_events:
 
 # Samples from Pango X lineages in the dataset with no samples in the ARG,
 # along with the HMM match recorded for each during primary inference. This
-# needs the same inference match DB as the postprocess rule. NOTE: the run
-# ID here and in postprocess (v2_2026-08-23) differs from the one in
-# inference/viridian_config.toml (v2_2026-09-22); check which is correct.
+# needs the same inference match DB as the postprocess rule.
 rule absent_pango_x_matches:
     conda:
         "sc2ts.yml"
@@ -297,7 +302,7 @@ rule absent_pango_x_matches:
     input:
         "../data/viridian_mafft_2024-10-14_v1.vcz.zip",
         "sc2ts_viridian_{VERSION}.trees.tsz",
-        "../inference/results/v2_2026-08-23.matches.db",
+        "../inference/results/v2_2026-09-22.matches.db",
     output:
         "sc2ts_viridian_{VERSION}_absent_pango_x_matches.csv",
     shell:
@@ -331,8 +336,8 @@ rule add_net_supporting_loci_to_csv:
         python scripts/add_recombinant_minlength_to_csv.py -v {input} {output}
         """
 
-# Extract the number of mutations in the no-recombination (k=1000) match
-# for each recombinant. The output is small and is kept in git.
+# Extract the number of mutations in the original (k=4) and no-recombination
+# (k=1000) matches for each recombinant. The output is small and is kept in git.
 rule extract_k1000_muts:
     conda:
         "sc2ts.yml"
@@ -356,6 +361,21 @@ rule add_k1000_muts:
     shell:
         """
         python scripts/add_recombinant_k1000_muts_to_csv.py {input} {output}
+        """
+
+# Add the highly recurrent multi-nucleotide substitutions (MNS) supporting
+# each side of the breakpoint for each recombinant.
+rule add_mns_to_csv:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{AMN_PREFIX}.trees",
+        "{AMN_PREFIX}_recombinants_{AMN_SUFFIX}.csv",
+    output:
+        "{AMN_PREFIX}_recombinants_{AMN_SUFFIX}_mns.csv",
+    shell:
+        """
+        python scripts/add_mns_to_csv.py {input} {output}
         """
 
 rule shift_breakpoints:
@@ -670,14 +690,17 @@ rule usher_sc2ts_comparison:
 ################
 rule gitlab_3seq:
     output: 
-        directory("3seq")
+        "3seq/.cloned"
     shell: 
         """
         git clone https://gitlab.com/lamhm/3seq.git;
         cd 3seq && git checkout e45ee3b4365d2e9d1bcad62b47ce1a62ea6e21ba
+        touch 3seq/.cloned
         """
 
 rule build_3seq:
+    input:
+        "3seq/.cloned"
     output: 
         "3seq/3seq",
     shell: 
@@ -716,7 +739,7 @@ rule run3seq:
 rule generate_sample_list:
     conda: "sc2ts.yml"
     input: 
-        "sc2ts_viridian_v2.2_ripples_p{PARSIMONY}.csv",
+        "sc2ts_viridian_v2.3_ripples_p{PARSIMONY}.csv",
     output:
         "ripples_3seq_p{PARSIMONY}_tmp/sample_list.txt",
     shell:
@@ -764,7 +787,7 @@ rule generate_usher_fastas:
 
 rule run_ripples_3seq:
     input: 
-        "sc2ts_viridian_v2.2_ripples_p{PARSIMONY}.csv",
+        "sc2ts_viridian_v2.3_ripples_p{PARSIMONY}.csv",
         "ripples_3seq_p{PARSIMONY}_tmp/fastas_generated",
         "3seq/3seq",
     output:
