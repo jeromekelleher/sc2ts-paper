@@ -1,5 +1,7 @@
 ,root_pango,mutations_averted,parent_left_pango,parent_right_pango,interval_left,interval_right,descendants
 62,XDD,65.0,JN.1.1,EG.5.1.1,25700.0,26275.0,{'XDD': 112}
+36,XAY,30.0,,,,,{'XAY': 371}
+1,XBC,28.0,,,,,{'XBC': 98}
 2,XCT,26.0,\textbf{JG.4},DV.7.1,18584.0,19326.0,{'XCT': 57}
 51,XBR,24.0,\textbf{BN.3.1},\textbf{BQ.1.25},22034.0,22190.0,{'XBR': 3}
 33,XBS,20.0,BY.1,\textbf{BQ.1.1},22034.0,22190.0,{'XBS': 19}
@@ -36,5 +38,3 @@
 42,XY,4.0,\textbf{BA.1.1},\textbf{BA.2},11538.0,12880.0,{'XY': 23}
 50,XCH,3.0,GK.1,\textbf{FY.2},23674.0,25045.0,{'XCH': 155}
 49,XDA,3.0,\textbf{XBB.1.16.20},HN.5,22102.0,22928.0,{'XDA': 105}
-36,XAY,,,,,,{'XAY': 371}
-1,XBC,,,,,,{'XBC': 98}

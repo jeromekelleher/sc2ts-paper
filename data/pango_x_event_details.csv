@@ -1,6 +1,6 @@
 node,name,type,num_parents,num_descendant_samples,mutations_averted
 132996,XA,1,2,39,19
-242319,XB,2,3,426,
+242319,XB,2,3,426,7
 463560,XC,2,2,6,36
 1073563,XE/XH,2,2,1330,13
 1093829,XG,2,2,170,7
@@ -34,9 +34,9 @@ node,name,type,num_parents,num_descendant_samples,mutations_averted
 1705726,XBF,1,2,832,7
 1711090,XBZ,4,1,167,
 1719457,XBV,2,2,4,14
-1723601,XAY,1,7,371,
+1723601,XAY,1,7,371,30
 1725068,XBK,4,1,179,
-1727022,XBC,1,4,98,
+1727022,XBC,1,4,98,28
 1728718,XBS,1,2,19,20
 1729116,XBR,1,2,3,24
 1733667,XBQ,4,1,36,
