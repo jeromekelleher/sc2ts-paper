@@ -4,7 +4,9 @@ from pathlib import Path
 import imgkit  # To convert the HTML table to a PNG. Also needs wkhtmltox to be installed
 import numpy as np
 import pandas as pd
+import sc2ts
 import sc2ts.debug as sd
+import tskit
 import tszip
 
 from io import BytesIO
@@ -51,6 +53,78 @@ def save_copying_table_image(ts, node_id, label, save_dir, zoom=None,**kwargs):
     html_str = html_str.replace('<style>', '<style>.copying-table th {text-align: right; font-weight: normal;}')
     save_copying_pattern_image(html_str, label, save_dir, zoom=zoom)
 
+# Graph descendant utility functions for the tree sequence
+# copied from https://github.com/hyanwong/tskit_extras
+def _graph_descendants(ts, node):
+    """
+    Return a boolean array marking the descendants of ``node`` anywhere
+    in the graph, regardless of whether those descendants have ``node``
+    as a genetic ancestor in any local tree.
+
+    Note that this builds arrays of starts and ends of the child edges for each
+    node, which can also be done by using tskit.jit.numba.NumbaTreeSequence
+    for potentially faster descendant queries.
+    """
+    if node < 0:
+        raise ValueError(
+            "Negative node IDs are disallowed; did you pass tskit.NULL?"
+        )
+
+    is_descendant = np.zeros(ts.num_nodes, dtype=bool)
+    parent = ts.edges_parent
+    # Edges for a given parent are contiguous in the edge table, so the child
+    # edges of each node are found from the boundaries between runs of parents.
+    child_start = np.zeros(ts.num_nodes, dtype=np.intp)
+    child_end = np.zeros(ts.num_nodes, dtype=np.intp)
+    if ts.num_edges > 0:
+        run_starts = np.flatnonzero(np.r_[True, parent[1:] != parent[:-1]])
+        run_ends = np.r_[run_starts[1:], ts.num_edges]
+        run_parents = parent[run_starts]
+        child_start[run_parents] = run_starts
+        child_end[run_parents] = run_ends
+    child = ts.edges_child
+    # Code from https://github.com/tskit-dev/tskit/discussions/2869
+
+    stack = [node]
+    while stack:
+        u = stack.pop()
+        for e in range(child_start[u], child_end[u]):
+            v = child[e]
+            if not is_descendant[v]:
+                is_descendant[v] = True
+                stack.append(v)
+    return is_descendant
+
+def graph_samples(ts, node):
+    """
+    Return the sample nodes that are graph descendants of ``node``.
+
+    Graph descendants are reachable by following edges, regardless of
+    whether the edges overlap in genomic coordinates. If ``node`` is a
+    sample, it is included in the result.
+
+    :param tskit.TreeSequence ts: The tree sequence to analyse.
+    :param int node: The node ID.
+    :return: A sorted array of sample node IDs.
+    :rtype: numpy.ndarray
+    """
+    is_descendant = _graph_descendants(ts, node)
+    if ts.nodes_flags[node] & tskit.NODE_IS_SAMPLE:
+        is_descendant[node] = True
+    samples = ts.samples()
+    return samples[is_descendant[samples]]
+
+def num_graph_samples(ts, node):
+    """
+    Return the number of sample nodes graph-reachable from ``node``,
+    including ``node`` if it is a sample.
+
+    :param tskit.TreeSequence ts: The tree sequence to analyse.
+    :param int node: The node ID.
+    :return: The number of descendant samples.
+    :rtype: int
+    """
+    return len(graph_samples(ts, node))
 
 def main_pangoX(pango=None):
     ####
@@ -126,37 +200,61 @@ def main_all():
             sep="\n",
             file=f
         )
-        df = rec.sort_index()
-        for i, row in tqdm(enumerate(df.itertuples()), total=len(df)):
+        first = True
+        for u in tqdm(np.where(ts.nodes_flags & sc2ts.NODE_IS_RECOMBINANT != 0)[0]):
             css_classes = ["nobreak"]
-            if row.net_min_supporting_loci_lft < 4:
-                css_classes.append("fail-lft")
-            if row.net_min_supporting_loci_rgt < 4:
-                css_classes.append("fail-rgt")
-            if i == 0:
-                exclude_stylesheet = False
-                if row.num_descendant_samples == 1:
-                    sample_txt = "sample"
-                else:
-                    sample_txt = "samples"
+            try:
+                row = rec.loc[u]
+                num_descendant_samples = row.num_descendant_samples
+                child_label = row.recombinant_pango
+                parent_labels = [row.parent_left_pango, row.parent_right_pango]
+                if row.net_min_supporting_loci_lft < 4:
+                    css_classes.append("fail-lft")
+                if row.net_min_supporting_loci_rgt < 4:
+                    css_classes.append("fail-rgt")
+            except KeyError:
+                # These should all be >2 parent recombinants
+                use_edges = np.where(ts.edges_child == u)[0]
+                parents = []
+                for p in sorted(use_edges, key=lambda e: ts.edges_left[e]):
+                    if p not in parents:
+                        parents.append(p)
+                assert len(parents) > 2
+                pango = ts.node(u).metadata['pango']
+                if len(parents) > 4:
+                    print(f"Omitting {pango} (node {u}) with more than 4 parents:")
+                    continue
+
+                num_descendant_samples = num_graph_samples(ts, u)
+                child_label = pango
+                parent_labels = [ts.node(p).metadata['pango'] for p in parents]
+                # By default we don't calculate net_min_supporting_loci for > 2 parents,
+                # but the 4 recombinants with > 2 parents have been inspected by eye
+                # and have >4 supporting loci for each parent.
+
+            if num_descendant_samples == 1:
+                sample_txt = "sample"
+            else:
+                sample_txt = "samples"
+            if first:    
                 child_rgt_label = (
                     f'<span style="white-space: pre;"> Copying pattern for recombinant child, '
-                    f'node #{row.Index} ({row.num_descendant_samples} descendant {sample_txt})</span>'
+                    f'node #{u} ({num_descendant_samples} descendant {sample_txt})</span>'
                 )
             else:
-                exclude_stylesheet = True
-                child_rgt_label = f"&nbsp;#{row.Index}&nbsp;({row.num_descendant_samples})"
+                child_rgt_label = f"&nbsp;#{u}&nbsp;({num_descendant_samples})"
             t = get_copying_table(
                 ts,
-                row.Index,
-                child_label=row.recombinant_pango,
-                parent_labels=[row.parent_left_pango, row.parent_right_pango],
+                u,
+                child_label=child_label,
+                parent_labels=parent_labels,
                 child_rgt_label=child_rgt_label,
-                exclude_stylesheet=i>0,
+                exclude_stylesheet=not first,
             )
             print(f'<div class="{" ".join(css_classes)}">{t}</div>', file=f)
+            first = False
             #save_copying_pattern_image(
-            #    t, f"RE_node-QC{s}-{row.recombinant}",
+            #    t, f"RE_node-QC{s}-{u}",
             #    png_dir, child_label=row.sample_id, hide_extra_rows=False, hide_labels=False,
             #    show_bases=True, zoom=4, font_family='Verdana'
             #)
