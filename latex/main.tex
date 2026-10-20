@@ -991,7 +991,7 @@ RIPPLES reported 589 unique recombination events with 43,104 descendant
 samples---corresponding to $\sim$2.7\% of all samples of recombinant origin.
 Over the same time interval, the sc2ts ARG ($k=4$) identifies
 14 recombination events passing QC with
-160 descendant samples among 517,724 samples (0.031\%),
+160 descendant samples among 532,056 samples (0.030\%),
 a 40- to 90-fold reduction.
 The sc2ts ARG identifies more of the well-characterised Pango X lineages
 at a more stringent threshold, and therefore provides us with a
@@ -1532,7 +1532,7 @@ such as Alpha (\edref{fig:subgraph_alpha}), and the
 vast majority of samples were added following the standard
 daily sample grouping mechanisms.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v2_2024-06-06_debug-report.ipynb
-In total, 1,166,734 sample groups were added to the ARG
+In total, 1,166,743 sample groups were added to the ARG
 during primary inference, of which only 150 were
 added via this retrospective grouping mechanism.
 
@@ -1679,7 +1679,7 @@ splitting of long branches.
 For performance reasons, samples that match exactly to an existing
 node in the ARG are not added during primary inference, but are
 stored in a secondary ``match database''.
-During postprocessing, we added 1,504,210 of these exact match samples
+During postprocessing, we added 1,518,530 of these exact match samples
 into the ARG using the stored information.
 
 During primary inference, gap characters (``-'') are masked
@@ -1855,7 +1855,7 @@ having a net number of supporting loci of 4 on the left of the breakpoint
 and 6 on the right.
 Q2 shows an artefactual recombination event
 caused by a 6-base Delta lineage-defining deletion.
-There are 86 (13\%) QC-failing recombination events involving this deletion, and
+There are 84 (12.5\%) QC-failing recombination events involving this deletion, and
 many cases are affected by a known amplicon dropout
 caused by this particular deletion \cite{Sanderson2021}.
 Q3 shows an artefactual recombination event between two JN.1 nodes,
@@ -2389,7 +2389,7 @@ with a complete date and a known country.
 A Pango lineage was taken to be circulating in a country on a given day
 if any sample of that lineage was collected in that country
 within 28 days of that day.
-For each of the 224 QC-passing recombinants
+For each of the 225 QC-passing recombinants
 whose two parents are both samples,
 we recorded the sampling locations of the parents
 and the difference between their node times,
@@ -2404,7 +2404,8 @@ and the parent of each event was replaced by that of another event
 drawn at random from the same block of 20 consecutive events,
 so that the null retains the time of each event
 and hence the sampling composition of the dataset at that time.
-Reported values are the mean over 1,000 permutations,
+Reported values are the mean over 1,000 permutations
+(20 for the lineage-level measure),
 and p-values are the proportion of permutations
 at least as extreme as the observed value.
 The results are insensitive to the block size:
@@ -2736,7 +2737,7 @@ in E and F, points are replicates.
 \centering
 \includegraphics[width=\linewidth]{recombinant_parent_proximity}
 \caption{
-Temporal and geographical proximity of the parents of 224 QC-passing recombinants.
+Temporal and geographical proximity of the parents of 225 QC-passing recombinants.
 (A) Distribution of sampling time difference between the parents.
 (B) Co-frequencies of the sampling locations of the parents.
 (C) Fraction of recombinants whose parents were sampled in the same country,
@@ -2850,7 +2851,7 @@ that can be easily performed using the combination of tskit and VCF Zarr.
 The entire analysis is performed in a short Jupyter
 notebook~\cite{kluyver2016jupyter},
 with the core calculation requiring about 30 lines of Python code.
-Retrieving data from the base alignments and ARGs for 3.13 million samples
+Retrieving data from the base alignments and ARGs for 3.12 million samples
 at the same time over all 27,963 sites took a little under 5 minutes,
 with a peak memory usage of about 4.5GiB of RAM
 on a standard laptop.
@@ -3681,7 +3682,7 @@ See \href{https://github.com/jeromekelleher/sc2ts-paper/discussions/#1}%
 \subsubsection{XB}
 \label{sec:dd_xb}
 
-The displayed subgraph shows a small selection of the 192 XB samples.
+The displayed subgraph shows a small selection of the 202 XB samples.
 XB was originally defined as a recombinant between
 the closely related lineages B.1.634 (left parent) and B.1.631 (right parent)
 from North and Central America \cite{Gutierrez2022}.
@@ -3861,7 +3862,7 @@ In the Pango designation issue
 XAJ is suggested to be a recombinant between
 BA.2.12.1 (left parent) and BA.4 (right parent).
 However, XAJ is not inferred to be a recombinant lineage in the ARG.
-From the subgraph, which shows the 18 XAJ samples
+From the subgraph, which shows the 21 XAJ samples
 plus a small number of relevant BA.4 samples,
 it can be seen that 9 sites leading to XAJ indeed recur
 in the lineage to the closest BA.4 sample (SRR18848050),
