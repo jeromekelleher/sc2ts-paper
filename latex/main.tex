@@ -433,8 +433,7 @@ with the state-of-the-art UShER tree inferred from the same dataset
 and the same set of sites,
 by pruning both to the 3,121,706 samples that they share
 and the 27,963 sites at which the UShER tree has mutations (Methods).
-Excluding Pango X recombinants and treating the descendants of
-the BA.5 and BA.2.86.1 recombination nodes separately,
+Eliminating recombination nodes and their descendants (which we expected to differ),
 we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
 for a set of representative samples from 964 well-sampled lineages
@@ -2134,9 +2133,10 @@ To ensure that each sample is a tip in the simplified topologies,
 a representative sample is then chosen as the oldest sample
 descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
-We then further remove descendants of the XBB origin
-(some of which are not named as X lineages)
-and lineages which are singleton descendants of a putative ARG recombination event.
+We then further remove lineages descending from the XBB origin
+whose names are aliased and so do not start with X (e.g.\ EG.5 and HK.3),
+and 5 lineages which are the only, or nearly the only,
+descendants of a putative ARG recombination event.
 This results in a simplified ARG of 1444 samples,
 each sample from a different Pango lineage.
 
