@@ -622,7 +622,7 @@ catalogued by De Maio et al.~\cite{DeMaio2024} (Methods),
 have an MNS supporting at least one of the parents.
 In the QC-passing events, these are mostly lineage-defining
 (e.g., G27382C-A27383T-T27384C,
-carried by the BA.2-descended right parent in 84 events),
+carried by the BA.2- or BA.4-descended right parent in 84 events),
 and discounting the MNS would move only 7 events below the QC threshold.
 In contrast, all 42 events involving the MNS at positions 27875--27883 fail QC.
 
@@ -976,7 +976,7 @@ have an equivalent RIPPLES recombination event
 (\supref{sec:detailed_ripples}).
 Thus, even at the more lenient threshold ($p=3$) UShER+RIPPLES detects
 around half of the Type I events found by sc2ts with $k=4$, while
-reporting 3.6 times as many events overall. That said, XAJ is among the
+reporting about four times as many events overall. That said, XAJ is among the
 lineages detected by
 UShER+RIPPLES, even at $p=4$, strengthening evidence that this is a false
 negative for sc2ts (\supref{sec:dd_xaj}).
@@ -1621,7 +1621,7 @@ other aspects contributing negligibly.
 The first step in ARG postprocessing is to examine putative recombinants to
 determine whether a more parsimonious explanation is possible. This is done
 by rematching the inferred recombinant sequence against the ARG pruned back
-to include only samples before the date of the recombinant.
+to include only nodes older than the recombinant.
 Where the recent ancestry of a recombinant includes a branch containing
 large numbers of mutations, it is possible
 that a non-recombinant solution could be found by postulating an intermediate
@@ -1634,7 +1634,7 @@ presence of recurrent or reversion mutations in the left or right parent branche
 To help remove these recombination events from the ARG, we note the genomic positions
 of mutations associated with the recombinant, and identify branches
 in their ancestry which have mutations at the same positions. Of these branches,
-we chose the one that contains the largest total number of mutations as
+we chose the one with the most mutations at these positions as
 a candidate for intermediate node creation. This is done by sorting the
 mutations on the branch such that the ones that match the allelic state in the
 recombinant are placed above the intermediate node, and the others are left
@@ -1681,6 +1681,8 @@ node in the ARG are not added during primary inference, but are
 stored in a secondary ``match database''.
 During postprocessing, we added 1,518,530 of these exact match samples
 into the ARG using the stored information.
+In the same step, mutations on the single (unary) child of a
+recombination node were moved onto the recombination node itself.
 
 During primary inference, gap characters (``-'') are masked
 out as missing data, but this excludes both important information
@@ -1711,8 +1713,11 @@ along with the four nucleotides.
 Following this, we iteratively applied the node parsimony
 heuristics in sc2ts until there were no further reductions in
 the numbers of mutations.
+Where a remapped deletion lay next to a recombination breakpoint,
+we then shifted the breakpoint so that the recombinant's state
+at the deleted sites is inherited from a parent rather than
+requiring additional mutations.
 
-% Shifting breakpoints is a minor point, not worth mentioning?
 We computed Pango assignments for all 3,423,603 nodes in the ARG by first
 exporting their aligned sequences to a 95GiB FASTA file and
 then running pangolin (version 4.3.1; pangolin-data version 1.29).
@@ -2075,13 +2080,10 @@ The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
 \subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian
 UShER tree from MAT~\cite{McBroome2021} to tskit format.
-We first downloaded the tree in JSON format (tree.all\_viridian.202409.jsonl)
-and converted the tree topology to tskit node and edge table
-descriptions. We then downloaded the protobuf formatted
-tree (tree.all\_viridian.202409.pb.gz), exported the mutations to
-nucleotide format using \texttt{matUtils summary --translate}
-(usher version 0.6.3 from bioconda), and translated
-these mutations into tskit site and mutation tables.
+We read the protobuf formatted tree (tree.all\_viridian.202409.pb.gz)
+using BTE (version 0.9.3; \url{https://github.com/jmcbroome/BTE}),
+and converted its topology and per-node nucleotide mutations
+directly into tskit tables.
 The resulting file
  contains 5,345,019 nodes, 3,469,029
 mutations and requires 29MB of storage space in tszip format (usher\_viridian\_v1.1.trees.tsz).
@@ -3415,7 +3417,8 @@ and 10 or more at $k=5$.
 The true breakpoint lay within the inferred breakpoint interval
 for 98.8\% of detected recombinants at $k=4$ without added mutations,
 and for at least 94\% at every value of $k$ and number of added mutations.
-In each exception, at least one assigned parent was a different node
+In all exceptions but those for a single recombinant,
+at least one assigned parent was a different node
 from that to which the true parent attaches (see below),
 so the sites bounding the interval are not those that distinguish the true parents.
 Interval widths reproduce the negative relationship with parental divergence
@@ -3562,7 +3565,8 @@ For 83\% of these the relative's breakpoint lay in the inferred breakpoint inter
 For the influenza-like pathogen, by contrast,
 true and false positives alike averted $k$ mutations or barely more (at most 9),
 and nearly all false positives (412 of 461, mostly at $k=3$ with 1,000 samples per day)
-were ties where the ARG had no node close to the sample's true ancestor.
+occurred where the ARG had no node close to the sample's true ancestor,
+and most of these (392) were ties.
 Mutations averted therefore separates genuine from spurious recombinants
 when lineages have diverged enough for recombination to be detected at all.
 In the real ARG, 574 of the 1320 recombination events
