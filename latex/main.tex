@@ -1681,6 +1681,8 @@ node in the ARG are not added during primary inference, but are
 stored in a secondary ``match database''.
 During postprocessing, we added 1,518,530 of these exact match samples
 into the ARG using the stored information.
+In the same step, mutations on the single (unary) child of a
+recombination node were moved onto the recombination node itself.
 
 During primary inference, gap characters (``-'') are masked
 out as missing data, but this excludes both important information
@@ -1711,8 +1713,11 @@ along with the four nucleotides.
 Following this, we iteratively applied the node parsimony
 heuristics in sc2ts until there were no further reductions in
 the numbers of mutations.
+Where a remapped deletion lay next to a recombination breakpoint,
+we then shifted the breakpoint so that the recombinant's state
+at the deleted sites is inherited from a parent rather than
+requiring additional mutations.
 
-% Shifting breakpoints is a minor point, not worth mentioning?
 We computed Pango assignments for all 3,423,603 nodes in the ARG by first
 exporting their aligned sequences to a 95GiB FASTA file and
 then running pangolin (version 4.3.1; pangolin-data version 1.29).
