@@ -2075,13 +2075,10 @@ The workflow is encoded as a Snakemake~\cite{Koster2012snakemake} pipeline
 \subsubsection*{Conversion of UShER tree to tskit}
 To facilitate comparison with the sc2ts ARG, we first converted the Viridian
 UShER tree from MAT~\cite{McBroome2021} to tskit format.
-We first downloaded the tree in JSON format (tree.all\_viridian.202409.jsonl)
-and converted the tree topology to tskit node and edge table
-descriptions. We then downloaded the protobuf formatted
-tree (tree.all\_viridian.202409.pb.gz), exported the mutations to
-nucleotide format using \texttt{matUtils summary --translate}
-(usher version 0.6.3 from bioconda), and translated
-these mutations into tskit site and mutation tables.
+We read the protobuf formatted tree (tree.all\_viridian.202409.pb.gz)
+using BTE (version 0.9.3; \url{https://github.com/jmcbroome/BTE}),
+and converted its topology and per-node nucleotide mutations
+directly into tskit tables.
 The resulting file
  contains 5,345,019 nodes, 3,469,029
 mutations and requires 29MB of storage space in tszip format (usher\_viridian\_v1.1.trees.tsz).
