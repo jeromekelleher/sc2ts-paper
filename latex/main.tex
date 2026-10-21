@@ -3199,7 +3199,8 @@ recombination events, which we include as separate rows of the table:
 the 4 origins of XAC all descend from a single recombination node,
 the 2 origins of XAP descend from the recombination node shared with XZ,
 and XDP and XEB each have origins descending from two distinct
-recombination nodes (denoted XDP/XEB1 and XDP/XEB2).
+recombination nodes (denoted XDP/XEB1 and XDP/XEB2;
+\supref{sec:dd_xdp}).
 
 \siref{tab:pango_x_lineages} summarises
 the 73 Pango X lineages present in the ARG.
@@ -3672,21 +3673,16 @@ See notebook
 
 \subsection{Additional analyses of selected Pango X lineages}
 \label{sec:supplement_indepth_pango_x_lineages}
-In this section we provide some additional analysis on selected Pango X
-lineages in the ARG, chosen to illustrate points discussed elsewhere in the
-text. These analyses are intended to be read in conjunction with
-the subgraph illustrations in Supplementary Data 1.
+In this section we discuss selected Pango X lineages in the ARG,
+chosen to illustrate points made elsewhere in the text
+(see Supplementary Data 1 for visualisations).
+See notebook
+\href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_pango\_x\_details.ipynb}
+{analysis\_pango\_x\_details.ipynb} for details.
 
-\newcommand{\scghdiscussion}[1]{%
-See \href{https://github.com/jeromekelleher/sc2ts-paper/discussions/#1}%
-{github:sc2ts-paper/discussions/#1} for further details.}
-\newcommand{\scghdiscussiontwo}[2]{%
-See \href{https://github.com/jeromekelleher/sc2ts-paper/discussions/#1}%
-{github:sc2ts-paper/discussions/#1} for further details on #2.}
 \subsubsection{XB}
 \label{sec:dd_xb}
 
-The displayed subgraph shows a small selection of the 202 XB samples.
 XB was originally defined as a recombinant between
 the closely related lineages B.1.634 (left parent) and B.1.631 (right parent)
 from North and Central America \cite{Gutierrez2022}.
@@ -3695,77 +3691,48 @@ In the ARG, the XB origin node lies two edges below a weakly supported
 which copies from a B.1.634 sample between positions 6,633 and 23,012
 and from B.1 nodes elsewhere, so that B.1.631 is not identified as a parent
 (\supref{sec:multi_parent_recombinants}).
-% which also contains the key ``R2'' deletion
-% associated with XB / B.1.634 \cite{Gutierrez2022}.
-
-% We hypothesize that there are a set of samples
-% from a number of Pango lineages (including B.1.627, B.1.631, B.1.634)
-% which, should they be added to the ARG, would break up the long branch,
-% with XB being a recombination between two of them.
-% In the absence of these, sc2ts cannot detect XB as a recombinant.
-% Also, note that the XB consensus mutations all occur on or above the long branch.
-% We suspect that the child node of the long branch
-% represents the (potentially recombinant) origin of XB, and
-% the B.1 samples at the bottom left of the subgraph
-% may be misclassified by pangolin.
-
-% Further work is required to determine
-% why these additional samples were not gradually added
-% to the ARG by the daily sample matching process or
-% retrospective sample grouping.
-
-\scghdiscussion{780}
 
 \subsubsection{XM/XAL}
 \label{sec:dd_xm}
 
 XM is a recombinant of BA.1 (left parent) and BA.2 (right parent).
-Sc2ts identifies multiple recombinant origins of XM.
-One of these origins leads to a dominant clade
-(node 1003220 at position 21,595),
-which also contains the only three XAL samples.
+Sc2ts identifies three separate recombinant origins of XM.
+The dominant one (node 1179001, breakpoint interval 20,056--21,618)
+is ancestral to 31 XM samples and all 14 XAL samples.
+The other two each lead to a single XM sample
+(SRR19024311 and SRR18775874),
+and switch to BA.2 further right, at positions 22,599 and 21,762.
 
 Independent evidence for multiple XM origins
-comes from consideration of a 9-base deletion
-in the Spike gene at position 21633,
+comes from a 9-base deletion
+in the Spike gene at position 21,633,
 which is characteristic of BA.2 but not BA.1
-\url{https://github.com/cov-lineages/pango-designation/issues/361}.
-Most of the XM-labeled samples in ARG have this deletion,
-but three (SRR19024311, ERR9447529, and SRR18775874) do not,
-suggesting that XM samples trace to at least two recombination events,
-one to the right of the deletion
-(which leads to the majority of the XM samples), and one to the right.
-In the subgraph, it can be seen that one of the samples, SRR18775874,
-has been (presumably wrongly) placed
-within the main XM deletion-containing clade.
+(\url{https://github.com/cov-lineages/pango-designation/issues/361}).
+Of the 33 XM samples in the ARG, 30 have this deletion.
+Two of the three that do not are the singleton origins,
+whose breakpoints lie to the right of the deletion.
+The third, ERR9447529, is placed within the dominant clade,
+whose breakpoint lies to the left of the deletion.
 As sc2ts does not use deletions for inference,
-deletion remapping (Methods) has reverted the deletion in this case,
-creating many insertions on the branch above the sample (magenta).
-A better use of deletions in sc2ts would likely result
-in placing this sample within one of the two XM clades
-which do not have the deletion.
-
-\scghdiscussion{656}
+deletion remapping (Methods) reverts the deletion in this sample,
+creating insertions on the branch above it.
+A better use of deletions in sc2ts would likely
+give this sample a breakpoint to the right of the deletion.
 
 \subsubsection{XN/XAU}
 \label{sec:dd_xn}
 
-In the sc2ts ARG, the initial XN sample (ERR8986821)
-is well explained as a non-recombinant,
-copying from an inferred internal node
-assigned to BA.2 with only one mutation.
-This internal node is directly supported by the sample ERR9502469.
-All the other XN samples descend from ERR8986821.
-A small clade containing XAU is the sister to XN, and
-there are a series of samples (ERR9453882, ERR9502469, and ERR9823912)
-which support the gradual emergence of both groups
-from a BA.2 ancestral lineage via accumulation of single mutations.
+In the sc2ts ARG, the XN origin is the sample ERR8986821,
+which is one mutation from a BA.2 node
+exactly matched by the BA.2 sample ERR9502469.
+XAU descends from the same BA.2 node
+through three BA.2 nodes, each adding a single mutation.
 
 The evidence supporting the original designation of
 XN and XAU as recombinants may come
 from inaccurate or problematic data sources.
 In the case of XN, support for a recombinant BA.1+BA.2 origin
-is from three mutations that are claimed to be BA-1-specific:
+is from three mutations that are claimed to be BA.1-specific:
 C241T, A2832G, and C3037T
 (\url{https://github.com/cov-lineages/pango-designation/issues/480}).
 However, the BA.1/BA.2 split
@@ -3775,88 +3742,47 @@ meaning that these two mutations are not supportive of recombination.
 Moreover, although the remaining mutation
 claimed to support a recombinant origin, A2832G,
 is typical of BA.1 and not BA.2,
-it is seen in several BA.2 samples (e.g. ERR9453882),
-supporting the idea that it has independently arisen within BA.2.
+it arises independently 12 times within BA.2 in the ARG,
+and XN inherits it from a BA.2 node shared with XAU and 18 BA.2 samples.
 Hence, none of the sites used to designate XN as a recombinant reliably do so.
 
 In the case of XAU, a recombinant origin was proposed
 on the basis of the same three sites, plus C2470T
 (\url{https://github.com/cov-lineages/pango-designation/issues/894}).
 However, C2470T is not BA.1-specific
-(\url{https://github.com/cov-lineages/pango-designation/issues/361}).
-Moreover, some BA.2-designated samples such as ERR9823912 also have C2470T.
+(\url{https://github.com/cov-lineages/pango-designation/issues/361}),
+and it arises independently 29 times within BA.2 in the ARG.
 
-\scghdiscussiontwo{781}{XN}
-
-\scghdiscussiontwo{928}{XAU}
-
-\subsubsection{XQ/XR/XU/XAA/XAG/XAM}
+\subsubsection{XQ/XR/XU/XAA/XAB/XAG/XAM}
 \label{sec:dd_xq}
 
-In the ARG, XR, XU, XAA, XAG, and XAM
-are nested under the XQ recombinant lineage.
-These lineages were designated around the same time,
-approximately within a five-month period (Mar. to Jul., 2022).
-The breakpoint intervals of these lineages,
-as suggested in the Pango designation issues,
+In the ARG, XR, XU, XAA, XAB, XAG, and XAM
+are nested 4--7 edges below the XQ recombination node,
+and their samples were collected within a six-month period (Feb.\ to Aug., 2022).
+The breakpoint intervals proposed in the Pango designation issues
 all occur at the 5' end of the genome,
 within a $\sim$5 kb segment ($\sim$4,300 to $\sim$9,400):
-% TODO: Add URLs to Pango issues?
 XQ (4321-5387), % https://github.com/cov-lineages/pango-designation/issues/468
 XAG (6515-8394), % https://github.com/cov-lineages/pango-designation/issues/709
 XU (6517-9345), % https://github.com/cov-lineages/pango-designation/issues/522
 XAM (8087-9193), % https://github.com/cov-lineages/pango-designation/issues/759
 and XAA (8392-9345). % https://github.com/cov-lineages/pango-designation/issues/664
 
+\subsubsection{XAC}
+\label{sec:dd_xac}
 
-\scghdiscussion{655}
-
-\subsubsection{Xx: XZ/XAC/XAD/XAE/XAP}
-\label{sec:dd_xx}
-
-This nested set of Pango X lineages descends
-from a single recombination node in the ARG,
-which we tentatively refer to as ``Xx''.
-Note that all were designated around the same time,
-with their samples collected
-roughly within a three-month period (Mar., 2022 to Jul., 2022).
-Several samples labelled as BA.2 by Pangolin also lie
-within this recombinant clade,
-including two that are identical
-to the proposed originating recombinant (ERR8146303 and ERR8163061).
-
-Exact relationships within the Xx clade are somewhat tentative.
-For example, there are three highly mutable sites (22792, 28877, and 28878)
-which were not used during inference,
-but were remapped onto the ARG during postprocessing.
-The inferred topology places these sites
-as recurrent (coloured orange, grey, and faded yellow),
-but a more parsimonious arrangement would,
-for example, group the two XAD samples as siblings
-(removing the need to postulate mutations
-A1250G, A28877T, and G28878C to be recurrent).
-It is possible that a more parsimonious arrangement would also
-reduce the recurrent mutations and reversions seen at
-sites 22,792 (four orange mutations) and
-26,060 (two parallel brown mutations),
-but we do not show such a reconstruction,
-which is complicated by the presence of
-additional (non-displayed) samples descending from
-internal nodes in the plotted subgraph.
-
-For XAC, in particular, the Pango designation issue
+In the ARG, the four XAC origin nodes descend from a single recombination node
+with BA.2.3 on the left and BA.1.1 on the right
+(breakpoint interval 25,811--26,028).
+The Pango designation issue
 (\url{https://github.com/cov-lineages/pango-designation/issues/590}) suggests
-it to be a recombinant with two breakpoints:
-BA.2 on the left, BA.1 in the middle, and
-a switch back to a very small region of BA.2 on the right.
-This contrasts with the one-breakpoint BA.2+BA.1 origin inferred in the ARG.
+that XAC has a second breakpoint,
+switching back to a very small region of BA.2 on the right.
 However, only two loci support the right hand BA.2 assignment:
 A29510C and a large deletion
 (deletions are treated as missing data during primary ARG inference).
 Sc2ts does not count this as enough evidence
 to insert an additional breakpoint.
-
-\scghdiscussion{631}
 
 \subsubsection{XAJ}
 \label{sec:dd_xaj}
@@ -3865,26 +3791,17 @@ In the Pango designation issue
 (\url{https://github.com/cov-lineages/pango-designation/issues/826}),
 XAJ is suggested to be a recombinant between
 BA.2.12.1 (left parent) and BA.4 (right parent).
-However, XAJ is not inferred to be a recombinant lineage in the ARG.
-From the subgraph, which shows the 21 XAJ samples
-plus a small number of relevant BA.4 samples,
-it can be seen that 9 sites leading to XAJ indeed recur
-in the lineage to the closest BA.4 sample (SRR18848050),
-which strongly indicates that this is a recombinant
-that is missed by sc2ts.
-The reason that is is not a recombinant in the ARG is
-that 6 sites represent a 6bp deletion and so are not used for inference.
-The remaining three sites (T22917G, T23018G, and G23040A)
-are not enough to exceed our k=4 threshold  for recombinant designation.
-Including deletions in inference would certainly
-lead to XAJ being detected as a recombinant,
-and with a lower threshold of k=3
-the distribution of mutations on the ARG topology suggests
-that it is is even possible that XAJ is a 2-breakpoint recombinant
-with the region from 21765-23535
-coming from the BA.4 labelled sample SRR18848050.
-
-\scghdiscussion{634}
+However, XAJ is not inferred to be a recombinant lineage in the ARG:
+its origin node is 11 mutations from a BA.2.12 sample (ERR8275142).
+Ten of these mutations are shared with the BA.4 sample SRR18848050,
+and all lie between positions 21,765 and 23,535:
+a 6-base deletion at 21,765, T22917G, T23018G, G23040A and A23535G.
+On both sides of this region, XAJ matches the BA.2.12 sample rather than the BA.4 sample.
+This strongly indicates that XAJ is a recombinant carrying a short BA.4 segment,
+missed by sc2ts.
+Deletions are not used for inference,
+and the four remaining sites are not enough
+to support the two breakpoints required at $k=4$.
 
 \subsubsection{XBB}
 \label{sec:dd_xbb}
@@ -3897,22 +3814,45 @@ BJ.1 and BM.1.1.1, respectively.
 In the ARG, the Pango lineage of the right parent is identical,
 but that of the left parent is a related ancestral Pango lineage
 (BA.2.10 instead of BA.2.10.1.1 = BJ.1).
-[FIXME these numbers refer to Viridian v04. There are 5 BJ.1s in Viridian v05]
-This is likely due to the absence of BJ.1 in the ARG:
-only four BJ.1 samples exist in the Viridian dataset,
-a single one passed sequence-level QC, and
-that was then rejected due to high HMM cost.
-Note that BJ.1 differs from BA.2.10 by over 20 mutations
+This is because BJ.1 is absent from the ARG:
+the dataset contains only five BJ.1 samples, and none were added.
+BJ.1 differs from BA.2.10 by over 20 mutations
 (\url{https://github.com/cov-lineages/pango-designation/issues/915}),
-explaining the large number of (gold) de novo mutations
+explaining the 15 mutations on the XBB recombination node
+and the large number of de novo mutations
 in the XBB copying pattern.
 Had BJ.1 samples been present in the ARG,
-the left branch of
-the XBB-associated recombination node
-may have attached to a BJ.1-labelled node, and
-the origin of XBB would required fewer mutations.
+the left parent of
+the XBB recombination node
+might have been a BJ.1 node, and
+the origin of XBB would have required fewer mutations.
 
-\scghdiscussion{929}
+\subsubsection{XDP/XEB}
+\label{sec:dd_xdp}
+
+XDP is designated as a recombinant of JN.1.4 (left parent) and FL.15 (right parent),
+with a breakpoint between 26,834 and 27,809
+(\url{https://github.com/cov-lineages/pango-designation/issues/2451}).
+XEB has the same parents, plus a short FL.15 segment
+at the left end of the genome (breakpoint between 774 and 896;
+\url{https://github.com/sars-cov-2-variants/lineage-proposals/issues/1290}).
+In the ARG, XDP has two origins,
+each a recombination node with a JN.1.4 left parent.
+One (node 1868729) switches to FL.15 at position 26,882
+and is ancestral to 100 XDP samples (including sublineages);
+the other (node 1874998) switches to XBB.1.9.1,
+an ancestral lineage of FL.15, at position 27,810
+and is ancestral to 28 XDP samples.
+Each is also ancestral to an XEB origin node two edges below it,
+and both XEB origin nodes carry the same two mutations, A405G and T774C.
+These are the only sites to the left of position 896
+at which the FL.15 and JN.1.4 parents differ,
+and all nine XEB samples carry the FL.15 alleles.
+Two loci are not enough to support an additional breakpoint,
+so sc2ts explains the FL.15 segment of XEB
+by two mutations, which occur in parallel under each XDP origin.
+This parallelism suggests that the two XDP recombination nodes
+do not represent independent events.
 
 \subsection{Detailed RIPPLES analysis}
 \label{sec:detailed_ripples}
