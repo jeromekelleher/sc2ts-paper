@@ -3716,8 +3716,6 @@ whose breakpoint lies to the left of the deletion.
 As sc2ts does not use deletions for inference,
 deletion remapping (Methods) reverts the deletion in this sample,
 creating insertions on the branch above it.
-A better use of deletions in sc2ts would likely
-give this sample a breakpoint to the right of the deletion.
 
 \subsubsection{XN/XAU}
 \label{sec:dd_xn}
@@ -3744,7 +3742,6 @@ claimed to support a recombinant origin, A2832G,
 is typical of BA.1 and not BA.2,
 it arises independently 12 times within BA.2 in the ARG,
 and XN inherits it from a BA.2 node shared with XAU and 18 BA.2 samples.
-Hence, none of the sites used to designate XN as a recombinant reliably do so.
 
 In the case of XAU, a recombinant origin was proposed
 on the basis of the same three sites, plus C2470T
@@ -3797,9 +3794,9 @@ Ten of these mutations are shared with the BA.4 sample SRR18848050,
 and all lie between positions 21,765 and 23,535:
 a 6-base deletion at 21,765, T22917G, T23018G, G23040A and A23535G.
 On both sides of this region, XAJ matches the BA.2.12 sample rather than the BA.4 sample.
-This strongly indicates that XAJ is a recombinant carrying a short BA.4 segment,
+This suggests that XAJ is a recombinant carrying a short BA.4 segment,
 missed by sc2ts.
-Deletions are not used for inference,
+Deletions are not used for primary inference,
 and the four remaining sites are not enough
 to support the two breakpoints required at $k=4$.
 
@@ -3821,11 +3818,6 @@ BJ.1 differs from BA.2.10 by over 20 mutations
 explaining the 15 mutations on the XBB recombination node
 and the large number of de novo mutations
 in the XBB copying pattern.
-Had BJ.1 samples been present in the ARG,
-the left parent of
-the XBB recombination node
-might have been a BJ.1 node, and
-the origin of XBB would have required fewer mutations.
 
 \subsubsection{XDP/XEB}
 \label{sec:dd_xdp}
