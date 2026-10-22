@@ -25,6 +25,7 @@
 # pango_x_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_mmps_pango_x_events.csv
 # deletion_events.csv -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_deletion_events.csv
 # pango_x_absent_in_arg.csv -> sc2ts_viridian_v2.3_absent_pango_x_matches.csv
+# node_redating.json -> sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_node_redating.json
 #
 # The rematch_recombinants rule is expensive and needs the per-day inference
 # ARGs, so its mutation counts with (k=4) and without (k=1000) recombination
@@ -56,6 +57,9 @@ rule all:
         # Pango X lineages absent from the ARG, with their samples' HMM matches.
         # This is the pango_x_absent_in_arg.csv file in the top-level data directory
         "sc2ts_viridian_v2.3_absent_pango_x_matches.csv",
+        # Summary of original vs re-estimated times for re-dated sample nodes. This is the
+        # node_redating.json file in the top-level data directory
+        "sc2ts_v2_2024-06-06_pr_pp_mp_aph_bps_pango_dated_node_redating.json",
         "logs/final_arg_report_2024-06-06.ipynb",
         # Intersection file needed for ripples analyses
         "usher_intersection_2024-06-06.pb",
@@ -402,6 +406,34 @@ rule date:
     shell:
         """
         python scripts/run_nonsample_dating.py {input} {output} --add-tsdate-metadata
+        """
+
+# To check the internal consistency of dating, mark a set of sample nodes
+# (matched to the internal nodes) as non-samples, re-date with the date rule
+# above, and compare the re-estimated times to the sample dates.
+rule redating_test_input:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{RD_PREFIX}.trees",
+    output:
+        "{RD_PREFIX}_redating_test.trees",
+    shell:
+        """
+        python scripts/node_dating_validation.py mask {input} {output}
+        """
+
+rule node_redating:
+    conda:
+        "sc2ts.yml"
+    input:
+        "{RD_PREFIX}.trees",
+        "{RD_PREFIX}_redating_test_dated.trees",
+    output:
+        "{RD_PREFIX}_node_redating.json",
+    shell:
+        """
+        python scripts/node_dating_validation.py compare {input} {output}
         """
 
 rule tszip:

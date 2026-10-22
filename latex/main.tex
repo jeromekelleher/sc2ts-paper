@@ -466,11 +466,11 @@ for multiple sibling origination nodes
 (\supref{sec:supplement_pango_lineages}).
 The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (Methods).
-We show that the dates agree well with
+We show that the dates broadly agree with
 Nextstrain estimates (\siref{fig:pango_vs_nextstrain_node_times}),
-and overall accuracy is comparable to
-Chronumental~\cite{sanderson2021chronumental} applied to
-an UShER tree (\edref{fig:node_time_testing},
+although re-dating a subset of samples shows that inferred dates
+are systematically too old, by 45 days on average
+(\edref{fig:node_time_testing},
 \supref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the
@@ -1726,9 +1726,12 @@ for classification~\cite{McBroome2024}.
 The resulting Pango and Scorpio designations were then stored as
 metadata associated with each node in the ARG.
 
-When then estimated non-sample node dates using
+We then estimated non-sample node dates using
 the ``variational-gamma'' algorithm in tsdate\cite{Wohns2022,Pope2025}
-version 0.2.3. See \supref{sec:evaluating_node_dates} for
+version 0.2.3, with the dates of the samples and the Wuhan-Hu-1
+reference fixed, and assuming a single mutation rate
+(the number of mutations divided by the total branch length
+of the ARG before dating). See \supref{sec:evaluating_node_dates} for
 more details and analysis of these dates.
 
 Finally, we reduced the metadata stored in the ARG to a minimal
@@ -2579,7 +2582,7 @@ Tanglegram comparing the basic phylogenetic backbones of sc2ts and UShER.
 \centering
 \includegraphics[width=0.85\linewidth]{node_time_testing.pdf}
 \caption{
-Heat map showing differences (in days) between actual and re-estimated sample dates for a subset of internal sample nodes.
+Heat map comparing collection dates ($x$-axis) and re-estimated dates ($y$-axis) for 294,662 sample nodes with children that were re-dated (\supref{sec:evaluating_node_dates}). The dashed line shows $y = x$.
 }
 \label{fig:node_time_testing}
 \end{figure}
@@ -2899,27 +2902,32 @@ To validate the accuracy of times for non-sample internal nodes
 inserted into the ARG (inferred using tsdate),
 we compared the dates of first emergence of
 Nextstrain clades against the Nextstrain SARS-CoV-2 tree
-(downloaded on 2023-01-21).
+(global all-time build, downloaded on 2026-10-22).
+For sc2ts, we took the oldest origin node among the Pango lineages
+assigned to each clade
+(using \url{https://github.com/corneliusroemer/pango-sequences}).
 \siref{fig:pango_vs_nextstrain_node_times} shows
-relatively close agreement for most clades,
-with only three disagreeing by more than 28 days:
-20C (an early lineage from 2020),
-20E (Pango B.1.177 also known as EU1, emerging mid-2020), and
-21B (Pango B.1.617.1 also known as Kappa, emerging in late 2020 to early 2021).
+relatively close agreement for most of the 43 clades,
+with ten lying more than 28 days outside the Nextstrain confidence interval
+(20C, 20F, 20H, 20J, 21A, 21H, 21M, 22A, 23D and 23G),
+nine of which are dated earlier by sc2ts.
 
 Then, to gauge internal consistency of the time estimation procedure,
-we selected a subset of sample nodes,
+we selected 294,662 sample nodes that have children
+(9\% of samples, and the same number as non-sample internal nodes),
 matching the distribution of node times  and
 average number of children of the non-sample internal nodes.
-These selected sample nodes were then re-dated, and
+These selected sample nodes were then re-dated (together with all non-sample nodes), and
 the inferred dates compared against their recorded collection dates.
 The results in \edref{fig:node_time_testing} demonstrate that
-although the inferred and true times are generally very close,
+although the inferred and true times are generally close,
 there is a clear bias with re-estimated times
-being consistently older (by an average of 37 days).
-This is in line with the findings of
-other recent work \cite{sanderson2021chronumental}, and
-is likely to be a consequence of edges
+being consistently older (mean 45.5 days, median 40.9 days),
+in line with the earlier dates of most outlying clades above.
+Only 35\% of re-estimated dates are within 30 days of the collection date,
+compared with 89\% when 10\% of sample dates in an UShER tree
+were hidden from Chronumental \cite{sanderson2021chronumental}.
+This bias is likely to be a consequence of edges
 carrying more mutations than would be expected
 under a neutral molecular clock prior
 (either due to errors in tree-building or genuinely varying mutation rates),
@@ -4053,7 +4061,7 @@ XBB is absent from (B), as the data predate its emergence.
 \centering
 \includegraphics[width=0.85\linewidth]{pango_vs_nextstrain_node_times.pdf}
 \caption{
-Inferred times of internal nodes corresponding to origins of Nextclade clades ($y$-axis) against those estimated in the Nextclade tree ($x$-axis). Confidence intervals shown as horizontal bars. Clades are labelled where dates differ by more than 28 days.
+Inferred times of internal nodes corresponding to origins of Nextstrain clades ($y$-axis) against those estimated in the Nextstrain tree ($x$-axis). Confidence intervals shown as horizontal bars. Clades are labelled where the sc2ts date lies more than 28 days outside the confidence interval.
 }
 \label{fig:pango_vs_nextstrain_node_times}
 \end{figure}
