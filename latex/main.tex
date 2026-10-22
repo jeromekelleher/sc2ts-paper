@@ -1726,7 +1726,7 @@ for classification~\cite{McBroome2024}.
 The resulting Pango and Scorpio designations were then stored as
 metadata associated with each node in the ARG.
 
-When then estimated non-sample node dates using
+We then estimated non-sample node dates using
 the ``variational-gamma'' algorithm in tsdate\cite{Wohns2022,Pope2025}
 version 0.2.3. See \supref{sec:evaluating_node_dates} for
 more details and analysis of these dates.
@@ -2911,7 +2911,7 @@ Then, to gauge internal consistency of the time estimation procedure,
 we selected a subset of sample nodes,
 matching the distribution of node times  and
 average number of children of the non-sample internal nodes.
-These selected sample nodes were then re-dated, and
+These selected sample nodes were then re-dated (together with all non-sample nodes), and
 the inferred dates compared against their recorded collection dates.
 The results in \edref{fig:node_time_testing} demonstrate that
 although the inferred and true times are generally very close,
@@ -4053,7 +4053,7 @@ XBB is absent from (B), as the data predate its emergence.
 \centering
 \includegraphics[width=0.85\linewidth]{pango_vs_nextstrain_node_times.pdf}
 \caption{
-Inferred times of internal nodes corresponding to origins of Nextclade clades ($y$-axis) against those estimated in the Nextclade tree ($x$-axis). Confidence intervals shown as horizontal bars. Clades are labelled where dates differ by more than 28 days.
+Inferred times of internal nodes corresponding to origins of Nextstrain clades ($y$-axis) against those estimated in the Nextstrain tree ($x$-axis). Confidence intervals shown as horizontal bars. Clades are labelled where the sc2ts date lies more than 28 days outside the confidence interval.
 }
 \label{fig:pango_vs_nextstrain_node_times}
 \end{figure}
