@@ -2929,11 +2929,7 @@ as well as inaccuracies in the recording of sample dates.
 
 Here we compare the characteristic mutations
 reported in the literature for Alpha, Delta and Omicron BA.1/BA.2
-with their placement in the ARG
-(highlighted in \edref{fig:subgraph_alpha},
-\edref{fig:subgraph_delta} and \edref{fig:subgraph_omicron}).
-For Omicron, we exclude mutations inherited from B.1, an insertion,
-and one mutation listed at two alternative positions.
+with their placement in the ARG.
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_voc\_origins.ipynb}
 {analysis\_voc\_origins.ipynb} for details.
@@ -2943,7 +2939,8 @@ See notebook
 \label{sec:dd_alpha}
 
 The B.1.1.7 (Alpha) variant emerged in the UK as the first major VOC.
-Its origin is well reconstructed in the ARG as a saltational lineage:
+Its origin is well reconstructed in the ARG as a saltational lineage
+(\edref{fig:subgraph_alpha}):
 the Alpha origin node carries 21 mutations (including four deletions),
 and 20 of the 23 characteristic Alpha mutations \cite{RambautAlpha2020}
 lie on it.
@@ -2971,7 +2968,7 @@ mutation\cite{Li2023indels}.
 The B.1.617.2 lineage (Delta) was first detected in India \cite{ECDCreport}.
 Delta belongs to the ``B.1.617'' clade,
 which also includes Kappa (B.1.617.1) and B.1.617.3 \cite{ECDCreport}.
-In the ARG, these three lineages descend from a node
+In the ARG (\edref{fig:subgraph_delta}), these three lineages descend from a node
 carrying 11 single nucleotide mutations and a 6-base deletion,
 including all six mutations shared by the
 Kappa and Delta constellations\cite{ScorpioKappa,ScorpioDelta}.
@@ -2986,14 +2983,17 @@ Previous phylogenetic analyses suggest that
 Delta and B.1.617.3 are more closely related to each other
 than either is to Kappa\cite{Cherian2021,Farinholt2021}.
 In the ARG, however, Delta and Kappa are sibling lineages,
-with B.1.617.3 as an outgroup.
-The data conflict here:
-two mutations shared by Delta and B.1.617.3
+with B.1.617.3 as an outgroup, and there are some likely-artefactual
+mutational assignments. Two mutations shared by Delta and B.1.617.3
 (C21618G and the 6-base deletion at 22,029)
 are placed above all three lineages and reverted in Kappa;
 G23012C, shared by Kappa and B.1.617.3, is reverted in Delta;
 and the two mutations on the common ancestor of Delta and Kappa
 (C5184T and A20396G) are reverted in most Delta samples.
+These artefacts can partly be explained by the post-hoc handling of
+deletions (\supref{sec:supplement_dels}),
+and could likely be reduced by more sophisticated approaches to seeding (Methods),
+but the overall structure of the clade is captured well.
 
 Stern et al.\cite{Stern2021} classify Delta sublineages into clades
 and identify their characteristic mutations.
@@ -3020,7 +3020,10 @@ it is a saltational lineage with two highly successful sublineages,
 BA.1 and BA.2 \cite{Dor2025}.
 BA.1 and BA.2 are genetically distinct from each other and
 from their parental B.1.1.529 lineage \cite{RambautOmicron2021}.
-The ARG captures this structure.
+The ARG captures this structure (\edref{fig:subgraph_omicron}).
+From the lists of characteristic mutations \cite{RambautOmicron2021}
+we exclude those inherited from B.1, an insertion,
+and one mutation listed at two alternative positions.
 The B.1.1.529-labelled MRCA of BA.1 and BA.2
 carries 38 mutations (including five deletions),
 reflecting its saltational origin, and
@@ -3049,6 +3052,8 @@ However, six BA.1-specific mutations
 are placed on the shared B.1.1.529 node
 and reverted on the branch leading to BA.2,
 rather than on the branch leading to BA.1.
+More sophisticated approaches to seeding (Methods) could likely reduce
+such artefacts, but the overall structure of BA.1 and BA.2 is captured well.
 
 
 \subsection{Analysis of deletion events}
