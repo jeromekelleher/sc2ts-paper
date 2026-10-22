@@ -1,5 +1,6 @@
+import json
+
 import numpy as np
-import pandas as pd
 import pytest
 import tskit
 from click.testing import CliRunner
@@ -64,13 +65,21 @@ def test_mask_seed(ts_path, tmp_path):
 def test_compare(ts_path, tmp_path):
     masked = tmp_path / "masked.trees"
     run("mask", ts_path, masked)
-    out = tmp_path / "out.csv"
+    out = tmp_path / "out.json"
     run("compare", ts_path, masked, out)
-    df = pd.read_csv(out)
+    with open(out) as f:
+        summary = json.load(f)
     ts = tskit.load(ts_path)
-    chosen = np.where(ts.nodes_flags != tskit.load(masked).nodes_flags)[0]
-    np.testing.assert_array_equal(df.node_id, chosen)
-    np.testing.assert_allclose(df.time, df.redated_time)
+    num_chosen = np.sum(ts.nodes_flags != tskit.load(masked).nodes_flags)
+    assert summary["num_redated"] == num_chosen
+    assert summary["mean_difference"] == 0
+    assert summary["num_moved_samples"] == 0
+    assert sum(summary["difference_hist"]["counts"]) == num_chosen
+    assert np.sum(summary["heatmap"]["counts"]) == num_chosen
+    for key in ["time_hist", "children_hist"]:
+        hist = summary[key]
+        assert sum(hist["redated"]) == num_chosen
+        assert len(hist["edges"]) == len(hist["internal"]) + 1
 
 
 def test_compare_reports_moved_samples(ts_path, tmp_path):
@@ -81,6 +90,9 @@ def test_compare_reports_moved_samples(ts_path, tmp_path):
     time[0] -= 1  # node 0 is a leaf sample
     tables.nodes.time = time
     tables.dump(masked)
-    result = run("compare", ts_path, masked, tmp_path / "out.csv")
-    assert "1 of" in result.output
-    assert "max change 1.00" in result.output
+    out = tmp_path / "out.json"
+    run("compare", ts_path, masked, out)
+    with open(out) as f:
+        summary = json.load(f)
+    assert summary["num_moved_samples"] == 1
+    assert summary["max_sample_change"] == 1

@@ -7,9 +7,10 @@ with all the internal nodes), and the re-estimated times are compared with
 the original sample dates.
 """
 
+import json
+
 import click
 import numpy as np
-import pandas as pd
 import tskit
 import tszip
 
@@ -74,13 +75,19 @@ def mask(ts_in, ts_out, seed):
     print(f"Marked {len(chosen)} sample nodes as non-samples")
 
 
+def histogram(values, edges):
+    counts, _ = np.histogram(values, edges)
+    return counts.tolist()
+
+
 @click.command()
 @click.argument("original_ts")
 @click.argument("redated_ts")
-@click.argument("csv_out")
-def compare(original_ts, redated_ts, csv_out):
+@click.argument("json_out")
+def compare(original_ts, redated_ts, json_out):
     """
-    Write the original and re-estimated times of the re-dated sample nodes.
+    Summarise the re-estimated times of the re-dated sample nodes as
+    histograms, for plotting.
     """
     orig = tszip.load(original_ts)
     redated = tszip.load(redated_ts)
@@ -90,22 +97,57 @@ def compare(original_ts, redated_ts, csv_out):
     # Samples that were not chosen should keep their dates, except where
     # tsdate's final constraint step pushes a sample above a node dated older
     # than it.
-    diff = redated.nodes_time[redated_sample] - orig.nodes_time[redated_sample]
-    moved = ~np.isclose(diff, 0)
-    print(
-        f"{np.sum(moved)} of {np.sum(redated_sample)} other samples changed date "
-        f"(max change {np.max(np.abs(diff)):.2f})"
+    sample_change = np.abs(
+        redated.nodes_time[redated_sample] - orig.nodes_time[redated_sample]
     )
     nodes = np.where(orig_sample & ~redated_sample)[0]
-    df = pd.DataFrame(
-        {
-            "node_id": nodes,
-            "time": orig.nodes_time[nodes],
-            "redated_time": redated.nodes_time[nodes],
-        }
+    time = orig.nodes_time[nodes]
+    redated_time = redated.nodes_time[nodes]
+    difference = redated_time - time
+
+    with np.errstate(divide="ignore"):
+        log_children = np.log10(average_children(orig))
+    internal = np.where(~orig_sample & np.isfinite(log_children))[0]
+    time_edges = np.histogram_bin_edges(orig.nodes_time[internal], NUM_BINS)
+    children_edges = np.histogram_bin_edges(log_children[internal], NUM_BINS)
+    difference_edges = np.histogram_bin_edges(difference, 80)
+    heatmap_edges = np.linspace(
+        min(time.min(), redated_time.min()), max(time.max(), redated_time.max()), 51
     )
-    df.to_csv(csv_out, index=False, float_format="%.2f")
-    print(f"Wrote {len(df)} re-dated nodes to {csv_out}")
+    heatmap, _, _ = np.histogram2d(time, redated_time, bins=heatmap_edges)
+
+    summary = {
+        "num_redated": len(nodes),
+        "mean_difference": difference.mean(),
+        "num_moved_samples": int(np.sum(~np.isclose(sample_change, 0))),
+        "max_sample_change": sample_change.max(),
+        "time_hist": {
+            "edges": time_edges.tolist(),
+            "internal": histogram(orig.nodes_time[internal], time_edges),
+            "redated": histogram(time, time_edges),
+        },
+        "children_hist": {
+            "edges": children_edges.tolist(),
+            "internal": histogram(log_children[internal], children_edges),
+            "redated": histogram(log_children[nodes], children_edges),
+        },
+        "difference_hist": {
+            "edges": difference_edges.tolist(),
+            "counts": histogram(difference, difference_edges),
+        },
+        "heatmap": {
+            "edges": heatmap_edges.tolist(),
+            "counts": heatmap.astype(int).tolist(),
+        },
+    }
+    with open(json_out, "w") as f:
+        json.dump(summary, f, indent=1)
+    print(
+        f"{summary['num_moved_samples']} of {np.sum(redated_sample)} other samples "
+        f"changed date (max change {summary['max_sample_change']:.2f}). "
+        f"Mean difference for {len(nodes)} re-dated nodes: "
+        f"{summary['mean_difference']:.1f}"
+    )
 
 
 @click.group()
