@@ -434,9 +434,9 @@ and the 27,963 sites at which the UShER tree has mutations (Methods).
 Eliminating recombination nodes and their descendants (which we expected to differ),
 we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
-for a set of representative samples from 814 well-sampled lineages
+for a set of representative samples from 964 well-sampled lineages
 (Methods; \edref{fig:tanglegram_base};
-Supplementary Figs.~\numref{fig:tanglegram_delta}--\numref{fig:tanglegram_ba5}).
+Supplementary Figs.~\numref{fig:tanglegram_delta}--\numref{fig:tanglegram_ba286}).
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 Overall, we also found close similarity between the ARG
@@ -2124,36 +2124,42 @@ The full UShER tree and the intersection files are available for download
 in tszip format. % (see \nameref{sec:data_and_code_availability}).
 
 \subsubsection*{Comparison of phylogenetic backbones}
-% TODO: the numbers in this section (1286, 4, 1282, two recombination nodes,
-% positions 1-26858) are from the v1.2 ARG; rerun
-% supp_pdf-cophylogeny-tanglegrams.ipynb on the v2.2 intersection files.
-We compare the non-recombinant parts of the ARG with the UShER topology
+We compare the ARG with the UShER topology
 by simplifying the phylogenies to a smaller number of
 Pango representative samples.
-We focus on 1286 Pango lineages comprising those which are defined by perfect ``origination events''
+We focus on 1817 Pango lineages comprising those which are defined by perfect ``origination events''
 (\supref{sec:supplement_pango_lineages})
 but which are not acknowledged recombinant lineages (i.e. Pango X lineages and their descendants).
 To ensure that each sample is a tip in the simplified topologies,
 a representative sample is then chosen as the oldest sample
 descending from the origination node
 whose own descendants (if any) are entirely of the focal Pango type.
-We then further remove 4 lineages
-which are singleton descendants of a putative ARG recombination event,
-This results in a simplified ARG of 1282 samples,
+We then further remove lineages descending from the XBB origin
+whose names are aliased and so do not start with X (e.g.\ EG.5 and HK.3),
+and 5 lineages which are the only, or nearly the only,
+descendants of a putative ARG recombination event.
+This results in a simplified ARG of 1444 samples,
 each sample from a different Pango lineage.
 
-The simplified ARG contains only two recombination nodes, which
-are the two likely artefactual events discussed in
+The simplified ARG contains three recombination nodes with many descendants.
+The first is the likely artefactual BA.2 event discussed in
 \supref{sec:spurious-ancestrally-important-recombinants},
-both of which have breakpoints near the 3' end of genome.
-We therefore compare the UShER topology against the first tree in the ARG (covering
-positions 1-26858; the majority of the genome). To reduce plot density, we consider
-only those Pango lineages with greater than 10 samples.
-\edref{fig:tanglegram_base} shows the resulting tree compared with
-the equivalent dated UShER tree as a tanglegram.
-We also show subtrees for Delta (\siref{fig:tanglegram_delta}),
-BA.2 (\siref{fig:tanglegram_ba2}),
-and BA.5 (\siref{fig:tanglegram_ba5}).
+which we remove by discarding the genome to the right of its breakpoint
+at position 27382.
+The other two are the origins of BA.5
+(\supref{sec:spurious-ancestrally-important-recombinants})
+and BA.2.86.1 (\supref{sec:multi_parent_recombinants}),
+whose descendants we compare separately with the corresponding UShER subtrees;
+the remaining samples form a single non-recombinant tree.
+Of the 1444 samples, 1432 are also present in the UShER tree,
+and to reduce plot density, we consider
+only those from Pango lineages with at least 10 samples.
+\edref{fig:tanglegram_base} shows the resulting non-recombinant tree compared with
+the equivalent dated UShER tree as a tanglegram,
+with the Delta and BA.2 clades collapsed;
+these are shown in \siref{fig:tanglegram_delta} and \siref{fig:tanglegram_ba2}.
+The BA.5 and BA.2.86.1 subtrees are shown in
+\siref{fig:tanglegram_ba5} and \siref{fig:tanglegram_ba286}.
 
 The order of tips in each plot was chosen to reduce tangling,
 as calculated using the NeighborNet algorithm from
@@ -4041,6 +4047,15 @@ Tanglegram comparing sc2ts and UShER on the BA.2 subtree.
 Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 }
 \label{fig:tanglegram_ba5}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{tanglegram_BA.2.86_subtree.pdf}
+\caption{
+Tanglegram comparing sc2ts and UShER on the BA.2.86 subtree.
+}
+\label{fig:tanglegram_ba286}
 \end{figure}
 
 \begin{figure}
