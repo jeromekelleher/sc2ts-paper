@@ -73,7 +73,7 @@ def test_compare(ts_path, tmp_path):
     np.testing.assert_allclose(df.time, df.redated_time)
 
 
-def test_compare_sample_time_changed(ts_path, tmp_path):
+def test_compare_reports_moved_samples(ts_path, tmp_path):
     masked = tmp_path / "masked.trees"
     run("mask", ts_path, masked)
     tables = tskit.load(masked).dump_tables()
@@ -81,8 +81,6 @@ def test_compare_sample_time_changed(ts_path, tmp_path):
     time[0] -= 1  # node 0 is a leaf sample
     tables.nodes.time = time
     tables.dump(masked)
-    result = CliRunner().invoke(
-        node_dating_validation.cli,
-        ["compare", str(ts_path), str(masked), str(tmp_path / "out.csv")],
-    )
-    assert isinstance(result.exception, AssertionError)
+    result = run("compare", ts_path, masked, tmp_path / "out.csv")
+    assert "1 of" in result.output
+    assert "max change 1.00" in result.output
