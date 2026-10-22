@@ -1,102 +1,45 @@
-# -*- coding: utf-8 -*-
 """
-This script parses a Nextstrain NEXUS tree file to find the oldest
-node for each defined clade and extracts its metadata.
+Find the oldest node for each clade in a Nextstrain auspice JSON tree, and
+write its date and date confidence interval to a TSV file.
+
+data/oldest_clade_nodes.tsv was generated from the global all-time GISAID
+build, downloaded on 2026-10-22 (build updated 2025-10-01) from
+https://data.nextstrain.org/ncov_gisaid_global_all-time.json
+
+Usage: python oldest_node.py ncov_gisaid_global_all-time.json oldest_clade_nodes.tsv
 """
 
 import csv
-import re
-import io
-from Bio import Phylo
+import json
+import sys
 
-def parse_nexus_comments(comment_str):
-    if not comment_str:
-        return {}
-    pattern = re.compile(r'([^,=&]+)=({[^}]+}|[^,]+)')
-    attributes = dict(pattern.findall(comment_str))
-    return attributes
 
-def find_oldest_clades(tree_file):
-    try:
-        with open(tree_file, 'r', encoding='utf-8') as f:
-            nexus_content = f.read()
+def find_oldest_clades(tree):
+    oldest = {}
+    stack = [tree]
+    while stack:
+        node = stack.pop()
+        stack.extend(node.get("children", []))
+        attrs = node.get("node_attrs", {})
+        clade = attrs.get("clade_membership", {}).get("value")
+        num_date = attrs.get("num_date")
+        if clade is None or num_date is None:
+            continue
+        date = num_date["value"]
+        if clade not in oldest or date < oldest[clade]["date"]:
+            lo, hi = num_date.get("confidence", [date, date])
+            oldest[clade] = {"node_id": node["name"], "date": date, "ci": (lo, hi)}
+    return oldest
 
-        # To handle "(", ")" inside metadata
-        def sanitize_comments(match):
-            return match.group(0).replace('(', '_').replace(')', '_')
-
-        sanitized_content = re.sub(r'\[&[^\]]*\]', sanitize_comments, nexus_content)
-        handle = io.StringIO(sanitized_content)
-        tree = Phylo.read(handle, 'nexus')
-        print("Successfully parsed the tree file.")
-
-    except FileNotFoundError:
-        print(f"Error: File '{tree_file}' not found.")
-        return None
-    except Exception as e:
-        print(f"Error reading or parsing the tree file: {e}")
-        return None
-
-    oldest_clades = {}
-    nodes_processed = 0
-
-    for node in tree.find_clades():
-        nodes_processed += 1
-        if node.comment:
-            attributes = parse_nexus_comments(node.comment)
-
-            clade_name = attributes.get('clade_membership')
-            date_str = attributes.get('num_date')
-            node_id = node.name if node.name else 'NA'
-
-            if clade_name and date_str:
-                try:
-                    date = float(date_str)
-                    
-                    if clade_name not in oldest_clades or date < oldest_clades[clade_name]['date']:
-                        oldest_clades[clade_name] = {
-                            'node_id': node_id,
-                            'date': date,
-                            'date_CI': attributes.get('num_date_CI', 'NA')
-                        }
-                except (ValueError, TypeError):
-                    continue
-    
-    return oldest_clades
-
-def write_output_tsv(data, output_file):
-    if not data:
-        print("No clade data found.")
-        return
-        
-    sorted_clade_names = sorted(data.keys())
-
-    try:
-        with open(output_file, 'w', newline='', encoding='utf-8') as tsvfile:
-            header = ['clade_membership', 'oldest_node_id', 'date', 'date_CI']
-            writer = csv.writer(tsvfile, delimiter='\t')
-            writer.writerow(header)
-            
-            for clade_name in sorted_clade_names:
-                clade_info = data[clade_name]
-                original_clade_name = clade_name.replace('_', ' ').strip()
-                writer.writerow([
-                    original_clade_name,
-                    clade_info['node_id'],
-                    clade_info['date'],
-                    clade_info['date_CI']
-                ])
-                
-        print(f"Successfully wrote data to '{output_file}'")
-    except IOError as e:
-        print(f"Error writing to file '{output_file}': {e}")
 
 if __name__ == "__main__":
-    NEXUS_FILE_PATH = 'nextstrain_ncov_gisaid_global_all-time_timetree-2023-01-21.nex'
-    OUTPUT_TSV_PATH = 'oldest_clade_nodes.tsv'
-    
-    oldest_clade_data = find_oldest_clades(NEXUS_FILE_PATH)
-    
-    if oldest_clade_data:
-        write_output_tsv(oldest_clade_data, OUTPUT_TSV_PATH)
-
+    with open(sys.argv[1]) as f:
+        tree = json.load(f)["tree"]
+    oldest = find_oldest_clades(tree)
+    with open(sys.argv[2], "w", newline="") as f:
+        writer = csv.writer(f, delimiter="\t")
+        writer.writerow(["clade_membership", "oldest_node_id", "date", "date_CI"])
+        for clade in sorted(oldest):
+            row = oldest[clade]
+            lo, hi = row["ci"]
+            writer.writerow([clade, row["node_id"], row["date"], f"{{{lo},{hi}}}"])
