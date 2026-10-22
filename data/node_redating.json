@@ -1,6 +1,8 @@
 {
  "num_redated": 294662,
  "mean_difference": 45.456655682736866,
+ "median_difference": 40.87144522412166,
+ "fraction_within_30_days": 0.3459217679918008,
  "num_moved_samples": 10,
  "max_sample_change": 5.240107092260132,
  "time_hist": {

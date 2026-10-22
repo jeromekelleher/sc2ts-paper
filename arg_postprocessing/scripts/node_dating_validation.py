@@ -119,6 +119,9 @@ def compare(original_ts, redated_ts, json_out):
     summary = {
         "num_redated": len(nodes),
         "mean_difference": difference.mean(),
+        "median_difference": np.median(difference),
+        # Comparable to the accuracy measure used for Chronumental
+        "fraction_within_30_days": np.mean(np.abs(difference) <= 30),
         "num_moved_samples": int(np.sum(~np.isclose(sample_change, 0))),
         "max_sample_change": sample_change.max(),
         "time_hist": {

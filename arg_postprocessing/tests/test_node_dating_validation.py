@@ -73,6 +73,8 @@ def test_compare(ts_path, tmp_path):
     num_chosen = np.sum(ts.nodes_flags != tskit.load(masked).nodes_flags)
     assert summary["num_redated"] == num_chosen
     assert summary["mean_difference"] == 0
+    assert summary["median_difference"] == 0
+    assert summary["fraction_within_30_days"] == 1
     assert summary["num_moved_samples"] == 0
     assert sum(summary["difference_hist"]["counts"]) == num_chosen
     assert np.sum(summary["heatmap"]["counts"]) == num_chosen
