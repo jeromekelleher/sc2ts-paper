@@ -94,7 +94,7 @@ visibility of these data. [\ldots] A maximum of ten Extended Data display items
 
 \noindent We have converted ten supplementary display items to Extended Data:
 the tanglegram comparing sc2ts and UShER backbones,
-the node date validation,
+the node date re-estimation,
 the Alpha, Delta and Omicron subgraphs,
 recombinant quality control,
 the synthetic recombinant and epidemic simulation results,
@@ -224,10 +224,11 @@ The new simulations now quantify this directly: with $k = 4$, 89\% of synthetic
 Alpha$\times$Delta recombinants were detected, compared with only 40\% of
 Alpha$\times$Alpha recombinants whose parents differ at relatively few sites.
 The forward-time simulations show the same effect across whole epidemics. We
-have therefore revised the relevant Results section to state explicitly that
-the relationship between diversity and inferred recombination reflects both
-biological opportunity for recombination and variation in our ability to detect
-it, and that these effects cannot be cleanly separated in the empirical data.
+have therefore revised the relevant Results section to state that the
+relationship between diversity and inferred recombination is expected in part
+from the inference procedure, and is consistent both with recombination
+occurring more often and with it being detected more often when diversity is
+high.
 
 \noindent \textbf{Reviewer \#1:} \textit{``There has been some research in the effect
 of recurrent mutli-nucleotide mutations with convincing examples at quite a
@@ -305,7 +306,9 @@ consistent with previous results, rather than as validation. We reserve
 ``validation'' for settings in which the truth is known,
 principally the new simulations. We have similarly
 removed claims of accuracy where these were supported only by comparisons
-between alternative inferences.
+between alternative inferences, and we now describe the ARG as providing a
+conservative estimate of detectable recombination, rather than a stringent
+lower bound.
 
 The new simulation studies also help address the underlying concern directly,
 because they allow us to quantify performance against known truth and identify
@@ -353,13 +356,13 @@ appropriately qualified wording. As noted above, we now reserve validation
 terminology for analyses in which the truth is known.
 
 
-\noindent \textbf{Reviewer \#1:} ``I am not sure if the authors will have seen
+\noindent \textbf{Reviewer \#1:} \textit{``I am not sure if the authors will have seen
 this preprint,
 \url{https://www.biorxiv.org/content/10.64898/2026.02.19.706861v1.abstract},
 which provides a way to visualize and explore large-scale ARGs? I realize this
 was published very recently, so it may not be ready for this specific
 application. One way that this resource could be made much more accessible
-would be to present this ARG on the platform.''
+would be to present this ARG on the platform.''}
 
 We thank the reviewer for pointing us to Lorax, which has since been published
 in Bioinformatics. We agree that interactive visualisation would be an
@@ -387,9 +390,7 @@ distinction might be worth addressing briefly.''}
 We agree that this is an important distinction. We now note in the Methods that
 the Viridian UShER tree used in our comparison has not been subject to the same
 extensive community inspection and manual curation as the public UShER tree
-used in the original RIPPLES analysis. This difference may affect the initial
-placement of putative recombinant sequences and should therefore be kept in
-mind when interpreting the comparison.
+used in the original RIPPLES analysis.
 
 \noindent \textbf{Reviewer \#1:} \textit{``Is there a plan to update the ARG with newly
 produced data? This would certainly help establish this as a `real time'
@@ -522,7 +523,7 @@ the expected trade-off: increasing $k$ makes recombinant calls more conservative
 but reduces sensitivity, particularly when the parents are closely related. For
 example, among Alpha$\times$Alpha recombinants, detection falls from 62\% at
 $k$ = 3 to 40\% at $k$ = 4 and 21\% at $k$ = 5, while the proportion of detected events
-passing our QC criterion rises from 71\% to more than 99\%. The forward-time
+passing our QC criterion rises from 71\% to over 99\% and 100\%. The forward-time
 simulations show the same general precision--recall trade-off across complete
 epidemics.
 
@@ -534,8 +535,8 @@ are consistently supported by multiple loci on both sides of the breakpoint.
 
 We have also expanded the rationale for other heuristic choices. In particular,
 the Methods now explain the HMM-cost threshold used to identify implausibly
-divergent samples and the seven-day window used when considering retrospective
-insertion of saltational lineages. Our aim is to make the decision-making
+divergent samples, and the seven-day window over which groups of such samples
+must accumulate support before being added retrospectively. Our aim is to make the decision-making
 underlying these parameters explicit enough that users can adapt them to the
 sampling density and evolutionary rate of a different pathogen.
 

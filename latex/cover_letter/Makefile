@@ -1,4 +1,4 @@
-all: cover_letter.pdf response_letter.pdf
+all: response_letter.pdf
 
 cover_letter.pdf: cover_letter.tex
 	pdflatex cover_letter.tex
