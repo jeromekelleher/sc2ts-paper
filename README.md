@@ -10,9 +10,9 @@ This repository contains all analysis for the preprint
 - sc2ts [homepage](https://tskit.dev/sc2ts)
 - sc2ts package on [PyPi](https://pypi.org/project/sc2ts/)
 - sc2ts [documentation](https://tskit.dev/sc2ts/docs/)
-- Inferred ARG in [tszip format](https://zenodo.org/records/17558489/files/sc2ts_viridian_v1.2.trees.tsz)
+- Inferred ARG in [tszip format](https://zenodo.org/records/23565250/files/sc2ts_viridian_v2.3.trees.tsz)
 - Viridian dataset in [VCZ format](https://zenodo.org/records/16314739/files/viridian_mafft_2024-10-14_v1.vcz.zip)
-- UShER Viridian tree [tszip format](https://zenodo.org/records/17558489/files/usher_viridian_v1.0.trees.tsz)
+- UShER Viridian tree [tszip format](https://zenodo.org/records/23565250/files/usher_viridian_v1.1.trees.tsz)
 
 ## Repo layout
 
