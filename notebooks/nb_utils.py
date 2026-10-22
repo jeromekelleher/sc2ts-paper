@@ -325,7 +325,8 @@ class D3ARG_viz:
         height=950,
         parent_levels=20,
         child_levels=1,
-        restrict_to_first=None,  # restrict every pango to the first N samples
+        restrict_to_first=None,
+        exclude_clones=None,
         exclude=None,
         include=None,
         highlight_nodes=True,
@@ -340,6 +341,12 @@ class D3ARG_viz:
         list of Pango lineages (designed for recombiant pangos, e.g. "XA")
 
         If positions_file is None, look for a file called "'-'.join(sorted(pangos)) + '.json'", e.g. XA-XB.json
+
+        If restrict_to_first is given, only the first N samples of each Pango lineage will be shown.
+        If exclude_clones is True, any sample nodes that have no children and no mutations
+        will not be shown (unless explicitly included). And exception to this is made if the
+        parent node is not a sample, in which case the oldest clonal node descending
+        from the parent will be shown, even if it is clonal.
         """
         pangos = [pangos] if isinstance(pangos, str) else pangos
         exclude = set() if exclude is None else set(list(exclude))
@@ -368,6 +375,26 @@ class D3ARG_viz:
             shown_pango = shown_pango - set(exclude)
             used_pango_samples.update(shown_pango)
             pango_samples |= ps
+        if exclude_clones:
+            omit = collections.defaultdict(list)
+            nodes_time = self.ts.nodes_time
+            tree = self.ts.first()
+            muts_per_node = np.bincount(self.ts.mutations_node, minlength=self.ts.num_nodes)
+            node_num_child_edges = np.bincount(self.ts.edges_parent, minlength=self.ts.num_nodes)
+            node_num_parent_edges = np.bincount(self.ts.edges_child, minlength=self.ts.num_nodes)
+    
+            for n in used_pango_samples:
+                if node_num_child_edges[n] == 0 and muts_per_node[n] == 0 and node_num_parent_edges[n] == 1:
+                    # only one parent, so first tree must have the parent
+                    parent = tree.parent(n)
+                    if parent != tskit.NULL:
+                        omit[parent].append(n)
+            for parent in omit.keys():
+                if not self.ts.node(parent).is_sample():
+                    children = sorted(omit[parent], key=lambda n: nodes_time[n])
+                    # Keep the earliest child (highest node time)
+                    omit[parent] = children[:-1]
+            used_pango_samples = used_pango_samples - set(u for omitted in omit.values() for u in omitted)
 
         nodes = list((used_pango_samples | include) - exclude)
         used = self.d3arg.subset_graph(nodes, depth=(parent_levels, child_levels))
