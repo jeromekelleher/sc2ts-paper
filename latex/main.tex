@@ -463,7 +463,7 @@ increasing to 2457 (81\%) when we allow
 for multiple sibling origination nodes
 (\supref{sec:supplement_pango_lineages}).
 The ARG is time-resolved, with internal node dates estimated
-by a non-parametric method~\cite{Pope2025} (Methods).
+using tsdate~\cite{Pope2025} (Methods).
 We show that the dates broadly agree with
 Nextstrain estimates (\siref{fig:pango_vs_nextstrain_node_times}),
 although re-dating a subset of samples shows that inferred dates
@@ -1102,17 +1102,16 @@ assumption that genetic diversity is gradually accumulating within
 the structure holds. Large changes (i.e., saltation events) present
 significant challenges, and the results of the algorithm should
 be regarded more critically in these situations.
-Simulations of other pathogens (\supref{sec:slim_simulations})
-suggest that the recombinants sc2ts infers are reliable
+Simulations suggest that the recombinants sc2ts infers are reliable
 across a range of mutation rates, population sizes and sampling densities,
 but that recombination early in an epidemic, or in a slowly evolving pathogen,
-leaves too few distinguishing mutations to be detected by sc2ts
-or any other sequence-based method.
+leaves too few distinguishing mutations to be detected.
 We have not considered reassortment in segmented genomes,
 which would require extensions to the model.
 Future methodological improvements may combine the strengths
-of sophisticated model-based inferences with the power
-of non-parametric inference~\cite{Bisschop2025likelihoods}.
+of sophisticated model-based approaches with the
+speed and scalability of parsimony based
+inference~\cite{Bisschop2025likelihoods}.
 
 \clearpage % Clear all remaining figures and tables then start a new page
 
