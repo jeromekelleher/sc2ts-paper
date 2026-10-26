@@ -1,5 +1,5 @@
 *.tsz
-consensus_mutations.json
+pango-consensus-sequences_summary.json
 *.nex
 *.zip
 *.vcz

@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import json
 import os
 import requests
-import fileinput
 from pathlib import Path
 
 import msprime  # only for the NODE_IS_RE_EVENT flag
@@ -405,8 +404,7 @@ class D3ARG_viz:
         ) if show_title else None
         if highlight_mutations is None:
             if parent_pangos is not None and self.lineage_consensus_muts is not None:
-                # Could replace with https://github.com/andersen-lab/Freyja/blob/main/freyja/data/lineage_mutations.json
-                highlight_mutations = self.lineage_consensus_muts.get_unique_mutations(p, parent_pangos)
+                highlight_mutations = self.lineage_consensus_muts.get_unique_mutations(pangos, parent_pangos)
 
         return self.plot_sc2ts_subgraph(
             list(nodes),
@@ -882,7 +880,6 @@ def tanglegram(
     return svgtree_lft, lft_rev_map, rgt_rev_map
 
 
-## from run_lineage_imputation.py
 class MutationContainer:
 
     def __init__(self):
@@ -917,87 +914,36 @@ class MutationContainer:
     def get_mutations(self, pango):
         index = self.names[pango]
         return np.rec.fromarrays(
-            [self.positions[index], self.alts[index]],
+            [
+                np.array(self.positions[index], dtype=int),
+                np.array(self.alts[index], dtype="U1"),
+            ],
             names="positions,derived_states",
         )
 
-    def get_unique_mutations(self, pango, parent_pangos):
-        # return the mutations in item that are not in any of the parents
+    def get_unique_mutations(self, pangos, parent_pangos):
+        # return the mutations in any of pangos that are not in any of the parents
+        if isinstance(pangos, str):
+            pangos = [pangos]
         if isinstance(parent_pangos, str):
             parent_pangos = [parent_pangos]
-        idx = self.names[pango]
-        use = np.rec.fromarrays(
-            [self.positions[idx], self.alts[idx]], names="positions,derived_states"
-        )
-        indexes = [self.names[p] for p in parent_pangos]
-        omit = np.concatenate(
-            [
-                np.rec.fromarrays(
-                    [self.positions[i], self.alts[i]], names="positions,derived_states"
-                )
-                for i in indexes
-            ]
-        )
-        return np.setdiff1d(use, omit)
+        use = np.concatenate([self.get_mutations(p) for p in pangos])
+        omit = np.concatenate([self.get_mutations(p) for p in parent_pangos])
+        return np.setdiff1d(use, omit).view(np.recarray)
 
 
-## from run_lineage_imputation.py
-def read_in_mutations(
-    json_filepath,
-    verbose=False,
-    exclude_positions=None,
-):
+def read_in_mutations(json_filepath):
     """
-    Read in lineage-consensus mutations from COVIDCG input json file.
-    Assumes root lineage is B.
+    Read per-lineage consensus nucleotide substitutions from the summary JSON
+    of https://github.com/corneliusroemer/pango-sequences, which is built
+    from the sequences designated in pango-designation. Deletions are not included.
     """
-    if exclude_positions is None:
-        exclude_positions = set()
-    else:
-        exclude_positions = set(exclude_positions)
-    with fileinput.hook_compressed(json_filepath, "r") as file:
-        linmuts = json.load(file)
-
-    # Read in lineage consensus mutations
-    linmuts_dict = MutationContainer()
-    linmuts_dict.add_root("B")
-    if verbose:
-        check_multiallelic_sites = collections.defaultdict(
-            set
-        )  # will check how many multi-allelic sites there are
-
-    excluded_pos = collections.defaultdict(int)
-    excluded_del = collections.defaultdict(int)
-    for item in linmuts:
-        if item["pos"] in exclude_positions:
-            excluded_pos[item["pos"]] += 1
-        elif item["ref"] == "-" or item["alt"] == "-":
-            excluded_del[item["pos"]] += 1
-        else:
-            linmuts_dict.add_item(item["name"], item["pos"], item["alt"])
-            if verbose:
-                check_multiallelic_sites[item["pos"]].add(item["ref"])
-            if verbose:
-                check_multiallelic_sites[item["pos"]].add(item["alt"])
-
-    if verbose:
-        multiallelic_sites_count = 0
-        for value in check_multiallelic_sites.values():
-            if len(value) > 2:
-                multiallelic_sites_count += 1
-        print(
-            "Multiallelic sites:",
-            multiallelic_sites_count,
-            "out of",
-            len(check_multiallelic_sites),
-        )
-        print("Number of lineages:", linmuts_dict.size)
-        if len(excluded_pos) > 0:
-            print(
-                f"Excluded {len(excluded_pos)} positions not in ts:",
-                f"{list(excluded_pos.keys())}",
-            )
-        if len(excluded_del) > 0:
-            print("Excluded deletions at positions", list(excluded_del.keys()))
-
-    return linmuts_dict
+    with open(json_filepath) as f:
+        summary = json.load(f)
+    linmuts = MutationContainer()
+    for lineage, info in summary.items():
+        linmuts.add_root(lineage)
+        for mut in info["nucSubstitutions"]:
+            if mut:  # skip empty strings
+                linmuts.add_item(lineage, int(mut[1:-1]), mut[-1])
+    return linmuts
