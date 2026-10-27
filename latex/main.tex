@@ -405,15 +405,15 @@ Of the nodes, 1324 represent recombination events,
 resulting in 511 distinct trees along the genome
 (some events occurred at the same breakpoints).
 Using the tskit Python API,
-% NOTE: numbers from Yan's laptop are:
-% ts = tszip.load(): user 484 ms, sys: 90.4 ms, total: 575 ms
-% sc2ts.node_data(ts, inheritance_stats=False): user 396 ms, sys: 42.8 ms, total: 439 ms
-the ARG can be loaded into memory in half a second,
+% NOTE: numbers from notebooks/example_data_processing.ipynb (Apple M2):
+% ts = tszip.load(): wall time 769 ms
+% sc2ts.node_data(ts, inheritance_stats=False): wall time 639 ms
+the ARG can be loaded into memory in under a second,
 and the vectorised representation integrates tightly
 with powerful data science tools, such as NumPy~\cite{Harris2020array}.
 For example, a tabular summary of the 3.42 million nodes
 including sample IDs and Pango assignments
-can be derived in less than half a second.
+can be derived in under a second.
 The ARG can therefore be easily accessed using familiar tools
 with minimal hardware requirements, enabling diverse bespoke analyses.
 
@@ -2863,8 +2863,8 @@ The entire analysis is performed in a short Jupyter
 notebook~\cite{kluyver2016jupyter},
 with the core calculation requiring about 30 lines of Python code.
 Retrieving data from the base alignments and ARGs for 3.12 million samples
-at the same time over all 27,963 sites took a little under 5 minutes,
-with a peak memory usage of about 4.5GiB of RAM
+at the same time over all 27,963 sites took just under 6 minutes,
+with a peak memory usage of about 2.9GiB of RAM
 on a standard laptop.
 
 See notebook
