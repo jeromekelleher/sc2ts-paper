@@ -3963,19 +3963,28 @@ with a BA.4 left parent and a BA.2 right parent and a breakpoint at
 position 26858 (interval 23041--26858).
 It requires 4 mutations with recombination and 9 without (5 averted),
 and has net supporting loci of 6 and 5 on the left and right, and so passes QC.
-The second is a BA.2 node (244,192 descendants),
+The second node (244,192 descendants) is classified as BA.2,
 with a BA.2.10 left parent and a BA.1.1 right parent and a breakpoint
 at position 27382 (interval 26859--27382).
 It requires no mutations with recombination and 5 without (5 averted),
-and has only 3 net supporting loci on the right, and so fails QC.
+but has only 3 net supporting loci on the right, as 3 of the mutations are the
+standard MNS at positions 27382-27384. This node therefore fails QC and
+is highly likely to be spurious.
 
 These two events are nested: to the right of position 26858,
 the BA.5 origin descends from the BA.2 node through its right parent,
 and the two nodes share 243,642 descendants
 (mostly BA.5 and its descendant lineages, such as BQ.1, BE and BF).
 Both events are detected by 3SEQ, but neither by rebar or CovRecomb.
-Neither BA.5 nor BA.2 is designated as a recombinant, and both events
-are weakly supported, so they are likely to be spurious.
+
+The right hand parent of BA.5 in the ARG differs by only two mutations from a
+BA.2-labelled sample. However, the left hand parent is probably incorrect: it
+has a 686-694 deletion that is not present in BA.5, and this parental assignment
+is an artefact of sc2ts ignoring deletions (see \supref{sec:supplement_dels}).
+Nevertheless, BA.4 nodes exist in the ARG without this deletion, and that provide
+a perfect match to the left hand BA.5 parent. We therefore suggest that any investigation
+of a potential recombinant origin for BA.5, as noted by \cite{Tegally2022}, requires
+further work to incorporate deletions into ARG inference.
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_recombinants\_many\_descendants.ipynb}
 {analysis\_recombinants\_many\_descendants.ipynb} for details.
