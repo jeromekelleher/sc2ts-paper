@@ -389,7 +389,7 @@ See Methods for details.
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
 Using sc2ts, we built an ARG from 3,128,941 samples
-from the Viridian dataset~\cite{Hunt2026},
+in the Viridian dataset~\cite{Hunt2026},
 collected between 2020-01-01 and 2024-06-06.
 Inference took 19 days on a server with
 192 threads (AMD EPYC 9655P) and 1 TB of RAM
@@ -431,8 +431,7 @@ with the state-of-the-art UShER tree inferred from the same dataset
 and the same set of sites,
 by pruning both to the 3,121,706 samples that they share
 and the 27,963 sites at which the UShER tree has mutations (Methods).
-Eliminating recombination nodes and their descendants (which we expected to differ),
-we found very similar relationships among lineages in
+We found very similar relationships among non-recombinant lineages in
 the ARG and UShER tree based on tanglegrams
 for a set of representative samples from 964 well-sampled lineages
 (Methods; \edref{fig:tanglegram_base};
@@ -690,8 +689,8 @@ The parents of a recombinant are expected to coincide in both time and geographi
 % v2.3 ARG
 For the 225 QC-passing recombinants whose two parents are both sampled genomes,
 the parents were sampled a median of 25 days apart
-and 134 (60\%) in the same country,
-compared with 39 days and 40\% when parents are exchanged
+with 134 (60\%) from the same country,
+compared to a null expectation of 39 days and 40\% when parents are exchanged
 between recombinants of similar date
 ($p < 0.001$ in both cases, 1,000 permutations;
 Methods, \supref{sec:parent_cocirculation},
@@ -1165,7 +1164,7 @@ or in a vectorisable packed binary format for efficiency
 (used to attach sample identifiers and Pango lineage assignments in the final ARGs).
 Tskit also provides a ``provenance'' table,
 which provides a mechanism for recording software version and
-parameter information through each step of complex processing pipelines.
+parameter information through each processing pipeline step.
 
 \subsubsection*{Pandemic-scale alignment storage}
 To provide the efficient access to alignment data required for inference with sc2ts,
@@ -1256,7 +1255,7 @@ Alignments read from the VCF Zarr file were first preprocessed
 to mask any non-nucleotide characters (A, C, G, or T) as missing data
 using Numba accelerated \cite{Lam2015numba} Python code.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
-Then, excluding the 265 masked sites, we filtered any samples that had missing data at more than 500 sites (this was set to 10,000 sites for the initial period up to 2020-03-01
+Then, excluding the 265 masked sites, we filtered any samples that had missing data at more than 500 sites (or 10,000 sites for the initial period up to 2020-03-01
 and for the final period from 2023-01-01,
 when sampling density was low).
 
@@ -1514,8 +1513,8 @@ to the ARG short, and making it unlikely that sporadic time travellers
 form a coherent group.
 We also require that the samples are assigned to at most 3
 different Pango lineages in the Viridian metadata.
-Then, we build a local tree of the samples and consider
-some tree metrics to evaluate whether the samples within the
+Then, we build a local tree of the samples and use
+tree metrics to evaluate whether the samples within the
 group are closely related. If we have at least 2 mutations
 shared by all samples, there are at most 2 recurrent mutations
 within the group and at most 5 mutations per sample on average,
@@ -1550,9 +1549,9 @@ in the same way as a daily sample cluster.
 Because the inferred ancestor of a saltational lineage is much
 closer to the contemporaneous ARG than any individual sample,
 this places the lineage's origin more reliably.
-Seed samples dated later than the insertion date keep their own dates,
+Seed samples younger than the insertion date keep their own sampling time,
 and are only available for subsequent samples to copy from
-after that date.
+after that time.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/inference/viridian_config.toml
 The full list of seed samples is given in the
 inference configuration file.
