@@ -272,7 +272,7 @@ to UShER, while automatically detecting and incorporating recombination
 in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
-and artifacts~\cite{Hunt2024},
+and artifacts~\cite{Hunt2026},
 we present an ARG with 2.48 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
@@ -373,7 +373,7 @@ See Methods for details.
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
 Using sc2ts, we built an ARG from 2,482,157 samples
-from the Viridian v04 dataset~\cite{Hunt2024},
+from the Viridian v04 dataset~\cite{Hunt2026},
 collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a server with
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
@@ -972,7 +972,7 @@ saltational variants can also be detected by analysing the rate and position of 
 branches (which persist after accounting for recombination).
 We envisage the ARG as a long-term stable resource---building on the
 high-quality, freely available reassemblies of
-the Viridian dataset~\cite{Hunt2024}---to facilitate the study
+the Viridian dataset~\cite{Hunt2026}---to facilitate the study
 of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
 
 The other primary contribution of this work is the method used to
@@ -1031,7 +1031,7 @@ These results underscore the utility of the ARG
 and provide a template for future analyses.
 
 % \paragraph{Limitations of the study}
-We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather
+We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2026} rather
 than the larger GISAID resource~\cite{Shu2017} for two reasons.
 Firstly, the Viridian dataset is of higher quality and major efforts
 have been made to remove sources of error. Applying sc2ts to
@@ -1126,7 +1126,7 @@ high levels of data compression, efficient access across multiple
 dimensions, and is ideally suited to modern cloud-based
 deployments~\cite{Czech2025}.
 
-We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
+We converted the Viridian v05 dataset\cite{Hunt2026}, consisting of 4,484,157 SARS-CoV-2
 consensus sequences (125 GiB over 48 FASTA files) and 30 metadata fields (1.4
 GiB TSV file) to VCF Zarr using
 pyfaidx~\cite{Shirley2015efficient} and Pandas~\cite{Mckinney2010data} in a
@@ -1848,7 +1848,7 @@ for details.
 \subsubsection*{Comparison of mutational spectra}
 % To validate the mutational information contained in the sc2ts ARG,
 % we compared the all-site mutational spectra of major VOCs in the ARG,
-% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
+% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2026},
 % and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
 % Mutational spectra are defined as the relative proportions of
 % each possible type of nucleotide change.
@@ -3550,7 +3550,7 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 \caption{
 All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
 the mutation count data from Bloom et al. (2023)\cite{Bloom2023} (B), and
-the Viridian UShER phylogeny from Hunt et al. (2024)\cite{Hunt2024}.
+the Viridian UShER phylogeny from Hunt et al. (2026)\cite{Hunt2026}.
 }
 \label{fig:mutational_spectra}
 \end{figure}
