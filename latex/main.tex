@@ -734,11 +734,9 @@ The genomic location of a recombination breakpoint in general
 cannot be determined exactly at single base resolution,
 but we can place bounds
 by inspecting sequences of the recombinant and its parents.
-The breakpoint interval of a recombinant is defined by
-two positions: a left position where the recombinant
-matches the left parent sequence but not the right, and
-a right position where the recombinant matches the right
-parent sequence but not the left.
+The breakpoint interval of a recombinant is the region
+around the breakpoint over which its two parent sequences
+are identical.
 Genealogical methods such as sc2ts and UShER+RIPPLES
 use inferred parental sequences and are therefore
 in principle maximally precise.
