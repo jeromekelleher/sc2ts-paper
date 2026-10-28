@@ -1469,7 +1469,7 @@ section) in the ARG. This approach has the benefit of filtering
 samples enriched for errors as well as time-travellers.
 With dense daily sampling, most samples should differ from a close relative
 already in the ARG by only a few mutations:
-at about $8\times10^{-4}$ substitutions per site per year,
+at about $8\times10^{-4}$ substitutions per site per year \cite{Ghafari2022},
 a lineage accumulates about two mutations per month,
 so a cost of 7 corresponds to several months of unsampled evolution.
 Because samples above the threshold can still be added retrospectively (next section),
@@ -1955,8 +1955,8 @@ We modelled this by adding Poisson-distributed substitutions,
 at positions uniform over the genome, to each parent before splicing
 (and to each control).
 The mean is a multiple of the number expected in one transmission generation,
-which for a substitution rate of $8 \times 10^{-4}$ per site per year
-and a generation time of 5.5 days is 0.36 per genome.
+which for a substitution rate of $8\times10^{-4}$ per site per year \cite{Ghafari2022}
+and a generation time of 5.5 days \cite{Hart2022} is 0.36 per genome.
 We used multiples of 0, 1, 5 and 10
 (as if every case, or one in 5 or one in 10 cases, were sequenced).
 Added mutations were drawn from a separate random stream,
@@ -2001,8 +2001,8 @@ and a single breakpoint uniform along the genome;
 all other births copy a single parent.
 The pathogens bracket the rates of evolution and epidemic sizes of plausible
 pandemic viruses (\siref{tab:slim_parameters}). The coronavirus-like pathogen
-has a 30\,kb genome, a substitution rate of $8\times10^{-4}$ per site per year
-and a generation time of 5.5 days
+has a 30\,kb genome, a substitution rate of $8\times10^{-4}$ per site per year \cite{Ghafari2022}
+and a generation time of 5.5 days \cite{Hart2022}
 (as for the synthetic recombinants above),
 so that $\mu L \approx 0.36$ mutations per genome per generation.
 It grows to $N=1{,}000$ over 20 generations and is simulated for 200
