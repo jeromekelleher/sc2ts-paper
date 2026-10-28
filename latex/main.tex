@@ -3706,17 +3706,17 @@ In the ARG, the XB origin node lies two edges below a weakly supported
 which copies from a B.1.634 sample between positions 6633 and 23012
 and from B.1 nodes elsewhere (\supref{sec:multi_parent_recombinants}).
 Although the rightmost parent is labelled as B.1,
-it should be labelled B.1.627,
-as 92 out of 94 of its descendants are assigned to this label;
+it probably corresponds to B.1.627,
+as 92 of its 94 descendants are assigned to this lineage;
 B.1.627 is highly similar to B.1.631 \cite{Gutierrez2022}.
-The copying pattern reveals that
+The copying pattern suggests that
 few mutations distinguish the short segment
 of the leftmost B.1-labelled parent from B.1.634 or B.1.627.
 
 It has been suggested that deletion patterns provide additional
-evidence for the placement and recombinant origin of XB, and it is
-likely that incorporating deletions
-into ARG inference would lead to an XB recombination node more
+evidence for the placement and recombinant origin of XB, and
+incorporating deletions
+into ARG inference may lead to an XB recombination node more
 consistent with the literature \cite{Gutierrez2022}.
 
 \subsubsection{XM/XAL}
@@ -3738,9 +3738,9 @@ which is characteristic of BA.2 but not BA.1
 Of the 33 XM samples in the ARG, 30 have this deletion.
 This deletion lies to the right of the breakpoint in the main recombination node,
 but to the left in the two singleton recombinants.
-As evident from the copying patterns in Supplementary Data 1,
-this means that the dominant XM clade inherits the deletion
-but the two other "XM" origins (marked XM* and XM+) do not.
+The copying patterns in Supplementary Data 2
+indicate that the dominant XM clade inherits the deletion
+but the two other ``XM'' origins (marked XM* and XM+) do not.
 Because sc2ts does not use deletions for inference,
 this suggests independent origins; however, note that in one
 sample within the dominant clade, ERR9447529, deletion remapping (Methods)
@@ -3754,8 +3754,8 @@ which is one mutation from a BA.2 internal node
 exactly matched by the BA.2 sample ERR9502469.
 XAU descends from the same BA.2 node through three BA.2 internal nodes,
 each adding a single mutation.
-Reconstruction of these internal nodes broke up long branches
-that otherwise would be interpreted as evidence for recombination.
+These internal nodes break up long branches
+that might otherwise be interpreted as evidence for recombination.
 
 \subsubsection{XQ/XR/XU/XAA/XAB/XAG/XAM}
 \label{sec:dd_xq}
@@ -3773,11 +3773,11 @@ XAA (8392-9345),  % https://github.com/cov-lineages/pango-designation/issues/664
 XAB (6516-8392),  % https://github.com/cov-lineages/pango-designation/issues/665
 XAG (6515-8394),  % https://github.com/cov-lineages/pango-designation/issues/709
 and XAM (8087-9193).  % https://github.com/cov-lineages/pango-designation/issues/759
-The well-supported BA.2 internal nodes and samples
+The BA.2 internal nodes and samples
 that descend from the XQ recombination node
 split up long branches,
-allowing the non-XQ lineages to be explained
-without invoking additional recombination events.
+so that the non-XQ lineages can be explained
+without additional recombination events.
 
 \subsubsection{XAC}
 \label{sec:dd_xac}
@@ -3972,8 +3972,8 @@ with a BA.2.10 left parent and a BA.1.1 right parent and a breakpoint
 at position 27382 (interval 26859--27382).
 It requires no mutations with recombination and 5 without (5 averted),
 but has only 3 net supporting loci on the right, as 3 of the mutations are the
-standard MNS at positions 27382-27384. This node therefore fails QC and
-is highly likely to be spurious.
+MNS at positions 27382-27384. This node therefore fails QC and
+is likely to be spurious.
 
 These two events are nested: to the right of position 26858,
 the BA.5 origin descends from the BA.2 node through its right parent,
@@ -3984,11 +3984,12 @@ Both events are detected by 3SEQ, but neither by rebar or CovRecomb.
 The right hand parent of BA.5 in the ARG differs by only two mutations from a
 BA.2-labelled sample. However, the left hand parent is probably incorrect: it
 has a 686-694 deletion that is not present in BA.5, and this parental assignment
-is an artefact of sc2ts ignoring deletions (see \supref{sec:supplement_dels}).
-Nevertheless, BA.4 nodes exist in the ARG without this deletion, and that provide
-a perfect match to the left hand BA.5 parent. We therefore suggest that any investigation
-of a potential recombinant origin for BA.5, as noted by \cite{Tegally2022}, requires
-further work to incorporate deletions into ARG inference.
+is likely an artefact of sc2ts ignoring deletions (see \supref{sec:supplement_dels}).
+However, BA.4 nodes without this deletion exist in the ARG that exactly match
+the left hand BA.5 parent at the sites used for inference, supporting
+previous suggestions that BA.5 may be of recombinant origin\cite{Tegally2022},
+and emphasising the importance of future work to more fully incorporate deletions into
+ARG inference.
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_recombinants\_many\_descendants.ipynb}
 {analysis\_recombinants\_many\_descendants.ipynb} for details.
