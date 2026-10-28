@@ -47,7 +47,18 @@
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \fi
 
-\newcommand{\supref}[1]{SI~\S\ref{#1}}
+\newcommand{\supref}[1]{Supplementary Information~\S\ref{#1}}
+\renewcommand{\figurename}{Fig.}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\edref}[1]{Extended Data~\ref{#1}}
+\newcommand{\siref}[1]{Supplementary~\ref{#1}}
+% Extended Data and Supplementary figure and table labels carry a
+% "Fig."/"Table" prefix through \refprefix. \numref drops it, for plural
+% references such as Supplementary Figs.~\numref{a} and~\numref{b}.
+\newcommand{\refprefix}[1]{#1~}
+\makeatletter
+\newcommand{\numref}[1]{{\let\refprefix\@gobble\ref{#1}}}
+\makeatother
 
 \graphicspath{{../figures}}
 
@@ -261,7 +272,7 @@ to UShER, while automatically detecting and incorporating recombination
 in real-time. Based on the freely-available Viridian dataset, a curated
 % NOTE: Viridian doesn't provide alignments, we do that with MAFFT
 collection of SARS-CoV-2 genomes purged of various systematic errors
-and artifacts~\cite{Hunt2024},
+and artifacts~\cite{Hunt2026},
 we present an ARG with 2.48 million high-quality genomes.
 We show that the non-recombinant portions of this ARG are
 congruent with the UShER phylogeny built
@@ -319,7 +330,7 @@ against it ($k = 1000$).
 \end{figure}
 
 Sc2ts is a real-time inference method, updated incrementally
-with daily batches of sequence data (Figure~\ref{fig:methodology}).
+with daily batches of sequence data (\figref{fig:methodology}).
 For each batch, sc2ts first infers likely ``copying paths'' connecting each sample
 to nodes in the current ARG
 using a simplified version of the Li and Stephens (LS) model~\cite{LiStephens2003}.
@@ -362,12 +373,12 @@ See Methods for details.
 % The ARG is big, took a decent chunk of time to infer (but not crazy)
 % and is very easy to analyse.
 Using sc2ts, we built an ARG from 2,482,157 samples
-from the Viridian v04 dataset~\cite{Hunt2024},
+from the Viridian v04 dataset~\cite{Hunt2026},
 collected between 2020-01-01 and 2023-02-20.
 Inference took 21 days on a server with
 64 cores (2$\times$ AMD EPYC 7502) and 512 GB of RAM
 ($\sim$5 CPU years;
-Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}).
+Supplementary Figs.~\numref{fig:inference_resources} and~\numref{fig:samples_per_day}).
 After post-processing, the ARG contains
 2,689,054 nodes,  % Note the estimated dates ?
 2,748,838 edges, and
@@ -407,10 +418,10 @@ Eliminating recombination nodes and their descendants (which we expected to diff
 we found very similar relationships among lineages in
 the ARG and UShER tree based on tanglegrams
 for a set of representative samples from 814 well-sampled lineages
-(Methods; Figures~\ref{fig:tanglegram_base},
-\ref{fig:tanglegram_delta},
-\ref{fig:tanglegram_ba2},
-\ref{fig:tanglegram_ba5}).
+(Methods; \edref{fig:tanglegram_base};
+Supplementary Figs.~\numref{fig:tanglegram_delta},
+\numref{fig:tanglegram_ba2},
+\numref{fig:tanglegram_ba5}).
 % JK: this feels a bit wishy washy, but there really is no simple answer to
 % this and I don't want to claim we're more parsimonious.
 Overall, we also found close similarity between the ARG
@@ -420,7 +431,7 @@ and imputation of missing and ambiguous bases
 (\supref{sec:supplement_sc2ts_usher_imputation}).
 We compared the mutational spectra of major Variants of Concern (VOCs) in the ARG
 against the UShER tree and a previous study~\cite{Bloom2023} (Methods),
-finding close agreement (Figure~\ref{fig:mutational_spectra}).
+finding close agreement (\siref{fig:mutational_spectra}).
 We also evaluated how well the ARG reflects the structure of
 the Pango nomenclature system
 by computing Pango assignments for all 2.75 million nodes in the ARG
@@ -439,17 +450,17 @@ for multiple sibling origination nodes
 The ARG is time-resolved, with internal node dates estimated
 by a non-parametric method~\cite{Pope2025} (Methods).
 We show that the dates agree well with
-Nextstrain estimates (Figure~\ref{fig:pango_vs_nextstrain_node_times}),
+Nextstrain estimates (\siref{fig:pango_vs_nextstrain_node_times}),
 and overall accuracy is comparable to
 Chronumental~\cite{sanderson2021chronumental} applied to
-an UShER tree (Figure~\ref{fig:node_time_testing},
+an UShER tree (\edref{fig:node_time_testing},
 \supref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the
-Alpha (Figure~\ref{fig:subgraph_alpha}, \supref{sec:dd_alpha}),
-Delta (Figure~\ref{fig:subgraph_delta}, \supref{sec:dd_delta})
+Alpha (\edref{fig:subgraph_alpha}, \supref{sec:dd_alpha}),
+Delta (\edref{fig:subgraph_delta}, \supref{sec:dd_delta})
 and
-Omicron (Figure~\ref{fig:subgraph_omicron}, \supref{sec:dd_omicron})
+Omicron (\edref{fig:subgraph_omicron}, \supref{sec:dd_omicron})
 VOCs reflect expectations from the literature~\cite{RambautAlpha2020,ECDCreport,
 Cherian2021,Farinholt2021,Stern2021,Dor2025,RambautOmicron2021}.
 
@@ -470,13 +481,13 @@ during post-processing (Methods).
 Although sites are treated independently in this approach,
 runs of mutations to the gap character at adjacent sites
 correctly identified many known
-high-frequency (Table~\ref{tab:major_dels}) and
-recurrent (Table~\ref{tab:rec_dels}) deletions.
+high-frequency (\siref{tab:major_dels}) and
+recurrent (\siref{tab:rec_dels}) deletions.
 For example,
 the three defining deletions of Alpha~\cite{RambautAlpha2020}
 (11288:9, 21765:6, 21991:3)
 are correctly mapped above the Alpha origin in the ARG
-(Figure~\ref{fig:subgraph_alpha}).
+(\edref{fig:subgraph_alpha}).
 The ARG captures known recurrent deletions
 in the N-terminal domain of the S1 unit of Spike
 (which is a deletion hotspot~\cite{McCarthy2021}),
@@ -521,7 +532,7 @@ By automatically detecting and incorporating recombination events into the ARG,
 sc2ts provides a systematic framework for evaluating these origins.
 Of the 44 Pango X lineages present in the dataset
 (\supref{sec:supplement_x_pango_lineages};
-Table~\ref{tab:pango_x_lineages}),
+\siref{tab:pango_x_lineages}),
 16 map precisely to
 recombination nodes in the ARG that are ancestral to all samples assigned to
 the lineage, indicating fully concordant recombinant origins.
@@ -529,32 +540,32 @@ For these
 lineages, the inferred parental lineages and breakpoint intervals show strong
 agreement with community consensus and with results from specialised
 recombination detection methods
-(Methods, Table~\ref{tab:method_concordance}).
+(Methods, \edref{tab:method_concordance}).
 Early well-characterised recombinants\cite{Jackson2021} are also captured
 with high fidelity in the ARG
 (\supref{tab:jackson}),
-and XA provides a representative example (Figure~\ref{fig:subgraphs}A).
+and XA provides a representative example (\figref{fig:subgraphs}A).
 In addition, several complex recombinants with multiple
 breakpoints were excluded from the ARG under the conservative thresholds used
 here but were nonetheless detected by the HMM
 (\supref{sec:supplement_rejected_pango_x_lineages};
-Table~\ref{tab:extra_hmm_results}).
+\siref{tab:extra_hmm_results}).
 
 In contrast, the ARG indicates that multiple named recombinant lineages descend
 from shared ancestral recombination events rather than representing independent
 origins.
 Specifically, 14 Pango X lineages are close descendants of 7 distinct
 recombination events, with up to 5 lineages descending from a
-single recombination event (Figure~\ref{fig:subgraphs}B).
+single recombination event (\figref{fig:subgraphs}B).
 The remaining designated recombinant lineages show limited or ambiguous support for
 recombination in the ARG. In some cases, the lineage origin nodes differ from the
-parent by a small number of mutations (Figure~\ref{fig:subgraphs}C),
+parent by a small number of mutations (\figref{fig:subgraphs}C),
 while in others
 the reconstruction is constrained by the absence of sufficient parental
 diversity in the dataset. Extended analyses of all Pango X lineages, including
 supporting evidence and alternative interpretations, are provided in
 \supref{sec:supplement_indepth_pango_x_lineages},
-along with copying patterns (Figure~\ref{fig:pango_x_copying_patterns})
+along with copying patterns (\siref{fig:pango_x_copying_patterns})
 and detailed ARG visualisations (Document S1).
 
 \subsection*{Quality control and validation of recombination events}
@@ -566,7 +577,7 @@ We use a simple quality control (QC) measure
 that counts the number of ``loci'' (clusters of closely spaced sites)
 supporting the left and right parents of a recombinant (Methods),
 which effectively identifies a range of issues.
-Figure~\ref{fig:recombinant_qc} shows
+\edref{fig:recombinant_qc} shows
 the net number of supporting loci for the left and right parents
 for all 855 recombination events.
 The 501 recombinants having fewer than 4 net loci supporting each parent
@@ -577,7 +588,7 @@ are highly enriched for samples sequenced using the AmpliSeq V1 protocol
 known to be affected by amplicon dropout~\cite{Sanderson2021}.
 The 354 remaining recombination events that pass this QC filter
 contain all of the recombinants associated with Pango X lineages
-(Table~\ref{tab:pango_x_lineages}) and
+(\siref{tab:pango_x_lineages}) and
 those identified by Jackson et al.\ (\supref{sec:jackson_recombs}).
 
 We validated the recombination events in the sc2ts ARG
@@ -589,7 +600,7 @@ rising to 95\% verification among the 354 recombinants that passed our QC filter
 In addition to 3SEQ, we ran the CovRecomb~\cite{Li2024CovRecomb}
 and rebar (\url{https://github.com/phac-nml/rebar}) recombination detection methods
 on the putative recombinant sequences,
-summarised in Table~\ref{tab:recombinant_validation}.
+summarised in \siref{tab:recombinant_validation}.
 % (see also Figures~\ref{fig:recombinant_evidence_cov_recomb},
 % and \ref{fig:recombinant_evidence_rebar}).
 CovRecomb has a substantially lower validation rate
@@ -608,7 +619,7 @@ Rebar validation is intermediate, at 57\% among QC-passing recombinants.
 The sc2ts inference framework provides a quantitative measure of support for
 each inferred recombination event by comparing the most parsimonious copying
 path that allows recombination with an alternative placement that disallows
-recombination (Figure~\ref{fig:methodology}).
+recombination (\figref{fig:methodology}).
 The difference between these two solutions, measured as the
 number of mutations ``averted'' by allowing recombination, serves as an index of
 the evidence supporting a recombinant origin.
@@ -618,13 +629,13 @@ cases with only a small number of averted mutations to strongly supported
 events for which a non-recombinant placement would require dozens of additional
 mutations. For example, the most parsimonious non-recombinant placement of XC
 would require 37 additional mutations, indicating strong support for
-recombination (Figure~\ref{fig:recombinant_evidence}A;
-Table~\ref{tab:pango_x_lineages}).
+recombination (\figref{fig:recombinant_evidence}A;
+\siref{tab:pango_x_lineages}).
 Strongly supported events show high concordance with independent validation by
 3SEQ, whereas the 5\% of events that fail 3SEQ validation are
 concentrated among the weakest-supported cases ($\leq 5$ averted mutations)
 and associated with recently diverged parents
-(Figure~\ref{fig:recombinant_evidence}B,C).
+(\figref{fig:recombinant_evidence}B,C).
 
 \begin{figure}[h]
 \centering
@@ -637,7 +648,7 @@ coloured by 3SEQ classification (recombinant: purple, non-recombinant: grey).
 when recombination allowed ($y$: right axis)
 versus an alternative copying path disallowing recombination ($x$: top axis);
 recombination nodes associated with Pango X lineages
-(Table~\ref{tab:pango_x_lineages})
+(\siref{tab:pango_x_lineages})
 are labelled starting with `X' and
 those identified by Jackson et al.~\cite{Jackson2021} are prefixed with a `J',
 e.g., Jackson group B (JB) and Jackson singleton recombinant 1 (J1).
@@ -650,7 +661,7 @@ by allowing recombination (i.e., $x-y$).
 \label{fig:recombinant_evidence}
 \end{figure}
 
-% Figure~\ref{fig:recombinant_evidence}A plots
+% \figref{fig:recombinant_evidence}A plots
 % the number of mutations required
 % in the recombinant versus non-recombinant
 % Viterbi solutions (upper scatter plot)
@@ -666,7 +677,7 @@ by allowing recombination (i.e., $x-y$).
 
 % Figures~\ref{fig:recombinant_evidence_cov_recomb} and
 % \ref{fig:recombinant_evidence_rebar}
-% plot the same information as Figure~\ref{fig:recombinant_evidence}
+% plot the same information as \figref{fig:recombinant_evidence}
 % broken down by CovRecomb and rebar validation status.
 
 \subsection*{Precision of recombination event times and positions}
@@ -695,7 +706,7 @@ the QC-passing recombination events in the sc2ts ARG
 shows an overall enrichment of breakpoints
 towards the 3’ end of the genome,
 particularly at the left boundary of the Spike gene
-(Figure~\ref{fig:recombinant_intervals}A,B),
+(\figref{fig:recombinant_intervals}A,B),
 consistent with the patterns seen in previous
 studies~\cite{Bobay2020recombination,Turakhia2022,
 Smith2023tracking,Li2024CovRecomb}.
@@ -704,7 +715,7 @@ it may also be due to the higher levels of polymorphism in the Spike gene,
 making recombination events more likely to be detected and
 allowing breakpoint intervals to be estimated more precisely.
 We found the median breakpoint interval length to be 2,207 bases
-(Figure~\ref{fig:recombinant_intervals}C),
+(\figref{fig:recombinant_intervals}C),
 indicating that the breakpoints of half of the events
 could be narrowed to a small region (less than $\sim$7\% of the genome),
 while the uncertainty around the breakpoints of the other events
@@ -712,18 +723,18 @@ is considerably larger (up to $\sim$54\% of the genome).
 As expected from theory (Methods), we found a negative relationship between
 the length of a breakpoint interval and
 divergence between recombinant parents
-(Figure~\ref{fig:recombinant_intervals}D).
+(\figref{fig:recombinant_intervals}D).
 Breakpoint intervals tend to be the smallest
 for events involving recombination between
 the deeply divergent Omicron BA.1 and BA.2 sublineages
-(the red points in Figure~\ref{fig:recombinant_intervals}D).
+(the red points in \figref{fig:recombinant_intervals}D).
 
 The time interval of a recombination node in the ARG is bounded by
 the age of the youngest parent and
 the age of the oldest child of the recombination node.
 We found that for $\sim$75\% of the QC-passing recombination events,
 the time interval size is less than $\sim$2 months
-(Figure~\ref{fig:recombinant_intervals}D);
+(\figref{fig:recombinant_intervals}D);
 % Jackson samples in <= 7 day range:
 % Group B ERR5058070 (5 day), singleton ERR5054123 (7 days)
 for example, the time intervals of
@@ -762,7 +773,7 @@ $\sim$0.06 per day (Methods).
 
 We examined the frequency of emergence of the recombinants
 over the course of the COVID-19 pandemic
-(Figure \ref{fig:recombinants_over_time}).
+(\figref{fig:recombinants_over_time}).
 We explored two hypotheses for the timing of recombination.
 First, we would expect recombination events
 to occur more often when case counts are high,
@@ -777,7 +788,7 @@ increasing our power to detect recombination.
 We used the COVID-19 Data Repository at Johns Hopkins University \cite{Dong2020}
 to relate the timing of recombination events with global case numbers. We binned case numbers ($n$) by week from January, 2020 to March, 2023 and
 sub-divided by the proportion in each Scorpio label inferred within the ARG
-(shading in Figure~\ref{fig:recombinants_over_time}).
+(shading in \figref{fig:recombinants_over_time}).
 These lineages correspond loosely to a group
 of related lineages within a major VOC in the Viridian dataset.
 Alongside the case numbers,
@@ -787,11 +798,11 @@ focusing on the 354 events passing QC filters.
 Recombination events were inferred more often
 during the Delta and Omicron waves, when case counts were high.
 Overall, the number of recombination events rose with the global case count
-(Figure~\ref{fig:recombinants_over_time}B;
+(\figref{fig:recombinants_over_time}B;
 % JK is this correct?? we had 1.0 + 2.7 \; 10^{-7} x$ which I found confusing
 linear regression: $1.0 + 2.7\times 10^{-7} x$, $p = 1.1 \times10^{-7}$).
 Recombination events also rose with the diversity of lineages in each week
-(Figure~\ref{fig:recombinants_over_time}C; linear regression:
+(\figref{fig:recombinants_over_time}C; linear regression:
 $0.9 + 4.8 x$, $p = 3.4\times10^{-7}$),
 measured as the chance that two randomly drawn viruses have different Scorpio designations
 ($H$, referred to as the ``expected heterozygosity'').
@@ -888,7 +899,7 @@ RIPPLES reported 1174 recombination events of which
 We then compared
 the specific events reported by both methods by aligning them
 using sets of descendant samples (Methods),
-giving 468 events shared between RIPPLES and sc2ts (Figure~\ref{fig:ripples_sc2ts_events}).
+giving 468 events shared between RIPPLES and sc2ts (\siref{fig:ripples_sc2ts_events}).
 The 706 recombination events detected by RIPPLES that do not
 correspond to a recombination event in the sc2ts ARG can largely
 be explained by a combination
@@ -899,15 +910,15 @@ by sc2ts and UShER
 (\supref{sec:detailed_ripples}).
 The 387 events detected by sc2ts and not by UShER+RIPPLES
  include some of the well characterised Pango X lineages.
-Table~\ref{tab:ripples_x_lineages} shows the events detected
+\siref{tab:ripples_x_lineages} shows the events detected
 by UShER+RIPPLES associated with samples assigned to Pango X
 lineages, showing that at $p=4$
 only 9 of the Pango X lineages are present and
 with unequivocal recombinant origin for 6
-(contrast with 16 Type I events in Table~\ref{tab:pango_x_lineages}).
+(contrast with 16 Type I events in \siref{tab:pango_x_lineages}).
 We therefore reran RIPPLES with $p=3$, resulting in 4111 events overall
 and increasing the intersection of events with sc2ts to 595
-(Figure~\ref{fig:ripples_sc2ts_events}).
+(\siref{fig:ripples_sc2ts_events}).
 At this more lenient threshold, 23 of the 44 Pango X lineages
 are identified as descendants of RIPPLES recombinant events,
 with unequivocal origins for 10 lineages, and
@@ -961,7 +972,7 @@ saltational variants can also be detected by analysing the rate and position of 
 branches (which persist after accounting for recombination).
 We envisage the ARG as a long-term stable resource---building on the
 high-quality, freely available reassemblies of
-the Viridian dataset~\cite{Hunt2024}---to facilitate the study
+the Viridian dataset~\cite{Hunt2026}---to facilitate the study
 of the pandemic phase of SARS-CoV-2 in an open and reproducible manner.
 
 The other primary contribution of this work is the method used to
@@ -1020,7 +1031,7 @@ These results underscore the utility of the ARG
 and provide a template for future analyses.
 
 % \paragraph{Limitations of the study}
-We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2024} rather
+We have focused on applying sc2ts to the Viridian dataset~\cite{Hunt2026} rather
 than the larger GISAID resource~\cite{Shu2017} for two reasons.
 Firstly, the Viridian dataset is of higher quality and major efforts
 have been made to remove sources of error. Applying sc2ts to
@@ -1115,7 +1126,7 @@ high levels of data compression, efficient access across multiple
 dimensions, and is ideally suited to modern cloud-based
 deployments~\cite{Czech2025}.
 
-We converted the Viridian v05 dataset\cite{Hunt2024}, consisting of 4,484,157 SARS-CoV-2
+We converted the Viridian v05 dataset\cite{Hunt2026}, consisting of 4,484,157 SARS-CoV-2
 consensus sequences (125 GiB over 48 FASTA files) and 30 metadata fields (1.4
 GiB TSV file) to VCF Zarr using
 pyfaidx~\cite{Shirley2015efficient} and Pandas~\cite{Mckinney2010data} in a
@@ -1211,7 +1222,7 @@ It is a Hidden Markov Model (HMM) in which a focal genome
 is modelled as a
 sequence of nucleotides that are probabilistically emitted as
 an imperfect mosaic of a set of reference genomes
-(Figure~\ref{fig:ls_diagram}).
+(\siref{fig:ls_diagram}).
 % TODO improve wording, lots of "model" here.
 The process of switching between the genomes in the reference panel
 is governed by a transition matrix,
@@ -1257,7 +1268,7 @@ are found very quickly using this approach, and it is only
 samples that are more distant from the current ARG that require
 significant processing time and memory. This is reflected in
 the computational resources reported in
-Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}.
+Supplementary Figs.~\numref{fig:inference_resources} and~\numref{fig:samples_per_day}.
 
 
 % A Viterbi algorithm can be used
@@ -1342,7 +1353,7 @@ is therefore to perform some local updates that target specific
 types of parsimony violations in the just-updated regions of the
 ARG. There are currently two parsimony-increasing operations
 applied, which we refer to as ``mutation collapsing'' and ``reversion
-pushing'' (Figure~\ref{fig:parsimony_ops}).
+pushing'' (\siref{fig:parsimony_ops}).
 
 Given a newly attached node, mutation collapsing inspects its siblings from
 previous sample days to check if any of them share (a subset of) the mutations
@@ -1421,7 +1432,7 @@ within the group and at most 5 mutations unique to each sample,
 the retrospective group is accepted for inclusion.
 Although this process is highly heuristic, it successfully
 captured the majority of saltational lineages
-such as Alpha (Figure~\ref{fig:subgraph_alpha}), and the
+such as Alpha (\edref{fig:subgraph_alpha}), and the
 vast majority of samples were added following the standard
 daily sample grouping mechanisms.
 % https://github.com/jeromekelleher/sc2ts-paper/blob/main/arg_postprocessing/logs/sc2ts_v1_2023-02-21_pr_pp_mp_aph_bps_pango_dated_recombinants_report.ipynb
@@ -1463,7 +1474,7 @@ that were used for the designation of these Pango lineages.
 %[should we mention long branch splitting here too?]
 % YW: I think we don't need to, actually. That's a subsequent thing, and also discusses in the "further explanation" link
 The resulting subgraph around Delta in the ARG
-can be seen in Figure~\ref{fig:subgraph_delta};
+can be seen in \edref{fig:subgraph_delta};
 for further explanation, see \supref{sec:dd_delta}.
 
 For Omicron BA.1 and BA.2
@@ -1480,13 +1491,13 @@ Note that this sample is dated later than SRR17041376 (the BA.1 seed),
 allowing time for the BA.1 lineage
 to become established and accumulate descendant samples in the ARG.
 The resulting subgraph around these Omicron lineages in the ARG
-can be seen in Figure~\ref{fig:subgraph_omicron}.
+can be seen in \edref{fig:subgraph_omicron}.
 For further explanation, see \supref{sec:dd_omicron}.
 
 With the combination of these mechanisms---gradual accumulation
 of diversity through daily sample groups, retrospective group
 inclusion and manual seeding---we successfully incorporated all major
-lineages in the dataset into the ARG (Figure~\ref{fig:samples_per_day}).
+lineages in the dataset into the ARG (\siref{fig:samples_per_day}).
 
 
 \subsubsection*{Primary ARG inference}
@@ -1498,7 +1509,7 @@ described in the preceding sections and documented in the configuration file.
 % (see \nameref{sec:data_and_code_availability}).
 As discussed above,
 computational resources are dominated by the LS model
-(Figures~\ref{fig:inference_resources},\ref{fig:samples_per_day}) with all
+(Supplementary Figs.~\numref{fig:inference_resources} and~\numref{fig:samples_per_day}) with all
 other aspects contributing negligibly.
 
 \subsubsection*{Recombinant rematching}
@@ -1542,7 +1553,7 @@ resulted in 16 additional nodes, 182 fewer mutations and reduced
 the number of trees along the genome from 348 to 317. The long branches
 involved in the origins of Delta and BA.2 originally joined
 B.1 to B.1.167 and B.1.1 to BA.1 respectively; they can be seen
-in Figure \ref{fig:subgraph_delta} and \ref{fig:subgraph_omicron}
+in \edref{fig:subgraph_delta} and \edref{fig:subgraph_omicron}
 with inserted intermediate nodes leading to the Delta and BA.2
 origination nodes.
 
@@ -1658,7 +1669,7 @@ the left (upper row, coloured green)
 or right parent (lower row, coloured blue),
 or where the recombination event requires
 a de novo mutation (gold, with mutational change below).
-Figure~\ref{fig:pango_x_copying_patterns}
+\siref{fig:pango_x_copying_patterns}
 shows copying patterns for Pango X lineages in the ARG,
 illustrating a spectrum of plausibility.
 XA is an example of a highly plausible recombinant,
@@ -1669,7 +1680,7 @@ observed in the copying patterns suggests the existence of
 many genetically distinct, unsampled ancestors
 and some caution should be exercised when interpreting them
 (see \supref{sec:dd_xbb} for more details).
-See also Figure~\ref{fig:copying_pattern_examples} for copying patterns
+See also \siref{fig:copying_pattern_examples} for copying patterns
 highlighting specific types of QC problems
 and more details on the visualisations.
 
@@ -1686,13 +1697,13 @@ that supported the suggested parent minus the number that did not support it.
 Finally, with all the recombination events in the ARG having a single breakpoint,
 we calculated the net number of supporting loci
 on the left and right sides of each breakpoint, and
-used this to plot all the 855 recombination events in Figure~\ref{fig:recombinant_qc}.
+used this to plot all the 855 recombination events in \edref{fig:recombinant_qc}.
 
 This simple QC measure effectively differentiates
 artefactual recombination events from those that are well supported.
 All the sc2ts-detected recombination events
-associated with the Pango X lineages (Table~\ref{tab:pango_x_lineages})
-occur in the upper right of Figure~\ref{fig:recombinant_qc},
+associated with the Pango X lineages (\siref{tab:pango_x_lineages})
+occur in the upper right of \edref{fig:recombinant_qc},
 with high numbers of net supporting loci on both the right and left parents.
 In contrast, the other regions of the plot,
 where one or both parents are less well supported,
@@ -1702,15 +1713,15 @@ Coupled with closer inspection of copying patterns (see below),
 we chose a QC cutoff of 4 or more net supporting loci
 on both the left and right side of the breakpoint.
 This leads to 354 QC-passing recombination events
-(Figure~\ref{fig:recombinant_qc}, upper right quadrant),
+(\edref{fig:recombinant_qc}, upper right quadrant),
 compared to 501 recombination events
 for which there is less support and which may be artefactual (shaded quadrants).
 
 Inspection of the copying patterns for all the recombination events
 identified associations between recombination events that failed QC and
 known problematic loci in the SARS-CoV-2 genome.
-Figure~\ref{fig:copying_pattern_examples} shows illustrative copying patterns
-(Q1 to Q4 correspond to the labelled quadrants in Figure~\ref{fig:recombinant_qc}).
+\siref{fig:copying_pattern_examples} shows illustrative copying patterns
+(Q1 to Q4 correspond to the labelled quadrants in \edref{fig:recombinant_qc}).
 Q1 shows a well supported recombination event that passed QC (albeit marginally),
 having a net number of supporting loci of 4 on both sides of the breakpoint.
 Q2 shows an artefactual recombination event
@@ -1821,11 +1832,11 @@ both of which have breakpoints near the 5' end of genome.
 We therefore compare the UShER topology against the first tree in the ARG (covering
 positions 1-26858; the majority of the genome). To reduce plot density, we consider
 only those Pango lineages with greater than 10 samples.
-Figure \ref{fig:tanglegram_base} shows the resulting tree compared with
+\edref{fig:tanglegram_base} shows the resulting tree compared with
 the equivalent dated UShER tree as a tanglegram.
-We also show subtrees for Delta (Figure~\ref{fig:tanglegram_delta}),
-BA.2 (Figure~\ref{fig:tanglegram_ba2}),
-and BA.5 (Figure~\ref{fig:tanglegram_ba5}).
+We also show subtrees for Delta (\siref{fig:tanglegram_delta}),
+BA.2 (\siref{fig:tanglegram_ba2}),
+and BA.5 (\siref{fig:tanglegram_ba5}).
 
 The order of tips in each plot was chosen to reduce tangling,
 as calculated using the NeighborNet algorithm from
@@ -1837,7 +1848,7 @@ for details.
 \subsubsection*{Comparison of mutational spectra}
 % To validate the mutational information contained in the sc2ts ARG,
 % we compared the all-site mutational spectra of major VOCs in the ARG,
-% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2024},
+% a state-of-the-art UShER phylogeny built using the Viridian dataset\cite{Hunt2026},
 % and another UShER phylogeny analyzed in a previous study\cite{Bloom2023}.
 % Mutational spectra are defined as the relative proportions of
 % each possible type of nucleotide change.
@@ -1880,13 +1891,13 @@ results on the Pango X lineages were reported and made available
 in the original publications. We do not compare here with
 UShER+RIPPLES+RIVET because curated data on the X lineages is
 not available for this pipeline (see \supref{sec:detailed_ripples}
-and Table~\ref{tab:ripples_x_lineages}, however).
+and \siref{tab:ripples_x_lineages}, however).
 We use the data from the Pango designation community
 (\url{https://github.com/cov-lineages/pango-designation/})
 as the ``truth'' when comparing performance in identifying
 parent Pango lineages and breakpoints between the methods.
 We focus on the 16 Type I recombination events
-(Table~\ref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
+(\siref{tab:pango_x_lineages}) identified by sc2ts for simplicity.
 While this is certainly biased in favour of sc2ts (i.e., by
 ignoring likely sc2ts false negatives such as XB), it helps to
 understand the probable accuracy of sc2ts on the true positives.
@@ -1922,7 +1933,7 @@ that are at least as specific as those proposed by the Pango designation communi
 The breakpoint interval of a Pango X inferred using a method is deemed concordant
 if it overlaps with that proposed by the community by at least one base.
 
-The results are reported in Table~\ref{tab:method_concordance}.
+The results are reported in \edref{tab:method_concordance}.
 See the
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/tab\_methods\_concordance.ipynb}{tab\_methods\_concordance.ipynb}
 notebook for details.
@@ -1973,9 +1984,9 @@ Summing the two intervals ($I_{left}+I_{right}$)
 gives the expected interval length.
 As detectable recombination events
 tend to be closer to the center of the genome,
-we use $P=0.5$ in Figure~\ref{fig:recombinant_intervals}D.
+we use $P=0.5$ in \figref{fig:recombinant_intervals}D.
 
-In Figure~\ref{fig:recombinant_intervals}D,
+In \figref{fig:recombinant_intervals}D,
 we calculated the expected lengths of breakpoint intervals
 by setting $\mu$ to $\sim$0.0598 per day.
 This is based on published estimates of
@@ -2008,7 +2019,7 @@ descendant samples, we find the MRCA of
 that set of samples in the first tree of the sc2ts ARG.
 The clades are then said to agree if the number of additional
 samples descending from the sc2ts node is $<2$
-(Figure~\ref{fig:ripples_sc2ts_events}).
+(\siref{fig:ripples_sc2ts_events}).
 
 We ran 3SEQ on the RIPPLES recombinants by extracting the
 alignments for the child and parent sequences for each
@@ -2060,7 +2071,7 @@ which is the chance that two lineages chosen at random
 from that week had different Scorpio designations
 ($\sum_{i} \sum_{j>i} 2 p_i p_j$).
 The linear regression models reported in
-Figure~\ref{fig:recombinants_over_time}
+\figref{fig:recombinants_over_time}
 allowed for a non-zero intercept,
 because there may be unreported cases even without any reported cases.
 The slopes were highly significant, and
@@ -2298,7 +2309,7 @@ inserted into the ARG (inferred using tsdate),
 we compared the dates of first emergence of
 Nextstrain clades against the Nextstrain SARS-CoV-2 tree
 (downloaded on 2023-01-21).
-Figure~\ref{fig:pango_vs_nextstrain_node_times} shows
+\siref{fig:pango_vs_nextstrain_node_times} shows
 relatively close agreement for most clades,
 with only three disagreeing by more than 28 days:
 20C (an early lineage from 2020),
@@ -2311,7 +2322,7 @@ matching the distribution of node times  and
 average number of children of the non-sample internal nodes.
 These selected sample nodes were then re-dated, and
 the inferred dates compared against their recorded collection dates.
-The results in Figure~\ref{fig:node_time_testing} demonstrate that
+The results in \edref{fig:node_time_testing} demonstrate that
 although the inferred and true times are generally very close,
 there is a clear bias with re-estimated times
 being consistently older (by an average of 37 days).
@@ -2331,7 +2342,7 @@ as well as inaccuracies in the recording of sample dates.
 
 The B.1.1.7 (Alpha) variant emerged in the UK as the first major VOC.
 Its origin is well reconstructed in the ARG,
-with Figure \ref{fig:subgraph_alpha}
+with \edref{fig:subgraph_alpha}
 showing it to be a saltational lineage
 characterized by a long branch preceding its origin.
 Most of the characteristic Alpha mutations \cite{RambautAlpha2020}
@@ -2367,7 +2378,7 @@ mutation\cite{Li2023indels}.
 \label{sec:dd_delta}
 
 The B.1.617.2 lineage (Delta) was first detected in India \cite{ECDCreport}.
-The subgraph in Figure~\ref{fig:subgraph_delta} shows
+The subgraph in \edref{fig:subgraph_delta} shows
 a mutation-rich branch leading to the Delta root,
 which contains 11 single nucleotide mutations and a 6-base deletion.
 The placement of this branch in the ARG
@@ -2379,7 +2390,7 @@ Previous phylogenetic analyses suggest that
 Delta and B.1.617.3 are more closely related to each other
 than either is to Kappa\cite{Cherian2021,Farinholt2021}.
 In the ARG, however, Delta and Kappa appear as sibling lineages
-(see the subgraph in Figure~\ref{fig:subgraph_delta}).
+(see the subgraph in \edref{fig:subgraph_delta}).
 This reflects the closest approximation to the relationships
 suggested in the previous studies that could be inferred,
 given that no B.1.617.3 samples passed our QC filters and
@@ -2430,7 +2441,7 @@ it is a saltational lineage with two highly successful sublineages,
 BA.1 and BA.2 \cite{Dor2025}.
 BA.1 and BA.2 are genetically distinct from each other and
 from their parental B.1.1.529 lineage \cite{RambautOmicron2021}.
-In the subgraph shown in Figure~\ref{fig:subgraph_omicron},
+In the subgraph shown in \edref{fig:subgraph_omicron},
 BA.1 and BA.2 differ from the non-Omicron B.1.1 ancestor
 (above the B.1.1.529-labelled MRCA of BA.1 and BA.2)
 by 27 mutations (including two deletions),
@@ -2472,10 +2483,10 @@ Using the ARG, we identified major deletion events
 (which are propagated to many descendants)
 as well as recurrent deletions
 (which occur on at least two branches) in the ARG.
-In Table~\ref{tab:major_dels},
+In \siref{tab:major_dels},
 we list the major deletion events in the ARG
 which are each inherited by at least 10,000 descendant samples; and
-in Table~\ref{tab:rec_dels},
+in \siref{tab:rec_dels},
 we list the recurrent deletions in the ARG
 which are each observed in at least 10,000 (0.4\%) samples.
 A deletion is said to be observed in a sample here
@@ -2503,21 +2514,21 @@ in previous studies of deletions \cite{Li2023indels}.
 All these major deletion events
 (again, besides the artefactual cases)
 are associated with the origins of major VOCs in the ARG
-(see the Alpha subgraph in Figure~\ref{fig:subgraph_alpha};
-the Delta subgraph in Figure~\ref{fig:subgraph_delta}; and
-the Omicron subgraph in Figure~\ref{fig:subgraph_omicron}),
+(see the Alpha subgraph in \edref{fig:subgraph_alpha};
+the Delta subgraph in \edref{fig:subgraph_delta}; and
+the Omicron subgraph in \edref{fig:subgraph_omicron}),
 except the 1-base deletion at 28,271 on node 1436808
 and the 9-base deletion at 686 on the BA.4-labeled node 2698748
-(Table~\ref{tab:major_dels}).
+(\siref{tab:major_dels}).
 Most of these deletions have been identified
 as characteristic mutations of the major VOCs
-in the studies or analysis cited in Table~\ref{tab:major_dels}.
+in the studies or analysis cited in \siref{tab:major_dels}.
 Notably, eight of the major deletion events occur
 in the N-terminal domain of the S1 unit of Spike
 (a known hotspot of recurrent deletions \cite{McCarthy2021}
 that plays a substantial role in antigenicity \cite{Harvey2021}),
 which are all highly recurrent in the ARG
-(Table~\ref{tab:rec_dels}).
+(\siref{tab:rec_dels}).
 These include known recurrent deletions:
 the 6-base deletion at 21,765 and
 the 3-base deletion at 21,991,
@@ -2539,7 +2550,7 @@ appear as multiple smaller deletion events,
 which are likely artefactual.
 The three contiguous out-of-frame deletions in NSP6
 (5-base at 11,283, 4-base at 11,288, and 5-base at 11,292)
-are examples of such artefacts (Table~\ref{tab:major_dels}).
+are examples of such artefacts (\siref{tab:major_dels}).
 In the sequence alignments, there are two 9-base deletions,
 one at 11,283 and the other at 11,288,
 which are found in
@@ -2560,16 +2571,16 @@ should remove such artefactual deletions.
 
 Most of the Pango X lineages had straightforward origination events
 as defined in Section~\ref{sec:supplement_pango_lineages}
-and are represented in Table~\ref{tab:pango_x_lineages}.
+and are represented in \siref{tab:pango_x_lineages}.
 Three lineages were treated specially,
 corresponding to 23 omitted samples in total.
 
 XM has 4 separate origins, 3 singletons and one dominant node
 with 26 descendants. We include the dominant node in
-Table~\ref{tab:pango_x_lineages} and omit the singletons. See
+\siref{tab:pango_x_lineages} and omit the singletons. See
 \supref{sec:dd_xm} for further details.
 XAC has 4 separate origins, and has been omitted from
-Table~\ref{tab:pango_x_lineages}. However, as Figure~\ref{fig:subgraphs}B
+\siref{tab:pango_x_lineages}. However, as \figref{fig:subgraphs}B
 shows, these are all descending from a single BA.2 classified node
 descending from the putative Xx event.
 Similarly, XAD has two independent origins descending from the Xx
@@ -2587,7 +2598,7 @@ failed to find a specific lineage (accounting for 7\%
 of the 357 ``Omicron (Unassigned)'' Scorpio calls across
 2,747,985 alignments).
 
-Table~\ref{tab:pango_x_lineages} summarises
+\siref{tab:pango_x_lineages} summarises
 the 44 Pango X lineages present in the ARG.
 For 16 Pango X lineages, the oldest node
 that has been assigned to the focal Pango lineage is a recombination node and
@@ -2598,7 +2609,7 @@ where the ARG reflects the
 hierarchical structure of Pango designation.
 
 There are five partially concordant events (Type II)
-in Table~\ref{tab:pango_x_lineages}, which
+in \siref{tab:pango_x_lineages}, which
 are recombination events closely associated with Pango X lineages
 that do not meet the strict origination criteria for Type I.
 Type III events are Pango origin nodes in the ARG that are
@@ -2612,13 +2623,13 @@ than de novo recombinant lineages (\supref{sec:dd_xq}).
 The second cluster is based around a putative undocumented
 recombinant that is the ancestor of lineages
 XZ, XAC, XAD, XAE, and XAP, which we refer to as ``Xx''
-(Figure~\ref{fig:subgraphs}B, \supref{sec:dd_xx}).
+(\figref{fig:subgraphs}B, \supref{sec:dd_xx}).
 
-The final class of events (Type IV) in Table~\ref{tab:pango_x_lineages}
+The final class of events (Type IV) in \siref{tab:pango_x_lineages}
 corresponds to nodes that are not associated with a recombination event
 in the ARG.
 These vary in their plausibility of being non-recombinant.
-For example, XN (Figure~\ref{fig:subgraphs}C) is only one mutation
+For example, XN (\figref{fig:subgraphs}C) is only one mutation
 distant from a BA.2 sample and has little additional evidence
 to suggest recombination (\supref{sec:dd_xn}).
 XB, on the other hand,
@@ -2631,12 +2642,12 @@ included in the ARG because the HMM cost exceeds the inclusion threshold
 and there was insufficient support for retrospective inclusion (Methods).
 These include ``complex recombinants'' such as XBC and XAY~\cite{Roemer2023}
 which are confirmed by sc2ts to have multiple breakpoints; see
-\supref{sec:supplement_rejected_pango_x_lineages} and Table
-\ref{tab:extra_hmm_results} for details.
+\supref{sec:supplement_rejected_pango_x_lineages} and
+\siref{tab:extra_hmm_results} for details.
 See \supref{sec:supplement_indepth_pango_x_lineages}
 for extended analyses on all the Pango X lineages in the ARG;
-Figure~\ref{fig:pango_x_copying_patterns} for copying patterns
-associated with Table~\ref{tab:pango_x_lineages};
+\siref{fig:pango_x_copying_patterns} for copying patterns
+associated with \siref{tab:pango_x_lineages};
 and Document S1 for ARG visualisations of the Pango X lineages.
 
 See notebook
@@ -2662,7 +2673,7 @@ Of the 16 samples analysed by Jackson et al., 12 were included in the ARG;
 the remaining 4 were excluded
 because the sequences did not pass the QC filtering criteria or
 because of a high HMM cost.
-Groups A-D are summarized in Table~\ref{tab:jackson} and
+Groups A-D are summarized in \siref{tab:jackson} and
 show excellent concordance
 in terms of the parental Pango lineages and breakpoint intervals.
 All four groups are directly associated with
@@ -2703,7 +2714,7 @@ were not integrated into the ARG
 due to high HMM costs and/or insufficient sample support,
 but their samples were matched against the ARG during inference.
 % https://github.com/jeromekelleher/sc2ts-paper/issues/366
-Table~\ref{tab:extra_hmm_results} summarizes
+\siref{tab:extra_hmm_results} summarizes
 the HMM matching results of these Pango X lineages.
 All were identified as recombinants by sc2ts, except XBL.
 (For XBL, the evidence for recombination
@@ -2747,10 +2758,10 @@ which is one of the XA consensus mutations
 As mentioned elsewhere,
 the sc2ts detection results in terms of
 the Pango lineages of the parents and the breakpoint intervals
-agree with the results reported by Jackson et al. (Table \ref{tab:jackson}).
+agree with the results reported by Jackson et al. (\siref{tab:jackson}).
 Two of the Jackson et al. XA samples
 are present in the ARG (ERR5308556 and ERR5414941);
-these samples are specifically marked in Figure~\ref{fig:subgraphs},
+these samples are specifically marked in \figref{fig:subgraphs},
 which is a summary of this subgraph.
 
 \subsubsection{XB}
@@ -3357,7 +3368,7 @@ At $p=4$, RIPPLES returned a total of 1174 events, and
 610 pass 3SEQ validation (51\%). 1052 events
 (89.6\%) were in close clade agreement with the sc2ts ARG,
 and 468 (40\%) corresponded to recombination events in the ARG
-(Figure~\ref{fig:ripples_sc2ts_events}A).
+(\siref{fig:ripples_sc2ts_events}A).
 We investigated the 701 RIPPLES events that could be aligned
 with the ARG but were not close to a recombination node
 to determine why they were not found by sc2ts.
@@ -3380,14 +3391,14 @@ At $p=3$, RIPPLES returned a total of 4111 events, and
 2718 pass 3SEQ validation (66\%). 3755 events
 (91.3\%) were in close clade agreement with the sc2ts ARG,
 and 595 (14\%) corresponded to recombination events in the ARG
-(Figure~\ref{fig:ripples_sc2ts_events}B).
+(\siref{fig:ripples_sc2ts_events}B).
 We did not investigate the $p=3$ events any further as the additional
 events detected at the lower threshold are not expected to be detected
 by sc2ts at the parameter value used ($k=4$).
 
 Next we considered the overall distribution of the numbers of descendants
 of the events returned by sc2ts and RIPPLES
-(Table~\ref{tab:ripples_sc2ts_event_descendants}).
+(\siref{tab:ripples_sc2ts_event_descendants}).
 Overall, the distributions were similar, with the majority having
 very few descendants and being dominated by singletons.
 The events subtending $>$ 100,000 samples
@@ -3397,11 +3408,11 @@ for analysis of the two sc2ts events).
 
 
 We next examined the RIPPLES events referencing Pango X lineages.
-Table~\ref{tab:ripples_x_lineages} shows a summary of all
+\siref{tab:ripples_x_lineages} shows a summary of all
 recombination events associated with Pango X lineages detected by RIPPLES
 at $p=3$ and their relationship with the sc2ts ARG.
 Of the 16 Class I events (X lineages unequivocally associated with
-a recombination node in the sc2ts ARG) in Table~\ref{tab:pango_x_lineages},
+a recombination node in the sc2ts ARG) in \siref{tab:pango_x_lineages},
 8 have corresponding recombination events (4, at $p=4$).
 Of the 5 Type II events
 (recombination nodes with more complex assocation with X lineages),
@@ -3419,7 +3430,7 @@ associated with X lineages output by RIPPLES cannot be easily mapped
 to the sc2ts ARG as one or more descendants are distantly placed.
 XAJ is an outlier for sc2ts, being the Pango X lineage identified as a
 non-recombinant with the largest number of mutations
-(Table~\ref{tab:pango_x_lineages}), and a likely false negative.
+(\siref{tab:pango_x_lineages}), and a likely false negative.
 The remaining 4 events are mixtures of multiple lineages that are
 difficult to reconcile with either the other events in the table
 or the sc2ts ARG.
@@ -3539,7 +3550,7 @@ Tanglegram comparing sc2ts and UShER on the BA.5 subtree.
 \caption{
 All-site mutational spectra of major VOCs calculated from the sc2ts ARG (A),
 the mutation count data from Bloom et al. (2023)\cite{Bloom2023} (B), and
-the Viridian UShER phylogeny from Hunt et al. (2024)\cite{Hunt2024}.
+the Viridian UShER phylogeny from Hunt et al. (2026)\cite{Hunt2026}.
 }
 \label{fig:mutational_spectra}
 \end{figure}
@@ -3584,7 +3595,7 @@ are highlighted with a pink outline.
 \includegraphics[width=0.85\linewidth]{subgraph-Delta_recolored.pdf}
 \caption{
 Subgraph illustrating the origin of B.1.617.2 (Delta).
-Symbols are described in \ref{fig:subgraph_alpha}, except that
+Symbols are described in \edref{fig:subgraph_alpha}, except that
 we highlight the characteristic mutations of Kappa and Delta:
 those with a blue outline are listed
 in the Pango designation issue \cite{PangoIssueKappa}
@@ -3615,7 +3626,7 @@ B.1.617, B.1.617.1, and B.1.617.2 are plotted as red squares.
 \caption{
 Subgraph illustrating the saltational origin of
 the major Omicron lineages BA.1 and BA.2.
-Symbols are described in Figure~\ref{fig:subgraph_delta},
+Symbols are described in \edref{fig:subgraph_delta},
 except that BA.1 samples are filled in light blue
 (also used to outline BA.1 characteristic mutations),
 BA.2 samples in light yellow
@@ -3662,7 +3673,7 @@ XJ & \includegraphics[height=\cprheight]{static/XJ.png}\\
 XAF & \includegraphics[height=\cprheight]{static/XAF.png}\\
 \end{tabularx}
 \caption{Copying patterns for the 21 recombination events associated with Pango
-X lineages listed in Table~\ref{tab:pango_x_lineages} (in the same order).
+X lineages listed in \siref{tab:pango_x_lineages} (in the same order).
 The horizontal line separates Type I and Type II events.
 See also Document S2 for exact positions and nucleotide bases.}
 \label{fig:pango_x_copying_patterns}
@@ -3675,7 +3686,7 @@ See also Document S2 for exact positions and nucleotide bases.}
 % \centering
 % \includegraphics[width=\linewidth]{recombinant_evidence_cov_recomb}
 % \caption{Properties of sc2ts recombination events, coloured by CovRecomb
-% classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
+% classification. All other details as per \figref{fig:recombinant_evidence}.
 % \label{fig:recombinant_evidence_cov_recomb}}
 % \end{figure}
 
@@ -3683,7 +3694,7 @@ See also Document S2 for exact positions and nucleotide bases.}
 % \centering
 % \includegraphics[width=\linewidth]{recombinant_evidence_rebar}
 % \caption{Properties of sc2ts recombination events, coloured by rebar
-% classification. All other details as per Figure~\ref{fig:recombinant_evidence}.
+% classification. All other details as per \figref{fig:recombinant_evidence}.
 % \label{fig:recombinant_evidence_rebar}}
 % \end{figure}
 
@@ -3737,7 +3748,7 @@ Q4 & \includegraphics[height=\cprheight]{static/RE_node-QCfail-663484.png}\\
 \end{tabularx}
 \caption{
 Illustrative copying patterns
-drawn from the quadrants labelled in Figure~\ref{fig:recombinant_qc}.
+drawn from the quadrants labelled in \edref{fig:recombinant_qc}.
 Each copying pattern shows the positions
 where the allelic state in a recombinant
 (middle row, labelled by node ID)
@@ -3875,7 +3886,7 @@ in the Viridian v04 dataset.
 For each deletion, the number of occurrences in the ARG and
 the number of samples where it is observed are shown.
 For further explanation,
-see the caption of Table~\ref{tab:major_dels}.
+see the caption of \siref{tab:major_dels}.
 Abbreviations:
 NSP, non-structural protein;
 ORF, open reading frame;
@@ -4027,7 +4038,7 @@ XAJ &  \textbf{BA.2.12}&&& 11&& {XAJ:18} \\
 \caption{
 Concordance among methods in characterizing Pango X lineages.
 These comparisons focus on the Pango X lineages associated with
-the Type 1 recombination events (Table~\ref{tab:pango_x_lineages})
+the Type 1 recombination events (\siref{tab:pango_x_lineages})
 For each method, we calculated the number of Pango X lineages
 which have inferred parent Pango lineages and breakpoint intervals
 concordant with those proposed by the community.
@@ -4147,7 +4158,7 @@ rebar       & 213 & 203     & 10 \\
 RIPPLES events associated with Pango X lineages.
 Each row is a recombination event identified by RIPPLEs (at $p=3$)
 in which Pango X lineages appear,
-along with the corresponding sc2ts event from Table~\ref{tab:pango_x_lineages},
+along with the corresponding sc2ts event from \siref{tab:pango_x_lineages},
 where applicable, grouped by class.
 Events also present at $p=4$ are indicated.
 Clades are matched by finding the most recent common ancestor of

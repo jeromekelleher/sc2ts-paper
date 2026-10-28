@@ -23,6 +23,7 @@ latexdiff: diff.pdf
 
 diff.tex: submitted_version.tex main.tex
 	latexdiff --config="PICTUREENV=(?:picture|DIFnomarkup|tabular|longtable)[\w\d*@]*" \
+		--append-mboxsafecmd="figref,edref,siref,numref,supref" \
 		submitted_version.tex main.tex > diff.tex
 
 diff.pdf: diff.tex references.bib ${DATA} ${FIGURES}
