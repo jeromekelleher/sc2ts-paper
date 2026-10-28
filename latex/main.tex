@@ -2056,10 +2056,10 @@ the sample is the first place sc2ts can see the event.
 We therefore counted a sample as an expected recombinant
 if it has such an unrepresented recombinant ancestor,
 and an event as detectable if the recombinant's sequence
-differs from both of its parents'.
+differs from that of both parents.
 A sample was inferred to be recombinant if its HMM match has more than one parent.
-Precision is computed per sample.
-Recall is computed per recombination event,
+Precision was computed per sample.
+Recall was computed per recombination event,
 since once sc2ts has inferred an event in one sample,
 the others carrying it correctly match the resulting recombinant node
 with a single parent.
@@ -2068,8 +2068,8 @@ whether the true breakpoint lies in the breakpoint interval
 of the earliest sample in which it was found, and the interval's width.
 Each recombination node in the inferred ARG was rematched
 as for the real ARG (``Recombinant rematching'' above)
-to count the mutations it averts,
-and counted as a true positive if any sample added with it is an expected recombinant.
+counting the mutations averted,
+and treated as a true positive if any sample added with it was an expected recombinant.
 The simulated ARGs were not rewired,
 so the false positives reported are those before this step.
 The accuracy of the ARG as a whole was measured with
