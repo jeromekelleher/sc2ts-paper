@@ -1680,20 +1680,21 @@ phylogenetic signal.
 We therefore performed post-hoc parsimony mapping at 75 sites to include
 the effects of deletions and to ensure that all Pango-informative
 sites are included in the ARG.
-Using deletions with a minimum frequency of 1\%
+These comprise 73 sites covered by deletions with a minimum frequency of 1\%
 (count of sequences divided by 9,149,680 sequences analyzed)
-from Table S1 of Li et al.\cite{Li2023indels},
-we chose 75 sites for deletion-remapping (see \supref{sec:supplement_dels}
-for analysis of the major deletions identified from this process).
-Most of these sites are included in primary inference, and so
+in Table S1 of Li et al.\cite{Li2023indels}
+(see \supref{sec:supplement_dels}
+for analysis of the major deletions identified from this process),
+and two sites (21987 and 28253) that were masked during primary
+inference but carry Pango lineage-defining mutations, according to the
+list of lineage-defining mutations extracted from the global
+UShER tree\cite{Turakhia2021} and distributed with
+Freyja\cite{Karthikeyan2022}
+(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
+The deletion sites are mostly included in primary inference, and so
 remapping them adds mutations to the gap character
 rather than new sites.
-Two of them, however, are masked sites
-(21987 and 28253) that were excluded
-from primary inference and are defined as Pango lineage
-defining sites by Freyja\cite{Karthikeyan2022}
-(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
-Remapping adds these two sites,
+Remapping adds the two masked sites,
 so that the final ARG contains 29,640 sites.
 Alignment data for these 75 sites was then mapped to the
 ARG using the Fitch-Hartigan algorithm\cite{Fitch1971toward,Hartigan1973minimum}
