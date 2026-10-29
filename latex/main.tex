@@ -3568,13 +3568,14 @@ and kept 93\% of true positives.
 Half or more of the coronavirus-like false positives were ties,
 whose single-parent match costs the same as the recombinant match,
 and which sc2ts resolves in favour of recombination.
-Most (113 of 174, over all values of $k$) carry a real recombination,
-but placed on the wrong lineage:
-a relative sampled earlier was (or descended from) a recombinant,
-and carries the first copy of mutations from one of its parental lineages,
-so a later non-recombinant member of that lineage is matched to the relative
-over part of the genome.
-For 83\% of these the relative's breakpoint lay in the inferred breakpoint interval.
+Most (113 of 174, over all values of $k$) are a real recombination
+attributed to the wrong sample.
+When a lineage gains new mutations and the first sampled genome carrying them
+is a recombinant (or descends from one) that inherited part of its genome from that lineage,
+the mutations are placed on the recombinant's node.
+A later, non-recombinant sample from the lineage then matches the recombinant
+over the part of the genome inherited from the lineage, and another node over the rest.
+For 83\% of these the breakpoint of the true recombinant lay in the inferred breakpoint interval.
 For the influenza-like pathogen, by contrast,
 true and false positives alike averted $k$ mutations or barely more (at most 9),
 and nearly all false positives (412 of 461, mostly at $k=3$ with 1,000 samples per day)
