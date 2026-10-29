@@ -463,9 +463,9 @@ The ARG is time-resolved, with internal node dates estimated
 using tsdate~\cite{Pope2025} (Methods).
 We show that the dates broadly agree with
 Nextstrain estimates (\siref{fig:pango_vs_nextstrain_node_times}),
-although re-dating a subset of samples shows that inferred dates
-are systematically too old, by 45 days on average
-(\edref{fig:node_time_testing},
+although simulations show that the dating is biased towards older ages
+(re-dating a subset of samples gives estimates that are on average
+45 days older than the known sampling dates; \edref{fig:node_time_testing},
 \supref{sec:evaluating_node_dates}).
 Finally, we verified
 that the origins of the
@@ -1064,7 +1064,7 @@ recombinant Pango X lineages, finding examples of
 clustering of named lineages under a single shared recombination event.
 Second, we used the ARG to study breakpoint intervals
 for recombination events, showing that the relationship between the
-size of the interval in base pairs and the divergence time of the parental lineages matches theoretical expectations.
+size of the interval in bases and the divergence time of the parental lineages matches theoretical expectations.
 Thirdly, we find a strong association between
 genetic diversity and the rate of detectable recombination,
 with the best predictor of the number of recombination
@@ -1680,20 +1680,21 @@ phylogenetic signal.
 We therefore performed post-hoc parsimony mapping at 75 sites to include
 the effects of deletions and to ensure that all Pango-informative
 sites are included in the ARG.
-Using deletions with a minimum frequency of 1\%
+These comprise 73 sites covered by deletions with a minimum frequency of 1\%
 (count of sequences divided by 9,149,680 sequences analyzed)
-from Table S1 of Li et al.\cite{Li2023indels},
-we chose 75 sites for deletion-remapping (see \supref{sec:supplement_dels}
-for analysis of the major deletions identified from this process).
-Most of these sites are included in primary inference, and so
+in Table S1 of Li et al.\cite{Li2023indels}
+(see \supref{sec:supplement_dels}
+for analysis of the major deletions identified from this process),
+and two sites (21987 and 28253) that were masked during primary
+inference but carry Pango lineage-defining mutations, according to the
+list of lineage-defining mutations extracted from the global
+UShER tree\cite{Turakhia2021} and distributed with
+Freyja\cite{Karthikeyan2022}
+(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
+The deletion sites are mostly included in primary inference, and so
 remapping them adds mutations to the gap character
 rather than new sites.
-Two of them, however, are masked sites
-(21987 and 28253) that were excluded
-from primary inference and are defined as Pango lineage
-defining sites by Freyja\cite{Karthikeyan2022}
-(\url{https://raw.githubusercontent.com/andersen-lab/Freyja/refs/heads/main/freyja/data/lineage\_mutations.json}).
-Remapping adds these two sites,
+Remapping adds the two masked sites,
 so that the final ARG contains 29,640 sites.
 Alignment data for these 75 sites was then mapped to the
 ARG using the Fitch-Hartigan algorithm\cite{Fitch1971toward,Hartigan1973minimum}
@@ -2236,7 +2237,7 @@ The published RecombinHunt and CovRecomb results are based on data
 collected up to early 2023, and so are not available for
 the 15 Type I lineages from XCC onwards.
 While this is certainly biased in favour of sc2ts (i.e., by
-ignoring likely sc2ts false negatives such as XB), it helps to
+ignoring likely sc2ts false negatives such as XAJ), it helps to
 understand the probable accuracy of sc2ts on the true positives.
 It is important to emphasise that the ``true'' truth set among
 the Pango X lineages is currently unknown.
@@ -2398,7 +2399,7 @@ notebook for full methodological details of the analysis.
 \subsubsection*{Co-circulation of recombinant parents}
 Sampling dates (the \texttt{Date\_tree} field) and locations
 (\texttt{Country} and, where available, \texttt{Region})
-were taken from the Viridian metadata for the 4.5 million runs
+were taken from the Viridian metadata for the 4.5 million samples
 with a complete date and a known country.
 A Pango lineage was taken to be circulating in a country on a given day
 if any sample of that lineage was collected in that country
@@ -2886,10 +2887,10 @@ putative origination nodes among those labelled with a given lineage as the node
 with the maximum number of descendant samples and the earliest time (if there
 is a tie).
 
-Of the 3032 distinct Pango lineages in the ARG, 2037 of these (comprising
+Of the 3032 distinct Pango lineages in the ARG, 2037 (comprising
 912188 samples) match perfectly, with unique origination events in the ARG
-where all samples assigned a given lineage descend from the first node assigned
-that lineage. A further 420 lineages (730631 samples) match perfectly when we
+where all samples assigned to a given lineage descend from the first node assigned
+to that lineage. A further 420 lineages (730631 samples) match perfectly when we
 count the descendants of the parent of the first node (accounting for
 polytomies in which multiple originating nodes for a given lineage are
 siblings). We then have 541 lineages (522785 samples) where the difference in
@@ -2964,16 +2965,16 @@ lie on it.
 C3267T lies on the node immediately below,
 which is ancestral to all but one of the 308,756 samples
 below the Alpha origin.
-The characteristic three-base correlated mutation at 28,280--28,282
+The characteristic three-base correlated mutation at 28280--28282
 lies instead on the B.1.1-labelled parent of the Alpha origin,
 which is also the parent of five samples identical to it,
 suggesting that this mutation was acquired prior to the emergence of Alpha.
 The list of mutations in ref\cite{RambautAlpha2020}
 also includes T26801C in the M gene,
 which should no longer be considered characteristic of Alpha,
-as the Wuhan-Hu-1 reference at 26,801 has since been updated to C.
+as the Wuhan-Hu-1 reference at 26801 has since been updated to C.
 The Alpha origin node also carries a one-base non-coding deletion
-at position 28,271;
+at position 28271;
 although this is not in the original list of
 characteristic Alpha mutations,
 it has been suggested elsewhere as an Alpha-defining
@@ -3002,7 +3003,7 @@ than either is to Kappa\cite{Cherian2021,Farinholt2021}.
 In the ARG, however, Delta and Kappa are sibling lineages,
 with B.1.617.3 as an outgroup, and there are some likely-artefactual
 mutational assignments. Two mutations shared by Delta and B.1.617.3
-(C21618G and the 6-base deletion at 22,029)
+(C21618G and the 6-base deletion at 22029)
 are placed above all three lineages and reverted in Kappa;
 G23012C, shared by Kappa and B.1.617.3, is reverted in Delta;
 and the two mutations on the common ancestor of Delta and Kappa
@@ -3048,10 +3049,10 @@ reflecting its saltational origin, and
 Two of the remainder (G22992A and C26270T) lie on
 the two B.1.1-labelled nodes immediately above it,
 which are also ancestral to non-Omicron samples.
-The third is a 9-base deletion at 11,288,
+The third is a 9-base deletion at 11288,
 which our naive deletion remapping procedure
-splits into a 4-base deletion at 11,288 on the B.1.1.529 node
-and 5-base deletions at 11,283 and 11,292
+splits into a 4-base deletion at 11288 on the B.1.1.529 node
+and 5-base deletions at 11283 and 11292
 on the BA.1 and BA.2 branches
 (see \supref{sec:supplement_dels}).
 There is also uncertainty in the sequence alignments
@@ -3065,7 +3066,7 @@ Of the 27 BA.2 characteristic mutations,
 and R408S (A22786C in our alignments, rather than A22786T as listed)
 lies on the node immediately below.
 However, six BA.1-specific mutations
-(C21762T, C21846T, G22898A and the deletions at 21,765, 21,987 and 22,194)
+(C21762T, C21846T, G22898A and the deletions at 21765, 21987 and 22194)
 are placed on the shared B.1.1.529 node
 and reverted on the branch leading to BA.2,
 rather than on the branch leading to BA.1.
@@ -3299,7 +3300,7 @@ supported (7 averted mutations; \supref{sec:dd_xb}).
 
 The fourth node is the origin of BA.2.86.1 in the ARG, and all 701 BA.2.86
 and 21,908 JN.1 samples descend from it.
-It copies from a CM.8.1 sample between positions 22,898 and 24,990, and from
+It copies from a CM.8.1 sample between positions 22898 and 24990, and from
 BA.2 nodes on either side.
 The match requires 47 mutations with recombination, and only one more
 without it, so this recombination is likely spurious, reflecting the long
@@ -3335,25 +3336,25 @@ strongly supported recombination events in the ARG
 in terms of the number of averted mutations (A: 19, B: 6, C: 30, D: 19).
 In the ARG, the singleton CAMC-CBA018 has
 the parents B.1.177+B.1.1.7 and
-the breakpoint interval 16,177--20,133, and
+the breakpoint interval 16177--20133, and
 is strongly supported by 14 averted mutations.
 In the Jackson et al. results, this singleton is
 consistent, with the same parent lineages and
-a breakpoint interval of 11,395--21,993.
+a breakpoint interval of 11395--21993.
 In the ARG, the singleton MILK-103C712 has
 the parents B.1.177.16+B.1.1.7 and
-a breakpoint interval of 26,802--27,972,
+a breakpoint interval of 26802--27972,
 again strongly supported by 22 averted mutations.
 In the Jackson et al. results,
 this lineage has the same parents,
-with the breakpoint interval 26,800--27,974.
+with the breakpoint interval 26800--27974.
 In the ARG, the singleton QEUH-1067DEF has
 the parents B.1.1.7+B.1.177.9 and
-a breakpoint interval of 7,729--10,870,
+a breakpoint interval of 7729--10870,
 supported by 11 averted mutations.
 In the Jackson et al.\ results,
 this lineage has the same parents,
-with the breakpoint interval 6,953--10,872.
+with the breakpoint interval 6953--10872.
 
 See notebook
 \href{https://github.com/jeromekelleher/sc2ts-paper/blob/main/notebooks/analysis\_jackson\_recombinants.ipynb}
@@ -3480,7 +3481,7 @@ and so would not be immediately included in the ARG during inference.
 
 \subsubsection{Limitations}
 Parents are contemporaneous samples from a single day,
-so the divergence between them is set by the choice of cross
+so the divergence between them is set by the choice of parental pool
 rather than drawn from the course of the pandemic.
 Added mutations are uniform along the genome,
 with no mutational spectrum or rate variation.
@@ -3839,17 +3840,17 @@ in the XBB copying pattern.
 \label{sec:dd_xdp}
 
 XDP is designated as a recombinant of JN.1.4 (left parent) and FL.15 (right parent),
-with a breakpoint between 26,834 and 27,809
+with a breakpoint between 26834 and 27809
 (\url{https://github.com/cov-lineages/pango-designation/issues/2451}).
 XEB has the same parents, plus a short FL.15 segment
 at the left end of the genome (breakpoint between 774 and 896;
 \url{https://github.com/sars-cov-2-variants/lineage-proposals/issues/1290}).
 In the ARG, XDP has two origins,
 each a recombination node with a JN.1.4 left parent.
-One (node 1868729) switches to FL.15 at position 26,882
+One (node 1868729) switches to FL.15 at position 26882
 and is ancestral to 100 XDP samples (including sublineages);
 the other (node 1874998) switches to XBB.1.9.1,
-an ancestral lineage of FL.15, at position 27,810
+an ancestral lineage of FL.15, at position 27810
 and is ancestral to 28 XDP samples.
 Each is also ancestral to an XEB origin node two edges below it,
 and both XEB origin nodes carry the same two mutations, A405G and T774C.
@@ -4334,17 +4335,17 @@ and add one to the right coordinate to make the intervals right-exclusive.
 \toprule
 Group & Sequences & Method & \multicolumn{2}{c}{Breakpoint interval} & \multicolumn{2}{c}{Parent lineages} \\
 \midrule
-A (XA)       & 2   & Jackson        &  21,254&21,767 & B.1.177&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  21,256&21,765 & B.1.177.18&B.1.1.7 \\
+A (XA)       & 2   & Jackson        &  21254&21767 & B.1.177&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  21256&21765 & B.1.177.18&B.1.1.7 \\
 \cmidrule{3-7}
-B            & 2   & Jackson        &  6,527&6,956 & B.1.36.28&B.1.1.7  \\
-             &     &\texttt{sc2ts} &   6,529&6,954 & B.1.36.28&B.1.1.7  \\
+B            & 2   & Jackson        &  6527&6956 & B.1.36.28&B.1.1.7  \\
+             &     &\texttt{sc2ts} &   6529&6954 & B.1.36.28&B.1.1.7  \\
 \cmidrule{3-7}
-C            & 3   &Jackson         &  24,913&28,653 &  B.1.1.7&B.1.221.1/B.1.221.2 \\
-             &     &\texttt{sc2ts} &  25,997&27,972 &  B.1.1.7&B.1.221.1 \\
+C            & 3   &Jackson         &  24913&28653 &  B.1.1.7&B.1.221.1/B.1.221.2 \\
+             &     &\texttt{sc2ts} &  25997&27972 &  B.1.1.7&B.1.221.1 \\
 \cmidrule{3-7}
-D            & 3   & Jackson        &  21,574&23,065 &  B.1.36.17&B.1.1.7 \\
-             &     &\texttt{sc2ts} &  22,445&23,063 &  B.1.36.39&B.1.1.7 \\
+D            & 3   & Jackson        &  21574&23065 &  B.1.36.17&B.1.1.7 \\
+             &     &\texttt{sc2ts} &  22445&23063 &  B.1.36.39&B.1.1.7 \\
 \bottomrule
 \end{tabular}
 \end{table}
